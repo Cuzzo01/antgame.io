@@ -23,6 +23,7 @@ const Brushes = Config.brushes;
 const BorderWeight = Config.borderWeight;
 const TrailDropRate = Config.TrailDropRate;
 const FrameRate = Config.FrameRate;
+const PreloadMap = Config.PreloadMap;
 
 export default class AntGame extends React.Component {
   constructor() {
@@ -30,18 +31,6 @@ export default class AntGame extends React.Component {
 
     let bodyElement = document.querySelector("body");
     disableBodyScroll(bodyElement);
-
-    this.state = {
-      loading: true,
-      emptyMap: true,
-      shouldResizeCanvas: false,
-      playState: false,
-      time: {
-        min: "00",
-        sec: "00",
-      },
-      timerActive: false,
-    };
 
     this.brushSize = BrushSizeDefault;
     this.brushType = DefaultBrush.value;
@@ -52,6 +41,24 @@ export default class AntGame extends React.Component {
 
     this.mapHandler = new MapHandler(this.toggleTimer);
     this.antHandler = new AntHandler(this.mapHandler);
+
+    let emptyMap = true;
+    if (PreloadMap) {
+      this.mapHandler.preloadMap();
+      emptyMap = false;
+    }
+
+    this.state = {
+      loading: true,
+      emptyMap: emptyMap,
+      shouldResizeCanvas: false,
+      playState: false,
+      time: {
+        min: "00",
+        sec: "00",
+      },
+      timerActive: false,
+    };
 
     this.homeTrailHandler = new TrailHandler(
       Brushes.find((brush) => brush.value === "h").color,
@@ -66,14 +73,14 @@ export default class AntGame extends React.Component {
   setup = (p5, parentRef) => {
     this.parentRef = parentRef;
 
-    this.antImage = p5.loadImage("/antGame/antSmol.png");
-    this.antFoodImage = p5.loadImage("/antGame/antSmolFood.png");
+    this.antImage = p5.loadImage("antSmol.png");
+    this.antFoodImage = p5.loadImage("antSmolFood.png");
 
     this.setupAndInitialize(p5);
 
     p5.createCanvas(canvasW, canvasH).parent(parentRef);
 
-    this.mapHandler.generateMap();
+    if (!this.mapHandler.mapSetup) this.mapHandler.generateMap();
     if (Debug) {
       console.log(`mapSize: ${this.mapHandler.mapSize}`);
       StaticElements.grid(

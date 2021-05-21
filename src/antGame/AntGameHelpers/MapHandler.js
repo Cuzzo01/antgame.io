@@ -5,6 +5,7 @@ const MapBounds = Config.MapBounds;
 const FoodPerCell = Config.FoodPerCell;
 const PercentFoodReturnedToStopTime = Config.PercentFoodReturnedToStopTime;
 const BorderWeight = Config.borderWeight;
+const PreloadMapPath = Config.PreloadMapPath;
 
 export class MapHandler {
   constructor(toggleTimerFunc) {
@@ -17,14 +18,11 @@ export class MapHandler {
     this.foodOnMap = 0;
     this.brushColors = {};
     this.cellsToDraw = [];
+    this.graphicsSet = false;
   }
 
   get map() {
     return this._map;
-  }
-
-  get mapSize() {
-    return [this._map.length, this._map[0].length];
   }
 
   get homeCellCount() {
@@ -37,6 +35,7 @@ export class MapHandler {
     this._graphics.noStroke();
 
     this.populateBrushColors();
+    this.graphicsSet = true;
   }
 
   setupMap(canvasWidth, canvasHeight) {
@@ -80,16 +79,22 @@ export class MapHandler {
   }
 
   loadMap(map) {
-    const expectedMapSize = this.mapSize;
-    if (
-      map.length !== expectedMapSize[0] ||
-      map[0].length !== expectedMapSize[1]
-    )
+    if (map.length !== MapBounds[0] || map[0].length !== MapBounds[1])
       return false;
 
     this._map = map;
     this.drawFullMap();
+    this.mapSetup = true;
     return true;
+  }
+
+  preloadMap() {
+    if (!this.mapSetup) {
+      this.mapSetup = true;
+      fetch(PreloadMapPath)
+        .then((response) => response.json())
+        .then((map) => this.loadMap(map));
+    }
   }
 
   populateBrushColors() {
@@ -119,10 +124,11 @@ export class MapHandler {
   }
 
   drawFullMap() {
+    if (!this.graphicsSet) return;
     this._graphics.clear();
     let lastCell = "";
-    for (let x = 0; x < this.mapSize[0]; x++) {
-      for (let y = 0; y < this.mapSize[1]; y++) {
+    for (let x = 0; x < MapBounds[0]; x++) {
+      for (let y = 0; y < MapBounds[1]; y++) {
         let cell = this._map[x][y];
         if (cell.length !== 1) cell = cell[0];
         if (cell !== " ") {
