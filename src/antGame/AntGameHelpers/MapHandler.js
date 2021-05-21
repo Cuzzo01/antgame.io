@@ -105,6 +105,7 @@ export class MapHandler {
   }
 
   drawMap() {
+    if (!this.graphicsSet) return;
     let lastCell = "";
     this.cellsToDraw.forEach((cellPos) => {
       let cell = this._map[cellPos[0]][cellPos[1]];
