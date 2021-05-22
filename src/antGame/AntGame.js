@@ -152,7 +152,8 @@ export default class AntGame extends React.Component {
       }
     }
 
-    if (this.mapHandler.redrawMap) this.mapHandler.drawMap(this.mapGraphic);
+    if (this.mapHandler.redrawMap) this.mapHandler.drawMap();
+    else if (this.mapHandler.redrawFullMap) this.mapHandler.drawFullMap()
 
     if (this.antHandler.redrawAnts)
       this.antHandler.drawAnts(

@@ -12,6 +12,7 @@ export class MapHandler {
     this._map = [];
     this.mapSetup = false;
     this.redrawMap = true;
+    this.redrawFullMap = false;
     this.pixelDensity = [];
     this.toggleTimer = toggleTimerFunc;
     this.foodReturned = 0;
@@ -83,7 +84,7 @@ export class MapHandler {
       return false;
 
     this._map = map;
-    this.drawFullMap();
+    this.redrawFullMap = true
     this.mapSetup = true;
     return true;
   }
@@ -141,6 +142,7 @@ export class MapHandler {
         }
       }
     }
+    this.redrawFullMap = false
   }
 
   mapXYInBounds(mapXY) {
