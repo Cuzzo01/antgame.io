@@ -151,16 +151,15 @@ export class Ant {
   }
 
   navigate(leftScore, aheadScore, rightScore) {
-    let action = 0;
-    if (typeof leftScore === "string")
-      action = this.handleObject(leftScore, "left");
-    if (action === 0 && typeof rightScore === "string")
-      action = this.handleObject(rightScore, "right");
-    if (action === 0 && typeof aheadScore === "string")
-      action = this.handleObject(aheadScore, "ahead");
-    if (action !== 0) {
-      if (typeof action === "string") return this.takeAction(action);
-      else return action;
+    const leftIsString = typeof leftScore === "string"
+    const aheadIsString = typeof aheadScore === "string"
+    const rightIsString = typeof rightScore === "string"
+    if (leftIsString || aheadIsString || rightIsString) {
+      const action = this.handleStringScores(leftScore, aheadScore, rightScore)
+      if (action !== false) {
+        this.takeAction(action)
+        return true
+      }
     }
 
     if (this.dropsToSkip !== 0) return false;
@@ -174,21 +173,20 @@ export class Ant {
     return true;
   }
 
-  handleObject(item, direction) {
-    switch (direction) {
-      case "ahead":
-        return false;
-      case "left":
-        if (this.isObjective(item)) return "l";
-        if (item === "w") return "r";
-        break;
-      case "right":
-        if (this.isObjective(item)) return "r";
-        if (item === "w") return "l";
-        break;
-      default:
+  handleStringScores(leftScore, aheadScore, rightScore) {
+    const leftIsString = typeof leftScore === "string"
+    const aheadIsString = typeof aheadScore === "string"
+    const rightIsString = typeof rightScore === "string"
+    if (aheadIsString && this.isObjective(aheadScore)) return "a"
+    if (leftIsString) {
+      if (this.isObjective(leftScore)) return "l"
+      if (leftScore === "w") return "r"
     }
-    return false;
+    if (rightIsString) {
+      if (this.isObjective(rightScore)) return "r"
+      if (rightScore === "w") return "l"
+    }
+    return false
   }
 
   isObjective(item) {
