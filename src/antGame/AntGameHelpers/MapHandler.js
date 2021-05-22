@@ -84,7 +84,7 @@ export class MapHandler {
       return false;
 
     this._map = map;
-    this.redrawFullMap = true
+    this.redrawFullMap = true;
     this.mapSetup = true;
     return true;
   }
@@ -142,7 +142,7 @@ export class MapHandler {
         }
       }
     }
-    this.redrawFullMap = false
+    this.redrawFullMap = false;
   }
 
   mapXYInBounds(mapXY) {
