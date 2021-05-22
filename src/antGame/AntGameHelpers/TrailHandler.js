@@ -103,7 +103,7 @@ export class TrailHandler {
     for (let x = 0; x < MapBounds[0]; x++) {
       for (let y = 0; y < MapBounds[1]; y++) {
         if (this.trailMap[x][y] > 0) {
-          this.trailMap[x][y] = Math.round(0.7 * this.trailMap[x][y]);
+          this.trailMap[x][y] = Math.round(0.8 * this.trailMap[x][y]);
           if (this.trailMap[x][y] < 75) this.trailMap[x][y] = 0;
         }
       }
