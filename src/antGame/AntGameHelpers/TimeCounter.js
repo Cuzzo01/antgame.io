@@ -1,9 +1,9 @@
 const TimeCounter = (props) => {
   return (
     <div style={props.styles}>
-      <h4 style={props.active ? styles.active : null}>
+      <h3 style={props.active ? styles.active : null}>
         {props.time.min}:{props.time.sec}
-      </h4>
+      </h3>
     </div>
   );
 };

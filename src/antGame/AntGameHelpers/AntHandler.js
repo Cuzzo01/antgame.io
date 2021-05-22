@@ -13,6 +13,10 @@ export class AntsHandler {
     this.redrawAnts = false;
   }
 
+  get antsSpawned() {
+    return this.ants.length !== 0;
+  }
+
   drawAnts(graphics, antNoFoodImage, antFoodImage) {
     graphics.clear();
 

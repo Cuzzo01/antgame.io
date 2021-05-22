@@ -4,20 +4,19 @@ import { disableBodyScroll } from "body-scroll-lock";
 
 import { Config } from "./config";
 
-import Menu from "./AntGameHelpers/Menu";
 import { StaticElements } from "./AntGameHelpers/StaticElements";
 import { MapHandler } from "./AntGameHelpers/MapHandler";
 import { AntsHandler as AntHandler } from "./AntGameHelpers/AntHandler";
 import { TrailHandler } from "./AntGameHelpers/TrailHandler";
-import ResizePrompt from "./AntGameHelpers/ResizePrompt";
-import TimeCounter, { TimerHandler } from "./AntGameHelpers/TimeCounter";
+import { TimerHandler } from "./AntGameHelpers/TimeCounter";
+import MenuBar from "./AntGameHelpers/MenuBar";
 
 let canvasW, canvasH;
 let lastMousePos = [-1, -1];
 
 const Debug = Config.debug;
 const TrailDecayRate = Config.TrailDecayInterval;
-const BrushSizeDefault = Config.brushSizeDefault;
+const BrushSizeDefault = Config.brushSizes[Config.brushSizeDefaultIndex].value;
 const DefaultBrush = Config.brushes[Config.brushTypeDefaultIndex];
 const Brushes = Config.brushes;
 const BorderWeight = Config.borderWeight;
@@ -99,7 +98,7 @@ export default class AntGame extends React.Component {
   setupAndInitialize = (p5) => {
     this.windowSize = [p5.windowWidth, p5.windowHeight];
     canvasW = p5.windowWidth - this.parentRef.offsetLeft * 2;
-    canvasH = p5.windowHeight - this.parentRef.offsetTop * 2;
+    canvasH = p5.windowHeight - this.parentRef.offsetTop * 1.5;
 
     if (Debug) console.log(`canvasSize: ${[canvasW, canvasH]}`);
 
@@ -203,6 +202,7 @@ export default class AntGame extends React.Component {
   };
 
   updateBrushSize = (size) => {
+    console.log(size);
     this.brushSize = size;
   };
 
@@ -212,26 +212,23 @@ export default class AntGame extends React.Component {
 
   updatePlayState = (state) => {
     if (state) {
-      this.antHandler.spawnAnts(this.homeTrailHandler, this.foodTrailHandler);
-      this.setState({
-        time: {
-          min: "00",
-          sec: "00",
-        },
-      });
       this.toggleTimer(true);
-      this.mapHandler.calculateFoodToStopTime();
-      this.mapHandler.resetFoodReturned();
+      if (this.antHandler.antsSpawned) {
+      } else {
+        this.antHandler.spawnAnts(this.homeTrailHandler, this.foodTrailHandler);
+        this.mapHandler.calculateFoodToStopTime();
+        this.mapHandler.resetFoodReturned();
+      }
     } else {
       this.toggleTimer(false);
-      this.antHandler.clearAnts();
+      // this.antHandler.clearAnts();
     }
     this.setState({ playState: state });
   };
 
   toggleTimer = (state) => {
     if (state) {
-      this.timerHandler.resetTime();
+      // this.timerHandler.resetTime();
       this.timerInterval = setInterval(() => {
         this.timerHandler.handleTime(this.frameCount, this.setTime);
       }, 1000);
@@ -273,10 +270,18 @@ export default class AntGame extends React.Component {
     } else this.setState({ shouldResizeCanvas: true });
   };
 
-  forceResize = () => {
-    this.updatePlayState(false);
-    this.homeTrailHandler.clearTrails();
+  reset = () => {
+    this.antHandler.clearAnts();
     this.foodTrailHandler.clearTrails();
+    this.homeTrailHandler.clearTrails();
+    this.timerHandler.resetTime();
+    this.setState({
+      time: {
+        min: "00",
+        sec: "00",
+      },
+    });
+    // reset food
   };
 
   render() {
@@ -284,7 +289,7 @@ export default class AntGame extends React.Component {
       <div style={styles.container}>
         <div style={styles.centered}>
           <div style={styles.header}>
-            {this.state.shouldResizeCanvas ? (
+            {/* {this.state.shouldResizeCanvas ? (
               <ResizePrompt
                 clickHandler={this.forceResize}
                 styles={styles.resizeButton}
@@ -297,6 +302,19 @@ export default class AntGame extends React.Component {
               time={this.state.time}
               styles={styles.TimeCounter}
               active={this.state.timerActive}
+            /> */}
+            <MenuBar
+              time={this.state.time}
+              timerActive={this.state.timerActive}
+              playState={this.state.playState}
+              playButtonHandler={this.updatePlayState}
+              resetHandler={this.reset}
+              clearMapHandler={this.clearMap}
+              loadMapHandler={this.loadMapHandler}
+              saveMapHandler={this.saveMapHandler}
+              mapClear={this.state.emptyMap}
+              brushSizeHandler={this.updateBrushSize}
+              brushTypeHandler={this.updateBrushType}
             />
           </div>
           <Sketch
@@ -304,8 +322,7 @@ export default class AntGame extends React.Component {
             draw={this.draw}
             windowResized={this.resizeHandler}
           />
-        </div>
-        <Menu
+          {/* <Menu
           style={this.state.loading ? { display: "none" } : {}}
           playState={this.state.playState}
           mapClear={this.state.emptyMap}
@@ -316,7 +333,8 @@ export default class AntGame extends React.Component {
           playButtonHandler={this.updatePlayState}
           saveMapHandler={this.saveMapHandler}
           loadMapHandler={this.loadMapHandler}
-        />
+        /> */}
+        </div>
       </div>
     );
   }
@@ -324,8 +342,8 @@ export default class AntGame extends React.Component {
 
 const styles = {
   header: {
-    display: "grid",
-    gridTemplateColumns: "250px auto 250px",
+    // display: "grid",
+    // gridTemplateColumns: "250px auto 250px",
     paddingBottom: "5px",
   },
   resizeButton: {

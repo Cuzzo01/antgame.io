@@ -1,14 +1,10 @@
 export const Config = {
-  // HomeColor: "#196F3D",
   vUnderscan: 100,
   hUnderscan: 10,
   borderWeight: 4,
-  brushMin: 1,
-  brushMax: 7,
   // // Deploy
   MapBounds: [200, 112],
   debug: false,
-  brushSizeDefault: 3,
   gridSpacing: 10,
   AntSize: 10,
   TrailDiameter: 3,
@@ -19,7 +15,6 @@ export const Config = {
   // ViewDistance: 30,
   // MapBounds: [30, 16],
   // debug: true,
-  // brushSizeDefault: 1,
   // gridSpacing: 25,
   // AntSize: 35,
   // TrailDiameter: 10,
@@ -30,7 +25,6 @@ export const Config = {
   AlphaPerDecay: 50, // 50??
   gridWeight: 1,
   ViewAngle: 45,
-  brushTypeDefaultIndex: 1,
   AntStepDistance: 0.3,
   AntWanderChance: 0.2,
   AntWanderAmount: 30,
@@ -45,6 +39,7 @@ export const Config = {
   TrailTransparencyFloor: 0.005,
   PreloadMap: true,
   PreloadMapPath: "antgameMap.json",
+  brushTypeDefaultIndex: 1,
   brushes: [
     {
       value: "w",
@@ -54,13 +49,8 @@ export const Config = {
     {
       value: "h",
       name: "Home",
-      color: "#C0392B", // #2980B9
+      color: "#C0392B",
     },
-    // {
-    //   value: "h2",
-    //   name: "RHome",
-    //   color: "#C0392B",
-    // },
     {
       value: "f",
       name: "Food",
@@ -69,6 +59,25 @@ export const Config = {
     {
       value: " ",
       name: "Eraser",
+    },
+  ],
+  brushSizeDefaultIndex: 1,
+  brushSizes: [
+    {
+      value: "1",
+      name: "S",
+    },
+    {
+      value: "3",
+      name: "M",
+    },
+    {
+      value: "5",
+      name: "L",
+    },
+    {
+      value: "7",
+      name: "XL",
     },
   ],
 };

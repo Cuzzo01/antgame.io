@@ -151,14 +151,14 @@ export class Ant {
   }
 
   navigate(leftScore, aheadScore, rightScore) {
-    const leftIsString = typeof leftScore === "string"
-    const aheadIsString = typeof aheadScore === "string"
-    const rightIsString = typeof rightScore === "string"
+    const leftIsString = typeof leftScore === "string";
+    const aheadIsString = typeof aheadScore === "string";
+    const rightIsString = typeof rightScore === "string";
     if (leftIsString || aheadIsString || rightIsString) {
-      const action = this.handleStringScores(leftScore, aheadScore, rightScore)
+      const action = this.handleStringScores(leftScore, aheadScore, rightScore);
       if (action !== false) {
-        this.takeAction(action)
-        return true
+        this.takeAction(action);
+        return true;
       }
     }
 
@@ -174,19 +174,19 @@ export class Ant {
   }
 
   handleStringScores(leftScore, aheadScore, rightScore) {
-    const leftIsString = typeof leftScore === "string"
-    const aheadIsString = typeof aheadScore === "string"
-    const rightIsString = typeof rightScore === "string"
-    if (aheadIsString && this.isObjective(aheadScore)) return "a"
+    const leftIsString = typeof leftScore === "string";
+    const aheadIsString = typeof aheadScore === "string";
+    const rightIsString = typeof rightScore === "string";
+    if (aheadIsString && this.isObjective(aheadScore)) return "a";
     if (leftIsString) {
-      if (this.isObjective(leftScore)) return "l"
-      if (leftScore === "w") return "r"
+      if (this.isObjective(leftScore)) return "l";
+      if (leftScore === "w") return "r";
     }
     if (rightIsString) {
-      if (this.isObjective(rightScore)) return "r"
-      if (rightScore === "w") return "l"
+      if (this.isObjective(rightScore)) return "r";
+      if (rightScore === "w") return "l";
     }
-    return false
+    return false;
   }
 
   isObjective(item) {
