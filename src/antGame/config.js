@@ -13,7 +13,7 @@ export const Config = {
   AntSize: 10,
   TrailDiameter: 3,
   ViewDistance: 2,
-  TrailDropRate: 8,
+  TrailDropRate: 5,
   AntsToSpawn: 1000,
   // // Debug
   // ViewDistance: 30,
@@ -34,8 +34,8 @@ export const Config = {
   AntStepDistance: 0.3,
   AntWanderChance: 0.2,
   AntWanderAmount: 30,
-  MaxSmellTurnRate: 30,
-  MinSmellTurnRate: 5,
+  MaxSmellTurnRate: 55,
+  MinSmellTurnRate: 20,
   FoodPerCell: 20,
   BackgroundColor: "#909497",
   StayOnCourseWanderAmount: 15,
@@ -44,7 +44,7 @@ export const Config = {
   PercentFoodReturnedToStopTime: 0.99,
   TrailDecayRange: 300,
   TrailTransparencyFloor: 0.01,
-  PreloadMap: true,
+  PreloadMap: false,
   PreloadMapPath: "antgameMap.json",
   brushes: [
     {

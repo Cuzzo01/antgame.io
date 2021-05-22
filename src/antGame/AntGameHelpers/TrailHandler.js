@@ -76,7 +76,7 @@ export class TrailHandler {
           strength *
             (1 -
               (Math.abs(xOffset) + Math.abs(yOffset)) /
-                (2 * TrailMapOverSampleRate))
+                (4 * TrailMapOverSampleRate))
         );
         if (cellStrength && this.mapXYInBounds(point)) {
           const currentValue = this.trailMap[point[0]][point[1]];
