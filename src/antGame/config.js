@@ -43,7 +43,7 @@ export const Config = {
   PercentFoodReturnedToStopTime: 0.99,
   TrailDecayRange: 300,
   TrailTransparencyFloor: 0.005,
-  PreloadMap: false,
+  PreloadMap: true,
   PreloadMapPath: "antgameMap.json",
   brushes: [
     {

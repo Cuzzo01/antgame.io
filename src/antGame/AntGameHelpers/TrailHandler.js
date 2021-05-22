@@ -114,8 +114,16 @@ export class TrailHandler {
     if (mapStart[0] < 0 || mapStart[1] < 0) return 0;
     if (mapStop[0] < 0 || mapStop[1] < 0) return 0;
 
-    const cell = this.mapHandler.getCell(mapStop);
-    if (cell !== " ") return cell;
+    const mapPoints = getPoints(mapStart, mapStop);
+    var cellToReturn = "";
+    mapPoints.forEach((point) => {
+      const cell = this.mapHandler.getCell(point);
+      if (cell !== " ") {
+        cellToReturn = cell;
+        return;
+      }
+    });
+    if (cellToReturn !== "") return cellToReturn;
 
     if (this.clean) return 0;
 
@@ -136,13 +144,6 @@ export class TrailHandler {
     this.buildTrailMap();
     this.clean = true;
   };
-
-  canvasXYToMapXY(canvasXY) {
-    return [
-      Math.floor((canvasXY[0] - BorderWeight) / this.pixelDensity[0]),
-      Math.floor((canvasXY[1] - BorderWeight) / this.pixelDensity[1]),
-    ];
-  }
 
   trailXYToCanvasXY(mapXY) {
     return [
@@ -166,7 +167,7 @@ export class TrailHandler {
 }
 
 const MapXYToInt = (mapXY) => {
-  return [Math.floor(mapXY[0]), Math.floor(mapXY[1])];
+  return [Math.round(mapXY[0]), Math.round(mapXY[1])];
 };
 
 // Bresenham alg
