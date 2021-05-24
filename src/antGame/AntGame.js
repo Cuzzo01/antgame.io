@@ -188,7 +188,7 @@ export default class AntGame extends React.Component {
   };
 
   handleMousePressed = (p5) => {
-    if (p5.mouseButton !== "left" || this.state.playState) return;
+    if (this.state.playState || p5.mouseButton === "right") return;
 
     let mousePos = this.mapHandler.canvasXYToMapXY([p5.mouseX, p5.mouseY]);
 
@@ -212,23 +212,20 @@ export default class AntGame extends React.Component {
 
   updatePlayState = (state) => {
     if (state) {
+      if (this.state.emptyMap) return;
       this.toggleTimer(true);
-      if (this.antHandler.antsSpawned) {
-      } else {
+      if (!this.antHandler.antsSpawned) {
         this.antHandler.spawnAnts(this.homeTrailHandler, this.foodTrailHandler);
-        this.mapHandler.calculateFoodToStopTime();
-        this.mapHandler.resetFoodReturned();
+        this.mapHandler.prepareForStart();
       }
     } else {
       this.toggleTimer(false);
-      // this.antHandler.clearAnts();
     }
     this.setState({ playState: state });
   };
 
   toggleTimer = (state) => {
     if (state) {
-      // this.timerHandler.resetTime();
       this.timerInterval = setInterval(() => {
         this.timerHandler.handleTime(this.frameCount, this.setTime);
       }, 1000);
@@ -246,11 +243,7 @@ export default class AntGame extends React.Component {
   clearMap = () => {
     this.mapHandler.generateMap();
     this.setState({ emptyMap: true });
-  };
-
-  clearTrail = () => {
-    this.homeTrailHandler.clearTrails();
-    this.foodTrailHandler.clearTrails();
+    this.reset();
   };
 
   saveMapHandler = () => {
@@ -275,13 +268,13 @@ export default class AntGame extends React.Component {
     this.foodTrailHandler.clearTrails();
     this.homeTrailHandler.clearTrails();
     this.timerHandler.resetTime();
+    this.mapHandler.respawnFood();
     this.setState({
       time: {
         min: "00",
         sec: "00",
       },
     });
-    // reset food
   };
 
   render() {
@@ -289,20 +282,6 @@ export default class AntGame extends React.Component {
       <div style={styles.container}>
         <div style={styles.centered}>
           <div style={styles.header}>
-            {/* {this.state.shouldResizeCanvas ? (
-              <ResizePrompt
-                clickHandler={this.forceResize}
-                styles={styles.resizeButton}
-              />
-            ) : (
-              <span></span>
-            )}
-            <h4>Ant Game</h4>
-            <TimeCounter
-              time={this.state.time}
-              styles={styles.TimeCounter}
-              active={this.state.timerActive}
-            /> */}
             <MenuBar
               time={this.state.time}
               timerActive={this.state.timerActive}
@@ -322,18 +301,6 @@ export default class AntGame extends React.Component {
             draw={this.draw}
             windowResized={this.resizeHandler}
           />
-          {/* <Menu
-          style={this.state.loading ? { display: "none" } : {}}
-          playState={this.state.playState}
-          mapClear={this.state.emptyMap}
-          brushSizeHandler={this.updateBrushSize}
-          brushTypeHandler={this.updateBrushType}
-          clearMenuHandler={this.clearMap}
-          clearTrailHandler={this.clearTrail}
-          playButtonHandler={this.updatePlayState}
-          saveMapHandler={this.saveMapHandler}
-          loadMapHandler={this.loadMapHandler}
-        /> */}
         </div>
       </div>
     );
@@ -342,8 +309,6 @@ export default class AntGame extends React.Component {
 
 const styles = {
   header: {
-    // display: "grid",
-    // gridTemplateColumns: "250px auto 250px",
     paddingBottom: "5px",
   },
   resizeButton: {

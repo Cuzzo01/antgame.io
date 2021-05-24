@@ -8,11 +8,13 @@ export default function BrushMenu(props) {
         options={Config.brushes}
         handler={props.brushTypeHandler}
         defaultIndex={Config.brushTypeDefaultIndex}
+        disabled={props.playState}
       />
       <BrushButton
         handler={props.brushSizeHandler}
         defaultIndex={Config.brushSizeDefaultIndex}
         options={Config.brushSizes}
+        disabled={props.playState}
       />
     </div>
   );

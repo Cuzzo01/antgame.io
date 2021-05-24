@@ -20,6 +20,7 @@ export class MapHandler {
     this.brushColors = {};
     this.cellsToDraw = [];
     this.graphicsSet = false;
+    this.foodToRespawn = [];
   }
 
   get map() {
@@ -54,6 +55,7 @@ export class MapHandler {
   generateMap() {
     this._graphics.clear();
     this._map = [];
+    this.foodToRespawn = [];
     for (let x = 0; x < MapBounds[0]; x++) {
       this._map[x] = [];
       for (let y = 0; y < MapBounds[1]; y++) {
@@ -84,6 +86,7 @@ export class MapHandler {
       return false;
 
     this._map = map;
+    this.foodToRespawn = [];
     this.redrawFullMap = true;
     this.mapSetup = true;
     return true;
@@ -162,8 +165,13 @@ export class MapHandler {
     }
   }
 
-  calculateFoodToStopTime = () => {
+  prepareForStart = () => {
     this.placeAndCountFoodOnMap();
+    this.calculateFoodToStopTime();
+    this.resetFoodReturned();
+  };
+
+  calculateFoodToStopTime = () => {
     this.foodToStopTime = Math.floor(
       this.foodOnMap * PercentFoodReturnedToStopTime
     );
@@ -182,6 +190,10 @@ export class MapHandler {
     }
   };
 
+  resetFoodReturned = () => {
+    this.foodReturned = 0;
+  };
+
   countHomeOnMap = () => {
     this.homeOnMap = 0;
     for (let x = 0; x < MapBounds[0]; x++) {
@@ -190,10 +202,6 @@ export class MapHandler {
         if (cell[0] === "h") this.homeOnMap++;
       }
     }
-  };
-
-  resetFoodReturned = () => {
-    this.foodReturned = 0;
   };
 
   returnFood = () => {
@@ -208,7 +216,18 @@ export class MapHandler {
     let cellAmount = parseInt(cellValue.substr(1));
     let newAmount = cellAmount - 1;
     if (newAmount !== 0) this.setCellToSilent(intMapXY, "f" + newAmount);
-    else this.setCellTo(intMapXY, " ");
+    else {
+      this.foodToRespawn.push(intMapXY);
+      this.setCellTo(intMapXY, " ");
+    }
+  };
+
+  respawnFood = () => {
+    this.foodToRespawn.forEach((cell) => {
+      this._map[cell[0]][cell[1]] = "f";
+    });
+    this.foodToRespawn = [];
+    this.redrawFullMap = true;
   };
 
   setCellToSilent(cellPos, type) {

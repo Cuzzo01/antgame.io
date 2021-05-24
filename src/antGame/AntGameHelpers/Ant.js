@@ -1,6 +1,5 @@
 import { Config } from "../config";
 
-// const AntOffset = Config.AntSize / 2;
 const ViewDistance = Config.ViewDistance;
 const ViewAngle = toRad(Config.ViewAngle);
 const MinSmellTurnAmount = Config.MinSmellTurnRate;
@@ -12,7 +11,6 @@ const AntStepDistance = Config.AntStepDistance;
 const TrailDecayRange = Config.TrailDecayRange;
 const TrailTransparencyFloor = Config.TrailTransparencyFloor;
 const MapBounds = Config.MapBounds;
-// const MinSmellFloor = Config.MinSmellFloor;
 
 export class Ant {
   constructor(pos, mapHandler, homeTrailHandler, foodTrailHandler, homeBrush) {

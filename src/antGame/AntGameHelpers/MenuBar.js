@@ -16,6 +16,7 @@ export default function MenuBar(props) {
       />
       <TimeCounter time={props.time} active={props.timerActive} />
       <BrushMenu
+        playState={props.playState}
         brushSizeHandler={props.brushSizeHandler}
         brushTypeHandler={props.brushTypeHandler}
       />
