@@ -3,6 +3,9 @@ import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AntGame from "./antGame/AntGame";
+import GAInitialze from './GAInitialize'
+
+GAInitialze();
 
 ReactDOM.render(
   <React.StrictMode>

@@ -4,8 +4,8 @@ export class GAEmitter {
   static playHandler(state) {
     ReactGA.event({
       category: "button-press",
-      action: "play button",
-      label: state,
+      action: "play-button",
+      label: state.toString(),
     });
   }
 

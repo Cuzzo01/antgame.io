@@ -11,7 +11,6 @@ import { TrailHandler } from "./AntGameHelpers/TrailHandler";
 import { TimerHandler } from "./AntGameHelpers/TimeCounter";
 import MenuBar from "./AntGameHelpers/MenuBar";
 import { GAEmitter } from "./AntGameHelpers/GAEmmiter";
-import GAInitialize from "../GAInitializer";
 
 let canvasW, canvasH;
 let lastMousePos = [-1, -1];
@@ -29,8 +28,6 @@ const PreloadMap = Config.PreloadMap;
 export default class AntGame extends React.Component {
   constructor() {
     super();
-
-    GAInitialize();
 
     let bodyElement = document.querySelector("body");
     disableBodyScroll(bodyElement);
@@ -132,12 +129,12 @@ export default class AntGame extends React.Component {
     p5.clear();
 
     if (
-      this.state.shouldResizeCanvas &&
-      !this.state.playState &&
-      this.homeTrailHandler.clean
+      this.state.shouldResizeCanvas
     ) {
       this.resizeCanvas(p5);
       this.mapHandler.drawFullMap();
+      this.homeTrailGraphic.clear()
+      this.foodTrailGraphic.clear()
     }
 
     if (p5.mouseIsPressed) this.handleMousePressed(p5);

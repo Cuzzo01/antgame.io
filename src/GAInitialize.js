@@ -11,9 +11,10 @@ export default function GAInitialize() {
     env = "local";
   }
 
-  ReactGA.initialize(trackingID, { siteSpeedSamepleRate: 100 });
+  ReactGA.initialize(trackingID, { siteSpeedSampleRate: 100 });
   ReactGA.set({
-    env: env,
+    dimension1: env,
   });
   ReactGA.pageview(window.location.pathname);
 }
+  
