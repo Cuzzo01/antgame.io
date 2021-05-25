@@ -10,6 +10,7 @@ import { AntsHandler as AntHandler } from "./AntGameHelpers/AntHandler";
 import { TrailHandler } from "./AntGameHelpers/TrailHandler";
 import { TimerHandler } from "./AntGameHelpers/TimeCounter";
 import MenuBar from "./AntGameHelpers/MenuBar";
+import { GAEmitter } from "./AntGameHelpers/GAEmmiter";
 
 let canvasW, canvasH;
 let lastMousePos = [-1, -1];
@@ -222,6 +223,7 @@ export default class AntGame extends React.Component {
       this.toggleTimer(false);
     }
     this.setState({ playState: state });
+    GAEmitter.playHandler();
   };
 
   toggleTimer = (state) => {
@@ -248,10 +250,12 @@ export default class AntGame extends React.Component {
 
   saveMapHandler = () => {
     this.mapHandler.saveMap();
+    GAEmitter.saveHandler();
   };
 
   loadMapHandler = (map) => {
     if (this.mapHandler.loadMap(map)) this.setState({ emptyMap: false });
+    GAEmitter.loadHandler();
   };
 
   resizeHandler = (event) => {

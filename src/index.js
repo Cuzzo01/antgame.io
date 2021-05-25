@@ -3,10 +3,12 @@ import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AntGame from "./antGame/AntGame";
+import GAInitializer from "./GAInitializer";
 
 ReactDOM.render(
   <React.StrictMode>
     <AntGame />
+    <GAInitializer />
   </React.StrictMode>,
   document.getElementById("root")
 );

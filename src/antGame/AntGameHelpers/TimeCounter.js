@@ -1,3 +1,5 @@
+import { GAEmitter } from "./GAEmmiter";
+
 const TimeCounter = (props) => {
   return (
     <div style={props.styles}>
@@ -33,9 +35,11 @@ export class TimerHandler {
   }
 
   resetTime() {
+    const seconds = this.min * 60 + this.sec;
     this.min = 0;
     this.sec = 0;
     this.updateTime();
+    GAEmitter.resetTimeHandler(seconds);
   }
 
   handleTime(frameCount, setTime) {
