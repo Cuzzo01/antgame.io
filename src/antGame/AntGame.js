@@ -223,7 +223,7 @@ export default class AntGame extends React.Component {
       this.toggleTimer(false);
     }
     this.setState({ playState: state });
-    GAEmitter.playHandler();
+    GAEmitter.playHandler(state);
   };
 
   toggleTimer = (state) => {

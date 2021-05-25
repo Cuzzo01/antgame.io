@@ -1,10 +1,11 @@
 import ReactGA from "react-ga";
 
 export class GAEmitter {
-  static playHandler() {
+  static playHandler(state) {
     ReactGA.event({
       category: "button-press",
       action: "play button",
+      label: state
     });
   }
 
