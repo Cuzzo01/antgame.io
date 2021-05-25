@@ -5,7 +5,7 @@ export class GAEmitter {
     ReactGA.event({
       category: "button-press",
       action: "play button",
-      label: state
+      label: state,
     });
   }
 
