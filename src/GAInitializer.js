@@ -1,6 +1,6 @@
 import ReactGA from "react-ga";
 
-const trackingID = "G-J5Z9WSWYGY";
+const trackingID = "UA-197853948-1";
 
 export default function GAInitializer() {
   ReactGA.initialize(trackingID);
