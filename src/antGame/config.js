@@ -38,7 +38,7 @@ export const Config = {
   TrailDecayRange: 300,
   TrailTransparencyFloor: 0.005,
   PreloadMap: true,
-  PreloadMapPath: "antgameMap.json",
+  PreloadMapPath: "antgameMapV1.1.json",
   brushTypeDefaultIndex: 1,
   brushes: [
     {

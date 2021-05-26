@@ -89,6 +89,7 @@ export class Ant {
   }
 
   getNewAngle() {
+    if (this.currentCell === "w") return;
     if (this.checkSight()) {
       if (Math.random() < 0.01) this.wander();
     } else this.wander();
@@ -101,6 +102,7 @@ export class Ant {
   }
 
   walk(pointDrop) {
+    if (pointDrop) this.currentCell = this.mapHandler.getCell(this._pos);
     if (pointDrop && this.dropsToSkip > 0) {
       this.dropsToSkip--;
       this.moveToNewPosition(false);
@@ -272,8 +274,10 @@ export class Ant {
 
       this._pos = newPos;
       if (dropPoint || this.foodChanged) {
-        if (this.foodChanged) this.foodChanged = false;
-        this.currentCell = this.mapHandler.getCell(newPos);
+        if (this.foodChanged) {
+          this.currentCell = this.mapHandler.getCell(this._pos);
+          this.foodChanged = false;
+        }
         let transparency = 0;
         if (this.distanceTraveled > TrailDecayRange) transparency = 1;
         else transparency = this.distanceTraveled / TrailDecayRange;
@@ -290,7 +294,7 @@ export class Ant {
 
   bounceOffWall() {
     this.dropsToSkip = 5;
-    this.reverse();
+    this.angle = Math.random() * (Math.PI * 2);
   }
 
   foodChange() {
@@ -306,14 +310,8 @@ export class Ant {
     if (pos[0] > 0 && pos[1] > 0) {
       if (pos[0] < MapBounds[0] && pos[1] < MapBounds[1]) {
         let cell = this.mapHandler.getCell(pos);
-        if (cell === false || cell === "w") return false;
-        if (cell === "f") {
-          if (!this.hasFood) {
-            this.mapHandler.takeFood(pos);
-            this.foodChange();
-          } else {
-            if (this.currentCell !== "f") return false;
-          }
+        if (this.currentCell === "w" && (cell === "w" || cell === "f")) {
+          return true;
         } else if (cell === this.homeBrush.value) {
           if (this.hasFood) {
             this.mapHandler.returnFood();
@@ -321,7 +319,15 @@ export class Ant {
           } else {
             this.distanceTraveled = 0;
           }
+        } else if (cell === "f") {
+          if (!this.hasFood) {
+            this.mapHandler.takeFood(pos);
+            this.foodChange();
+          } else {
+            if (this.currentCell !== "f") return false;
+          }
         }
+        if (cell === false || cell === "w") return false;
         return true;
       }
     }
