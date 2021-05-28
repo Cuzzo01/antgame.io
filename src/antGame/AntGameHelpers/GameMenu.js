@@ -1,26 +1,10 @@
 import { PlayIcon, PauseIcon } from "./Icons";
 import { useRef } from "react";
+import UploadMapButton from "./UploadMapButton";
 
 export default function GameMenu(props) {
-  const inputFile = useRef(null);
-  const fileReader = new FileReader();
-  fileReader.onload = (e) => {
-    props.loadMapHandler(JSON.parse(e.target.result));
-  };
-
-  const handleMapLoad = (e) => {
-    fileReader.readAsText(e.target.files[0], "UTF-8");
-    e.target.value = "";
-  };
-
   return (
     <div style={styles.container}>
-      <input
-        type="file"
-        ref={inputFile}
-        onChange={handleMapLoad}
-        style={{ display: "none" }}
-      />
       <SettingButton
         text={props.playState ? <PauseIcon /> : <PlayIcon />}
         handler={() => props.playButtonHandler(!props.playState)}
@@ -36,13 +20,10 @@ export default function GameMenu(props) {
         disabled={props.playState}
       />
       {props.mapClear ? (
-        <button
-          disabled={props.playState}
-          style={styles.button}
-          onClick={() => inputFile.current.click()}
-        >
-          Load
-        </button>
+        <UploadMapButton
+          styles={styles.button}
+          loadMapHandler={props.loadMapHandler}
+        />
       ) : (
         <SettingButton
           handler={props.saveMapHandler}
@@ -54,7 +35,7 @@ export default function GameMenu(props) {
   );
 }
 
-function SettingButton(props) {
+const SettingButton = (props) => {
   return (
     <button
       disabled={props.disabled}
@@ -64,17 +45,9 @@ function SettingButton(props) {
       {props.text}
     </button>
   );
-}
+};
 
 const styles = {
-  // brushSelect: {
-  //   display: "inline",
-  //   paddingLeft: "5px",
-  // },
-  // label: {
-  //   paddingRight: "5px",
-  //   marginBottom: "0",
-  // },
   container: {
     textAlign: "left",
   },
