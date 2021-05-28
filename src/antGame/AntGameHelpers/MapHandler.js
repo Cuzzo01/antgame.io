@@ -138,10 +138,10 @@ export class MapHandler {
           let strength;
           if (!cellFood) strength = FoodDecaySteps;
           else {
-            strength = FoodDecaySteps * (cell.substr(1) / FoodPerCell);
+            strength = Math.ceil(FoodDecaySteps * (cellFood / FoodPerCell));
             this.eraseCell(cellPos);
           }
-          const index = FoodBrushValue + Math.ceil(strength);
+          const index = FoodBrushValue + strength;
           this.setFillColor(this.brushColors[index]);
         } else {
           this.setFillColor(this.brushColors[cell]);

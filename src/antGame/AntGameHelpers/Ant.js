@@ -324,6 +324,7 @@ export class Ant {
             this.mapHandler.takeFood(pos);
             this.foodChange();
           } else {
+            this.distanceTraveled = 0;
             if (this.currentCell !== "f") return false;
           }
         }
