@@ -11,6 +11,7 @@ import { TrailHandler } from "./AntGameHelpers/TrailHandler";
 import { TimerHandler } from "./AntGameHelpers/TimeCounter";
 import MenuBar from "./AntGameHelpers/MenuBar";
 import { GAEmitter } from "./AntGameHelpers/GAEmmiter";
+import { AntFoodSmol, AntSmol } from "./AntGameHelpers/AntImages";
 
 let canvasW, canvasH;
 let lastMousePos = [-1, -1];
@@ -73,8 +74,8 @@ export default class AntGame extends React.Component {
   setup = (p5, parentRef) => {
     this.parentRef = parentRef;
 
-    this.antImage = p5.loadImage("antSmol.png");
-    this.antFoodImage = p5.loadImage("antSmolFood.png");
+    this.antImage = p5.loadImage(AntSmol);
+    this.antFoodImage = p5.loadImage(AntFoodSmol);
 
     this.setupAndInitialize(p5);
 
@@ -125,8 +126,6 @@ export default class AntGame extends React.Component {
     if (this.state.playState && p5.frameCount % FrameRate === 0) {
       this.frameCount = p5.frameCount;
     }
-
-    p5.clear();
 
     if (this.state.shouldResizeCanvas) {
       this.resizeCanvas(p5);

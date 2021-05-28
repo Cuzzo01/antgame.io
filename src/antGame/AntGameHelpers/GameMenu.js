@@ -1,5 +1,4 @@
 import { PlayIcon, PauseIcon } from "./Icons";
-import { useRef } from "react";
 import UploadMapButton from "./UploadMapButton";
 
 export default function GameMenu(props) {
