@@ -22,7 +22,7 @@ export const Config = {
   // AntsToSpawn: 4,
   // //////
   TrailDecayInterval: 20,
-  AlphaPerDecay: 50, // 50??
+  AlphaPerDecay: 50,
   gridWeight: 1,
   ViewAngle: 45,
   AntStepDistance: 0.3,
@@ -39,6 +39,8 @@ export const Config = {
   TrailTransparencyFloor: 0.005,
   PreloadMap: true,
   PreloadMapPath: "antgameMapV1.2.json",
+  FoodDecaySteps: 10,
+  MinFoodAlpha: 50,
   brushTypeDefaultIndex: 1,
   brushes: [
     {
