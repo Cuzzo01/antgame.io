@@ -7,7 +7,12 @@ const OptionsMenu = (props) => {
   const [showMenu, setShowMenu] = useState();
 
   useEffect(() => {
-    if (props.playState && showMenu) setShowMenu(false);
+    if (props.playState && showMenu) {
+      setShowMenu(false);
+      props.blockDrawHandler(false);
+    } else {
+      props.blockDrawHandler(showMenu);
+    }
   });
 
   return (
@@ -25,11 +30,22 @@ const OptionsMenu = (props) => {
       {showMenu ? (
         <div className="menu">
           <MenuHeader>Save image of...</MenuHeader>
-          <MenuRow onClick={() => props.saveImageHandler("trail")}>
+          <MenuRow
+            hideMenu={() => setShowMenu(false)}
+            onClick={() => props.saveImageHandler("trail")}
+          >
             Trails
           </MenuRow>
-          <MenuRow onClick={() => props.saveImageHandler("map")}>Map</MenuRow>
-          <MenuRow onClick={() => props.saveImageHandler("map&trail")}>
+          <MenuRow
+            hideMenu={() => setShowMenu(false)}
+            onClick={() => props.saveImageHandler("map")}
+          >
+            Map
+          </MenuRow>
+          <MenuRow
+            hideMenu={() => setShowMenu(false)}
+            onClick={() => props.saveImageHandler("map&trail")}
+          >
             Both
           </MenuRow>
         </div>
@@ -63,6 +79,7 @@ const MenuRow = (props) => {
           e.preventDefault();
           e.stopPropagation();
           props.onClick();
+          props.hideMenu();
         }}
       >
         {props.children}

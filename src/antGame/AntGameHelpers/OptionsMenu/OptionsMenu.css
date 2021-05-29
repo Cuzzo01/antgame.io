@@ -19,18 +19,21 @@
   display: block;
   text-decoration: none;
   color: black;
-}
-
-.menu MenuRow:not(:first-child) {
-  border-top: 1px solid grey;
+  padding-left: 0.2em;
 }
 
 .menu-row {
-  padding: 0.25em;
+  border-radius: 0.5em;
+  margin: 0.15em;
+  padding-left: 0.25em;
+}
+
+.menu-row:hover {
+  background: lightgray;
 }
 
 .menu-header {
-  padding: 0.25em;
+  padding: 0 0.25em;
   color: grey;
   border-bottom: 1px grey solid;
 }
