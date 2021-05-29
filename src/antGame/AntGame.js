@@ -298,7 +298,7 @@ export default class AntGame extends React.Component {
     this.foodTrailHandler.clearTrails();
     this.homeTrailHandler.clearTrails();
     this.timerHandler.resetTime();
-    this.mapHandler.respawnFood();
+    this.mapHandler.respawnDecayableBlocks();
     this.setState({
       time: {
         min: "00",

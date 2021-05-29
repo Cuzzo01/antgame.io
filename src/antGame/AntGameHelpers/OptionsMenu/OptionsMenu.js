@@ -13,7 +13,7 @@ const OptionsMenu = (props) => {
     } else {
       props.blockDrawHandler(showMenu);
     }
-  });
+  }, [props, showMenu]);
 
   return (
     <div style={props.styles}>

@@ -327,6 +327,9 @@ export class Ant {
             this.distanceTraveled = 0;
             if (this.currentCell !== "f") return false;
           }
+        } else if (cell === "d") {
+          this.mapHandler.decayDirt(pos);
+          return false;
         }
         if (cell === false || cell === "w") return false;
         return true;

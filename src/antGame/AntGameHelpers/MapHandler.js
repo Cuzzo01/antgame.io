@@ -6,9 +6,11 @@ const FoodPerCell = Config.FoodPerCell;
 const PercentFoodReturnedToStopTime = Config.PercentFoodReturnedToStopTime;
 const BorderWeight = Config.borderWeight;
 const PreloadMapPath = Config.PreloadMapPath;
-const FoodDecaySteps = Config.FoodDecaySteps;
-const FoodPerDecayStep = Config.FoodPerCell / Config.FoodDecaySteps;
-const MinFoodAlpha = Config.MinFoodAlpha;
+const BlockDecaySteps = Config.BlockDecaySteps;
+const FoodPerDecayStep = FoodPerCell / BlockDecaySteps;
+const DirtPerCell = Config.DirtPerCell;
+const DirtDecayPerStep = DirtPerCell / BlockDecaySteps;
+const MinDecayableAlpha = Config.MinDecayableAlpha;
 const FoodBrushValue = Brushes.find((brush) => brush.name === "Food").value;
 
 export class MapHandler {
@@ -25,6 +27,7 @@ export class MapHandler {
     this.cellsToDraw = [];
     this.graphicsSet = false;
     this.foodToRespawn = [];
+    this.dirtToRespawn = [];
     this.lastCell = "";
   }
 
@@ -61,6 +64,7 @@ export class MapHandler {
     this._graphics.clear();
     this._map = [];
     this.foodToRespawn = [];
+    this.dirtToRespawn = [];
     for (let x = 0; x < MapBounds[0]; x++) {
       this._map[x] = [];
       for (let y = 0; y < MapBounds[1]; y++) {
@@ -108,12 +112,12 @@ export class MapHandler {
 
   populateBrushColors() {
     Brushes.forEach((brush) => {
-      if (brush.value === FoodBrushValue) {
-        for (let i = 1; i <= FoodDecaySteps; i++) {
+      if (brush.decayable) {
+        for (let i = 1; i <= BlockDecaySteps; i++) {
           const index = brush.value + i;
           const alpha =
-            Math.round((255 - MinFoodAlpha) * (i / FoodDecaySteps)) +
-            MinFoodAlpha;
+            Math.round((255 - MinDecayableAlpha) * (i / BlockDecaySteps)) +
+            MinDecayableAlpha;
           this.brushColors[index] = this._graphics.color(brush.color);
           this.brushColors[index].setAlpha(alpha);
         }
@@ -133,15 +137,17 @@ export class MapHandler {
       }
       if (cell !== this.lastCell) {
         this.lastCell = cell;
-        if (cell[0] === FoodBrushValue) {
-          const cellFood = cell.substr(1);
+        if (cell[0] === FoodBrushValue || cell[0] === "d") {
+          const cellAmount = cell.substr(1);
           let strength;
-          if (!cellFood) strength = FoodDecaySteps;
+          if (!cellAmount) strength = BlockDecaySteps;
           else {
-            strength = Math.ceil(FoodDecaySteps * (cellFood / FoodPerCell));
+            const maxPerCell =
+              cell[0] === FoodBrushValue ? FoodPerCell : DirtPerCell;
+            strength = Math.ceil(BlockDecaySteps * (cellAmount / maxPerCell));
             this.eraseCell(cellPos);
           }
-          const index = FoodBrushValue + strength;
+          const index = cell[0] + strength;
           this.setFillColor(this.brushColors[index]);
         } else {
           this.setFillColor(this.brushColors[cell]);
@@ -197,7 +203,7 @@ export class MapHandler {
   }
 
   prepareForStart = () => {
-    this.placeAndCountFoodOnMap();
+    this.placeAndCountDecayableBlocks();
     this.calculateFoodToStopTime();
     this.resetFoodReturned();
   };
@@ -209,13 +215,15 @@ export class MapHandler {
     console.log(this.foodOnMap, this.foodToStopTime);
   };
 
-  placeAndCountFoodOnMap = () => {
+  placeAndCountDecayableBlocks = () => {
     this.foodOnMap = 0;
     for (let x = 0; x < MapBounds[0]; x++) {
       for (let y = 0; y < MapBounds[1]; y++) {
         if (this._map[x][y][0] === "f") {
           this._map[x][y] = "f" + FoodPerCell;
           this.foodOnMap += FoodPerCell;
+        } else if (this._map[x][y][0] === "d") {
+          this._map[x][y] = "d" + DirtPerCell;
         }
       }
     }
@@ -241,6 +249,21 @@ export class MapHandler {
     if (this.foodReturned >= this.foodToStopTime) this.toggleTimer(false);
   };
 
+  decayDirt = (mapXY) => {
+    const intMapXY = MapXYToInt(mapXY);
+    let cellValue = this._map[intMapXY[0]][intMapXY[1]];
+    let cellAmount = parseInt(cellValue.substr(1));
+    let newAmount = cellAmount - 1;
+    if (newAmount === 0) {
+      this.dirtToRespawn.push(intMapXY);
+      this.setCellTo(intMapXY, " ");
+    } else if (newAmount % DirtDecayPerStep === 0) {
+      this.setCellTo(intMapXY, "d" + newAmount);
+    } else {
+      this.setCellToSilent(intMapXY, "d" + newAmount);
+    }
+  };
+
   takeFood = (mapXY) => {
     const intMapXY = MapXYToInt(mapXY);
     let cellValue = this._map[intMapXY[0]][intMapXY[1]];
@@ -256,11 +279,15 @@ export class MapHandler {
     }
   };
 
-  respawnFood = () => {
+  respawnDecayableBlocks = () => {
     this.foodToRespawn.forEach((cell) => {
       this._map[cell[0]][cell[1]] = "f";
     });
     this.foodToRespawn = [];
+    this.dirtToRespawn.forEach((cell) => {
+      this._map[cell[0]][cell[1]] = "d";
+    });
+    this.dirtToRespawn = [];
     this.redrawFullMap = true;
   };
 
@@ -279,9 +306,7 @@ export class MapHandler {
   getCell = (mapXY) => {
     const intMapXY = MapXYToInt(mapXY);
     if (!this.checkInBounds(intMapXY)) return false;
-    let value = this._map[intMapXY[0]][intMapXY[1]];
-    if (value[0] === "f") return "f";
-    return this._map[intMapXY[0]][intMapXY[1]];
+    return this._map[intMapXY[0]][intMapXY[1]][0];
   };
 
   checkInBounds = (mapXY) => {

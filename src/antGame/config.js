@@ -38,10 +38,11 @@ export const Config = {
   TrailDecayRange: 300,
   TrailTransparencyFloor: 0.005,
   PreloadMap: true,
-  PreloadMapPath: "antgameMapV1.2.json",
-  FoodDecaySteps: 10,
-  MinFoodAlpha: 50,
+  PreloadMapPath: "antgameMapV1.3.json",
+  BlockDecaySteps: 10,
+  MinDecayableAlpha: 50,
   brushTypeDefaultIndex: 1,
+  DirtPerCell: 50,
   brushes: [
     {
       value: "w",
@@ -57,6 +58,13 @@ export const Config = {
       value: "f",
       name: "Food",
       color: "#186A3B",
+      decayable: true,
+    },
+    {
+      value: "d",
+      name: "Dirt",
+      color: "#935116",
+      decayable: true,
     },
     {
       value: " ",
