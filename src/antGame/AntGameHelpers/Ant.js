@@ -264,10 +264,10 @@ export class Ant {
 
     if (this.posInBounds(newPos)) {
       this.distanceTraveled += AntStepDistance;
-      if (Math.random() < 0.01 && this.distanceTraveled > 5000) {
-        const percentOut = (this.distanceTraveled - 5000) / 5000;
+      if (Math.random() < 0.01 && this.distanceTraveled > 500) {
+        const percentOut = (this.distanceTraveled - 500) / 500;
         if (Math.random() * percentOut > 1 - 0.01) {
-          this.distanceTraveled -= 1000;
+          this.distanceTraveled -= 100;
           this.abortTrip();
         }
       }
