@@ -115,15 +115,13 @@ export class TrailHandler {
     if (mapStop[0] < 0 || mapStop[1] < 0) return 0;
 
     const mapPoints = getPoints(mapStart, mapStop);
-    var cellToReturn = "";
-    mapPoints.forEach((point) => {
-      const cell = this.mapHandler.getCell(point);
+    for (let i = 0; i < mapPoints.length; i++) {
+      const point = mapPoints[i]
+      const cell = this.mapHandler.getCell(point)
       if (cell !== " ") {
-        cellToReturn = cell;
-        return;
+        return cell
       }
-    });
-    if (cellToReturn !== "") return cellToReturn;
+    }
 
     if (this.clean) return 0;
 
