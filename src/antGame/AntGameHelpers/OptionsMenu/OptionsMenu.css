@@ -1,0 +1,36 @@
+.button {
+  margin-left: 0.2em;
+  border-radius: 5px;
+  padding: 0.25em 0.5em;
+}
+
+.menu {
+  position: absolute;
+  right: 2vw;
+  border-radius: 0.5em;
+  border: 0.25em solid grey;
+  padding: 0.5em;
+  margin: 0.5em;
+  background: white;
+  text-align: left;
+}
+
+.menu-row a {
+  display: block;
+  text-decoration: none;
+  color: black;
+}
+
+.menu MenuRow:not(:first-child) {
+  border-top: 1px solid grey;
+}
+
+.menu-row {
+  padding: 0.25em;
+}
+
+.menu-header {
+  padding: 0.25em;
+  color: grey;
+  border-bottom: 1px grey solid;
+}

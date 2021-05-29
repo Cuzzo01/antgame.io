@@ -116,10 +116,10 @@ export class TrailHandler {
 
     const mapPoints = getPoints(mapStart, mapStop);
     for (let i = 0; i < mapPoints.length; i++) {
-      const point = mapPoints[i]
-      const cell = this.mapHandler.getCell(point)
+      const point = mapPoints[i];
+      const cell = this.mapHandler.getCell(point);
       if (cell !== " ") {
-        return cell
+        return cell;
       }
     }
 

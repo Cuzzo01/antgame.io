@@ -3,7 +3,7 @@ import { Config } from "../config";
 
 export default function BrushMenu(props) {
   return (
-    <div style={styles.container}>
+    <div style={{ ...props.styles, ...styles.container }}>
       <BrushButton
         options={Config.brushes}
         handler={props.brushTypeHandler}

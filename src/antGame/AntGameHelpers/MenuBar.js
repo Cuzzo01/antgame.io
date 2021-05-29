@@ -1,6 +1,7 @@
 import GameMenu from "./GameMenu";
 import TimeCounter from "./TimeCounter";
 import BrushMenu from "./BrushMenu";
+import OptionsMenu from "./OptionsMenu/OptionsMenu";
 
 export default function MenuBar(props) {
   return (
@@ -15,11 +16,20 @@ export default function MenuBar(props) {
         saveMapHandler={props.saveMapHandler}
       />
       <TimeCounter time={props.time} active={props.timerActive} />
-      <BrushMenu
-        playState={props.playState}
-        brushSizeHandler={props.brushSizeHandler}
-        brushTypeHandler={props.brushTypeHandler}
-      />
+      <div style={{ textAlign: "right" }}>
+        <BrushMenu
+          styles={{ display: "inline" }}
+          playState={props.playState}
+          brushSizeHandler={props.brushSizeHandler}
+          brushTypeHandler={props.brushTypeHandler}
+        />
+        <OptionsMenu
+          playState={props.playState}
+          blockDrawHandler={props.blockDrawHandler}
+          saveImageHandler={props.saveImageHandler}
+          styles={{ display: "inline" }}
+        />
+      </div>
     </div>
   );
 }

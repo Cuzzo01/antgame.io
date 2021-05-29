@@ -37,6 +37,8 @@ export default class AntGame extends React.Component {
     this.brushType = DefaultBrush.value;
     this.windowSize = [];
     this.frameCount = 0;
+    this.blockDrawing = false;
+    this.imageToSave = "";
 
     this.timerHandler = new TimerHandler();
 
@@ -127,7 +129,13 @@ export default class AntGame extends React.Component {
       this.frameCount = p5.frameCount;
     }
 
-    if (this.state.shouldResizeCanvas) {
+    if (this.imageToSave !== "") this.handleImageSave(p5);
+
+    if (
+      this.state.shouldResizeCanvas &&
+      this.homeTrailHandler.clean &&
+      this.foodTrailHandler.clean
+    ) {
       this.resizeCanvas(p5);
       this.mapHandler.drawFullMap();
       this.homeTrailGraphic.clear();
@@ -169,6 +177,26 @@ export default class AntGame extends React.Component {
     if (this.state.loading) this.setState({ loading: false });
   };
 
+  handleImageSave = (p5) => {
+    if (this.imageToSave === "trail") {
+      p5.clear();
+      p5.image(this.foodTrailGraphic, 0, 0);
+      p5.image(this.homeTrailGraphic, 0, 0);
+      p5.saveCanvas("trails");
+    } else if (this.imageToSave === "map") {
+      p5.clear();
+      p5.image(this.mapGraphic, 0, 0);
+      p5.saveCanvas("map");
+    } else if (this.imageToSave === "map&trail") {
+      p5.clear();
+      p5.image(this.foodTrailGraphic, 0, 0);
+      p5.image(this.homeTrailGraphic, 0, 0);
+      p5.image(this.mapGraphic, 0, 0);
+      p5.saveCanvas("map&trails");
+    }
+    this.imageToSave = "";
+  };
+
   resizeCanvas = (p5) => {
     this.setupAndInitialize(p5);
     p5.resizeCanvas(canvasW, canvasH);
@@ -190,6 +218,7 @@ export default class AntGame extends React.Component {
 
     let mousePos = this.mapHandler.canvasXYToMapXY([p5.mouseX, p5.mouseY]);
 
+    if (this.blockDrawing) return;
     if (mousePos[0] !== lastMousePos[0] || mousePos[1] !== lastMousePos[1]) {
       lastMousePos = mousePos;
       if (this.mapHandler.mapXYInBounds(mousePos)) {
@@ -278,6 +307,14 @@ export default class AntGame extends React.Component {
     });
   };
 
+  saveImageHandler = (imageToSave) => {
+    this.imageToSave = imageToSave;
+  };
+
+  setBlockDraw = (blockDrawing) => {
+    this.blockDrawing = blockDrawing;
+  };
+
   render() {
     return (
       <div style={styles.container}>
@@ -295,6 +332,8 @@ export default class AntGame extends React.Component {
               mapClear={this.state.emptyMap}
               brushSizeHandler={this.updateBrushSize}
               brushTypeHandler={this.updateBrushType}
+              blockDrawHandler={this.setBlockDraw}
+              saveImageHandler={this.saveImageHandler}
             />
           </div>
           <Sketch
