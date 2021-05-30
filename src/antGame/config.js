@@ -44,9 +44,9 @@ export const Config = {
   brushTypeDefaultIndex: 1,
   DirtPerCell: 50,
   SampleMaps: [
-    "maps/alphaV1.0.json",
-    "maps/bravoV1.0.json",
-    "maps/charlieV1.0.json",
+    "maps/alphaV1.1.json",
+    "maps/bravoV1.1.json",
+    "maps/charlieV1.1.json",
   ],
   brushes: [
     {
