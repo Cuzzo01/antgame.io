@@ -48,6 +48,13 @@ const OptionsMenu = (props) => {
           >
             Both
           </MenuRow>
+          <MenuHeader>Maps</MenuHeader>
+          <MenuRow
+            hideMenu={() => setShowMenu(false)}
+            onClick={() => props.loadSampleMapHandler()}
+          >
+            Load sample
+          </MenuRow>
         </div>
       ) : null}
     </div>

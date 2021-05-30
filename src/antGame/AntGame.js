@@ -317,6 +317,10 @@ export default class AntGame extends React.Component {
     this.blockDrawing = blockDrawing;
   };
 
+  loadSampleMap = () => {
+    this.mapHandler.loadSampleMap();
+  };
+
   render() {
     return (
       <div style={styles.container}>
@@ -336,6 +340,7 @@ export default class AntGame extends React.Component {
               brushTypeHandler={this.updateBrushType}
               blockDrawHandler={this.setBlockDraw}
               saveImageHandler={this.saveImageHandler}
+              loadSampleMapHandler={this.loadSampleMap}
             />
           </div>
           <Sketch

@@ -38,11 +38,12 @@ export const Config = {
   TrailDecayRange: 300,
   TrailTransparencyFloor: 0.005,
   PreloadMap: true,
-  PreloadMapPath: "antgameMapV1.4.json",
+  PreloadMapPath: "maps/indexMapV1.0.json",
   BlockDecaySteps: 10,
   MinDecayableAlpha: 50,
   brushTypeDefaultIndex: 1,
   DirtPerCell: 50,
+  SampleMaps: ["maps/alphaV1.0.json", "maps/bravoV1.0.json"],
   brushes: [
     {
       value: "w",

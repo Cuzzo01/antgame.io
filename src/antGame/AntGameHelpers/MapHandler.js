@@ -12,6 +12,7 @@ const DirtPerCell = Config.DirtPerCell;
 const DirtDecayPerStep = DirtPerCell / BlockDecaySteps;
 const MinDecayableAlpha = Config.MinDecayableAlpha;
 const FoodBrushValue = Brushes.find((brush) => brush.name === "Food").value;
+const SampleMapPaths = Config.SampleMaps;
 
 export class MapHandler {
   constructor(toggleTimerFunc) {
@@ -96,6 +97,7 @@ export class MapHandler {
 
     this._map = map;
     this.foodToRespawn = [];
+    this.dirtToRespawn = [];
     this.redrawFullMap = true;
     this.mapSetup = true;
     return true;
@@ -104,10 +106,20 @@ export class MapHandler {
   preloadMap() {
     if (!this.mapSetup) {
       this.mapSetup = true;
-      fetch(PreloadMapPath)
-        .then((response) => response.json())
-        .then((map) => this.loadMap(map));
+      this.fetchAndLoadMap(PreloadMapPath);
     }
+  }
+
+  loadSampleMap() {
+    const path =
+      SampleMapPaths[Math.floor(Math.random() * SampleMapPaths.length)];
+    this.fetchAndLoadMap(path);
+  }
+
+  fetchAndLoadMap(path) {
+    fetch(path)
+      .then((response) => response.json())
+      .then((map) => this.loadMap(map));
   }
 
   populateBrushColors() {
@@ -237,11 +249,11 @@ export class MapHandler {
     for (let x = 0; x < MapBounds[0]; x++) {
       for (let y = 0; y < MapBounds[1]; y++) {
         if (this._map[x][y] === "d") {
-          this._map[x][y] = "d" + DirtPerCell
+          this._map[x][y] = "d" + DirtPerCell;
         }
       }
     }
-  }
+  };
 
   countHomeOnMap = () => {
     this.homeOnMap = 0;

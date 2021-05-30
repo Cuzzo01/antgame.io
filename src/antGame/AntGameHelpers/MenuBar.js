@@ -27,6 +27,7 @@ export default function MenuBar(props) {
           playState={props.playState}
           blockDrawHandler={props.blockDrawHandler}
           saveImageHandler={props.saveImageHandler}
+          loadSampleMapHandler={props.loadSampleMapHandler}
           styles={{ display: "inline" }}
         />
       </div>
