@@ -244,6 +244,8 @@ export default class AntGame extends React.Component {
       if (!this.antHandler.antsSpawned) {
         this.antHandler.spawnAnts(this.homeTrailHandler, this.foodTrailHandler);
         this.mapHandler.prepareForStart();
+      } else {
+        this.mapHandler.findNewDirt();
       }
     } else {
       this.toggleTimer(false);

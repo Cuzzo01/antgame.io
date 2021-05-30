@@ -312,6 +312,10 @@ export class Ant {
         let cell = this.mapHandler.getCell(pos);
         if (this.currentCell === "w" && (cell === "w" || cell === "f")) {
           return true;
+        } else if (this.currentCell === "d" && (cell === "d")) {
+          return true;
+        } else if (this.currentCell === "f" && (cell === "d")) {
+          return true
         } else if (cell === this.homeBrush.value) {
           if (this.hasFood) {
             this.mapHandler.returnFood();

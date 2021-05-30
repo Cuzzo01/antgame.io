@@ -233,6 +233,16 @@ export class MapHandler {
     this.foodReturned = 0;
   };
 
+  findNewDirt = () => {
+    for (let x = 0; x < MapBounds[0]; x++) {
+      for (let y = 0; y < MapBounds[1]; y++) {
+        if (this._map[x][y] === "d") {
+          this._map[x][y] = "d" + DirtPerCell
+        }
+      }
+    }
+  }
+
   countHomeOnMap = () => {
     this.homeOnMap = 0;
     for (let x = 0; x < MapBounds[0]; x++) {
