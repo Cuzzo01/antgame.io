@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { MenuIcon } from "../Icons";
 
 import "./OptionsMenu.css";
@@ -15,6 +15,56 @@ const OptionsMenu = (props) => {
     }
   }, [props, showMenu]);
 
+  const MenuRow = (props) => {
+    return (
+      <div className="menu-row">
+        <a
+          href="/"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            props.onClick();
+            setShowMenu(false);
+          }}
+        >
+          {props.children}
+        </a>
+      </div>
+    );
+  };
+
+  const MapNameRow = (props) => {
+    const [mapName, setMapName] = useState(props.currentName);
+
+    const CheckIfEnter = (event) => {
+      if (event.key === "Enter") SetName();
+    };
+
+    const SetName = () => {
+      props.setMapNameHandler(mapName);
+      setShowMenu(false);
+    };
+
+    useEffect(() => {
+      if (props.mapName) setMapName(props.mapName);
+    }, [props]);
+
+    return (
+      <div className="menu-name-input-row">
+        <input
+          maxLength="15"
+          value={mapName}
+          type="text"
+          onChange={(e) => {
+            setMapName(e.target.value);
+            props.setMapNameHandler(e.target.value);
+          }}
+          onKeyDown={CheckIfEnter}
+        />
+      </div>
+    );
+  };
+
   return (
     <div style={props.styles}>
       <Button
@@ -29,30 +79,21 @@ const OptionsMenu = (props) => {
 
       {showMenu ? (
         <div className="menu">
+          <MenuHeader>Map Name</MenuHeader>
+          <MapNameRow
+            currentName={props.getMapName()}
+            setMapNameHandler={props.setMapNameHandler}
+          />
           <MenuHeader>Save image of...</MenuHeader>
-          <MenuRow
-            hideMenu={() => setShowMenu(false)}
-            onClick={() => props.saveImageHandler("trail")}
-          >
+          <MenuRow onClick={() => props.saveImageHandler("trail")}>
             Trails
           </MenuRow>
-          <MenuRow
-            hideMenu={() => setShowMenu(false)}
-            onClick={() => props.saveImageHandler("map")}
-          >
-            Map
-          </MenuRow>
-          <MenuRow
-            hideMenu={() => setShowMenu(false)}
-            onClick={() => props.saveImageHandler("map&trail")}
-          >
+          <MenuRow onClick={() => props.saveImageHandler("map")}>Map</MenuRow>
+          <MenuRow onClick={() => props.saveImageHandler("map&trail")}>
             Both
           </MenuRow>
           <MenuHeader>Maps</MenuHeader>
-          <MenuRow
-            hideMenu={() => setShowMenu(false)}
-            onClick={() => props.loadSampleMapHandler()}
-          >
+          <MenuRow onClick={() => props.loadSampleMapHandler()}>
             Load sample
           </MenuRow>
         </div>
@@ -75,23 +116,5 @@ const Button = (props) => {
 
 const MenuHeader = (props) => {
   return <div className="menu-header">{props.children}</div>;
-};
-
-const MenuRow = (props) => {
-  return (
-    <div className="menu-row">
-      <a
-        href="/"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          props.onClick();
-          props.hideMenu();
-        }}
-      >
-        {props.children}
-      </a>
-    </div>
-  );
 };
 export default OptionsMenu;

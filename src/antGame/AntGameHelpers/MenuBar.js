@@ -28,6 +28,8 @@ export default function MenuBar(props) {
           blockDrawHandler={props.blockDrawHandler}
           saveImageHandler={props.saveImageHandler}
           loadSampleMapHandler={props.loadSampleMapHandler}
+          setMapNameHandler={props.setMapNameHandler}
+          getMapName={props.getMapName}
           styles={{ display: "inline" }}
         />
       </div>

@@ -36,3 +36,11 @@
   color: grey;
   border-bottom: 1px grey solid;
 }
+
+.menu-name-input-row {
+  margin: 0.2em;
+}
+.menu-name-input-row input {
+  max-width: 10vw;
+  padding-left: 0.3em;
+}

@@ -1,4 +1,5 @@
 import { Config } from "../config";
+import { SaveGameHandler } from "./SaveGameHandler";
 
 const Brushes = Config.brushes;
 const MapBounds = Config.MapBounds;
@@ -30,6 +31,14 @@ export class MapHandler {
     this.foodToRespawn = [];
     this.dirtToRespawn = [];
     this.lastCell = "";
+    this.mapName = "";
+    this.lastLoadedSamplePath = "";
+  }
+
+  set name(name) {
+    if (name === "") return;
+    document.title = `${name} - AntGame`;
+    this.mapName = name;
   }
 
   get map() {
@@ -66,6 +75,8 @@ export class MapHandler {
     this._map = [];
     this.foodToRespawn = [];
     this.dirtToRespawn = [];
+    this.mapName = "";
+    document.title = "AntGame";
     for (let x = 0; x < MapBounds[0]; x++) {
       this._map[x] = [];
       for (let y = 0; y < MapBounds[1]; y++) {
@@ -76,31 +87,41 @@ export class MapHandler {
   }
 
   saveMap() {
-    var textDoc = document.createElement("a");
-
-    textDoc.href =
-      "data:attachment/text," + encodeURI(JSON.stringify(this._map));
-    textDoc.target = "_blank";
-    const date = new Date();
-    const dateString = `${date
-      .toDateString()
-      .split(" ")
-      .join("_")}_${date.getHours()}_${date.getMinutes()}`;
-    const mapString = `AntGame_${dateString}.json`;
-    textDoc.download = mapString;
-    textDoc.click();
+    const dataToSave = SaveGameHandler.GenerateSaveGame(
+      this._map,
+      this.mapName
+    );
+    const fileName = SaveGameHandler.GenerateSaveGameName(this.mapName);
+    SaveGameHandler.Download(dataToSave, fileName);
   }
 
-  loadMap(map) {
-    if (map.length !== MapBounds[0] || map[0].length !== MapBounds[1])
-      return false;
+  loadMap(data, ignoreName = false) {
+    const loadResult = SaveGameHandler.LoadSaveGame(data);
 
-    this._map = map;
+    if (loadResult === false) return false;
+    if (!ignoreName) {
+      if (loadResult.name) {
+        this.name = loadResult.name;
+      } else {
+        this.mapName = "Unnamed Map";
+      }
+    } else {
+      this.mapName = "Sample Map";
+      document.title = "AntGame";
+    }
+
+    this._map = loadResult.map;
     this.foodToRespawn = [];
     this.dirtToRespawn = [];
     this.redrawFullMap = true;
     this.mapSetup = true;
     return true;
+  }
+
+  fetchAndLoadMap(path) {
+    return fetch(path)
+      .then((response) => response.json())
+      .then((jsonData) => this.loadMap(jsonData, true));
   }
 
   preloadMap() {
@@ -111,15 +132,13 @@ export class MapHandler {
   }
 
   loadSampleMap() {
-    const path =
+    let path =
       SampleMapPaths[Math.floor(Math.random() * SampleMapPaths.length)];
+    while (this.lastLoadedSamplePath === path) {
+      path = SampleMapPaths[Math.floor(Math.random() * SampleMapPaths.length)];
+    }
+    this.lastLoadedSamplePath = path;
     return this.fetchAndLoadMap(path);
-  }
-
-  fetchAndLoadMap(path) {
-    return fetch(path)
-      .then((response) => response.json())
-      .then((map) => this.loadMap(map));
   }
 
   populateBrushColors() {

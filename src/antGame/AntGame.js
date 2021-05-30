@@ -270,6 +270,10 @@ export default class AntGame extends React.Component {
     this.setState({ time: time });
   };
 
+  setMapName = (mapName) => {
+    this.mapHandler.name = mapName;
+  };
+
   clearMap = () => {
     this.mapHandler.generateMap();
     this.setState({ emptyMap: true });
@@ -341,6 +345,8 @@ export default class AntGame extends React.Component {
               blockDrawHandler={this.setBlockDraw}
               saveImageHandler={this.saveImageHandler}
               loadSampleMapHandler={this.loadSampleMap}
+              setMapNameHandler={this.setMapName}
+              getMapName={() => this.mapHandler.mapName}
             />
           </div>
           <Sketch
