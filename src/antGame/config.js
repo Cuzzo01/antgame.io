@@ -43,7 +43,7 @@ export const Config = {
   MinDecayableAlpha: 50,
   brushTypeDefaultIndex: 1,
   DirtPerCell: 50,
-  SampleMaps: ["maps/alphaV1.0.json", "maps/bravoV1.0.json"],
+  SampleMaps: ["maps/alphaV1.0.json", "maps/bravoV1.0.json", "maps/charlieV1.0.json"],
   brushes: [
     {
       value: "w",
