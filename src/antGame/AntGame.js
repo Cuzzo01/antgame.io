@@ -10,8 +10,8 @@ import { AntsHandler as AntHandler } from "./AntGameHelpers/AntHandler";
 import { TrailHandler } from "./AntGameHelpers/TrailHandler";
 import { TimerHandler } from "./AntGameHelpers/TimeCounter";
 import MenuBar from "./AntGameHelpers/MenuBar";
-import { GAEmitter } from "./AntGameHelpers/GAEmmiter";
 import { AntFoodSmol, AntSmol } from "./AntGameHelpers/AntImages";
+import { GTMEmitter } from "./AntGameHelpers/GTMEmitter";
 
 let canvasW, canvasH;
 let lastMousePos = [-1, -1];
@@ -251,7 +251,7 @@ export default class AntGame extends React.Component {
       this.toggleTimer(false);
     }
     this.setState({ playState: state });
-    GAEmitter.playHandler(state);
+    GTMEmitter.PlayHandler(state);
   };
 
   toggleTimer = (state) => {
@@ -278,16 +278,17 @@ export default class AntGame extends React.Component {
     this.mapHandler.generateMap();
     this.setState({ emptyMap: true });
     this.reset();
+    GTMEmitter.ClearHandler();
   };
 
   saveMapHandler = () => {
     this.mapHandler.saveMap();
-    GAEmitter.saveHandler();
+    GTMEmitter.SaveHandler();
   };
 
   loadMapHandler = (map) => {
     if (this.mapHandler.loadMap(map)) this.setState({ emptyMap: false });
-    GAEmitter.loadHandler();
+    GTMEmitter.LoadHandler();
   };
 
   resizeHandler = (event) => {
@@ -313,8 +314,14 @@ export default class AntGame extends React.Component {
     });
   };
 
+  resetHandler = () => {
+    this.reset();
+    GTMEmitter.ResetHandler();
+  };
+
   saveImageHandler = (imageToSave) => {
     this.imageToSave = imageToSave;
+    GTMEmitter.SaveImageHandler(imageToSave);
   };
 
   setBlockDraw = (blockDrawing) => {
@@ -323,6 +330,7 @@ export default class AntGame extends React.Component {
 
   loadSampleMap = () => {
     this.mapHandler.loadSampleMap().then((_) => this.reset());
+    GTMEmitter.LoadSampleHandler();
   };
 
   render() {
@@ -335,7 +343,7 @@ export default class AntGame extends React.Component {
               timerActive={this.state.timerActive}
               playState={this.state.playState}
               playButtonHandler={this.updatePlayState}
-              resetHandler={this.reset}
+              resetHandler={this.resetHandler}
               clearMapHandler={this.clearMap}
               loadMapHandler={this.loadMapHandler}
               saveMapHandler={this.saveMapHandler}
