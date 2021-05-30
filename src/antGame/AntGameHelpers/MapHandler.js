@@ -113,11 +113,11 @@ export class MapHandler {
   loadSampleMap() {
     const path =
       SampleMapPaths[Math.floor(Math.random() * SampleMapPaths.length)];
-    this.fetchAndLoadMap(path);
+    return this.fetchAndLoadMap(path);
   }
 
   fetchAndLoadMap(path) {
-    fetch(path)
+    return fetch(path)
       .then((response) => response.json())
       .then((map) => this.loadMap(map));
   }
