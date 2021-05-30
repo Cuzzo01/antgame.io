@@ -38,7 +38,7 @@ export const Config = {
   TrailDecayRange: 300,
   TrailTransparencyFloor: 0.005,
   PreloadMap: true,
-  PreloadMapPath: "maps/indexMapV1.0.json",
+  PreloadMapPath: "maps/indexMapV1.1.json",
   BlockDecaySteps: 10,
   MinDecayableAlpha: 50,
   brushTypeDefaultIndex: 1,
