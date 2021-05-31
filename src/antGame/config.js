@@ -38,17 +38,10 @@ export const Config = {
   TrailDecayRange: 300,
   TrailTransparencyFloor: 0.005,
   PreloadMap: true,
-  PreloadMapPath: "maps/HomeMapV1.0.json",
   BlockDecaySteps: 10,
   MinDecayableAlpha: 50,
   brushTypeDefaultIndex: 1,
   DirtPerCell: 50,
-  SampleMaps: [
-    "maps/SampleAV1.0.json",
-    "maps/SampleBV1.0.json",
-    "maps/SampleCV1.0.json",
-    "maps/HomeMapV1.0.json",
-  ],
   brushes: [
     {
       value: "w",
@@ -96,4 +89,11 @@ export const Config = {
       name: "XL",
     },
   ],
+  DefaultPreload: "index",
+  SampleMaps: {
+    samplea: "/assets/maps/SampleAV1.0.json",
+    sampleb: "/assets/maps/SampleBV1.0.json",
+    samplec: "/assets/maps/SampleCV1.0.json",
+    index: "/assets/maps/HomeMapV1.0.json",
+  },
 };

@@ -2,14 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
-import AntGame from "./antGame/AntGame";
 import GTMInitialize from "./GTMInitialize";
+import AntGameRouter from "./antGame/AntGameRouter";
 
 GTMInitialize();
 
 ReactDOM.render(
   <React.StrictMode>
-    <AntGame />
+    <AntGameRouter />
   </React.StrictMode>,
   document.getElementById("root")
 );

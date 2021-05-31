@@ -27,8 +27,8 @@ const FrameRate = Config.FrameRate;
 const PreloadMap = Config.PreloadMap;
 
 export default class AntGame extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     let bodyElement = document.querySelector("body");
     disableBodyScroll(bodyElement);
@@ -47,7 +47,7 @@ export default class AntGame extends React.Component {
 
     let emptyMap = true;
     if (PreloadMap) {
-      this.mapHandler.preloadMap();
+      this.mapHandler.preloadMap(props.mapToLoad);
       emptyMap = false;
     }
 

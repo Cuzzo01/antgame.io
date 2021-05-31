@@ -1,15 +1,33 @@
 const TimeCounter = (props) => {
-  return (
-    <div style={props.styles}>
+  const onRoot = window.location.pathname === "/";
+
+  const Timer = () => {
+    return (
       <h3 style={props.active ? styles.active : null}>
         {props.time.min}:{props.time.sec}
       </h3>
+    );
+  };
+
+  return (
+    <div style={props.styles}>
+      {!onRoot ? (
+        <a href="/" style={styles.link}>
+          <Timer />
+        </a>
+      ) : (
+        <Timer />
+      )}
     </div>
   );
 };
 export default TimeCounter;
 
 const styles = {
+  link: {
+    textDecoration: "none",
+    color: "black",
+  },
   active: {
     color: "green",
   },

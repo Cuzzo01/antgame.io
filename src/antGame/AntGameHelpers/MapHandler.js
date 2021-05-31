@@ -6,14 +6,13 @@ const MapBounds = Config.MapBounds;
 const FoodPerCell = Config.FoodPerCell;
 const PercentFoodReturnedToStopTime = Config.PercentFoodReturnedToStopTime;
 const BorderWeight = Config.borderWeight;
-const PreloadMapPath = Config.PreloadMapPath;
 const BlockDecaySteps = Config.BlockDecaySteps;
 const FoodPerDecayStep = FoodPerCell / BlockDecaySteps;
 const DirtPerCell = Config.DirtPerCell;
 const DirtDecayPerStep = DirtPerCell / BlockDecaySteps;
 const MinDecayableAlpha = Config.MinDecayableAlpha;
 const FoodBrushValue = Brushes.find((brush) => brush.name === "Food").value;
-const SampleMapPaths = Config.SampleMaps;
+const SampleMaps = Config.SampleMaps;
 
 export class MapHandler {
   constructor(toggleTimerFunc) {
@@ -98,8 +97,10 @@ export class MapHandler {
     if (loadResult === false) return false;
     if (loadResult.name) {
       this.mapName = loadResult.name;
+    } else {
+      this.mapName = "Old Map";
     }
-    if (setTitle) this.setTitle(this.mapName);
+    if (setTitle && loadResult.name) this.setTitle(this.mapName);
     else this.setTitle("");
 
     this._map = loadResult.map;
@@ -121,22 +122,27 @@ export class MapHandler {
       .then((jsonData) => this.loadMap(jsonData, false));
   }
 
-  preloadMap() {
+  preloadMap(mapToLoad) {
     if (!this.mapSetup) {
+      this.fetchAndLoadMap(mapToLoad);
+      this.lastLoadedSamplePath = mapToLoad;
       this.mapSetup = true;
-      this.fetchAndLoadMap(PreloadMapPath);
-      this.lastLoadedSamplePath = PreloadMapPath;
     }
   }
 
   loadSampleMap() {
-    let path =
-      SampleMapPaths[Math.floor(Math.random() * SampleMapPaths.length)];
+    let path = this.getNewSamplePath();
     while (this.lastLoadedSamplePath === path) {
-      path = SampleMapPaths[Math.floor(Math.random() * SampleMapPaths.length)];
+      path = this.getNewSamplePath();
     }
     this.lastLoadedSamplePath = path;
     return this.fetchAndLoadMap(path);
+  }
+
+  getNewSamplePath() {
+    const keys = Object.keys(SampleMaps);
+    const index = Math.floor(Math.random() * keys.length);
+    return SampleMaps[keys[index]];
   }
 
   populateBrushColors() {
