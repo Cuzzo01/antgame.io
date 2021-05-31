@@ -36,8 +36,7 @@ export class MapHandler {
   }
 
   set name(name) {
-    if (name === "") return;
-    document.title = `${name} - AntGame`;
+    this.setTitle(name);
     this.mapName = name;
   }
 
@@ -87,28 +86,21 @@ export class MapHandler {
   }
 
   saveMap() {
-    const dataToSave = SaveGameHandler.GenerateSaveGame(
-      this._map,
-      this.mapName
-    );
-    const fileName = SaveGameHandler.GenerateSaveGameName(this.mapName);
+    const MapName = this.mapName ? this.mapName : "UnnamedMap";
+    const dataToSave = SaveGameHandler.GenerateSaveGame(this._map, MapName);
+    const fileName = SaveGameHandler.GenerateSaveGameName(MapName);
     SaveGameHandler.Download(dataToSave, fileName);
   }
 
-  loadMap(data, ignoreName = false) {
+  loadMap(data, setTitle = true) {
     const loadResult = SaveGameHandler.LoadSaveGame(data);
 
     if (loadResult === false) return false;
-    if (!ignoreName) {
-      if (loadResult.name) {
-        this.name = loadResult.name;
-      } else {
-        this.mapName = "Unnamed Map";
-      }
-    } else {
-      this.mapName = "Sample Map";
-      document.title = "AntGame";
+    if (loadResult.name) {
+      this.mapName = loadResult.name;
     }
+    if (setTitle) this.setTitle(this.mapName);
+    else this.setTitle("");
 
     this._map = loadResult.map;
     this.foodToRespawn = [];
@@ -118,16 +110,22 @@ export class MapHandler {
     return true;
   }
 
+  setTitle(mapName) {
+    if (mapName) document.title = `${mapName} - AntGame`;
+    else document.title = "AntGame";
+  }
+
   fetchAndLoadMap(path) {
     return fetch(path)
       .then((response) => response.json())
-      .then((jsonData) => this.loadMap(jsonData, true));
+      .then((jsonData) => this.loadMap(jsonData, false));
   }
 
   preloadMap() {
     if (!this.mapSetup) {
       this.mapSetup = true;
       this.fetchAndLoadMap(PreloadMapPath);
+      this.lastLoadedSamplePath = PreloadMapPath;
     }
   }
 

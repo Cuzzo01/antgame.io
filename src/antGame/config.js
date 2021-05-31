@@ -38,15 +38,16 @@ export const Config = {
   TrailDecayRange: 300,
   TrailTransparencyFloor: 0.005,
   PreloadMap: true,
-  PreloadMapPath: "maps/indexMapV1.1.json",
+  PreloadMapPath: "maps/HomeMapV1.0.json",
   BlockDecaySteps: 10,
   MinDecayableAlpha: 50,
   brushTypeDefaultIndex: 1,
   DirtPerCell: 50,
   SampleMaps: [
-    "maps/alphaV1.1.json",
-    "maps/bravoV1.1.json",
-    "maps/charlieV1.1.json",
+    "maps/SampleAV1.0.json",
+    "maps/SampleBV1.0.json",
+    "maps/SampleCV1.0.json",
+    "maps/HomeMapV1.0.json",
   ],
   brushes: [
     {
