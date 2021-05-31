@@ -268,11 +268,14 @@ export class MapHandler {
     this.foodReturned = 0;
   };
 
-  findNewDirt = () => {
+  findNewDecayableBlocks = () => {
     for (let x = 0; x < MapBounds[0]; x++) {
       for (let y = 0; y < MapBounds[1]; y++) {
-        if (this._map[x][y] === "d") {
+        const cell = this._map[x][y];
+        if (cell === "d") {
           this._map[x][y] = "d" + DirtPerCell;
+        } else if (cell === "f") {
+          this._map[x][y] = "f" + FoodPerCell;
         }
       }
     }
