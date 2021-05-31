@@ -330,6 +330,7 @@ export default class AntGame extends React.Component {
 
   loadSampleMap = () => {
     this.mapHandler.loadSampleMap().then((_) => this.reset());
+    if (this.state.emptyMap) this.setState({emptyMap: false})
     GTMEmitter.LoadSampleHandler();
   };
 
