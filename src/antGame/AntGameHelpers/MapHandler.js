@@ -26,6 +26,7 @@ export class MapHandler {
     this.foodOnMap = 0;
     this.foodRatio = 0;
     this.foodToStopTime = 0;
+    this.foodInTransit = 0;
     this.brushColors = {};
     this.cellsToDraw = [];
     this.graphicsSet = false;
@@ -241,15 +242,16 @@ export class MapHandler {
     for (let x = mapPos[0] - rangeOffset; x <= mapPos[0] + rangeOffset; x++) {
       for (let y = mapPos[1] - rangeOffset; y <= mapPos[1] + rangeOffset; y++) {
         let cellText = type;
-        if (this.foodToStopTime !== 0 && type !== "f") {
+        if (this.foodToStopTime !== 0) {
           if (this.map[x][y][0] === "f") {
-            foodRemoved += parseInt(this.map[x][y].substr(1));
+            const foodOnSquare = parseInt(this.map[x][y].substr(1));
+            if (foodOnSquare) foodRemoved += foodOnSquare;
           }
         }
         this.setCellTo([x, y], cellText);
       }
     }
-    this.foodToStopTime -= foodRemoved;
+    if (foodRemoved) this.foodOnMap -= foodRemoved;
   }
 
   prepareForStart = () => {
@@ -260,9 +262,9 @@ export class MapHandler {
 
   calculateFoodToStopTime = () => {
     this.foodToStopTime = Math.floor(
-      this.foodOnMap * PercentFoodReturnedToStopTime
+      (this.foodOnMap + this.foodReturned + this.foodInTransit) *
+        PercentFoodReturnedToStopTime
     );
-    console.log(this.foodOnMap, this.foodToStopTime);
   };
 
   placeAndCountDecayableBlocks = () => {
@@ -277,6 +279,12 @@ export class MapHandler {
         }
       }
     }
+  };
+
+  handleReset = () => {
+    this.foodReturned = 0;
+    this.foodInTransit = 0;
+    this.respawnDecayableBlocks();
   };
 
   resetFoodReturned = () => {
@@ -296,9 +304,7 @@ export class MapHandler {
         }
       }
     }
-    this.foodToStopTime += Math.floor(
-      foodAdded * PercentFoodReturnedToStopTime
-    );
+    this.foodOnMap += foodAdded;
   };
 
   countHomeOnMap = () => {
@@ -318,7 +324,7 @@ export class MapHandler {
 
   returnFood = () => {
     this.foodReturned++;
-    this.foodOnMap--;
+    this.foodInTransit--;
     if (this.foodReturned === this.foodToStopTime) this.toggleTimer(false);
   };
 
@@ -342,6 +348,8 @@ export class MapHandler {
     let cellValue = this._map[intMapXY[0]][intMapXY[1]];
     let cellAmount = parseInt(cellValue.substr(1));
     let newAmount = cellAmount - 1;
+    this.foodInTransit++;
+    this.foodOnMap--;
     if (newAmount === 0) {
       this.foodToRespawn.push(intMapXY);
       this.setCellTo(intMapXY, " ");

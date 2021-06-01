@@ -230,7 +230,6 @@ export default class AntGame extends React.Component {
   };
 
   updateBrushSize = (size) => {
-    console.log(size);
     this.brushSize = size;
   };
 
@@ -247,6 +246,7 @@ export default class AntGame extends React.Component {
         this.mapHandler.prepareForStart();
       } else {
         this.mapHandler.findNewDecayableBlocks();
+        this.mapHandler.calculateFoodToStopTime();
       }
     } else {
       this.toggleTimer(false);
@@ -310,7 +310,7 @@ export default class AntGame extends React.Component {
     this.foodTrailHandler.clearTrails();
     this.homeTrailHandler.clearTrails();
     this.timerHandler.resetTime();
-    this.mapHandler.respawnDecayableBlocks();
+    this.mapHandler.handleReset();
     this.setState({
       time: {
         min: "00",
