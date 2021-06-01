@@ -257,7 +257,7 @@ export class MapHandler {
   prepareForStart = () => {
     this.placeAndCountDecayableBlocks();
     this.calculateFoodToStopTime();
-    this.resetFoodReturned();
+    this.foodReturned = 0
   };
 
   calculateFoodToStopTime = () => {
@@ -285,10 +285,6 @@ export class MapHandler {
     this.foodReturned = 0;
     this.foodInTransit = 0;
     this.respawnDecayableBlocks();
-  };
-
-  resetFoodReturned = () => {
-    this.foodReturned = 0;
   };
 
   findNewDecayableBlocks = () => {
@@ -319,7 +315,8 @@ export class MapHandler {
 
   calculateFoodRatio = () => {
     if (this.foodToStopTime === 0) return 0;
-    this.foodRatio = this.foodReturned / this.foodToStopTime;
+    const totalFood = this.foodToStopTime / PercentFoodReturnedToStopTime
+    this.foodRatio = this.foodReturned / totalFood;
   };
 
   returnFood = () => {

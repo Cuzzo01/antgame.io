@@ -3,6 +3,7 @@ const FoodTracker = (props) => {
 
   let displayAmount = "";
   if (roundedFoodReturned === 0) displayAmount = "00.0";
+  else if (roundedFoodReturned === 100 && props.foodReturned < 1) displayAmount = "99.9"
   else {
     if (roundedFoodReturned < 10) displayAmount += "0";
     displayAmount += roundedFoodReturned;
