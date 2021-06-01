@@ -1,4 +1,4 @@
-import { PlayIcon, PauseIcon } from "./Icons";
+import { PlayIcon, PauseIcon } from "./../Icons";
 import UploadMapButton from "./UploadMapButton";
 
 export default function GameMenu(props) {

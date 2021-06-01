@@ -2,6 +2,7 @@ import GameMenu from "./GameMenu";
 import TimeCounter from "./TimeCounter";
 import BrushMenu from "./BrushMenu";
 import OptionsMenu from "./OptionsMenu/OptionsMenu";
+import FoodTracker from "./FoodTracker";
 
 export default function MenuBar(props) {
   return (
@@ -15,7 +16,18 @@ export default function MenuBar(props) {
         loadMapHandler={props.loadMapHandler}
         saveMapHandler={props.saveMapHandler}
       />
-      <TimeCounter time={props.time} active={props.timerActive} />
+      <div style={styles.middle}>
+        <TimeCounter
+          time={props.time}
+          active={props.timerActive}
+          styles={styles.timer}
+        />
+        <FoodTracker
+          active={props.timerActive}
+          styles={styles.foodTracker}
+          foodReturned={props.foodReturned}
+        />
+      </div>
       <div style={{ textAlign: "right" }}>
         <BrushMenu
           styles={{ display: "inline" }}
@@ -38,8 +50,19 @@ export default function MenuBar(props) {
 }
 
 const styles = {
+  foodTracker: {
+    textAlign: "left",
+  },
+  timer: {
+    textAlign: "right",
+    marginRight: "0.5em",
+  },
+  middle: {
+    display: "grid",
+    gridTemplateColumns: "50% 50%",
+  },
   container: {
     display: "grid",
-    gridTemplateColumns: "15em auto 250px",
+    gridTemplateColumns: "15em auto 15em",
   },
 };

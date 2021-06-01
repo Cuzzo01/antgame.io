@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Config } from "../config";
+import { Config } from "../../config";
 
 export default function BrushMenu(props) {
   return (

@@ -24,6 +24,7 @@ export class MapHandler {
     this.toggleTimer = toggleTimerFunc;
     this.foodReturned = 0;
     this.foodOnMap = 0;
+    this.foodRatio = 0;
     this.brushColors = {};
     this.cellsToDraw = [];
     this.graphicsSet = false;
@@ -41,6 +42,11 @@ export class MapHandler {
 
   get map() {
     return this._map;
+  }
+
+  get percentFoodReturned() {
+    this.calculateFoodRatio();
+    return this.foodRatio;
   }
 
   get homeCellCount() {
@@ -73,6 +79,7 @@ export class MapHandler {
     this._map = [];
     this.foodToRespawn = [];
     this.dirtToRespawn = [];
+    this.foodToStopTime = 0;
     this.mapName = "";
     document.title = "AntGame";
     for (let x = 0; x < MapBounds[0]; x++) {
@@ -269,6 +276,7 @@ export class MapHandler {
   };
 
   findNewDecayableBlocks = () => {
+    let foodAdded = 0;
     for (let x = 0; x < MapBounds[0]; x++) {
       for (let y = 0; y < MapBounds[1]; y++) {
         const cell = this._map[x][y];
@@ -276,9 +284,13 @@ export class MapHandler {
           this._map[x][y] = "d" + DirtPerCell;
         } else if (cell === "f") {
           this._map[x][y] = "f" + FoodPerCell;
+          foodAdded += FoodPerCell;
         }
       }
     }
+    this.foodToStopTime += Math.floor(
+      foodAdded * PercentFoodReturnedToStopTime
+    );
   };
 
   countHomeOnMap = () => {
@@ -291,10 +303,15 @@ export class MapHandler {
     }
   };
 
+  calculateFoodRatio = () => {
+    if (this.foodToStopTime === 0) return 0;
+    this.foodRatio = this.foodReturned / this.foodToStopTime;
+  };
+
   returnFood = () => {
     this.foodReturned++;
     this.foodOnMap--;
-    if (this.foodReturned >= this.foodToStopTime) this.toggleTimer(false);
+    if (this.foodReturned === this.foodToStopTime) this.toggleTimer(false);
   };
 
   decayDirt = (mapXY) => {

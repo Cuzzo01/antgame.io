@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MenuIcon } from "../Icons";
+import { MenuIcon } from "../../Icons";
 
 import "./OptionsMenu.css";
 

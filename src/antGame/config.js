@@ -62,7 +62,7 @@ export const Config = {
     {
       value: "d",
       name: "Dirt",
-      color: "#935116",
+      color: "#40260F",
       decayable: true,
     },
     {

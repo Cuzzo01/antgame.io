@@ -8,8 +8,8 @@ import { StaticElements } from "./AntGameHelpers/StaticElements";
 import { MapHandler } from "./AntGameHelpers/MapHandler";
 import { AntsHandler as AntHandler } from "./AntGameHelpers/AntHandler";
 import { TrailHandler } from "./AntGameHelpers/TrailHandler";
-import { TimerHandler } from "./AntGameHelpers/TimeCounter";
-import MenuBar from "./AntGameHelpers/MenuBar";
+import { TimerHandler } from "./AntGameHelpers/Menu/TimeCounter";
+import MenuBar from "./AntGameHelpers/Menu/MenuBar";
 import { AntFoodSmol, AntSmol } from "./AntGameHelpers/AntImages";
 import { GTMEmitter } from "./AntGameHelpers/GTMEmitter";
 
@@ -61,6 +61,7 @@ export default class AntGame extends React.Component {
         sec: "00",
       },
       timerActive: false,
+      foodReturned: 0,
     };
 
     this.homeTrailHandler = new TrailHandler(
@@ -258,11 +259,15 @@ export default class AntGame extends React.Component {
     if (state) {
       this.timerInterval = setInterval(() => {
         this.timerHandler.handleTime(this.frameCount, this.setTime);
+        this.setState({ foodReturned: this.mapHandler.percentFoodReturned });
       }, 1000);
       this.setState({ timerActive: true });
     } else {
       clearInterval(this.timerInterval);
-      this.setState({ timerActive: false });
+      this.setState({
+        timerActive: false,
+        foodReturned: this.mapHandler.percentFoodReturned,
+      });
     }
   };
 
@@ -356,6 +361,7 @@ export default class AntGame extends React.Component {
               loadSampleMapHandler={this.loadSampleMap}
               setMapNameHandler={this.setMapName}
               getMapName={() => this.mapHandler.mapName}
+              foodReturned={this.state.foodReturned}
             />
           </div>
           <Sketch
