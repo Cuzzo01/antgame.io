@@ -25,6 +25,7 @@ export class MapHandler {
     this.foodReturned = 0;
     this.foodOnMap = 0;
     this.foodRatio = 0;
+    this.foodToStopTime = 0;
     this.brushColors = {};
     this.cellsToDraw = [];
     this.graphicsSet = false;
@@ -235,13 +236,20 @@ export class MapHandler {
 
   paintOnMap(mapPos, brushSize, type) {
     let rangeOffset = Math.floor(brushSize / 2);
+    let foodRemoved = 0;
 
     for (let x = mapPos[0] - rangeOffset; x <= mapPos[0] + rangeOffset; x++) {
       for (let y = mapPos[1] - rangeOffset; y <= mapPos[1] + rangeOffset; y++) {
         let cellText = type;
+        if (this.foodToStopTime !== 0 && type !== "f") {
+          if (this.map[x][y][0] === "f") {
+            foodRemoved += parseInt(this.map[x][y].substr(1));
+          }
+        }
         this.setCellTo([x, y], cellText);
       }
     }
+    this.foodToStopTime -= foodRemoved;
   }
 
   prepareForStart = () => {

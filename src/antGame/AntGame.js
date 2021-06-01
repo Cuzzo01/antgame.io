@@ -316,6 +316,7 @@ export default class AntGame extends React.Component {
         min: "00",
         sec: "00",
       },
+      foodReturned: 0,
     });
   };
 
