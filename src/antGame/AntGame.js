@@ -240,8 +240,8 @@ export default class AntGame extends React.Component {
   updatePlayState = (state) => {
     if (state) {
       this.foodTrackerInterval = setInterval(() => {
-        this.setState({foodReturned: this.mapHandler.percentFoodReturned})
-      }, 100)
+        this.setState({ foodReturned: this.mapHandler.percentFoodReturned });
+      }, 100);
       if (this.state.emptyMap) return;
       this.toggleTimer(true);
       if (!this.antHandler.antsSpawned) {
@@ -252,7 +252,7 @@ export default class AntGame extends React.Component {
         this.mapHandler.calculateFoodToStopTime();
       }
     } else {
-      clearInterval(this.foodTrackerInterval)
+      clearInterval(this.foodTrackerInterval);
       this.toggleTimer(false);
     }
     this.setState({ playState: state });

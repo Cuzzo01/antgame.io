@@ -257,7 +257,7 @@ export class MapHandler {
   prepareForStart = () => {
     this.placeAndCountDecayableBlocks();
     this.calculateFoodToStopTime();
-    this.foodReturned = 0
+    this.foodReturned = 0;
   };
 
   calculateFoodToStopTime = () => {
@@ -315,7 +315,7 @@ export class MapHandler {
 
   calculateFoodRatio = () => {
     if (this.foodToStopTime === 0) return 0;
-    const totalFood = this.foodToStopTime / PercentFoodReturnedToStopTime
+    const totalFood = this.foodToStopTime / PercentFoodReturnedToStopTime;
     this.foodRatio = this.foodReturned / totalFood;
   };
 
