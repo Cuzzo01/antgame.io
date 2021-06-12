@@ -46,27 +46,32 @@ export const Config = {
     {
       value: "w",
       name: "Wall",
+      shortName: "W",
       color: "black",
     },
     {
       value: "h",
       name: "Home",
+      shortName: "H",
       color: "#C0392B",
     },
     {
       value: "f",
       name: "Food",
+      shortName: "F",
       color: "#186A3B",
       decayable: true,
     },
     {
       value: "d",
       name: "Dirt",
+      shortName: "D",
       color: "#40260F",
       decayable: true,
     },
     {
       value: " ",
+      shortName: "E",
       name: "Eraser",
     },
   ],
@@ -74,18 +79,22 @@ export const Config = {
   brushSizes: [
     {
       value: "1",
-      name: "S",
+      shortName: "S",
+      name: "Small",
     },
     {
       value: "3",
-      name: "M",
+      shortName: "M",
+      name: "Medium",
     },
     {
       value: "5",
-      name: "L",
+      shortName: "L",
+      name: "Large",
     },
     {
       value: "7",
+      shortName: "XL",
       name: "XL",
     },
   ],

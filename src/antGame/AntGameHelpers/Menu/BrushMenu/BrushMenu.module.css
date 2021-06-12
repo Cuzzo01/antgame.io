@@ -1,0 +1,62 @@
+.menuElement {
+  display: inline-block;
+  padding: 0.2em 0.4em;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.menuElement:hover:not(.active) {
+  background-color: lightgray;
+}
+
+.menuElement:hover {
+  color: black;
+}
+
+.disabledElement {
+  display: inline-block;
+  padding: 0.2em 0.4em;
+  font-weight: bold;
+  color: lightgray;
+}
+
+.active {
+  background-color: darkgray;
+}
+
+.optionList {
+  display: inline-block;
+  border: 2px black solid;
+  border-radius: 0.2em;
+}
+
+.optionList div:not(:first-child) {
+  border-left: 2px grey solid;
+}
+
+.disabledList {
+  display: inline-block;
+  border: 2px darkgray solid;
+  border-radius: 0.2em;
+}
+
+.disabledList div:not(:first-child) {
+  border-left: 2px lightgray solid;
+}
+
+.brushMenu {
+  display: inline-block;
+}
+
+.container .brushMenu:not(:first-child) {
+  margin: 0 0.3em;
+}
+
+.container {
+  text-align: right;
+}
+
+.title p {
+  margin: 0px;
+}

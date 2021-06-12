@@ -1,6 +1,6 @@
 import GameMenu from "./GameMenu";
 import TimeCounter from "./Timer/Timer";
-import BrushMenu from "./BrushMenu";
+import BrushMenu from "./BrushMenu/BrushMenu";
 import OptionsMenu from "./OptionsMenu/OptionsMenu";
 import FoodTracker from "./FoodTracker/FoodTracker";
 
@@ -30,7 +30,7 @@ export default function MenuBar(props) {
       </div>
       <div style={{ textAlign: "right" }}>
         <BrushMenu
-          styles={{ display: "inline" }}
+          styles={{ display: "inline-block" }}
           playState={props.playState}
           brushSizeHandler={props.brushSizeHandler}
           brushTypeHandler={props.brushTypeHandler}
@@ -65,6 +65,7 @@ const styles = {
   },
   container: {
     display: "grid",
-    gridTemplateColumns: "16em auto 15em",
+    gridTemplateColumns: "19em auto 19em",
+    alignItems: "center",
   },
 };
