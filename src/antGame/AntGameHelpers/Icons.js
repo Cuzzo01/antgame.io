@@ -56,6 +56,5 @@ export const MenuIcon = (props) => {
 const styles = {
   icon: {
     width: "2em",
-    verticalAlign: "baseline",
   },
 };
