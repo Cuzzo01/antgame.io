@@ -55,5 +55,6 @@ const styles = {
     borderRadius: "5px",
     padding: "0.25em 0.5em",
     minWidth: "2.5em",
+    letterSpacing: "-0.05em",
   },
 };

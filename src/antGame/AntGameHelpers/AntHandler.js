@@ -5,6 +5,7 @@ const Brushes = Config.brushes;
 const AntsToSpawn = Config.AntsToSpawn;
 const AntSize = Config.AntSize;
 const AntOffset = AntSize / 2;
+const HomeValue = Brushes.find((brush) => brush.name === "Home").value;
 
 export class AntsHandler {
   constructor(mapHandler) {
@@ -54,7 +55,7 @@ export class AntsHandler {
     if (antsPerCell > 1) antsPerCell = Math.round(antsPerCell);
     for (let x = 0; x < map.length; x++) {
       for (let y = 0; y < map[0].length; y++) {
-        if (map[x][y][0] === "h") {
+        if (map[x][y][0] === HomeValue) {
           if (antsPerCell < 1) {
             let rand = Math.random();
             if (rand > antsPerCell) continue;

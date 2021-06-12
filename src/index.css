@@ -1,0 +1,15 @@
+@font-face {
+  font-family: "Courier Prime Bold";
+  src: local("Courier Prime Bold"),
+    url(./assets/CourierPrime-Bold.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Courier Prime";
+  src: local("Courier Prime"),
+    url(./assets/CourierPrime-Regular.ttf) format("truetype");
+}
+
+body {
+  font-family: "Courier Prime";
+}

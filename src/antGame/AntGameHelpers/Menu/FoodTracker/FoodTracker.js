@@ -1,3 +1,5 @@
+import "./FoodTracker.css";
+
 const FoodTracker = (props) => {
   let roundedFoodReturned = Math.round(props.foodReturned * 1000) / 10;
 
@@ -13,14 +15,16 @@ const FoodTracker = (props) => {
 
   return (
     <div style={props.styles}>
-      <h3 style={props.active ? styles.active : null}>{displayAmount}%</h3>
+      <h2 className={`tracker ${props.active ? "active" : ""}`}>
+        {displayAmount}%
+      </h2>
     </div>
   );
 };
 
-const styles = {
-  active: {
-    color: "green",
-  },
-};
+// const styles = {
+//   active: {
+//     color: "green",
+//   },
+// };
 export default FoodTracker;

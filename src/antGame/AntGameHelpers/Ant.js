@@ -11,6 +11,10 @@ const AntStepDistance = Config.AntStepDistance;
 const TrailDecayRange = Config.TrailDecayRange;
 const TrailTransparencyFloor = Config.TrailTransparencyFloor;
 const MapBounds = Config.MapBounds;
+const Brushes = Config.brushes;
+const FoodValue = Brushes.find((brush) => brush.name === "Food").value;
+const DirtValue = Brushes.find((brush) => brush.name === "Dirt").value;
+const WallValue = Brushes.find((brush) => brush.name === "Wall").value;
 
 export class Ant {
   constructor(pos, mapHandler, homeTrailHandler, foodTrailHandler, homeBrush) {
@@ -89,7 +93,7 @@ export class Ant {
   }
 
   getNewAngle() {
-    if (this.currentCell === "w") return;
+    if (this.currentCell === WallValue) return;
     if (this.checkSight()) {
       if (Math.random() < 0.01) this.wander();
     } else this.wander();
@@ -180,11 +184,11 @@ export class Ant {
     if (aheadIsString && this.isObjective(aheadScore)) return "a";
     if (leftIsString) {
       if (this.isObjective(leftScore)) return "l";
-      if (leftScore === "w") return "r";
+      if (leftScore === WallValue) return "r";
     }
     if (rightIsString) {
       if (this.isObjective(rightScore)) return "r";
-      if (rightScore === "w") return "l";
+      if (rightScore === WallValue) return "l";
     }
     return false;
   }
@@ -193,7 +197,7 @@ export class Ant {
     if (this.hasFood) {
       return item === this.homeBrush.value;
     } else {
-      return item === "f";
+      return item === FoodValue;
     }
   }
 
@@ -262,7 +266,7 @@ export class Ant {
 
     let newPos = [this.x + dx, this.y + dy];
 
-    if (this.posInBounds(newPos)) {
+    if (this.canMoveToNewPos(newPos)) {
       this.distanceTraveled += AntStepDistance;
       if (Math.random() < 0.01 && this.distanceTraveled > 500) {
         const percentOut = (this.distanceTraveled - 500) / 500;
@@ -285,15 +289,61 @@ export class Ant {
         if (this.hasFood) this.foodTrailHandler.dropPoint(newPos, transparency);
         else this.homeTrailHandler.dropPoint(newPos, transparency);
       }
-    } else this.bounceOffWall();
+    }
     this._front = 0;
     this._left = 0;
     this._ahead = 0;
     this._right = 0;
   }
 
-  bounceOffWall() {
-    this.dropsToSkip = 5;
+  canMoveToNewPos(pos) {
+    if (pos[0] > 0 && pos[1] > 0) {
+      if (pos[0] < MapBounds[0] && pos[1] < MapBounds[1]) {
+        let newCell = this.mapHandler.getCell(pos);
+        const wallToDirtOrWall =
+          this.currentCell === WallValue &&
+          (newCell === WallValue || newCell === FoodValue);
+        const foodToFoodOrDirt =
+          this.currentCell === FoodValue &&
+          (newCell === FoodValue || newCell === DirtValue);
+        const dirtToDirt =
+          this.currentCell === DirtValue && newCell === DirtValue;
+        if (wallToDirtOrWall || dirtToDirt || foodToFoodOrDirt) return true;
+
+        if (newCell === false || newCell === WallValue) {
+          this.bounceOffWall(5);
+          return false;
+        }
+
+        if (newCell === this.homeBrush.value) {
+          if (this.hasFood) {
+            this.mapHandler.returnFood();
+            this.foodChange();
+          } else {
+            this.distanceTraveled = 0;
+          }
+        } else if (newCell === FoodValue) {
+          if (!this.hasFood) {
+            this.mapHandler.takeFood(pos);
+            this.foodChange();
+          } else {
+            this.distanceTraveled = 0;
+            this.reverse();
+            return false;
+          }
+        } else if (newCell === DirtValue) {
+          this.mapHandler.decayDirt(pos);
+          this.bounceOffWall(3);
+          return false;
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bounceOffWall(dropsToSkip) {
+    this.dropsToSkip = dropsToSkip;
     this.angle = Math.random() * (Math.PI * 2);
   }
 
@@ -304,42 +354,6 @@ export class Ant {
     this.distanceTraveled = 0;
     this.cumulativeAngle = 0;
     this.reverse();
-  }
-
-  posInBounds(pos) {
-    if (pos[0] > 0 && pos[1] > 0) {
-      if (pos[0] < MapBounds[0] && pos[1] < MapBounds[1]) {
-        let cell = this.mapHandler.getCell(pos);
-        if (this.currentCell === "w" && (cell === "w" || cell === "f")) {
-          return true;
-        } else if (this.currentCell === "d" && cell === "d") {
-          return true;
-        } else if (this.currentCell === "f" && cell === "d") {
-          return true;
-        } else if (cell === this.homeBrush.value) {
-          if (this.hasFood) {
-            this.mapHandler.returnFood();
-            this.foodChange();
-          } else {
-            this.distanceTraveled = 0;
-          }
-        } else if (cell === "f") {
-          if (!this.hasFood) {
-            this.mapHandler.takeFood(pos);
-            this.foodChange();
-          } else {
-            this.distanceTraveled = 0;
-            if (this.currentCell !== "f") return false;
-          }
-        } else if (cell === "d") {
-          this.mapHandler.decayDirt(pos);
-          return false;
-        }
-        if (cell === false || cell === "w") return false;
-        return true;
-      }
-    }
-    return false;
   }
 }
 

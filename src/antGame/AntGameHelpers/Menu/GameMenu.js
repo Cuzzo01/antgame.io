@@ -54,5 +54,6 @@ const styles = {
     marginLeft: "0.2em",
     borderRadius: "5px",
     padding: "0.25em 0.5em",
+    letterSpacing: "-0.05em",
   },
 };

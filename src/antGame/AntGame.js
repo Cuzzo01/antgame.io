@@ -8,7 +8,7 @@ import { StaticElements } from "./AntGameHelpers/StaticElements";
 import { MapHandler } from "./AntGameHelpers/MapHandler";
 import { AntsHandler as AntHandler } from "./AntGameHelpers/AntHandler";
 import { TrailHandler } from "./AntGameHelpers/TrailHandler";
-import { TimerHandler } from "./AntGameHelpers/Menu/TimeCounter";
+import { TimerHandler } from "./AntGameHelpers/Menu/Timer/TimerHandler";
 import MenuBar from "./AntGameHelpers/Menu/MenuBar";
 import { AntFoodSmol, AntSmol } from "./AntGameHelpers/AntImages";
 import { GTMEmitter } from "./AntGameHelpers/GTMEmitter";
@@ -18,9 +18,11 @@ let lastMousePos = [-1, -1];
 
 const Debug = Config.debug;
 const TrailDecayRate = Config.TrailDecayInterval;
-const BrushSizeDefault = Config.brushSizes[Config.brushSizeDefaultIndex].value;
-const DefaultBrush = Config.brushes[Config.brushTypeDefaultIndex];
 const Brushes = Config.brushes;
+const BrushSizeDefault = Config.brushSizes[Config.brushSizeDefaultIndex].value;
+const DefaultBrush = Brushes[Config.brushTypeDefaultIndex];
+const FoodValue = Brushes.find((brush) => brush.name === "Food").value;
+const HomeValue = Brushes.find((brush) => brush.name === "Home").value;
 const BorderWeight = Config.borderWeight;
 const TrailDropRate = Config.TrailDropRate;
 const FrameRate = Config.FrameRate;
@@ -65,11 +67,11 @@ export default class AntGame extends React.Component {
     };
 
     this.homeTrailHandler = new TrailHandler(
-      Brushes.find((brush) => brush.value === "h").color,
+      Brushes.find((brush) => brush.value === HomeValue).color,
       this.mapHandler
     );
     this.foodTrailHandler = new TrailHandler(
-      Brushes.find((brush) => brush.value === "f").color,
+      Brushes.find((brush) => brush.value === FoodValue).color,
       this.mapHandler
     );
   }

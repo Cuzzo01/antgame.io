@@ -1,8 +1,8 @@
 import GameMenu from "./GameMenu";
-import TimeCounter from "./TimeCounter";
+import TimeCounter from "./Timer/Timer";
 import BrushMenu from "./BrushMenu";
 import OptionsMenu from "./OptionsMenu/OptionsMenu";
-import FoodTracker from "./FoodTracker";
+import FoodTracker from "./FoodTracker/FoodTracker";
 
 export default function MenuBar(props) {
   return (
@@ -52,12 +52,12 @@ export default function MenuBar(props) {
 const styles = {
   foodTracker: {
     textAlign: "left",
-    paddingLeft: "0.5em",
+    paddingLeft: "0.4em",
   },
   timer: {
     textAlign: "right",
     paddingRight: "0.5em",
-    borderRight: "2px solid black",
+    borderRight: "3px solid black",
   },
   middle: {
     display: "grid",
@@ -65,6 +65,6 @@ const styles = {
   },
   container: {
     display: "grid",
-    gridTemplateColumns: "15em auto 15em",
+    gridTemplateColumns: "16em auto 15em",
   },
 };

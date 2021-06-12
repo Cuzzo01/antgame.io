@@ -4,6 +4,7 @@ import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
 import GTMInitialize from "./GTMInitialize";
 import AntGameRouter from "./antGame/AntGameRouter";
+import "./index.css";
 
 GTMInitialize();
 

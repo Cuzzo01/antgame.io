@@ -1,0 +1,15 @@
+a {
+  text-decoration: none;
+  color: black;
+}
+
+.active {
+  color: green;
+}
+
+.timer {
+  letter-spacing: -0.09em;
+  margin: 0;
+  padding-top: 0.1em;
+  font-family: "Courier Prime Bold";
+}
