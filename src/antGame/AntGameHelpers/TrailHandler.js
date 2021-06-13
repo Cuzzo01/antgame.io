@@ -42,9 +42,11 @@ export class TrailHandler {
         this.trailMap[x][y] = 0;
       }
     }
+    const drawableWidth = this.canvasBounds[0] - BorderWeight;
+    const drawableHeight = this.canvasBounds[1] - BorderWeight;
     this.pixelDensity = [
-      this.canvasBounds[0] / MapBounds[0],
-      this.canvasBounds[1] / MapBounds[1],
+      drawableWidth / MapBounds[0],
+      drawableHeight / MapBounds[1],
     ];
   }
 
