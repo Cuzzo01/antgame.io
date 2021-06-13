@@ -33,11 +33,14 @@ function OptionPicker(props) {
     const activeOption = i === currentIndex;
     if (props.disabled) {
       optionList.push(
-        <div className={`${styles.disabledElement}`}>{optionName}</div>
+        <div key={option.value} className={`${styles.disabledElement}`}>
+          {optionName}
+        </div>
       );
     } else {
       optionList.push(
         <div
+          key={option.value}
           onClick={() => {
             props.handler(option.value);
             setIndex(i);

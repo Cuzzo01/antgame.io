@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { MenuIcon } from "../../Icons";
 
 import "./OptionsMenu.css";
 
 const OptionsMenu = (props) => {
   const [showMenu, setShowMenu] = useState();
+  const menuRef = useRef(null);
+  const menuButtonRef = useRef(null);
 
   useEffect(() => {
     if (props.playState && showMenu) {
@@ -14,6 +16,24 @@ const OptionsMenu = (props) => {
       props.blockDrawHandler(showMenu);
     }
   }, [props, showMenu]);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      const menuCurrent = menuRef.current;
+      const buttonCurrent = menuButtonRef.current;
+      const clickInMenu = menuCurrent && menuCurrent.contains(event.target);
+      const clickOnButton =
+        buttonCurrent && buttonCurrent.contains(event.target);
+      if (!clickInMenu && !clickOnButton) {
+        setShowMenu(false);
+        props.blockDrawHandler(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuRef, menuButtonRef, props]);
 
   const MenuRow = (props) => {
     return (
@@ -68,6 +88,7 @@ const OptionsMenu = (props) => {
   return (
     <div style={props.styles}>
       <Button
+        reference={menuButtonRef}
         disabled={props.playState}
         onClick={() => {
           props.blockDrawHandler(!showMenu);
@@ -78,7 +99,7 @@ const OptionsMenu = (props) => {
       </Button>
 
       {showMenu ? (
-        <div className="menu">
+        <div className="menu" ref={menuRef}>
           <MenuHeader>Map Name</MenuHeader>
           <MapNameRow
             currentName={props.getMapName()}
@@ -105,6 +126,7 @@ const OptionsMenu = (props) => {
 const Button = (props) => {
   return (
     <button
+      ref={props.reference}
       disabled={props.disabled}
       onClick={props.onClick}
       className="button"
