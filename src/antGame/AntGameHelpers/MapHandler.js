@@ -67,9 +67,11 @@ export class MapHandler {
   }
 
   setupMap(canvasWidth, canvasHeight) {
+    const drawableWidth = canvasWidth - BorderWeight * 2;
+    const drawableHeight = canvasHeight - BorderWeight * 2;
     this.pixelDensity = [
-      (canvasWidth / MapBounds[0]).toFixed(2),
-      (canvasHeight / MapBounds[1]).toFixed(2),
+      (drawableWidth / MapBounds[0]).toFixed(2),
+      (drawableHeight / MapBounds[1]).toFixed(2),
     ];
     if (Config.debug)
       console.log("Pixel density is: ", [

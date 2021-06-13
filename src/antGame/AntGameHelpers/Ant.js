@@ -339,6 +339,7 @@ export class Ant {
         return true;
       }
     }
+    this.bounceOffWall(5);
     return false;
   }
 

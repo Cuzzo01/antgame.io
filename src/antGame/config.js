@@ -100,9 +100,9 @@ export const Config = {
   ],
   DefaultPreload: "index",
   SampleMaps: {
-    samplea: "/assets/maps/SampleAV1.0.json",
-    sampleb: "/assets/maps/SampleBV1.0.json",
-    samplec: "/assets/maps/SampleCV1.0.json",
+    samplea: "/assets/maps/SampleAV1.1.json",
+    sampleb: "/assets/maps/SampleBV1.1.json",
+    samplec: "/assets/maps/SampleCV1.1.json",
     index: "/assets/maps/HomeMapV1.0.json",
   },
 };
