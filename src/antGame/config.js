@@ -103,6 +103,7 @@ export const Config = {
     samplea: "/assets/maps/SampleAV1.1.json",
     sampleb: "/assets/maps/SampleBV1.1.json",
     samplec: "/assets/maps/SampleCV1.1.json",
+    samplee: "/assets/maps/SampleEV1.0.json",
     index: "/assets/maps/HomeMapV1.0.json",
   },
 };

@@ -328,7 +328,7 @@ export class Ant {
             this.foodChange();
           } else {
             this.distanceTraveled = 0;
-            this.reverse();
+            this.bounceOffWall(0);
             return false;
           }
         } else if (newCell === DirtValue) {

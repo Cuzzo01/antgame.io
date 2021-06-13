@@ -3,12 +3,12 @@ import { SaveGameHandler } from "./SaveGameHandler";
 
 const Brushes = Config.brushes;
 const MapBounds = Config.MapBounds;
-const FoodPerCell = Config.FoodPerCell;
 const PercentFoodReturnedToStopTime = Config.PercentFoodReturnedToStopTime;
 const BorderWeight = Config.borderWeight;
 const BlockDecaySteps = Config.BlockDecaySteps;
-const FoodPerDecayStep = FoodPerCell / BlockDecaySteps;
+const FoodPerCell = Config.FoodPerCell;
 const DirtPerCell = Config.DirtPerCell;
+const FoodPerDecayStep = FoodPerCell / BlockDecaySteps;
 const DirtDecayPerStep = DirtPerCell / BlockDecaySteps;
 const MinDecayableAlpha = Config.MinDecayableAlpha;
 const FoodValue = Brushes.find((brush) => brush.name === "Food").value;
