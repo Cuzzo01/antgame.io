@@ -117,6 +117,14 @@ const OptionsMenu = (props) => {
           <MenuRow onClick={() => props.loadSampleMapHandler()}>
             Load sample
           </MenuRow>
+          <MenuHeader styles={{ fontSize: "0.85em" }}>
+            Feedback & Sample Maps:
+          </MenuHeader>
+          <MenuRow
+            onClick={() => (window.location = "mailto:feedback@antgame.io")}
+          >
+            feedback@antgame.io
+          </MenuRow>
         </div>
       ) : null}
     </div>
@@ -137,6 +145,10 @@ const Button = (props) => {
 };
 
 const MenuHeader = (props) => {
-  return <div className="menu-header">{props.children}</div>;
+  return (
+    <div className="menu-header" style={props.styles}>
+      {props.children}
+    </div>
+  );
 };
 export default OptionsMenu;
