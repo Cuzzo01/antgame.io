@@ -51,17 +51,18 @@ export default function MenuBar(props) {
 
 const styles = {
   foodTracker: {
-    textAlign: "left",
-    paddingLeft: "0.4em",
+    // textAlign: "left",
+    // paddingLeft: "0.4em",
   },
   timer: {
-    textAlign: "right",
-    paddingRight: "0.5em",
-    borderRight: "3px solid black",
+    // textAlign: "right",
+    // paddingRight: "0.5em",
+    // borderRight: "3px solid black",
   },
   middle: {
     display: "grid",
-    gridTemplateColumns: "50% 50%",
+    gridTemplateRows: "50% 30%",
+    width: "100%",
   },
   container: {
     display: "grid",

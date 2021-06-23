@@ -15,9 +15,10 @@ const FoodTracker = (props) => {
 
   return (
     <div style={props.styles}>
-      <h2 className={`tracker ${props.active ? "active" : ""}`}>
+      {/* <h2 className={`tracker ${props.active ? "active" : ""}`}>
         {displayAmount}%
-      </h2>
+      </h2> */}
+      <progress max="100" value={displayAmount} />
     </div>
   );
 };
