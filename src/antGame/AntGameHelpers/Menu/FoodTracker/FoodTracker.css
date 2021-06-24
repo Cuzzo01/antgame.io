@@ -8,11 +8,3 @@
   padding-top: 0.1em;
   font-family: "Courier Prime Bold";
 }
-
-progress {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-       appearance: none;
-
-  width: 50%;
-}
