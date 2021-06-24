@@ -185,10 +185,12 @@ export class Ant {
     if (leftIsString) {
       if (this.isObjective(leftScore)) return "l";
       if (leftScore === WallValue) return "r";
+      if (this.hasFood && leftScore === DirtValue) return "r";
     }
     if (rightIsString) {
       if (this.isObjective(rightScore)) return "r";
       if (rightScore === WallValue) return "l";
+      if (this.hasFood && rightScore === DirtValue) return "l";
     }
     return false;
   }
