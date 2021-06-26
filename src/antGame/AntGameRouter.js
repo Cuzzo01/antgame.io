@@ -7,16 +7,25 @@ import {
   Redirect,
   useParams,
 } from "react-router-dom";
+import { GameModeContext } from "./GameModeContext";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
+const ChallengeMapPath = Config.Challenge.MapPath;
 
 const AntGameRouter = () => {
   return (
     <BrowserRouter>
       <Switch>
         <Route exact path="/">
-          <AntGame mapToLoad={PreloadMapPath} />
+          <GameModeContext.Provider value={"sandbox"}>
+            <AntGame mapToLoad={PreloadMapPath} />
+          </GameModeContext.Provider>
+        </Route>
+        <Route path="/challenge">
+          <GameModeContext.Provider value={"challenge"}>
+            <AntGame mapToLoad={ChallengeMapPath} />
+          </GameModeContext.Provider>
         </Route>
         <Route path="/map/:mapName">
           <LoadMapFromParams />

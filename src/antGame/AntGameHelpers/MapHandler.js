@@ -15,15 +15,17 @@ const FoodValue = Brushes.find((brush) => brush.name === "Food").value;
 const HomeValue = Brushes.find((brush) => brush.name === "Home").value;
 const DirtValue = Brushes.find((brush) => brush.name === "Dirt").value;
 const SampleMaps = Config.SampleMaps;
+const ChallengeHomeCellLimit = Config.Challenge.HomeCellsAllowed;
 
 export class MapHandler {
   constructor(toggleTimerFunc) {
+    this.toggleTimer = toggleTimerFunc;
+
     this._map = [];
     this.mapSetup = false;
     this.redrawMap = true;
     this.redrawFullMap = false;
     this.pixelDensity = [];
-    this.toggleTimer = toggleTimerFunc;
     this.foodReturned = 0;
     this.foodOnMap = 0;
     this.foodRatio = 0;
@@ -37,6 +39,11 @@ export class MapHandler {
     this.lastCell = "";
     this.mapName = "";
     this.lastLoadedSamplePath = "";
+    this._gameMode = "";
+  }
+
+  set gameMode(mode) {
+    this._gameMode = mode;
   }
 
   set name(name) {
@@ -54,7 +61,6 @@ export class MapHandler {
   }
 
   get homeCellCount() {
-    this.countHomeOnMap();
     return this.homeOnMap;
   }
 
@@ -78,6 +84,29 @@ export class MapHandler {
         this.pixelDensity[0],
         this.pixelDensity[1],
       ]);
+  }
+
+  clearMap() {
+    if (this._gameMode === "challenge") {
+      this.clearHomeTiles();
+      return false;
+    }
+    this.generateMap();
+    return true;
+  }
+
+  clearHomeTiles() {
+    for (let x = 0; x < MapBounds[0]; x++) {
+      for (let y = 0; y < MapBounds[1]; y++) {
+        if (this._map[x][y] === HomeValue) {
+          this.cellsToDraw.push([x, y]);
+          this._map[x][y] = " ";
+        }
+      }
+    }
+    this.lastCell = "";
+    this.homeOnMap = 0;
+    this.redrawMap = true;
   }
 
   generateMap() {
@@ -117,6 +146,7 @@ export class MapHandler {
     else this.setTitle("");
 
     this._map = loadResult.map;
+    this.countHomeOnMap();
     this.foodToRespawn = [];
     this.dirtToRespawn = [];
     this.redrawFullMap = true;
@@ -230,6 +260,7 @@ export class MapHandler {
         }
       }
     }
+    this.lastCell = "";
     this.redrawFullMap = false;
   }
 
@@ -245,13 +276,27 @@ export class MapHandler {
 
     for (let x = mapPos[0] - rangeOffset; x <= mapPos[0] + rangeOffset; x++) {
       for (let y = mapPos[1] - rangeOffset; y <= mapPos[1] + rangeOffset; y++) {
-        let cellText = type;
+        if (!this.mapXYInBounds([x, y])) continue;
+        const cellText = type;
+        const currentValue = this.map[x][y];
+        if (currentValue === cellText) continue;
+
+        if (this._gameMode === "challenge") {
+          if (currentValue !== " " && currentValue !== HomeValue) continue;
+          if (
+            cellText === HomeValue &&
+            this.homeOnMap >= ChallengeHomeCellLimit
+          )
+            continue;
+        }
         if (this.foodToStopTime !== 0) {
-          if (this.map[x][y][0] === FoodValue) {
+          if (currentValue[0] === FoodValue) {
             const foodOnSquare = parseInt(this.map[x][y].substr(1));
             if (foodOnSquare) foodRemoved += foodOnSquare;
           }
         }
+        if (cellText === HomeValue) this.homeOnMap++;
+        if (currentValue === HomeValue) this.homeOnMap--;
         this.setCellTo([x, y], cellText);
       }
     }

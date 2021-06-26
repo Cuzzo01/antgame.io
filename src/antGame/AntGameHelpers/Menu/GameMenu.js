@@ -1,7 +1,30 @@
+import { useContext } from "react";
+
 import { PlayIcon, PauseIcon } from "./../Icons";
 import UploadMapButton from "./UploadMapButton";
+import { GameModeContext } from "../../GameModeContext";
 
 export default function GameMenu(props) {
+  const gameMode = useContext(GameModeContext);
+  let sandBoxButtons = [];
+  if (props.mapClear)
+    sandBoxButtons.push(
+      <UploadMapButton
+        key="upload"
+        styles={styles.button}
+        loadMapHandler={props.loadMapHandler}
+      />
+    );
+  else
+    sandBoxButtons.push(
+      <SettingButton
+        key="save"
+        handler={props.saveMapHandler}
+        disabled={props.playState}
+        text="Save"
+      />
+    );
+
   return (
     <div style={styles.container}>
       <SettingButton
@@ -14,22 +37,12 @@ export default function GameMenu(props) {
         disabled={props.playState}
       />
       <SettingButton
+        key="clear"
         text={"Clear"}
         handler={props.clearMapHandler}
         disabled={props.playState}
       />
-      {props.mapClear ? (
-        <UploadMapButton
-          styles={styles.button}
-          loadMapHandler={props.loadMapHandler}
-        />
-      ) : (
-        <SettingButton
-          handler={props.saveMapHandler}
-          disabled={props.playState}
-          text="Save"
-        />
-      )}
+      {gameMode === "challenge" ? null : sandBoxButtons}
     </div>
   );
 }

@@ -106,4 +106,11 @@ export const Config = {
     samplee: "/assets/maps/SampleEV1.0.json",
     index: "/assets/maps/HomeMapV1.0.json",
   },
+  Challenge: {
+    MapPath: "/assets/maps/ChallengeAV1.0.json",
+    StartMin: 2,
+    StartSec: 30,
+    HomeCellsAllowed: 3,
+    Name: "Beta Challenge - 2:30",
+  },
 };

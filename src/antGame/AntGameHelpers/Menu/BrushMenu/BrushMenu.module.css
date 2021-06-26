@@ -47,10 +47,7 @@
 
 .brushMenu {
   display: inline-block;
-}
-
-.container .brushMenu:not(:first-child) {
-  margin: 0 0.3em;
+  margin-right: 0.3em;
 }
 
 .container {

@@ -1,7 +1,8 @@
 import "./Timer.css";
 
 const TimeCounter = (props) => {
-  const onRoot = window.location.pathname === "/";
+  const path = window.location.pathname;
+  const shouldLinkHome = path.startsWith("/map");
 
   const Timer = () => {
     return (
@@ -13,7 +14,7 @@ const TimeCounter = (props) => {
 
   return (
     <div style={props.styles}>
-      {!onRoot ? (
+      {shouldLinkHome ? (
         <a href="/">
           <Timer />
         </a>

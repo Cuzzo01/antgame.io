@@ -1,5 +1,6 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import { MenuIcon } from "../../Icons";
+import { GameModeContext } from "../../../GameModeContext";
 
 import "./OptionsMenu.css";
 
@@ -7,6 +8,9 @@ const OptionsMenu = (props) => {
   const [showMenu, setShowMenu] = useState();
   const menuRef = useRef(null);
   const menuButtonRef = useRef(null);
+
+  const gameMode = useContext(GameModeContext);
+  const IsChallengeMode = gameMode === "challenge";
 
   useEffect(() => {
     if (props.playState && showMenu) {
@@ -113,10 +117,14 @@ const OptionsMenu = (props) => {
           <MenuRow onClick={() => props.saveImageHandler("map&trail")}>
             Both
           </MenuRow>
-          <MenuHeader>Maps</MenuHeader>
-          <MenuRow onClick={() => props.loadSampleMapHandler()}>
-            Load sample
-          </MenuRow>
+          {!IsChallengeMode ? (
+            <div>
+              <MenuHeader>Maps</MenuHeader>
+              <MenuRow onClick={() => props.loadSampleMapHandler()}>
+                Load sample
+              </MenuRow>
+            </div>
+          ) : null}
           <MenuHeader styles={{ fontSize: "0.85em" }}>
             Feedback & Sample Maps:
           </MenuHeader>

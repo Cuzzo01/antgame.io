@@ -1,24 +1,54 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Config } from "../../../config";
+import { GameModeContext } from "../../../GameModeContext";
 import styles from "./BrushMenu.module.css";
 
 const BrushSizes = Config.brushSizes;
+const HomeBrush = Config.brushes.find((brush) => brush.name === "Home");
+const EraserBrush = Config.brushes.find((brush) => brush.name === "Eraser");
+const SmallBrushSize = Config.brushSizes.find(
+  (size) => size.name === "Small"
+).value;
 
 export default function BrushMenu(props) {
-  return (
-    <div style={props.styles} className={styles.container}>
+  const gameMode = useContext(GameModeContext);
+
+  let options = [];
+  if (gameMode === "challenge") {
+    props.brushSizeHandler(SmallBrushSize);
+    options.push(
       <OptionPicker
+        key="type"
+        options={[HomeBrush, EraserBrush]}
+        handler={props.brushTypeHandler}
+        defaultIndex={0}
+        disabled={props.disableButtons}
+      />
+    );
+  } else {
+    options.push(
+      <OptionPicker
+        key="type"
         options={Config.brushes}
         handler={props.brushTypeHandler}
         defaultIndex={Config.brushTypeDefaultIndex}
-        disabled={props.playState}
+        disabled={props.disableButtons}
       />
+    );
+    options.push(
       <OptionPicker
+        key="size"
         handler={props.brushSizeHandler}
         defaultIndex={Config.brushSizeDefaultIndex}
         options={BrushSizes}
-        disabled={props.playState}
+        disabled={props.disableButtons}
       />
+    );
+  }
+
+  return (
+    <div style={props.styles} className={styles.container}>
+      {options}
     </div>
   );
 }

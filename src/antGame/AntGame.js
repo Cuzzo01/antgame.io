@@ -12,6 +12,9 @@ import { TimerHandler } from "./AntGameHelpers/Menu/Timer/TimerHandler";
 import MenuBar from "./AntGameHelpers/Menu/MenuBar";
 import { AntFoodSmol, AntSmol } from "./AntGameHelpers/AntImages";
 import { GTMEmitter } from "./AntGameHelpers/GTMEmitter";
+import { GameModeContext } from "./GameModeContext";
+import { ChallengeHandler } from "./AntGameHelpers/Challenge/ChallengeHandler";
+import ChallengeModal from "./AntGameHelpers/Challenge/ChallengeModal";
 
 let canvasW, canvasH;
 let lastMousePos = [-1, -1];
@@ -29,6 +32,8 @@ const FrameRate = Config.FrameRate;
 const PreloadMap = Config.PreloadMap;
 
 export default class AntGame extends React.Component {
+  static contextType = GameModeContext;
+
   constructor(props) {
     super(props);
 
@@ -42,7 +47,7 @@ export default class AntGame extends React.Component {
     this.blockDrawing = false;
     this.imageToSave = "";
 
-    this.timerHandler = new TimerHandler();
+    this.timerHandler = new TimerHandler(this.handleChallengeTimeout);
 
     this.mapHandler = new MapHandler(this.toggleTimer);
     this.antHandler = new AntHandler(this.mapHandler);
@@ -64,6 +69,7 @@ export default class AntGame extends React.Component {
       },
       timerActive: false,
       foodReturned: 0,
+      homeOnMap: 0,
     };
 
     this.homeTrailHandler = new TrailHandler(
@@ -75,6 +81,37 @@ export default class AntGame extends React.Component {
       this.mapHandler
     );
   }
+
+  componentDidMount() {
+    this.setMapUiUpdate(100);
+
+    this.GameMode = this.context;
+    if (this.GameMode === "challenge") {
+      this.challengeHandler = new ChallengeHandler();
+      this.setState({
+        showChallengeModal: false,
+      });
+    }
+    this.mapHandler.gameMode = this.GameMode;
+    this.timerHandler.gameMode = this.GameMode;
+    this.timerHandler.setTime(this.setTime);
+  }
+
+  setMapUiUpdate = (mili) => {
+    if (this.mapUiUpdateInterval) clearInterval(this.mapUiUpdateInterval);
+    this.mapUiUpdateInterval = setInterval(() => {
+      this.setState({
+        foodReturned: this.mapHandler.percentFoodReturned,
+        homeOnMap: this.mapHandler.homeCellCount,
+      });
+    }, mili);
+  };
+
+  handleChallengeTimeout = () => {
+    this.updatePlayState(false);
+    this.challengeHandler.handleTimeout(this.mapHandler);
+    this.setState({ showChallengeModal: true });
+  };
 
   setup = (p5, parentRef) => {
     this.parentRef = parentRef;
@@ -237,10 +274,10 @@ export default class AntGame extends React.Component {
 
   updatePlayState = (state) => {
     if (state) {
-      this.foodTrackerInterval = setInterval(() => {
-        this.setState({ foodReturned: this.mapHandler.percentFoodReturned });
-      }, 500);
+      this.setMapUiUpdate(500);
       if (this.state.emptyMap) return;
+      if (this.mapHandler.homeCellCount === 0) return;
+      if (this.GameMode === "challenge" && this.timerHandler.noTime) return;
       this.toggleTimer(true);
       if (!this.antHandler.antsSpawned) {
         this.antHandler.spawnAnts(this.homeTrailHandler, this.foodTrailHandler);
@@ -250,7 +287,7 @@ export default class AntGame extends React.Component {
         this.mapHandler.calculateFoodToStopTime();
       }
     } else {
-      clearInterval(this.foodTrackerInterval);
+      this.setMapUiUpdate(100);
       this.toggleTimer(false);
     }
     this.setState({ playState: state });
@@ -281,8 +318,8 @@ export default class AntGame extends React.Component {
   };
 
   clearMap = () => {
-    this.mapHandler.generateMap();
-    this.setState({ emptyMap: true });
+    const emptyMap = this.mapHandler.clearMap();
+    if (emptyMap) this.setState({ emptyMap: true });
     this.reset();
     GTMEmitter.ClearHandler();
   };
@@ -313,12 +350,9 @@ export default class AntGame extends React.Component {
     this.timerHandler.resetTime();
     this.mapHandler.handleReset();
     this.setState({
-      time: {
-        min: "00",
-        sec: "00",
-      },
       foodReturned: 0,
     });
+    this.timerHandler.setTime(this.setTime);
   };
 
   resetHandler = () => {
@@ -341,9 +375,19 @@ export default class AntGame extends React.Component {
     GTMEmitter.LoadSampleHandler();
   };
 
+  closeChallengeModal = () => {
+    this.reset();
+    this.setState({ showChallengeModal: false });
+  };
+
   render() {
     return (
       <div style={styles.container}>
+        <ChallengeModal
+          challengeHandler={this.challengeHandler}
+          show={this.state.showChallengeModal}
+          closeModal={() => this.closeChallengeModal()}
+        />
         <div style={styles.centered}>
           <div style={styles.header}>
             <MenuBar
@@ -364,6 +408,7 @@ export default class AntGame extends React.Component {
               setMapNameHandler={this.setMapName}
               getMapName={() => this.mapHandler.mapName}
               foodReturned={this.state.foodReturned}
+              homeOnMap={this.state.homeOnMap}
             />
           </div>
           <Sketch
