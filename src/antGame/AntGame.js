@@ -134,11 +134,7 @@ export default class AntGame extends React.Component {
 
     if (this.imageToSave !== "") this.handleImageSave(p5);
 
-    if (
-      this.state.shouldResizeCanvas &&
-      this.homeTrailHandler.clean &&
-      this.foodTrailHandler.clean
-    ) {
+    if (this.state.shouldResizeCanvas) {
       this.resizeCanvas(p5);
       this.mapHandler.drawFullMap();
       this.homeTrailGraphic.clear();

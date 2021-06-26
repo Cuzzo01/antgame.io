@@ -22,9 +22,4 @@ const FoodTracker = (props) => {
   );
 };
 
-// const styles = {
-//   active: {
-//     color: "green",
-//   },
-// };
 export default FoodTracker;
