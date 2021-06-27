@@ -9,6 +9,7 @@ async function postRun(req, res) {
       submissionTime: new Date().toISOString(),
       name: runData.Name,
       clientID: runData.ClientID,
+      env: runData.Env,
       details: {
         homeLocations: runData.HomeLocations,
         gameConfig: runData.GameConfig,

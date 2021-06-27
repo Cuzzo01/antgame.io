@@ -17,6 +17,9 @@ export class ChallengeHandler {
       this.clientID = uuidV4();
       localStorage.setItem("client-id", this.clientID);
     }
+    this.env = "PROD";
+    if (window.location.hostname.startsWith("dev")) this.env = "DEV"
+    else if (window.location.hostname.startsWith("localhost")) this.env = "LOCAL"
     this.challengeName = Config.Challenge.Name;
     this.score = "Not Scored";
   }
@@ -25,6 +28,7 @@ export class ChallengeHandler {
     this.artifact = {};
     this.artifact.HomeLocations = homeLocations;
     this.artifact.Name = ChallengeName;
+    this.artifact.Env = this.env
     this.artifact.GameConfig = {
       MapPath: MapPath,
       Time: { min: TimeMin, sec: TimeSec },
