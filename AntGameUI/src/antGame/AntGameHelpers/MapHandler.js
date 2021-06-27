@@ -303,7 +303,10 @@ export class MapHandler {
     if (foodRemoved) this.foodOnMap -= foodRemoved;
   }
 
-  prepareForStart = () => {
+  prepareForStart = (IsChallenge) => {
+    if (IsChallenge) {
+      this.countHomeOnMap(IsChallenge);
+    }
     this.placeAndCountDecayableBlocks();
     this.calculateFoodToStopTime();
     this.foodReturned = 0;
@@ -352,12 +355,16 @@ export class MapHandler {
     this.foodOnMap += foodAdded;
   };
 
-  countHomeOnMap = () => {
+  countHomeOnMap = (recordLocations) => {
     this.homeOnMap = 0;
+    if (recordLocations) this.homeLocations = [];
     for (let x = 0; x < MapBounds[0]; x++) {
       for (let y = 0; y < MapBounds[1]; y++) {
         let cell = this._map[x][y];
-        if (cell[0] === HomeValue) this.homeOnMap++;
+        if (cell[0] === HomeValue) {
+          if (recordLocations) this.homeLocations.push([x, y]);
+          this.homeOnMap++;
+        }
       }
     }
   };

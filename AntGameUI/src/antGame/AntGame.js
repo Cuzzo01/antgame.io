@@ -97,6 +97,10 @@ export default class AntGame extends React.Component {
     this.timerHandler.setTime(this.setTime);
   }
 
+  componentWillUnmount() {
+    clearInterval(this.mapUiUpdateInterval);
+  }
+
   setMapUiUpdate = (mili) => {
     if (this.mapUiUpdateInterval) clearInterval(this.mapUiUpdateInterval);
     this.mapUiUpdateInterval = setInterval(() => {
@@ -273,17 +277,25 @@ export default class AntGame extends React.Component {
   };
 
   updatePlayState = (state) => {
+    const IsChallenge = this.GameMode === "challenge";
     if (state) {
-      this.setMapUiUpdate(500);
       if (this.state.emptyMap) return;
       if (this.mapHandler.homeCellCount === 0) return;
-      if (this.GameMode === "challenge" && this.timerHandler.noTime)
-        return "reset";
+      if (IsChallenge && this.timerHandler.noTime) return "reset";
+      this.setMapUiUpdate(500);
       this.toggleTimer(true);
       if (!this.antHandler.antsSpawned) {
         this.antHandler.spawnAnts(this.homeTrailHandler, this.foodTrailHandler);
-        this.mapHandler.prepareForStart();
+        this.mapHandler.prepareForStart(IsChallenge);
+        if (IsChallenge) {
+          this.challengeSnapshotInterval = setInterval(() => {
+            this.challengeHandler.generateSnapshot(this.mapHandler);
+          }, 5000);
+          this.challengeHandler.handleStart(this.mapHandler.homeLocations);
+          this.challengeHandler.generateSnapshot(this.mapHandler);
+        }
       } else {
+        clearInterval(this.challengeSnapshotInterval);
         this.mapHandler.findNewDecayableBlocks();
         this.mapHandler.calculateFoodToStopTime();
       }
