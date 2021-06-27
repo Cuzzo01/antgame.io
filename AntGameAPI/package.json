@@ -1,0 +1,17 @@
+{
+  "name": "antgameapi",
+  "version": "0.0.1",
+  "description": "AntGame backend",
+  "main": "app.js",
+  "scripts": {
+    "prettier": "prettier --write .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^3.6.9",
+    "prettier": "^2.3.2"
+  }
+}

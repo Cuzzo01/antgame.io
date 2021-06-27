@@ -1,4 +1,5 @@
 import { Config } from "../../config";
+import { sendRunArtifact } from "../Services/ChallengeService";
 
 const ChallengeName = Config.Challenge.Name;
 const MapPath = Config.Challenge.MapPath;
@@ -28,11 +29,11 @@ export class ChallengeHandler {
     this.artifact.Timing = {
       SystemStartTime: new Date().getTime(),
     };
-    this.artifact.SnapShots = [];
+    this.artifact.Snapshots = [];
   }
 
   generateSnapshot(mapHandler) {
-    this.artifact.SnapShots.push({
+    this.artifact.Snapshots.push({
       T: new Date().getTime(),
       FR: mapHandler.foodRatio,
       FoM: mapHandler.foodOnMap,
@@ -48,5 +49,7 @@ export class ChallengeHandler {
     this.artifact.Timing.SystemStopTime = new Date().getTime();
     this.artifact.FoodConsumed = mapHandler.foodToRespawn.length;
     this.artifact.Score = this.score;
+
+    sendRunArtifact(this.artifact);
   }
 }
