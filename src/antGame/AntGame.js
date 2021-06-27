@@ -277,7 +277,8 @@ export default class AntGame extends React.Component {
       this.setMapUiUpdate(500);
       if (this.state.emptyMap) return;
       if (this.mapHandler.homeCellCount === 0) return;
-      if (this.GameMode === "challenge" && this.timerHandler.noTime) return;
+      if (this.GameMode === "challenge" && this.timerHandler.noTime)
+        return "reset";
       this.toggleTimer(true);
       if (!this.antHandler.antsSpawned) {
         this.antHandler.spawnAnts(this.homeTrailHandler, this.foodTrailHandler);
@@ -376,7 +377,6 @@ export default class AntGame extends React.Component {
   };
 
   closeChallengeModal = () => {
-    this.reset();
     this.setState({ showChallengeModal: false });
   };
 

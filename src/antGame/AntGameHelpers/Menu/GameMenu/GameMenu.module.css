@@ -1,0 +1,9 @@
+.flashing {
+  animation: blinker 0.9s ease-in-out 1;
+}
+
+@keyframes blinker {
+  50% {
+    background-color: #E74C3C;
+  }
+}

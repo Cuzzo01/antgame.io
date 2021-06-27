@@ -1,12 +1,19 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 
-import { PlayIcon, PauseIcon } from "./../Icons";
-import UploadMapButton from "./UploadMapButton";
-import { GameModeContext } from "../../GameModeContext";
+import { PlayIcon, PauseIcon } from "../../Icons";
+import UploadMapButton from "../UploadMapButton";
+import { GameModeContext } from "../../../GameModeContext";
+import cssStyles from "./GameMenu.module.css";
 
 export default function GameMenu(props) {
+  const [flashReset, setFlashReset] = useState(false);
   const gameMode = useContext(GameModeContext);
   let sandBoxButtons = [];
+
+  useEffect(() => {
+    if (flashReset === true) setTimeout(() => setFlashReset(false), 900);
+  });
+
   if (props.mapClear)
     sandBoxButtons.push(
       <UploadMapButton
@@ -29,9 +36,13 @@ export default function GameMenu(props) {
     <div style={styles.container}>
       <SettingButton
         text={props.playState ? <PauseIcon /> : <PlayIcon />}
-        handler={() => props.playButtonHandler(!props.playState)}
+        handler={() => {
+          const result = props.playButtonHandler(!props.playState);
+          if (result === "reset") setFlashReset(true);
+        }}
       />
       <SettingButton
+        className={flashReset ? cssStyles.flashing : ""}
         text={"Reset"}
         handler={props.resetHandler}
         disabled={props.playState}
@@ -50,6 +61,7 @@ export default function GameMenu(props) {
 const SettingButton = (props) => {
   return (
     <button
+      className={props.className}
       disabled={props.disabled}
       style={styles.button}
       onClick={() => props.handler()}

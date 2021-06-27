@@ -109,7 +109,7 @@ export const Config = {
   Challenge: {
     MapPath: "/assets/maps/ChallengeAV1.0.json",
     StartMin: 2,
-    StartSec: 30,
+    StartSec: 0,
     HomeCellsAllowed: 3,
     Name: "Beta Challenge - 2:30",
   },

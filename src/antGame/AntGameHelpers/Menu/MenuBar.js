@@ -1,4 +1,4 @@
-import GameMenu from "./GameMenu";
+import GameMenu from "./GameMenu/GameMenu";
 import TimeCounter from "./Timer/Timer";
 import BrushMenu from "./BrushMenu/BrushMenu";
 import OptionsMenu from "./OptionsMenu/OptionsMenu";
