@@ -37,6 +37,15 @@ class ChallengeHandler {
     if (this.loading) return this.configPromise;
     if (this._config) return this._config;
     else {
+      if (Config.Challenge.overwriteServerConfig) {
+        this._config = Config.Challenge.config;
+        const config = Config.Challenge.config;
+        this._mapHandler.homeCellsAllowed = config.homeLimit;
+        this._mapHandler.fetchAndLoadMap(config.mapPath);
+        this._timerHandler.defaultTime = config.time;
+        this._timerHandler.resetTime();
+        return config;
+      }
       this.loading = true;
       this.configPromise = getChallengeConfig().then((config) => {
         this.loading = false;

@@ -106,4 +106,16 @@ export const Config = {
     samplee: "/assets/maps/SampleEV1.0.json",
     index: "/assets/maps/HomeMapV1.0.json",
   },
+  Challenge: {
+    overrideServerConfig: true,
+    config: {
+      mapPath: "/assets/maps/ChallengeAV1.0.json",
+      homeLimit: 3,
+      time: {
+        min: 0,
+        sec: 30,
+      },
+      name: "Locally Configured Challenge",
+    },
+  },
 };

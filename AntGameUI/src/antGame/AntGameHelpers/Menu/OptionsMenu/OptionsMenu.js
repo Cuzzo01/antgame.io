@@ -125,8 +125,8 @@ const OptionsMenu = (props) => {
               </MenuRow>
             </div>
           ) : null}
-          <MenuHeader styles={{ fontSize: "0.85em" }}>
-            Feedback & Sample Maps:
+          <MenuHeader styles={{ fontSize: "0.8em" }}>
+            Feedback & Map Submissions:
           </MenuHeader>
           <MenuRow
             onClick={() => (window.location = "mailto:feedback@antgame.io")}
