@@ -37,7 +37,7 @@ class ChallengeHandler {
     if (this.loading) return this.configPromise;
     if (this._config) return this._config;
     else {
-      if (Config.Challenge.overwriteServerConfig) {
+      if (Config.Challenge.overrideServerConfig) {
         this._config = Config.Challenge.config;
         const config = Config.Challenge.config;
         this._mapHandler.homeCellsAllowed = config.homeLimit;

@@ -107,13 +107,13 @@ export const Config = {
     index: "/assets/maps/HomeMapV1.0.json",
   },
   Challenge: {
-    overrideServerConfig: true,
+    overrideServerConfig: false,
     config: {
-      mapPath: "/assets/maps/ChallengeAV1.0.json",
-      homeLimit: 3,
+      mapPath: "/assets/maps/ChallengeCV1.0.json",
+      homeLimit: 5,
       time: {
-        min: 0,
-        sec: 30,
+        min: 1,
+        sec: 0,
       },
       name: "Locally Configured Challenge",
     },

@@ -13,15 +13,20 @@ const submitRun = async (runData) => {
 
 const getChallenge = async () => {
   const collection = await getCollection("configs");
-  const result = await collection.find({ active: true }).sort({ version: -1 });
+  const result = await collection.find({ active: true });
   const activeConfigs = await result.toArray();
-  const configToReturn = activeConfigs[0];
+  const configToReturn = getRandomEntry(activeConfigs);
   return {
     mapPath: configToReturn.mapPath,
     time: configToReturn.time,
     homeLimit: configToReturn.homeLimit,
     name: configToReturn.name,
   };
+};
+
+const getRandomEntry = (list) => {
+  const index = Math.floor(Math.random() * list.length);
+  return list[index];
 };
 
 module.exports = { submitRun, getChallenge };
