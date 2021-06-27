@@ -1,18 +1,16 @@
-import { Config } from "../../../config";
-
-const ChallengeMin = Config.Challenge.StartMin;
-const ChallengeSec = Config.Challenge.StartSec;
-
 export class TimerHandler {
-  constructor(handleChallengeTimeout) {
+  constructor(handleChallengeTimeout, setDisplayTimeFunc) {
     this.handleChallengeTimeout = handleChallengeTimeout;
+    this.setDisplayTimeFunc = setDisplayTimeFunc;
     this.min = 0;
     this.sec = 0;
     this._startFrameCount = 0;
     this.lastFrameCount = 0;
     this.gameMode = "";
 
-    this.time = {
+    this._defaultTime = { min: 0, sec: 0 };
+
+    this.displayTime = {
       min: "00",
       sec: "00",
     };
@@ -28,41 +26,43 @@ export class TimerHandler {
 
   set gameMode(mode) {
     this._gameMode = mode;
-    if (mode === "challenge") {
-      this.min = ChallengeMin;
-      this.sec = ChallengeSec;
-    }
-    this.updateTime();
   }
 
-  setTime(setTime) {
-    setTime(this.time);
+  set defaultTime(time) {
+    this._defaultTime = time;
+  }
+
+  set time(time) {
+    this.min = time.min;
+    this.sec = time.sec;
+    this.updateDisplayTime();
+    this.setDisplayTimeFunc(this.displayTime);
+  }
+
+  updateTimeDisplay() {
+    this.setDisplayTimeFunc(this.displayTime);
   }
 
   resetTime() {
-    if (this._gameMode === "challenge") {
-      this.min = ChallengeMin;
-      this.sec = ChallengeSec;
-    } else {
-      this.min = 0;
-      this.sec = 0;
-    }
-    this.updateTime();
+    this.min = this._defaultTime.min;
+    this.sec = this._defaultTime.sec;
+    this.updateDisplayTime();
+    this.updateTimeDisplay();
   }
 
-  handleTime(frameCount, setTime) {
+  handleTime(frameCount) {
     if (this.frameCount !== frameCount) {
       this.frameCount = frameCount;
       if (this._gameMode === "challenge") {
         this.sec--;
         if (this.sec === 0 && this.min === 0) this.handleChallengeTimeout();
       } else this.sec++;
-      this.updateTime();
-      setTime(this.time);
+      this.updateDisplayTime();
+      this.setDisplayTimeFunc(this.displayTime);
     }
   }
 
-  updateTime() {
+  updateDisplayTime() {
     if (this.sec > 59) {
       this.min++;
       this.sec = 0;
@@ -70,7 +70,7 @@ export class TimerHandler {
       this.min--;
       this.sec = 59;
     }
-    this.time = {
+    this.displayTime = {
       min:
         parseInt(this.min / 10) === 0
           ? "0" + this.min.toString()

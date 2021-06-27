@@ -13,7 +13,7 @@ import MenuBar from "./AntGameHelpers/Menu/MenuBar";
 import { AntFoodSmol, AntSmol } from "./AntGameHelpers/AntImages";
 import { GTMEmitter } from "./AntGameHelpers/GTMEmitter";
 import { GameModeContext } from "./GameModeContext";
-import { ChallengeHandler } from "./AntGameHelpers/Challenge/ChallengeHandler";
+import ChallengeHandler from "./AntGameHelpers/Challenge/ChallengeHandler";
 import ChallengeModal from "./AntGameHelpers/Challenge/ChallengeModal";
 
 let canvasW, canvasH;
@@ -47,13 +47,16 @@ export default class AntGame extends React.Component {
     this.blockDrawing = false;
     this.imageToSave = "";
 
-    this.timerHandler = new TimerHandler(this.handleChallengeTimeout);
+    this.timerHandler = new TimerHandler(
+      this.handleChallengeTimeout,
+      this.setTime
+    );
 
     this.mapHandler = new MapHandler(this.toggleTimer);
     this.antHandler = new AntHandler(this.mapHandler);
 
     let emptyMap = true;
-    if (PreloadMap) {
+    if (PreloadMap && props.mapToLoad) {
       this.mapHandler.preloadMap(props.mapToLoad);
       emptyMap = false;
     }
@@ -87,14 +90,17 @@ export default class AntGame extends React.Component {
 
     this.GameMode = this.context;
     if (this.GameMode === "challenge") {
-      this.challengeHandler = new ChallengeHandler();
+      this.challengeHandler = ChallengeHandler;
+      this.challengeHandler.mapHandler = this.mapHandler;
+      this.challengeHandler.timerHandler = this.timerHandler;
+
       this.setState({
         showChallengeModal: false,
       });
     }
     this.mapHandler.gameMode = this.GameMode;
     this.timerHandler.gameMode = this.GameMode;
-    this.timerHandler.setTime(this.setTime);
+    this.timerHandler.updateTimeDisplay(this.setTime);
   }
 
   componentWillUnmount() {
@@ -113,7 +119,7 @@ export default class AntGame extends React.Component {
 
   handleChallengeTimeout = () => {
     this.updatePlayState(false);
-    this.challengeHandler.handleTimeout(this.mapHandler);
+    this.challengeHandler.handleTimeout();
     this.setState({ showChallengeModal: true });
   };
 
@@ -289,10 +295,10 @@ export default class AntGame extends React.Component {
         this.mapHandler.prepareForStart(IsChallenge);
         if (IsChallenge) {
           this.challengeSnapshotInterval = setInterval(() => {
-            this.challengeHandler.generateSnapshot(this.mapHandler);
+            this.challengeHandler.generateSnapshot();
           }, 5000);
           this.challengeHandler.handleStart(this.mapHandler.homeLocations);
-          this.challengeHandler.generateSnapshot(this.mapHandler);
+          this.challengeHandler.generateSnapshot();
         }
       } else {
         clearInterval(this.challengeSnapshotInterval);
@@ -365,7 +371,7 @@ export default class AntGame extends React.Component {
     this.setState({
       foodReturned: 0,
     });
-    this.timerHandler.setTime(this.setTime);
+    this.timerHandler.updateTimeDisplay(this.setTime);
   };
 
   resetHandler = () => {

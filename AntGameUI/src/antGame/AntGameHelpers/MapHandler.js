@@ -15,7 +15,6 @@ const FoodValue = Brushes.find((brush) => brush.name === "Food").value;
 const HomeValue = Brushes.find((brush) => brush.name === "Home").value;
 const DirtValue = Brushes.find((brush) => brush.name === "Dirt").value;
 const SampleMaps = Config.SampleMaps;
-const ChallengeHomeCellLimit = Config.Challenge.HomeCellsAllowed;
 
 export class MapHandler {
   constructor(toggleTimerFunc) {
@@ -62,6 +61,10 @@ export class MapHandler {
 
   get homeCellCount() {
     return this.homeOnMap;
+  }
+
+  set homeCellsAllowed(homeCellsAllowed) {
+    this._homeCellsAllowed = homeCellsAllowed;
   }
 
   set graphic(graphics) {
@@ -285,7 +288,7 @@ export class MapHandler {
           if (currentValue !== " " && currentValue !== HomeValue) continue;
           if (
             cellText === HomeValue &&
-            this.homeOnMap >= ChallengeHomeCellLimit
+            this.homeOnMap >= this._homeCellsAllowed
           )
             continue;
         }

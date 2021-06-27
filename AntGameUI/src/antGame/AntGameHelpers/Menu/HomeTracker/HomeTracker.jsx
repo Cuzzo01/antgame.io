@@ -1,14 +1,27 @@
-import { Config } from "../../../config";
+import { useEffect, useState } from "react";
+import ChallengeHandler from "../../Challenge/ChallengeHandler";
 import styles from "./HomeTracker.module.css";
 
-const MaxHome = Config.Challenge.HomeCellsAllowed;
-
 const HomeTracker = (props) => {
+  const [loading, setLoading] = useState(true);
+  const [maxHome, setMaxHome] = useState();
+
+  useEffect(() => {
+    ChallengeHandler.getConfig().then((config) => {
+      setMaxHome(config.homeLimit);
+      setLoading(false);
+    });
+  }, []);
+
   return (
     <div className={styles.container}>
-      <h5 className={props.greyedOut ? styles.greyedOut : ""}>
-        Home: {props.homeOnMap}/{MaxHome}
-      </h5>
+      {loading ? (
+        <div />
+      ) : (
+        <h5 className={props.greyedOut ? styles.greyedOut : ""}>
+          Home: {props.homeOnMap}/{maxHome}
+        </h5>
+      )}
     </div>
   );
 };

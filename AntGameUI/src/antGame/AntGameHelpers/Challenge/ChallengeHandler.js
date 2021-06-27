@@ -1,37 +1,72 @@
 import { Config } from "../../config";
-import { sendRunArtifact } from "../Services/ChallengeService";
+import {
+  getChallengeConfig,
+  sendRunArtifact,
+} from "../Services/ChallengeService";
 import { v4 as uuidV4 } from "uuid";
 
-const ChallengeName = Config.Challenge.Name;
-const MapPath = Config.Challenge.MapPath;
-const TimeMin = Config.Challenge.StartMin;
-const TimeSec = Config.Challenge.StartSec;
 const AntsToSpawn = Config.AntsToSpawn;
 const FoodPerCell = Config.FoodPerCell;
 const DirtPerCell = Config.DirtPerCell;
 
-export class ChallengeHandler {
+class ChallengeHandler {
   constructor() {
     this.clientID = localStorage.getItem("client-id");
     if (!this.clientID) {
       this.clientID = uuidV4();
       localStorage.setItem("client-id", this.clientID);
     }
-    this.env = "PROD";
-    if (window.location.hostname.startsWith("dev")) this.env = "DEV"
-    else if (window.location.hostname.startsWith("localhost")) this.env = "LOCAL"
-    this.challengeName = Config.Challenge.Name;
+    this.setEnv();
     this.score = "Not Scored";
   }
 
+  set mapHandler(mapHandler) {
+    this._mapHandler = mapHandler;
+  }
+
+  set timerHandler(timerHandler) {
+    this._timerHandler = timerHandler;
+  }
+
+  get config() {
+    if (this._config) return this._config;
+    else return false;
+  }
+
+  async getConfig() {
+    if (this.loading) return this.configPromise;
+    if (this._config) return this._config;
+    else {
+      this.loading = true;
+      this.configPromise = getChallengeConfig().then((config) => {
+        this.loading = false;
+        this._config = config;
+        this._mapHandler.homeCellsAllowed = config.homeLimit;
+        this._mapHandler.fetchAndLoadMap(config.mapPath);
+        this._timerHandler.defaultTime = config.time;
+        this._timerHandler.resetTime();
+        return config;
+      });
+      return this.configPromise;
+    }
+  }
+
+  setEnv() {
+    this.env = "PROD";
+    const hostName = window.location.hostname;
+    if (hostName.startsWith("dev")) this.env = "DEV";
+    else if (hostName.startsWith("localhost")) this.env = "LOCAL";
+  }
+
   handleStart(homeLocations) {
+    const config = this.config;
     this.artifact = {};
     this.artifact.HomeLocations = homeLocations;
-    this.artifact.Name = ChallengeName;
-    this.artifact.Env = this.env
+    this.artifact.Name = config.name;
+    this.artifact.Env = this.env;
     this.artifact.GameConfig = {
-      MapPath: MapPath,
-      Time: { min: TimeMin, sec: TimeSec },
+      MapPath: config.mapPath,
+      Time: config.time,
       AntsToSpawn: AntsToSpawn,
       FoodPerCell: FoodPerCell,
       DirtPerCell: DirtPerCell,
@@ -42,7 +77,8 @@ export class ChallengeHandler {
     this.artifact.Snapshots = [];
   }
 
-  generateSnapshot(mapHandler) {
+  generateSnapshot() {
+    const mapHandler = this._mapHandler;
     this.artifact.Snapshots.push({
       T: new Date().getTime(),
       FR: mapHandler.foodRatio,
@@ -51,7 +87,8 @@ export class ChallengeHandler {
     });
   }
 
-  handleTimeout(mapHandler) {
+  handleTimeout() {
+    const mapHandler = this._mapHandler;
     this.score = Math.round(mapHandler.percentFoodReturned * 100000);
 
     this.generateSnapshot(mapHandler);
@@ -64,3 +101,6 @@ export class ChallengeHandler {
     sendRunArtifact(this.artifact);
   }
 }
+
+const SingletonInstance = new ChallengeHandler();
+export default SingletonInstance;

@@ -11,4 +11,17 @@ const submitRun = async (runData) => {
   const result = await collection.insertOne(runData);
 };
 
-module.exports = { submitRun };
+const getChallenge = async () => {
+  const collection = await getCollection("configs");
+  const result = await collection.find({ active: true }).sort({ version: -1 });
+  const activeConfigs = await result.toArray();
+  const configToReturn = activeConfigs[0];
+  return {
+    mapPath: configToReturn.mapPath,
+    time: configToReturn.time,
+    homeLimit: configToReturn.homeLimit,
+    name: configToReturn.name,
+  };
+};
+
+module.exports = { submitRun, getChallenge };

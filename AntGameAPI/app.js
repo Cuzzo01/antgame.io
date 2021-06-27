@@ -8,6 +8,7 @@ const _challengeController = require("./controller/ChallengeController");
 app.use(bodyParser.json({ extended: true }));
 
 app.post("/challenge/artifact", _challengeController.postRun);
+app.get("/challenge/config", _challengeController.getChallenge);
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);

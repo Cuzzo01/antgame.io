@@ -11,7 +11,6 @@ import { GameModeContext } from "./GameModeContext";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
-const ChallengeMapPath = Config.Challenge.MapPath;
 
 const AntGameRouter = () => {
   return (
@@ -24,7 +23,7 @@ const AntGameRouter = () => {
         </Route>
         <Route path="/challenge">
           <GameModeContext.Provider value={"challenge"}>
-            <AntGame mapToLoad={ChallengeMapPath} />
+            <AntGame />
           </GameModeContext.Provider>
         </Route>
         <Route path="/map/:mapName">

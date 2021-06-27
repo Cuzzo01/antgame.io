@@ -28,4 +28,15 @@ async function postRun(req, res) {
   }
 }
 
-module.exports = { postRun };
+async function getChallenge(req, res) {
+  try {
+    const challengeConfig = await ChallengeDao.getChallenge();
+    res.send(challengeConfig);
+  } catch (e) {
+    console.log(e);
+    res.status(500);
+    res.send("Get challenge failed");
+  }
+}
+
+module.exports = { postRun, getChallenge };
