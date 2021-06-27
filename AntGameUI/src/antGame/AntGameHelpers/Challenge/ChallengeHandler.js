@@ -1,5 +1,6 @@
 import { Config } from "../../config";
 import { sendRunArtifact } from "../Services/ChallengeService";
+import { v4 as uuidV4 } from "uuid";
 
 const ChallengeName = Config.Challenge.Name;
 const MapPath = Config.Challenge.MapPath;
@@ -11,6 +12,11 @@ const DirtPerCell = Config.DirtPerCell;
 
 export class ChallengeHandler {
   constructor() {
+    this.clientID = localStorage.getItem("client-id");
+    if (!this.clientID) {
+      this.clientID = uuidV4();
+      localStorage.setItem("client-id", this.clientID);
+    }
     this.challengeName = Config.Challenge.Name;
     this.score = "Not Scored";
   }
@@ -49,6 +55,7 @@ export class ChallengeHandler {
     this.artifact.Timing.SystemStopTime = new Date().getTime();
     this.artifact.FoodConsumed = mapHandler.foodToRespawn.length;
     this.artifact.Score = this.score;
+    this.artifact.ClientID = this.clientID;
 
     sendRunArtifact(this.artifact);
   }
