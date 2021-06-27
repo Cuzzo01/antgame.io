@@ -111,6 +111,6 @@ export const Config = {
     StartMin: 2,
     StartSec: 0,
     HomeCellsAllowed: 3,
-    Name: "Beta Challenge - 2:30",
+    Name: "Map A - 2:00",
   },
 };

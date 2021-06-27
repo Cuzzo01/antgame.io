@@ -7,7 +7,7 @@ export class ChallengeHandler {
   }
 
   handleTimeout(mapHandler) {
-    this.challengeName = "Map A - 2:30";
+    this.challengeName = this.challengeName;
     this.score = Math.round(mapHandler.percentFoodReturned * 100000);
   }
 }
