@@ -12,7 +12,7 @@ const ChallengeModal = (props) => {
       <Modal.Header>Challenge Results</Modal.Header>
       <Modal.Body>
         <h5>Challenge:</h5>
-        <p>{props.challengeHandler?.challengeName}</p>
+        <p>{props.challengeHandler?.config.name}</p>
         <h5>Score:</h5>
         <p>{props.challengeHandler?.score}</p>
       </Modal.Body>
