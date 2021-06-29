@@ -48,6 +48,7 @@ export default function MenuBar(props) {
         />
         <OptionsMenu
           playState={props.playState}
+          mapNameDisabled={IsChallenge}
           blockDrawHandler={props.blockDrawHandler}
           saveImageHandler={props.saveImageHandler}
           loadSampleMapHandler={props.loadSampleMapHandler}

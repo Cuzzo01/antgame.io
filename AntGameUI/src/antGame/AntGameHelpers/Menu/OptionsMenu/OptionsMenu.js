@@ -39,54 +39,11 @@ const OptionsMenu = (props) => {
     };
   }, [menuRef, menuButtonRef, props]);
 
-  const MenuRow = (props) => {
-    return (
-      <div className="menu-row">
-        <a
-          href="/"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            props.onClick();
-            setShowMenu(false);
-          }}
-        >
-          {props.children}
-        </a>
-      </div>
-    );
-  };
-
-  const MapNameRow = (props) => {
-    const [mapName, setMapName] = useState(props.currentName);
-
-    const CheckIfEnter = (event) => {
-      if (event.key === "Enter") SetName();
-    };
-
-    const SetName = () => {
-      props.setMapNameHandler(mapName);
+  const getMenuCallback = (callback) => {
+    return () => {
+      callback();
       setShowMenu(false);
     };
-
-    useEffect(() => {
-      if (props.mapName) setMapName(props.mapName);
-    }, [props]);
-
-    return (
-      <div className="menu-name-input-row">
-        <input
-          maxLength="15"
-          value={mapName}
-          type="text"
-          onChange={(e) => {
-            setMapName(e.target.value);
-            props.setMapNameHandler(e.target.value);
-          }}
-          onKeyDown={CheckIfEnter}
-        />
-      </div>
-    );
   };
 
   return (
@@ -108,19 +65,31 @@ const OptionsMenu = (props) => {
           <MapNameRow
             currentName={props.getMapName()}
             setMapNameHandler={props.setMapNameHandler}
+            setShowMenu={setShowMenu}
+            disabled={props.mapNameDisabled}
           />
           <MenuHeader>Save image of...</MenuHeader>
-          <MenuRow onClick={() => props.saveImageHandler("trail")}>
+          <MenuRow
+            onClick={getMenuCallback(() => props.saveImageHandler("trail"))}
+          >
             Trails
           </MenuRow>
-          <MenuRow onClick={() => props.saveImageHandler("map")}>Map</MenuRow>
-          <MenuRow onClick={() => props.saveImageHandler("map&trail")}>
+          <MenuRow
+            onClick={getMenuCallback(() => props.saveImageHandler("map"))}
+          >
+            Map
+          </MenuRow>
+          <MenuRow
+            onClick={getMenuCallback(() => props.saveImageHandler("map&trail"))}
+          >
             Both
           </MenuRow>
           {!IsChallengeMode ? (
             <div>
               <MenuHeader>Maps</MenuHeader>
-              <MenuRow onClick={() => props.loadSampleMapHandler()}>
+              <MenuRow
+                onClick={getMenuCallback(() => props.loadSampleMapHandler())}
+              >
                 Load sample
               </MenuRow>
             </div>
@@ -129,12 +98,64 @@ const OptionsMenu = (props) => {
             Feedback & Map Submissions:
           </MenuHeader>
           <MenuRow
-            onClick={() => (window.location = "mailto:feedback@antgame.io")}
+            onClick={getMenuCallback(
+              () => (window.location = "mailto:feedback@antgame.io")
+            )}
           >
             feedback@antgame.io
           </MenuRow>
         </div>
       ) : null}
+    </div>
+  );
+};
+
+const MapNameRow = (props) => {
+  const [mapName, setMapName] = useState(props.currentName);
+
+  const CheckIfEnter = (event) => {
+    if (event.key === "Enter") SetName();
+  };
+
+  const SetName = () => {
+    props.setMapNameHandler(mapName);
+    props.setShowMenu(false);
+  };
+
+  useEffect(() => {
+    if (props.mapName) setMapName(props.mapName);
+  }, [props]);
+
+  return (
+    <div className="menu-name-input-row">
+      <input
+        maxLength="15"
+        value={mapName}
+        type="text"
+        onChange={(e) => {
+          setMapName(e.target.value);
+          props.setMapNameHandler(e.target.value);
+        }}
+        onKeyDown={CheckIfEnter}
+        disabled={props.disabled}
+      />
+    </div>
+  );
+};
+
+const MenuRow = (props) => {
+  return (
+    <div className="menu-row">
+      <a
+        href="/"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          props.onClick();
+        }}
+      >
+        {props.children}
+      </a>
     </div>
   );
 };
