@@ -98,8 +98,10 @@ class ChallengeHandler {
 
   generateSnapshot() {
     const mapHandler = this._mapHandler;
+    const timerHandler = this._timerHandler;
     this.artifact.Snapshots.push({
-      T: new Date().getTime(),
+      ST: new Date().getTime(),
+      GT: timerHandler.displayTime,
       FR: mapHandler.foodRatio,
       FoM: mapHandler.foodOnMap,
       FiT: mapHandler.foodInTransit,
