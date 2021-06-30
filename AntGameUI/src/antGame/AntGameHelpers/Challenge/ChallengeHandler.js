@@ -49,6 +49,8 @@ class ChallengeHandler {
         this._timerHandler.defaultTime = config.time;
         this._timerHandler.resetTime();
         return config;
+      } else if (Config.Challenge.overrideChallengeID) {
+        this.challengeID = Config.ChallengeID;
       }
       this.loading = true;
       this.configPromise = getChallengeConfig(this._challengeID)

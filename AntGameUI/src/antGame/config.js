@@ -108,11 +108,13 @@ export const Config = {
   },
   Challenge: {
     overrideServerConfig: false,
+    overrideChallengeID: false,
+    overrideConfigID: "",
     config: {
-      mapPath: "/assets/maps/ChallengeEV1.0.json",
-      homeLimit: 3,
+      mapPath: "/assets/maps/ChallengeFV1.0.json",
+      homeLimit: 5,
       time: {
-        min: 7,
+        min: 1,
         sec: 30,
       },
       name: "Locally Configured Challenge",
