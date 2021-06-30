@@ -1,0 +1,28 @@
+body {
+  background-color: #ebf5fb;
+}
+
+.container {
+  max-width: 45em;
+  margin: 5em auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2em;
+}
+
+.listItem {
+  display: block;
+  text-align: center;
+  margin: 0.5em;
+  padding: 1em;
+  border: 3px black solid;
+  border-radius: 1em;
+  background-color: lightgray;
+}
+
+.listItem:hover {
+  background-color: grey;
+  color: black;
+}

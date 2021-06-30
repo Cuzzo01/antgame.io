@@ -9,7 +9,7 @@ import { useContext } from "react";
 
 export default function MenuBar(props) {
   const gameMode = useContext(GameModeContext);
-  const IsChallenge = gameMode === "challenge";
+  const IsChallenge = gameMode.mode === "challenge";
   const unresetChallengeMode = IsChallenge && props.foodReturned !== 0;
   const brushDisabled = props.playState || unresetChallengeMode;
 

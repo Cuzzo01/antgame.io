@@ -53,7 +53,7 @@ export default function GameMenu(props) {
         handler={props.clearMapHandler}
         disabled={props.playState}
       />
-      {gameMode === "challenge" ? null : sandBoxButtons}
+      {gameMode.mode === "challenge" ? null : sandBoxButtons}
     </div>
   );
 }

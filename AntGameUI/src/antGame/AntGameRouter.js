@@ -1,4 +1,5 @@
 import AntGame from "./AntGame";
+import ChallengePage from "./ChallengePage/ChallengePage";
 import { Config } from "./config";
 import {
   BrowserRouter,
@@ -21,10 +22,11 @@ const AntGameRouter = () => {
             <AntGame mapToLoad={PreloadMapPath} />
           </GameModeContext.Provider>
         </Route>
-        <Route path="/challenge">
-          <GameModeContext.Provider value={"challenge"}>
-            <AntGame />
-          </GameModeContext.Provider>
+        <Route exact path="/challenge">
+          <ChallengePage />
+        </Route>
+        <Route path="/challenge/:id">
+          <ChallengeMap />
         </Route>
         <Route path="/map/:mapName">
           <LoadMapFromParams />
@@ -37,11 +39,24 @@ const AntGameRouter = () => {
   );
 };
 
+const ChallengeMap = () => {
+  let { id } = useParams();
+  return (
+    <GameModeContext.Provider value={{ mode: "challenge", challengeID: id }}>
+      <AntGame />
+    </GameModeContext.Provider>
+  );
+};
+
 const LoadMapFromParams = () => {
   let { mapName } = useParams();
   const lowerMapName = mapName.toLowerCase();
   if (SampleMaps[lowerMapName])
-    return <AntGame mapToLoad={SampleMaps[lowerMapName]} />;
+    return (
+      <GameModeContext.Provider value={"sandbox"}>
+        <AntGame mapToLoad={SampleMaps[lowerMapName]} />
+      </GameModeContext.Provider>
+    );
   return <Redirect to="/" />;
 };
 

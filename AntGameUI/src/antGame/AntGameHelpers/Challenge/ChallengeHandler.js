@@ -28,6 +28,10 @@ class ChallengeHandler {
     this._timerHandler = timerHandler;
   }
 
+  set challengeID(id) {
+    this._challengeID = id;
+  }
+
   get config() {
     if (this._config) return this._config;
     else return false;
@@ -47,15 +51,19 @@ class ChallengeHandler {
         return config;
       }
       this.loading = true;
-      this.configPromise = getChallengeConfig().then((config) => {
-        this.loading = false;
-        this._config = config;
-        this._mapHandler.homeCellsAllowed = config.homeLimit;
-        this._mapHandler.fetchAndLoadMap(config.mapPath);
-        this._timerHandler.defaultTime = config.time;
-        this._timerHandler.resetTime();
-        return config;
-      });
+      this.configPromise = getChallengeConfig(this._challengeID)
+        .then((config) => {
+          this.loading = false;
+          this._config = config;
+          this._mapHandler.homeCellsAllowed = config.homeLimit;
+          this._mapHandler.fetchAndLoadMap(config.mapPath);
+          this._timerHandler.defaultTime = config.time;
+          this._timerHandler.resetTime();
+          return config;
+        })
+        .catch(() => {
+          window.location = "/challenge";
+        });
       return this.configPromise;
     }
   }

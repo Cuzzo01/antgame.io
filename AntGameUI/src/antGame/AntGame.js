@@ -88,9 +88,11 @@ export default class AntGame extends React.Component {
   componentDidMount() {
     this.setMapUiUpdate(100);
 
-    this.GameMode = this.context;
-    if (this.GameMode === "challenge") {
+    this.gamemode = this.context.mode;
+    if (this.gamemode === "challenge") {
+      const challengeID = this.context.challengeID;
       this.challengeHandler = ChallengeHandler;
+      this.challengeHandler.challengeID = challengeID;
       this.challengeHandler.mapHandler = this.mapHandler;
       this.challengeHandler.timerHandler = this.timerHandler;
 
@@ -98,8 +100,8 @@ export default class AntGame extends React.Component {
         showChallengeModal: false,
       });
     }
-    this.mapHandler.gameMode = this.GameMode;
-    this.timerHandler.gameMode = this.GameMode;
+    this.mapHandler.gameMode = this.gamemode;
+    this.timerHandler.gameMode = this.gamemode;
     this.timerHandler.updateTimeDisplay(this.setTime);
   }
 
@@ -283,7 +285,7 @@ export default class AntGame extends React.Component {
   };
 
   updatePlayState = (state) => {
-    const IsChallenge = this.GameMode === "challenge";
+    const IsChallenge = this.gamemode === "challenge";
     if (state) {
       if (this.state.emptyMap) return;
       if (this.mapHandler.homeCellCount === 0) return;

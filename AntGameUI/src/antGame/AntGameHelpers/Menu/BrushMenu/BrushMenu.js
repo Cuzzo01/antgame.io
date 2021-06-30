@@ -14,7 +14,7 @@ export default function BrushMenu(props) {
   const gameMode = useContext(GameModeContext);
 
   let options = [];
-  if (gameMode === "challenge") {
+  if (gameMode.mode === "challenge") {
     props.brushSizeHandler(SmallBrushSize);
     options.push(
       <OptionPicker

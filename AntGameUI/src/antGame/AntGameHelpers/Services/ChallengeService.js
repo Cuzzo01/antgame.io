@@ -8,8 +8,14 @@ export async function sendRunArtifact(artifact) {
     });
 }
 
-export async function getChallengeConfig() {
-  return axios.get("/api/challenge/config").then((res) => {
+export async function getChallengeConfig(id) {
+  return axios.get(`/api/challenge/${id}`).then((res) => {
+    return res.data;
+  });
+}
+
+export async function getActiveChallenges() {
+  return axios.get("/api/challenges/active").then((res) => {
     return res.data;
   });
 }

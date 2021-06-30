@@ -10,7 +10,7 @@ const OptionsMenu = (props) => {
   const menuButtonRef = useRef(null);
 
   const gameMode = useContext(GameModeContext);
-  const IsChallengeMode = gameMode === "challenge";
+  const IsChallengeMode = gameMode.mode === "challenge";
 
   useEffect(() => {
     if (props.playState && showMenu) {

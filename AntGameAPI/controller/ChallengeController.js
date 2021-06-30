@@ -29,9 +29,10 @@ async function postRun(req, res) {
 }
 
 async function getChallenge(req, res) {
+  const id = req.params.id;
   try {
-    const challengeConfig = await ChallengeDao.getChallenge();
-    res.send(challengeConfig);
+    const config = await ChallengeDao.getChallengeById(id);
+    res.send(config);
   } catch (e) {
     console.log(e);
     res.status(500);
@@ -39,4 +40,15 @@ async function getChallenge(req, res) {
   }
 }
 
-module.exports = { postRun, getChallenge };
+async function getActiveChallenges(req, res) {
+  try {
+    const activeChallenges = await ChallengeDao.getActiveChallenges();
+    res.send(activeChallenges);
+  } catch (e) {
+    console.log(e);
+    res.status(500);
+    res.send("Get challenge failed");
+  }
+}
+
+module.exports = { postRun, getChallenge, getActiveChallenges };
