@@ -1,4 +1,4 @@
-const { Connection } = require("../Dao/MongoClient");
+const { Connection } = require("../dao/MongoClient");
 
 const getCollection = async (collection) => {
   const connection = await Connection.open();
