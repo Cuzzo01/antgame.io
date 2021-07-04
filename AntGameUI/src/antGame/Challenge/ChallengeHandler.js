@@ -1,9 +1,11 @@
-import { Config } from "../../config";
+import { Config } from "../config";
 import {
   getChallengeConfig,
+  getRecords,
   sendRunArtifact,
-} from "../Services/ChallengeService";
+} from "../AntGameHelpers/Services/ChallengeService";
 import { v4 as uuidV4 } from "uuid";
+import AuthHandler from "../Auth/AuthHandler";
 
 const AntsToSpawn = Config.AntsToSpawn;
 const FoodPerCell = Config.FoodPerCell;
@@ -18,6 +20,9 @@ class ChallengeHandler {
     }
     this.setEnv();
     this.score = "Not Scored";
+    this.records = false;
+    this.recordsPromise = false;
+    this.recordListeners = [];
   }
 
   set mapHandler(mapHandler) {
@@ -30,6 +35,8 @@ class ChallengeHandler {
 
   set challengeID(id) {
     this._challengeID = id;
+    this.getConfig();
+    this.getRecords();
   }
 
   get config() {
@@ -37,9 +44,14 @@ class ChallengeHandler {
     else return false;
   }
 
+  addRecordListener(callback) {
+    this.recordListeners.push(callback);
+    if (this.records) callback(this.records);
+  }
+
   async getConfig() {
-    if (this.loading) return this.configPromise;
     if (this._config) return this._config;
+    if (this.loading) return this.configPromise;
     else {
       if (Config.Challenge.overrideServerConfig) {
         this._config = Config.Challenge.config;
@@ -70,6 +82,20 @@ class ChallengeHandler {
     }
   }
 
+  async getRecords() {
+    const isAnon = AuthHandler.isAnon;
+    if (isAnon) return "Anon";
+    if (this.records) return this.records;
+    else if (this.recordsPromise) return this.recordsPromise;
+    else {
+      this.recordsPromise = getRecords(this._challengeID).then((records) => {
+        this.records = records;
+        this.notifyRecordsListeners();
+        return records;
+      });
+    }
+  }
+
   setEnv() {
     this.env = "PROD";
     const hostName = window.location.hostname;
@@ -83,6 +109,7 @@ class ChallengeHandler {
     this.artifact.HomeLocations = homeLocations;
     this.artifact.Name = config.name;
     this.artifact.Env = this.env;
+    this.artifact.challengeID = this._challengeID;
     this.artifact.GameConfig = {
       MapPath: config.mapPath,
       Time: config.time,
@@ -112,6 +139,12 @@ class ChallengeHandler {
     const mapHandler = this._mapHandler;
     this.score = Math.round(mapHandler.percentFoodReturned * 100000);
 
+    if (!this.records.pb || this.score > this.records.pb) {
+      this.artifact.PB = true;
+      this.records.pb = this.score;
+      this.notifyRecordsListeners();
+    }
+
     this.generateSnapshot(mapHandler);
 
     this.artifact.Timing.SystemStopTime = new Date().getTime();
@@ -120,6 +153,11 @@ class ChallengeHandler {
     this.artifact.ClientID = this.clientID;
 
     sendRunArtifact(this.artifact);
+  }
+
+  notifyRecordsListeners() {
+    if (this.recordListeners)
+      this.recordListeners.forEach((callback) => callback(this.records));
   }
 }
 

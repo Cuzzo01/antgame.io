@@ -1,5 +1,6 @@
 import AntGame from "./AntGame";
-import ChallengePage from "./ChallengePage/ChallengePage";
+import ChallengePage from "./Challenge/ChallengePage";
+import LoginPage from "./LoginPage/LoginPage";
 import { Config } from "./config";
 import {
   BrowserRouter,
@@ -9,6 +10,8 @@ import {
   useParams,
 } from "react-router-dom";
 import { GameModeContext } from "./GameModeContext";
+import AuthHandler from "./Auth/AuthHandler";
+import UserBar from "./UserBar/UserBar";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
@@ -22,11 +25,16 @@ const AntGameRouter = () => {
             <AntGame mapToLoad={PreloadMapPath} />
           </GameModeContext.Provider>
         </Route>
+        <Route path="/login">
+          <LoginPage />
+        </Route>
         <Route exact path="/challenge">
           <ChallengePage />
+          <UserBar />
         </Route>
         <Route path="/challenge/:id">
           <ChallengeMap />
+          <UserBar showRecords="true" />
         </Route>
         <Route path="/map/:mapName">
           <LoadMapFromParams />
@@ -41,9 +49,12 @@ const AntGameRouter = () => {
 
 const ChallengeMap = () => {
   let { id } = useParams();
+  if (!AuthHandler.loggedIn)
+    return <Redirect to={`/login?redirect=/challenge/${id}`} />;
   return (
     <GameModeContext.Provider value={{ mode: "challenge", challengeID: id }}>
       <AntGame />
+      {/* < */}
     </GameModeContext.Provider>
   );
 };

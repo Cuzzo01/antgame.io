@@ -13,7 +13,7 @@ import MenuBar from "./AntGameHelpers/Menu/MenuBar";
 import { AntFoodSmol, AntSmol } from "./AntGameHelpers/AntImages";
 import { GTMEmitter } from "./AntGameHelpers/GTMEmitter";
 import { GameModeContext } from "./GameModeContext";
-import ChallengeHandler from "./AntGameHelpers/Challenge/ChallengeHandler";
+import ChallengeHandler from "./Challenge/ChallengeHandler";
 import ChallengeModal from "./AntGameHelpers/Challenge/ChallengeModal";
 
 let canvasW, canvasH;
@@ -456,7 +456,7 @@ const styles = {
     paddingRight: "1em",
   },
   container: {
-    padding: "25px",
+    padding: "2em 1em",
     backgroundColor: "#EBF5FB",
     height: "100vh",
   },

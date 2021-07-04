@@ -1,4 +1,3 @@
-const { MongoClient } = require("mongodb");
 const { Connection } = require("./MongoClient");
 const Mongo = require("mongodb");
 
@@ -8,8 +7,33 @@ const getCollection = async (collection) => {
 };
 
 const submitRun = async (runData) => {
+  if (runData.userID) {
+    runData.userID = new Mongo.ObjectID(runData.userID);
+  }
+  if (runData.challengeID) {
+    runData.challengeID = new Mongo.ObjectID(runData.challengeID);
+  }
   const collection = await getCollection("runs");
   const result = await collection.insertOne(runData);
+  return result.ops[0]._id;
+};
+
+const getChallengePBByUser = async (userID, challengeID) => {
+  const userObjectID = new Mongo.ObjectID(userID);
+  const challengeObjectID = new Mongo.ObjectID(challengeID);
+  const collection = await getCollection("runs");
+  const result = await collection.findOne(
+    {
+      userID: userObjectID,
+      challengeID: challengeObjectID,
+    },
+    {
+      sort: { score: -1 },
+      projection: { score: 1 },
+    }
+  );
+  if (result === null) return null;
+  return result.score;
 };
 
 const getActiveChallenges = async () => {
@@ -26,8 +50,14 @@ const getActiveChallenges = async () => {
   return challengeList;
 };
 
-const getChallengeById = async (id) => {
-  const objectID = new Mongo.ObjectID(id);
+const getChallengeByChallengeId = async (id) => {
+  let objectID;
+  try {
+    objectID = new Mongo.ObjectID(id);
+  } catch (e) {
+    console.log("Bad challenge ID passed in:", id);
+    return false;
+  }
   const collection = await getCollection("configs");
   const result = await collection.findOne({ _id: objectID });
   return {
@@ -39,4 +69,9 @@ const getChallengeById = async (id) => {
   };
 };
 
-module.exports = { submitRun, getActiveChallenges, getChallengeById };
+module.exports = {
+  submitRun,
+  getActiveChallenges,
+  getChallengeByChallengeId,
+  getChallengePBByUser,
+};

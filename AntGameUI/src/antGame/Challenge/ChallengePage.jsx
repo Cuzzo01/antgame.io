@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
 import styles from "./ChallengePage.module.css";
 import { getActiveChallenges } from "../AntGameHelpers/Services/ChallengeService";
+import AuthHandler from "../Auth/AuthHandler";
+import { useHistory } from "react-router-dom";
 
 const ChallengePage = () => {
   const [loading, setLoading] = useState(true);
   const [menuList, setMenuList] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
+    if (!AuthHandler.loggedIn) {
+      history.push({ pathname: "/login", search: "?redirect=/challenge" });
+      return;
+    }
     getActiveChallenges().then((activeChallenges) => {
       let list = [];
       activeChallenges.forEach((challenge) => {
@@ -21,7 +28,7 @@ const ChallengePage = () => {
       setMenuList(list);
       setLoading(false);
     });
-  }, []);
+  }, [history]);
 
   return (
     <div className={styles.container}>

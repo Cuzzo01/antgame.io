@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ChallengeHandler from "../../Challenge/ChallengeHandler";
+import ChallengeHandler from "../../../Challenge/ChallengeHandler";
 import styles from "./HomeTracker.module.css";
 
 const HomeTracker = (props) => {

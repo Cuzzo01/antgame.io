@@ -15,7 +15,23 @@ export async function getChallengeConfig(id) {
 }
 
 export async function getActiveChallenges() {
-  return axios.get("/api/challenges/active").then((res) => {
-    return res.data;
-  });
+  return axios
+    .get("/api/challenges/active")
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      return [];
+    });
+}
+
+export async function getRecords(challengeID) {
+  return axios
+    .get(`/api/challenge/${challengeID}/records`)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      return null;
+    });
 }

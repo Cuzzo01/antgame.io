@@ -1,0 +1,27 @@
+.container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* background-color: darkslategray; */
+  border-bottom: 2px black solid;
+  right: 0;
+  height: 1.75em;
+  line-height: 1.75em;
+  display: grid;
+  grid-template-columns: 20em auto 20em;
+}
+
+.username {
+  display: inline-block;
+  vertical-align: middle;
+  text-align: right;
+}
+
+.loginLink {
+  color: blue;
+  padding: 0 1em;
+}
+
+.personalRecord {
+  margin-left: 1em;
+}

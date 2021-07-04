@@ -34,6 +34,7 @@ export default function MenuBar(props) {
           active={props.timerActive}
           styles={styles.foodTracker}
           foodReturned={props.foodReturned}
+          IsChallenge={IsChallenge}
         />
       </div>
       <div style={{ textAlign: "right" }}>

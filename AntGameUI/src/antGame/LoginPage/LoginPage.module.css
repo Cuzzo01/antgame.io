@@ -1,0 +1,51 @@
+.container {
+  max-width: 20em;
+  margin: 5em auto;
+  padding: 0.5em;
+}
+
+.title {
+  display: block;
+  text-align: center;
+}
+
+.input {
+  display: block;
+  width: 100%;
+  margin: 0.1em;
+}
+
+.divButton {
+  border: 2px gray solid;
+  border-radius: 0.5em;
+  display: inline;
+  padding: 0.5em;
+  text-align: center;
+}
+
+.divButton:hover {
+  background-color: gray;
+  color: black;
+  cursor: pointer;
+}
+
+.right {
+  float: right;
+  background-color: lightgreen;
+}
+
+.left {
+  float: left;
+  line-height: 75%;
+  background-color: lightgray;
+}
+
+.buttonBar {
+  display: inline-block;
+  width: 100%;
+  margin-top: 0.5em;
+}
+
+.subtext {
+  font-size: 0.75em;
+}
