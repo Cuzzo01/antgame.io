@@ -89,6 +89,14 @@ const LoginPage = (props) => {
           </div>
         </div>
       </form>
+      <br />
+          <div>
+            Just ask for a login.
+            <br />
+            accounts@antgame.io
+            <br />
+            (registration coming soon)
+          </div>
     </div>
   );
 };
