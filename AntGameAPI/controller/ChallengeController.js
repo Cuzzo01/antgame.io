@@ -4,57 +4,67 @@ const UserDao = require("../dao/UserDao");
 
 async function postRun(req, res) {
   try {
-    let incrementedRuns = false
     const user = req.user;
-
     const runData = req.body.data;
 
-    let runRecord = {
-      score: runData.Score,
-      submissionTime: new Date().toISOString(),
-      name: runData.Name,
-      challengeID: runData.challengeID,
-      clientID: runData.ClientID,
-      env: runData.Env,
-      details: {
-        homeLocations: runData.HomeLocations,
-        gameConfig: runData.GameConfig,
-        timing: runData.Timing,
-        snapshots: runData.Snapshots,
-        foodConsumed: runData.FoodConsumed,
-      },
-    };
-    if (user.id) {
-      runRecord.userID = user.id;
-    } else {
-      runRecord.userID = false;
-    }
+    let saveRun = false;
     if (runData.PB) {
       const CurrentDetails = await UserDao.getChallengeDetailsByUser(
         user.id,
         runData.challengeID
       );
-      if (CurrentDetails === null) {
-        UserDao.addNewChallengeDetails(
-          user.id,
-          runData.challengeID,
-          runData.Score
-        );
-        incrementedRuns = true
-      } else if (CurrentDetails.pb < runData.Score) {
-        UserDao.updateChallengePBAndRunCount(
-          user.id,
-          runData.challengeID,
-          runData.Score
-        );
-        incrementedRuns = true
-      } else {
-      }
+      if (CurrentDetails === null) saveRun = "New challenge";
+      else if (CurrentDetails.pb < runData.Score) saveRun = "New PB";
     }
-    if (user.id && !incrementedRuns)
+
+    if (saveRun === false) {
+      // Where save limiting logic will live in the future
+      // Only set to true % of time you want random run saved
+      saveRun = true;
+    }
+
+    let runID;
+    if (saveRun) {
+      let runRecord = {
+        score: runData.Score,
+        submissionTime: new Date().toISOString(),
+        name: runData.Name,
+        challengeID: runData.challengeID,
+        clientID: runData.ClientID,
+        env: runData.Env,
+        details: {
+          homeLocations: runData.HomeLocations,
+          gameConfig: runData.GameConfig,
+          timing: runData.Timing,
+          snapshots: runData.Snapshots,
+          foodConsumed: runData.FoodConsumed,
+        },
+      };
+      if (user.id) {
+        runRecord.userID = user.id;
+      } else {
+        runRecord.userID = false;
+      }
+      runID = await ChallengeDao.submitRun(runRecord);
+    }
+
+    if (saveRun === "New PB") {
+      UserDao.updateChallengePBAndRunCount(
+        user.id,
+        runData.challengeID,
+        runData.Score,
+        runID
+      );
+    } else if (saveRun === "New challenge") {
+      UserDao.addNewChallengeDetails(
+        user.id,
+        runData.challengeID,
+        runData.Score,
+        runID
+      );
+    } else {
       UserDao.incrementChallengeRunCount(user.id, runData.challengeID);
-    
-    const RunID = await ChallengeDao.submitRun(runRecord);
+    }
 
     res.send("OK");
   } catch (e) {
@@ -98,16 +108,20 @@ async function getRecords(req, res) {
     const user = req.user;
     const challengeID = req.params.id;
 
-    const record = await ChallengeDao.getChallengePBByUser(
+    // const record = await ChallengeDao.getChallengePBByUser(
+    //   user.id,
+    //   challengeID
+    // );
+    const challengeDetails = await UserDao.getChallengeDetailsByUser(
       user.id,
       challengeID
     );
-    if (record === null) {
+    if (challengeDetails === null) {
       res.sendStatus(404);
       return;
     }
     const recordResponse = {
-      pb: record,
+      pb: challengeDetails.pb,
     };
     res.send(recordResponse);
   } catch (e) {

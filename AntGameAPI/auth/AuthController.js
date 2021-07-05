@@ -76,7 +76,7 @@ async function createUser(req, res) {
       username: username,
       passHash: hashedPassword,
       admin: admin,
-      challengeDetails: []
+      challengeDetails: [],
     });
     res.send("OK");
   } catch (e) {

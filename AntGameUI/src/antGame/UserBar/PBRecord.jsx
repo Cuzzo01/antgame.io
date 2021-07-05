@@ -8,8 +8,8 @@ const PBRecord = (props) => {
 
   useEffect(() => {
     ChallengeHandler.addRecordListener((records) => {
-      if (records === "Anon") setRecord("Login to save score");
-      else if (records === null) setRecord("Not set");
+      if (records === "Anon") setRecord("Login to track PB");
+      else if (records === null) setRecord("No recorded PB");
       else setRecord(`Personal Best: ${records.pb}`);
       if (loading) setLoading(false);
     });
