@@ -141,7 +141,7 @@ class ChallengeHandler {
 
     if (!this.records?.pb || this.score > this.records.pb) {
       this.artifact.PB = true;
-      if (!this.records) this.records = {}
+      if (!this.records) this.records = {};
       this.records.pb = this.score;
       this.notifyRecordsListeners();
     }

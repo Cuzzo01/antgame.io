@@ -4,6 +4,7 @@ const UserDao = require("../dao/UserDao");
 
 async function postRun(req, res) {
   try {
+    let incrementedRuns = false
     const user = req.user;
 
     const runData = req.body.data;
@@ -39,16 +40,20 @@ async function postRun(req, res) {
           runData.challengeID,
           runData.Score
         );
+        incrementedRuns = true
       } else if (CurrentDetails.pb < runData.Score) {
         UserDao.updateChallengePBAndRunCount(
           user.id,
           runData.challengeID,
           runData.Score
         );
+        incrementedRuns = true
       } else {
-        UserDao.incrementChallengeRunCount(user.id, runData.challengeID);
       }
     }
+    if (user.id && !incrementedRuns)
+      UserDao.incrementChallengeRunCount(user.id, runData.challengeID);
+    
     const RunID = await ChallengeDao.submitRun(runRecord);
 
     res.send("OK");

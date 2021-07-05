@@ -9,7 +9,9 @@ export async function getToken(username, password) {
 }
 
 export async function getAnonToken(clientID) {
-  return axios.post("/api/auth/anonToken", { clientID: clientID }).then((res) => {
-    return res.data;
-  });
+  return axios
+    .post("/api/auth/anonToken", { clientID: clientID })
+    .then((res) => {
+      return res.data;
+    });
 }
