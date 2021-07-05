@@ -7,10 +7,10 @@ const UserBar = (props) => {
   return (
     <div className={styles.container}>
       <div className={styles.personalRecord}>
-        <PersonalRecord />
+        {props.showRecords ? <PersonalRecord /> : null }
       </div>
       <div className={styles.worldRecord}>
-        <WorldRecord />
+        {props.showRecords ? <WorldRecord /> : null }
       </div>
       <div className={styles.username}>
         {AuthHandler.isAnon ? (
