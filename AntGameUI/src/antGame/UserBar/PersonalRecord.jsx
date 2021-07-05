@@ -9,7 +9,7 @@ const PersonalRecord = (props) => {
 
   useEffect(() => {
     if (AuthHandler.isAnon) {
-      setRecord("Login to track PB");
+      setRecord("Login to track PBs");
       setLoading(false);
     } else
       ChallengeHandler.addRecordListener((records) => {
