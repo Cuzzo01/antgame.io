@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import styles from "./ChallengePage.module.css";
-import { getActiveChallenges } from "../AntGameHelpers/Services/ChallengeService";
-import AuthHandler from "../Auth/AuthHandler";
+import { getActiveChallenges } from "../../AntGameHelpers/Services/ChallengeService";
+import AuthHandler from "../../Auth/AuthHandler";
 import { useHistory } from "react-router-dom";
 
-const ChallengePage = () => {
+const ChallengeList = () => {
   const [loading, setLoading] = useState(true);
   const [menuList, setMenuList] = useState([]);
   const history = useHistory();
@@ -41,7 +41,7 @@ const ChallengePage = () => {
     </div>
   );
 };
-export default ChallengePage;
+export default ChallengeList;
 
 const ListItem = (props) => {
   return (

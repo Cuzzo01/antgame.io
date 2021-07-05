@@ -1,0 +1,18 @@
+.body {
+  text-align: center;
+}
+
+.score {
+  border-bottom: 2px solid black;
+  margin: 0.5em 35%;
+  font-family: "Courier Prime Bold";
+}
+
+.newPB {
+  font-family: "Courier Prime Bold";
+}
+
+.newWR {
+  font-family: "Courier Prime Bold";
+  color: green;
+}

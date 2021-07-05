@@ -9,12 +9,12 @@ const PersonalRecord = (props) => {
 
   useEffect(() => {
     if (AuthHandler.isAnon) {
-      setRecord("Login to track PBs");
+      setRecord("Login to track PRs");
       setLoading(false);
     } else
       ChallengeHandler.addRecordListener((records) => {
-        if (!records.pb) setRecord("No recorded PB");
-        else setRecord(`Personal Best: ${records.pb}`);
+        if (!records.pb) setRecord("No Personal Record");
+        else setRecord(`Personal Record: ${records.pb}`);
         if (loading) setLoading(false);
       });
   });

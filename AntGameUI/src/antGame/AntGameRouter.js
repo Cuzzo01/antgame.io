@@ -1,5 +1,5 @@
 import AntGame from "./AntGame";
-import ChallengePage from "./Challenge/ChallengePage";
+import ChallengeList from "./Challenge/List/ChallengeList";
 import LoginPage from "./LoginPage/LoginPage";
 import { Config } from "./config";
 import {
@@ -29,7 +29,7 @@ const AntGameRouter = () => {
           <LoginPage />
         </Route>
         <Route exact path="/challenge">
-          <ChallengePage />
+          <ChallengeList />
           <UserBar />
         </Route>
         <Route path="/challenge/:id">

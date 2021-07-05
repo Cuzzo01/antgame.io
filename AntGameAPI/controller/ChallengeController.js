@@ -145,7 +145,8 @@ async function getActiveChallenges(req, res) {
         challengeIDList
       );
       userRecords.forEach((userRecord) => {
-        records[userRecord.ID].pb = userRecord.pb;
+        if (records.hasOwnProperty(userRecord.ID))
+          records[userRecord.ID].pb = userRecord.pb;
       });
     }
 

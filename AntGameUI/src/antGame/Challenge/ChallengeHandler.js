@@ -22,11 +22,17 @@ class ChallengeHandler {
     this.score = "Not Scored";
     this.records = false;
     this.recordsPromise = false;
+    this.WrRun = false;
     this.recordListeners = [];
+    this.wrListeners = [];
   }
 
   set mapHandler(mapHandler) {
     this._mapHandler = mapHandler;
+  }
+
+  get isPB() {
+    return this.artifact?.PB === true;
   }
 
   set timerHandler(timerHandler) {
@@ -47,6 +53,10 @@ class ChallengeHandler {
   addRecordListener(callback) {
     this.recordListeners.push(callback);
     if (this.records) callback(this.records);
+  }
+
+  addWrListener(callback) {
+    this.wrListeners.push(callback);
   }
 
   async getConfig() {
@@ -102,6 +112,11 @@ class ChallengeHandler {
   }
 
   handleStart(homeLocations) {
+    if (this.WrRun) {
+      this.WrRun = false;
+      this.notifyWrListeners();
+    }
+
     const config = this.config;
     this.artifact = {};
     this.artifact.HomeLocations = homeLocations;
@@ -160,7 +175,23 @@ class ChallengeHandler {
   async sendArtifact() {
     const response = await sendRunArtifact(this.artifact);
     this.records.wr = response.wr;
+    this.checkForWrRun();
     this.notifyRecordsListeners();
+  }
+
+  checkForWrRun() {
+    if (
+      this.records.wr.score === this.artifact.Score &&
+      this.records.wr.name === AuthHandler.username
+    ) {
+      this.WrRun = true;
+    }
+    this.notifyWrListeners();
+  }
+
+  notifyWrListeners() {
+    if (this.wrListeners)
+      this.wrListeners.forEach((callback) => callback(this.WrRun));
   }
 
   notifyRecordsListeners() {

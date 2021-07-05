@@ -1,7 +1,15 @@
 import { Modal, Button } from "react-bootstrap";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import styles from "./ChallengeModal.module.css";
+import ChallengeHandler from "../../Challenge/ChallengeHandler";
 
 const ChallengeModal = (props) => {
+  const [isWrRun, setIsWrRun] = useState(false);
+
+  useEffect(() => {
+    ChallengeHandler.addWrListener((isWrRun) => setIsWrRun(isWrRun));
+  });
+
   return (
     <Modal
       show={props.show}
@@ -9,12 +17,16 @@ const ChallengeModal = (props) => {
       backdrop="static"
       keyboard={false}
     >
-      <Modal.Header>Challenge Results</Modal.Header>
-      <Modal.Body>
-        <h5>Challenge:</h5>
-        <p>{props.challengeHandler?.config.name}</p>
-        <h5>Score:</h5>
-        <p>{props.challengeHandler?.score}</p>
+      <Modal.Header className={styles.header}>
+        Results: {props.challengeHandler?.config.name}
+      </Modal.Header>
+      <Modal.Body className={styles.body}>
+        {isWrRun ? <h4 className={styles.newWR}>New World Record!</h4> : null}
+        {props.challengeHandler?.isPB ? (
+          <h5 className={styles.newPB}>New Personal Record</h5>
+        ) : null}
+        <h5 className={styles.score}>Score</h5>
+        <h6>{props.challengeHandler?.score}</h6>
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={() => props.closeModal()}>Close</Button>
