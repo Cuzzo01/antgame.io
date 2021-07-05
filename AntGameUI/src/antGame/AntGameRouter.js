@@ -34,7 +34,7 @@ const AntGameRouter = () => {
         </Route>
         <Route path="/challenge/:id">
           <ChallengeMap />
-          <UserBar showRecords={true}/>
+          <UserBar showRecords={true} />
         </Route>
         <Route path="/map/:mapName">
           <LoadMapFromParams />

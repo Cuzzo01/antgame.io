@@ -6,15 +6,21 @@ const getCollection = async (collection) => {
   return await connection.db("challenges").collection(collection);
 };
 
-// const getAllPBsByUser = async (userID) => {
-//   const userObjectID = new ObjectID(userID);
-//   const collection = await getCollection("users")
-//   const result = await collection.findOne(
-//     { _id: userObjectID },
-//     { projection: { "challengeDetails": { "challengeID": 1, "PB": 1 } } }
-//   )
-//   return result.challengeDetails
-// }
+const getUserPBsByChallengeList = async (userID, challengeIDList) => {
+  let objectIDList = [];
+  challengeIDList.forEach((id) => {
+    const parseResult = TryParseObjectID(id, "listChallengeID");
+    objectIDList.push(parseResult);
+  });
+  const userObjectID = TryParseObjectID(userID, "userID");
+
+  const collection = await getCollection("users");
+  const result = await collection.findOne(
+    { _id: userObjectID, "challengeDetails.ID": { $in: objectIDList } },
+    { projection: { "challengeDetails.ID": 1, "challengeDetails.pb": 1 } }
+  );
+  return result.challengeDetails;
+};
 
 const getChallengeDetailsByUser = async (userID, challengeID) => {
   const userObjectID = TryParseObjectID(userID, "userId");
@@ -105,4 +111,5 @@ module.exports = {
   addNewChallengeDetails,
   getChallengeDetailsByUser,
   incrementChallengeRunCount,
+  getUserPBsByChallengeList,
 };

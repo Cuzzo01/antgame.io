@@ -26,30 +26,33 @@ const submitRun = async (runData) => {
   return runID;
 };
 
-// const getChallengePBByUser = async (userID, challengeID) => {
-//   const userObjectID = new Mongo.ObjectID(userID);
-//   const challengeObjectID = new Mongo.ObjectID(challengeID);
-//   const collection = await getCollection("runs");
-//   const result = await collection.findOne(
-//     {
-//       userID: userObjectID,
-//       challengeID: challengeObjectID,
-//     },
-//     {
-//       sort: { score: -1 },
-//       projection: { score: 1 },
-//     }
-//   );
-//   if (result === null) return null;
-//   return result.score;
-// };
-
 const getRecordByChallenge = async (challengeID) => {
   const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
 
-  collection = await getCollection("configs");
+  const collection = await getCollection("configs");
   const result = await collection.findOne({ _id: challengeObjectID });
   return result.record ? result.record : {};
+};
+
+const getRecordsByChallengeList = async (challengeIDList) => {
+  let objectIDList = [];
+  challengeIDList.forEach((id) => {
+    const parseResult = TryParseObjectID(id, "listChallengeID");
+    objectIDList.push(parseResult);
+  });
+
+  const collection = await getCollection("configs");
+  const result = await collection
+    .find(
+      { _id: { $in: objectIDList } },
+      { projection: { "record.score": 1, "record.username": 1 } }
+    )
+    .toArray();
+  let records = {};
+  result.forEach((record) => {
+    records[record._id] = { wr: record.record };
+  });
+  return records;
 };
 
 const updateChallengeRecord = async (
@@ -125,5 +128,6 @@ module.exports = {
   getChallengeByChallengeId,
   getRecordByChallenge,
   updateChallengeRecord,
+  getRecordsByChallengeList,
   // getChallengePBByUser,
 };

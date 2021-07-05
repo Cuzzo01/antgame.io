@@ -1,16 +1,16 @@
 import styles from "./UserBar.module.css";
 import AuthHandler from "../Auth/AuthHandler";
 import PersonalRecord from "./PersonalRecord";
-import WorldRecord from "./WorldRecord"
+import WorldRecord from "./WorldRecord";
 
 const UserBar = (props) => {
   return (
     <div className={styles.container}>
       <div className={styles.personalRecord}>
-        {props.showRecords ? <PersonalRecord /> : null }
+        {props.showRecords ? <PersonalRecord /> : null}
       </div>
       <div className={styles.worldRecord}>
-        {props.showRecords ? <WorldRecord /> : null }
+        {props.showRecords ? <WorldRecord /> : null}
       </div>
       <div className={styles.username}>
         {AuthHandler.isAnon ? (

@@ -13,16 +13,44 @@ body {
 }
 
 .listItem {
-  display: block;
-  text-align: center;
+  display: grid;
+  grid-template-columns: 50% 50%;
   margin: 0.5em;
   padding: 1em;
   border: 3px black solid;
   border-radius: 1em;
   background-color: lightgray;
+  line-height: 1.15em;
+}
+
+.title {
+  display: flex;
+  align-items: center;
 }
 
 .listItem:hover {
   background-color: grey;
   color: black;
+  cursor: pointer;
+}
+
+.records {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+.pr {
+  font-size: 0.8em;
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 0.5em;
+  line-height: 1.1em;
+}
+
+.wr {
+  font-family: "Courier Prime Bold";
+  border-left: 2px black solid;
+  padding-left: 0.5em;
 }

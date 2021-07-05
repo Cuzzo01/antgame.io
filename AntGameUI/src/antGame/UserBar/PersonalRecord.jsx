@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import AuthHandler from "../Auth/AuthHandler"
+import AuthHandler from "../Auth/AuthHandler";
 import ChallengeHandler from "../Challenge/ChallengeHandler";
 import styles from "./RecordDisplay.module.css";
 
@@ -8,11 +8,10 @@ const PersonalRecord = (props) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (AuthHandler.isAnon){
+    if (AuthHandler.isAnon) {
       setRecord("Login to track PB");
-      setLoading(false)
-    }
-    else 
+      setLoading(false);
+    } else
       ChallengeHandler.addRecordListener((records) => {
         if (!records.pb) setRecord("No recorded PB");
         else setRecord(`Personal Best: ${records.pb}`);

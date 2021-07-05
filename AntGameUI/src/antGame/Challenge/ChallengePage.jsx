@@ -14,13 +14,15 @@ const ChallengePage = () => {
       history.push({ pathname: "/login", search: "?redirect=/challenge" });
       return;
     }
-    getActiveChallenges().then((activeChallenges) => {
+    getActiveChallenges().then((challengeResponse) => {
+      const records = challengeResponse.records;
       let list = [];
-      activeChallenges.forEach((challenge) => {
+      challengeResponse.challenges.forEach((challenge) => {
         list.push(
           <ListItem
             key={challenge.id}
             name={challenge.name}
+            records={records[challenge.id]}
             id={challenge.id}
           />
         );
@@ -43,7 +45,7 @@ export default ChallengePage;
 
 const ListItem = (props) => {
   return (
-    <a
+    <div
       href="/"
       className={styles.listItem}
       onClick={(e) => {
@@ -53,7 +55,23 @@ const ListItem = (props) => {
         window.location = `/challenge/${props.id}`;
       }}
     >
-      {props.name}
-    </a>
+      <div className={styles.title}>{props.name}</div>
+      <div className={styles.records}>
+        {AuthHandler.isAnon ? (
+          <div />
+        ) : (
+          <div className={styles.pr}>
+            Personal Record
+            <br />
+            {props.records.pb ? props.records.pb : "No record"}
+          </div>
+        )}
+        <div className={styles.wr}>
+          World Record
+          <br />
+          {props.records.wr.score} - {props.records.wr.username}
+        </div>
+      </div>
+    </div>
   );
 };

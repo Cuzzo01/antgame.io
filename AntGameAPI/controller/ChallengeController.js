@@ -128,8 +128,28 @@ async function getChallenge(req, res) {
 
 async function getActiveChallenges(req, res) {
   try {
+    const user = req.user;
+
     const activeChallenges = await ChallengeDao.getActiveChallenges();
-    res.send(activeChallenges);
+
+    let challengeIDList = [];
+    activeChallenges.forEach((challenge) => {
+      challengeIDList.push(challenge.id);
+    });
+
+    let records = await ChallengeDao.getRecordsByChallengeList(challengeIDList);
+    let userRecords = false;
+    if (!user.anon) {
+      userRecords = await UserDao.getUserPBsByChallengeList(
+        user.id,
+        challengeIDList
+      );
+      userRecords.forEach((userRecord) => {
+        records[userRecord.ID].pb = userRecord.pb;
+      });
+    }
+
+    res.send({ challenges: activeChallenges, records: records });
   } catch (e) {
     console.log(e);
     res.status(500);
