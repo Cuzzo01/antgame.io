@@ -17,8 +17,9 @@ const getCollection = async (collection) => {
 // }
 
 const getChallengeDetailsByUser = async (userID, challengeID) => {
-  const userObjectID = new ObjectID(userID);
-  const challengeObjectID = new ObjectID(challengeID);
+  const userObjectID = TryParseObjectID(userID, "userId");
+  const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
+
   const collection = await getCollection("users");
   const result = await collection.findOne(
     { _id: userObjectID, "challengeDetails.ID": challengeObjectID },
@@ -34,18 +35,10 @@ const updateChallengePBAndRunCount = async (
   score,
   runID
 ) => {
-  let userObjectID, challengeObjectID, runObjectID;
-  try {
-    userObjectID = new ObjectID(userID);
-    challengeObjectID = new ObjectID(challengeID);
-    runObjectID = new ObjectID(runID);
-  } catch (e) {
-    console.log(
-      "Threw on ObjectID parsing in UserDao.updateChallengePBAndRunCount"
-    );
-    console.log(userID, challengeID, runID);
-    return;
-  }
+  const userObjectID = TryParseObjectID(userID, "userId");
+  const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
+  const runObjectID = TryParseObjectID(runID, "runID");
+
   const collection = await getCollection("users");
   const result = await collection.updateOne(
     { _id: userObjectID },
@@ -63,15 +56,9 @@ const updateChallengePBAndRunCount = async (
 };
 
 const incrementChallengeRunCount = async (userID, challengeID) => {
-  let userObjectID, challengeObjectID;
-  try {
-    userObjectID = new ObjectID(userID);
-    challengeObjectID = new ObjectID(challengeID);
-  } catch (e) {
-    console.log("Threw on ObjectID parsing in UserDao.incrementChallengeRunCount");
-    console.log(userID, challengeID);
-    return;
-  }
+  const userObjectID = TryParseObjectID(userID, "userId");
+  const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
+
   const collection = await getCollection("users");
   const result = await collection.updateOne(
     { _id: userObjectID },
@@ -85,16 +72,10 @@ const incrementChallengeRunCount = async (userID, challengeID) => {
 };
 
 const addNewChallengeDetails = async (userID, challengeID, score, runID) => {
-  let userObjectID, challengeObjectID, runObjectID;
-  try {
-    userObjectID = new ObjectID(userID);
-    challengeObjectID = new ObjectID(challengeID);
-    runObjectID = new ObjectID(runID);
-  } catch (e) {
-    console.log("Threw on ObjectID parsing in UserDao.addNewChallengeDetails");
-    console.log(userID, challengeID, runID);
-    return;
-  }
+  const userObjectID = TryParseObjectID(userID, "userId");
+  const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
+  const runObjectID = TryParseObjectID(runID, "runID");
+
   const collection = await getCollection("users");
   const result = await collection.updateOne(
     { _id: userObjectID },
@@ -109,6 +90,14 @@ const addNewChallengeDetails = async (userID, challengeID, score, runID) => {
       },
     }
   );
+};
+
+const TryParseObjectID = (stringID, name) => {
+  try {
+    return new ObjectID(stringID);
+  } catch (e) {
+    throw `Threw on ${name} parsing in UserDao: ${stringID}`;
+  }
 };
 
 module.exports = {

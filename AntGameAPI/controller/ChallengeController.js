@@ -108,10 +108,6 @@ async function getRecords(req, res) {
     const user = req.user;
     const challengeID = req.params.id;
 
-    // const record = await ChallengeDao.getChallengePBByUser(
-    //   user.id,
-    //   challengeID
-    // );
     const challengeDetails = await UserDao.getChallengeDetailsByUser(
       user.id,
       challengeID

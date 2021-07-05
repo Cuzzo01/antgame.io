@@ -8,33 +8,43 @@ const getCollection = async (collection) => {
 
 const submitRun = async (runData) => {
   if (runData.userID) {
-    runData.userID = new Mongo.ObjectID(runData.userID);
+    let userObjectID = TryParseObjectID(runData.userID, "userID");
+
+    runData.userID = userObjectID;
   }
   if (runData.challengeID) {
-    runData.challengeID = new Mongo.ObjectID(runData.challengeID);
+    let challengeObjectID = TryParseObjectID(
+      runData.challengeID,
+      "challengeID"
+    );
+
+    runData.challengeID = challengeObjectID;
   }
   const collection = await getCollection("runs");
   const result = await collection.insertOne(runData);
-  return result.ops[0]._id;
+  const runID = result.ops[0]._id;
+  return runID;
 };
 
-const getChallengePBByUser = async (userID, challengeID) => {
-  const userObjectID = new Mongo.ObjectID(userID);
-  const challengeObjectID = new Mongo.ObjectID(challengeID);
-  const collection = await getCollection("runs");
-  const result = await collection.findOne(
-    {
-      userID: userObjectID,
-      challengeID: challengeObjectID,
-    },
-    {
-      sort: { score: -1 },
-      projection: { score: 1 },
-    }
-  );
-  if (result === null) return null;
-  return result.score;
-};
+// const getChallengePBByUser = async (userID, challengeID) => {
+//   const userObjectID = new Mongo.ObjectID(userID);
+//   const challengeObjectID = new Mongo.ObjectID(challengeID);
+//   const collection = await getCollection("runs");
+//   const result = await collection.findOne(
+//     {
+//       userID: userObjectID,
+//       challengeID: challengeObjectID,
+//     },
+//     {
+//       sort: { score: -1 },
+//       projection: { score: 1 },
+//     }
+//   );
+//   if (result === null) return null;
+//   return result.score;
+// };
+
+const getRecordByChallenge = async (userID, challengeID) => {};
 
 const getActiveChallenges = async () => {
   const collection = await getCollection("configs");
@@ -51,15 +61,13 @@ const getActiveChallenges = async () => {
 };
 
 const getChallengeByChallengeId = async (id) => {
-  let objectID;
-  try {
-    objectID = new Mongo.ObjectID(id);
-  } catch (e) {
+  const challengeObjectID = TryParseObjectID(id)
+  if (!challengeObjectID) {
     console.log("Bad challenge ID passed in:", id);
     return false;
   }
   const collection = await getCollection("configs");
-  const result = await collection.findOne({ _id: objectID });
+  const result = await collection.findOne({ _id: challengeObjectID });
   return {
     id: result._id,
     mapPath: result.mapPath,
@@ -69,9 +77,19 @@ const getChallengeByChallengeId = async (id) => {
   };
 };
 
+const TryParseObjectID = (stringID, name) => {
+  try {
+    return new Mongo.ObjectID(stringID);
+  } catch (e) {
+    if (name)
+      throw `Threw on ${name} parsing in ChallengeDao: ${stringID}`;
+    else return false
+  }
+};
+
 module.exports = {
   submitRun,
   getActiveChallenges,
   getChallengeByChallengeId,
-  getChallengePBByUser,
+  // getChallengePBByUser,
 };
