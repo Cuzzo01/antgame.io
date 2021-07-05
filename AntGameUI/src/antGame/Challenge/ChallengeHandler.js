@@ -83,8 +83,6 @@ class ChallengeHandler {
   }
 
   async getRecords() {
-    const isAnon = AuthHandler.isAnon;
-    if (isAnon) return "Anon";
     if (this.records) return this.records;
     else if (this.recordsPromise) return this.recordsPromise;
     else {
@@ -153,7 +151,13 @@ class ChallengeHandler {
     this.artifact.Score = this.score;
     this.artifact.ClientID = this.clientID;
 
-    sendRunArtifact(this.artifact);
+    this.sendArtifact()
+  }
+
+  async sendArtifact() {
+    const response = await sendRunArtifact(this.artifact);
+    this.records.wr = response.wr
+    this.notifyRecordsListeners()
   }
 
   notifyRecordsListeners() {

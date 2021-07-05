@@ -8,13 +8,14 @@ async function postRun(req, res) {
     const runData = req.body.data;
 
     let saveRun = false;
+    let currentDetails;
     if (runData.PB) {
-      const CurrentDetails = await UserDao.getChallengeDetailsByUser(
+      currentDetails = await UserDao.getChallengeDetailsByUser(
         user.id,
         runData.challengeID
       );
-      if (CurrentDetails === null) saveRun = "New challenge";
-      else if (CurrentDetails.pb < runData.Score) saveRun = "New PB";
+      if (currentDetails === null) saveRun = "New challenge";
+      else if (currentDetails.pb < runData.Score) saveRun = "New PB";
     }
 
     if (saveRun === false) {
@@ -48,25 +49,59 @@ async function postRun(req, res) {
       runID = await ChallengeDao.submitRun(runRecord);
     }
 
-    if (saveRun === "New PB") {
-      UserDao.updateChallengePBAndRunCount(
-        user.id,
-        runData.challengeID,
-        runData.Score,
-        runID
-      );
-    } else if (saveRun === "New challenge") {
-      UserDao.addNewChallengeDetails(
-        user.id,
-        runData.challengeID,
-        runData.Score,
-        runID
-      );
-    } else {
-      UserDao.incrementChallengeRunCount(user.id, runData.challengeID);
+    if (!user.anon) {
+      if (saveRun === "New PB") {
+        UserDao.updateChallengePBAndRunCount(
+          user.id,
+          runData.challengeID,
+          runData.Score,
+          runID
+        );
+      } else if (saveRun === "New challenge") {
+        UserDao.addNewChallengeDetails(
+          user.id,
+          runData.challengeID,
+          runData.Score,
+          runID
+        );
+      } else {
+        UserDao.incrementChallengeRunCount(user.id, runData.challengeID);
+      }
+
+      let isWorldRecord = false;
+      let challengeRecord;
+      if (saveRun) {
+        challengeRecord = await ChallengeDao.getRecordByChallenge(
+          runData.challengeID
+        );
+        const recordEmpty = Object.keys(challengeRecord).length === 0;
+        if (recordEmpty || challengeRecord.score < runData.Score) {
+          isWorldRecord = true;
+          ChallengeDao.updateChallengeRecord(
+            runData.challengeID,
+            runData.Score,
+            user.username,
+            user.id,
+            runID
+          );
+        }
+      }
+      let response = {};
+      if (isWorldRecord)
+        response.wr = {
+          score: runData.Score,
+          name: user.username,
+        };
+      else
+        response.wr = {
+          score: challengeRecord.score,
+          name: challengeRecord.username,
+        };
+      res.send(response);
+      return;
     }
 
-    res.send("OK");
+    res.send("Ok");
   } catch (e) {
     console.log(e);
     res.status(500);
@@ -104,22 +139,28 @@ async function getActiveChallenges(req, res) {
 
 async function getRecords(req, res) {
   try {
-    if (RejectIfAnon(req, res)) return;
-    const user = req.user;
     const challengeID = req.params.id;
+    const user = req.user;
 
-    const challengeDetails = await UserDao.getChallengeDetailsByUser(
-      user.id,
-      challengeID
-    );
-    if (challengeDetails === null) {
-      res.sendStatus(404);
-      return;
+    let response = {};
+    const worldRecord = await ChallengeDao.getRecordByChallenge(challengeID);
+    if (Object.keys(worldRecord).length !== 0)
+      response.wr = {
+        score: worldRecord.score,
+        name: worldRecord.username,
+      };
+
+    if (!user.anon) {
+      const challengeDetails = await UserDao.getChallengeDetailsByUser(
+        user.id,
+        challengeID
+      );
+      if (challengeDetails !== null) {
+        response.pb = challengeDetails.pb;
+      }
     }
-    const recordResponse = {
-      pb: challengeDetails.pb,
-    };
-    res.send(recordResponse);
+
+    res.send(response);
   } catch (e) {
     console.log(e);
     res.status(500);

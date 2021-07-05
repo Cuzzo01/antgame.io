@@ -44,7 +44,40 @@ const submitRun = async (runData) => {
 //   return result.score;
 // };
 
-const getRecordByChallenge = async (userID, challengeID) => {};
+const getRecordByChallenge = async (challengeID) => {
+  const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
+
+  collection = await getCollection("configs");
+  const result = await collection.findOne({ _id: challengeObjectID });
+  return result.record ?? {};
+};
+
+const updateChallengeRecord = async (
+  challengeID,
+  score,
+  username,
+  userID,
+  runID
+) => {
+  const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
+  const userObjectID = TryParseObjectID(userID, "userID");
+  const runObjectID = TryParseObjectID(runID, "runID");
+
+  collection = await getCollection("configs");
+  const result = await collection.updateOne(
+    { _id: challengeObjectID },
+    {
+      $set: {
+        record: {
+          score: score,
+          username: username,
+          userID: userObjectID,
+          runID: runObjectID,
+        },
+      },
+    }
+  );
+};
 
 const getActiveChallenges = async () => {
   const collection = await getCollection("configs");
@@ -61,7 +94,7 @@ const getActiveChallenges = async () => {
 };
 
 const getChallengeByChallengeId = async (id) => {
-  const challengeObjectID = TryParseObjectID(id)
+  const challengeObjectID = TryParseObjectID(id);
   if (!challengeObjectID) {
     console.log("Bad challenge ID passed in:", id);
     return false;
@@ -81,9 +114,8 @@ const TryParseObjectID = (stringID, name) => {
   try {
     return new Mongo.ObjectID(stringID);
   } catch (e) {
-    if (name)
-      throw `Threw on ${name} parsing in ChallengeDao: ${stringID}`;
-    else return false
+    if (name) throw `Threw on ${name} parsing in ChallengeDao: ${stringID}`;
+    else return false;
   }
 };
 
@@ -91,5 +123,7 @@ module.exports = {
   submitRun,
   getActiveChallenges,
   getChallengeByChallengeId,
+  getRecordByChallenge,
+  updateChallengeRecord,
   // getChallengePBByUser,
 };

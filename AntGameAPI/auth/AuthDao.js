@@ -35,6 +35,7 @@ const saveNewUser = async (userObject) => {
     username_lower: userObject.username.toLowerCase(),
     passHash: userObject.passHash,
     admin: userObject.admin,
+    challengeDetails: [],
   };
   return await collection.insertOne(newUser);
 };
