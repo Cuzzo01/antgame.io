@@ -49,7 +49,7 @@ const getRecordByChallenge = async (challengeID) => {
 
   collection = await getCollection("configs");
   const result = await collection.findOne({ _id: challengeObjectID });
-  return result.record ?? {};
+  return result.record ? result.record : {};
 };
 
 const updateChallengeRecord = async (
