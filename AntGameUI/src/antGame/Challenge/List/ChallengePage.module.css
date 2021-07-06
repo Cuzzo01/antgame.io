@@ -14,7 +14,7 @@ body {
 
 .listItem {
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 30% 70%;
   margin: 0.5em;
   padding: 1em;
   border: 3px black solid;
@@ -36,7 +36,7 @@ body {
 
 .records {
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 45% 55%;
 }
 
 .pr {

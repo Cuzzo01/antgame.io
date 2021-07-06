@@ -69,9 +69,9 @@ const ListItem = (props) => {
         <div className={styles.wr}>
           World Record
           <br />
-          {Object.keys(props.records.wr).length === 0 ? "No record" :
-          `${props.records.wr.score} - ${props.records.wr.username}`
-          }
+          {props.records.wr && Object.keys(props.records.wr).length === 0
+            ? "No record"
+            : `${props.records.wr.score} - ${props.records.wr.username}`}
         </div>
       </div>
     </div>
