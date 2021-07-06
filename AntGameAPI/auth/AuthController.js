@@ -16,11 +16,15 @@ async function verifyLogin(req, res) {
       return;
     }
     if (await PasswordHandler.checkPassword(password, authDetails.passHash)) {
-      const token = WebTokenHandler.generateAccessToken({
+      const tokenObject = {
         id: authDetails.id,
         username: authDetails.username,
         admin: authDetails.admin,
-      });
+      };
+      if (authDetails.showOnLeaderboard === false) {
+        tokenObject.showOnLeaderboard = false;
+      }
+      const token = WebTokenHandler.generateAccessToken(tokenObject);
       res.send(token);
       return;
     }

@@ -16,6 +16,7 @@ const getAuthDetailsByUsername = async (username) => {
     username: result.username,
     passHash: result.passHash,
     admin: result.admin,
+    showOnLeaderboard: result.showOnLeaderboard,
   };
 };
 

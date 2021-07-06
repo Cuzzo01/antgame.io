@@ -70,11 +70,12 @@ async function postRun(req, res) {
 
       let isWorldRecord = false;
       let challengeRecord;
-      if (saveRun) {
+      if (saveRun && user.showOnLeaderboard !== false) {
         challengeRecord = await ChallengeDao.getRecordByChallenge(
           runData.challengeID
         );
-        const recordEmpty = Object.keys(challengeRecord).length === 0;
+        const recordEmpty =
+          challengeRecord && Object.keys(challengeRecord).length === 0;
         if (recordEmpty || challengeRecord.score < runData.Score) {
           isWorldRecord = true;
           ChallengeDao.updateChallengeRecord(
