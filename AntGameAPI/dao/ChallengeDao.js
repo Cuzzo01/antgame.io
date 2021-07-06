@@ -84,7 +84,7 @@ const updateChallengeRecord = async (
 
 const getActiveChallenges = async () => {
   const collection = await getCollection("configs");
-  const result = await collection.find({ active: true });
+  const result = await collection.find({ active: true }).sort({order: 1});
   const activeConfigs = await result.toArray();
   let challengeList = [];
   activeConfigs.forEach((config) => {
