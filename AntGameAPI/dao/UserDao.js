@@ -19,7 +19,7 @@ const getUserPBsByChallengeList = async (userID, challengeIDList) => {
     { _id: userObjectID, "challengeDetails.ID": { $in: objectIDList } },
     { projection: { "challengeDetails.ID": 1, "challengeDetails.pb": 1 } }
   );
-  if (!result) return null
+  if (!result) return null;
   return result.challengeDetails;
 };
 
