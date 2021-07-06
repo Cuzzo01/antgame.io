@@ -144,10 +144,11 @@ async function getActiveChallenges(req, res) {
         user.id,
         challengeIDList
       );
-      userRecords.forEach((userRecord) => {
-        if (records.hasOwnProperty(userRecord.ID))
-          records[userRecord.ID].pb = userRecord.pb;
-      });
+      if (userRecords)
+        userRecords.forEach((userRecord) => {
+          if (records.hasOwnProperty(userRecord.ID))
+            records[userRecord.ID].pb = userRecord.pb;
+        });
     }
 
     res.send({ challenges: activeChallenges, records: records });
