@@ -44,6 +44,7 @@ const ChallengeList = () => {
 export default ChallengeList;
 
 const ListItem = (props) => {
+  console.log(typeof(props.records.wr))
   return (
     <div
       href="/"
@@ -75,7 +76,7 @@ const ListItem = (props) => {
         <div className={styles.wr}>
           World Record
           <br />
-          {props.records.wr && Object.keys(props.records.wr).length === 0
+          {!props.records.wr || Object.keys(props.records.wr).length === 0
             ? "No record"
             : `${props.records.wr.score} - ${props.records.wr.username}`}
         </div>
