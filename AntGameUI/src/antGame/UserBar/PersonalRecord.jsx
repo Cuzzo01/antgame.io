@@ -17,7 +17,7 @@ const PersonalRecord = (props) => {
         else setRecord(`Personal Record: ${records.pb}`);
         if (loading) setLoading(false);
       });
-  });
+  }, [loading]);
 
   return <div>{loading ? null : <p className={styles.best}>{record}</p>}</div>;
 };
