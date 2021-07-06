@@ -104,6 +104,7 @@ const getChallengeByChallengeId = async (id) => {
   }
   const collection = await getCollection("configs");
   const result = await collection.findOne({ _id: challengeObjectID });
+  if (result === null) return null;
   return {
     id: result._id,
     mapPath: result.mapPath,
@@ -117,19 +118,31 @@ const getLeaderboardByChallengeId = async (id) => {
   const challengeObjectID = TryParseObjectID(id, "challengeID");
 
   const collection = await getCollection("users");
-  // FIXME: There has got to be a way to do the sort in Mongo, this is gross
   const result = await collection
-    .find(
-      { showOnLeaderboard: true, "challengeDetails.ID": challengeObjectID },
-      { projection: { username: 1, "challengeDetails.$": 1 } }
-    )
-    .map((result) => {
-      return {
-        id: result._id,
-        username: result.username,
-        pb: result.challengeDetails[0].pb,
-      };
-    })
+    .aggregate([
+      { $unwind: "$challengeDetails" },
+      {
+        $match: {
+          "challengeDetails.ID": challengeObjectID,
+          showOnLeaderboard: true,
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          username: { $first: "$username" },
+          pb: { $push: "$challengeDetails.pb" },
+        },
+      },
+      {
+        $sort: {
+          pb: -1,
+        },
+      },
+      {
+        $limit: 5
+      }
+    ])
     .toArray();
 
   return result;

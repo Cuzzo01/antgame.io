@@ -1,6 +1,7 @@
 .container {
   max-width: 30em;
   margin: 5em auto;
+  font-family: "Courier Prime Bold";
 }
 
 .title {
@@ -16,7 +17,6 @@
 }
 
 .rank {
-  font-family: "Courier Prime Bold";
   padding-right: 0.5em;
 }
 

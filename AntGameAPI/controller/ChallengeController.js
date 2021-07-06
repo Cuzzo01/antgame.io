@@ -204,13 +204,9 @@ async function getLeaderboard(req, res) {
       return;
     }
 
-    const sortedAndClipped = leaderBoardEntries
-      .sort((first, second) => (first.pb > second.pb ? -1 : 1))
-      .slice(0, 5);
-
     const response = {
       name: challenge.name,
-      leaderboard: sortedAndClipped,
+      leaderboard: leaderBoardEntries,
     };
     res.send(response);
   } catch (e) {
