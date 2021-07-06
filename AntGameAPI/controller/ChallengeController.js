@@ -190,4 +190,40 @@ async function getRecords(req, res) {
   }
 }
 
-module.exports = { postRun, getChallenge, getActiveChallenges, getRecords };
+async function getLeaderboard(req, res) {
+  try {
+    const challengeID = req.params.id;
+    const leaderBoardEntries = await ChallengeDao.getLeaderboardByChallengeId(
+      challengeID
+    );
+    const challenge = await ChallengeDao.getChallengeByChallengeId(challengeID);
+
+    if (leaderBoardEntries.length === 0) {
+      res.status(404);
+      res.send("Found no records for that challengeID");
+      return;
+    }
+
+    const sortedAndClipped = leaderBoardEntries
+      .sort((first, second) => (first.pb > second.pb ? -1 : 1))
+      .slice(0, 5);
+
+    const response = {
+      name: challenge.name,
+      leaderboard: sortedAndClipped,
+    };
+    res.send(response);
+  } catch (e) {
+    console.log(e);
+    res.status(500);
+    res.send("Get leader board failed");
+  }
+}
+
+module.exports = {
+  postRun,
+  getChallenge,
+  getActiveChallenges,
+  getRecords,
+  getLeaderboard,
+};

@@ -12,6 +12,7 @@ import {
 import { GameModeContext } from "./GameModeContext";
 import AuthHandler from "./Auth/AuthHandler";
 import UserBar from "./UserBar/UserBar";
+import Leaderboard from "./Challenge/Leaderboard/Leaderboard";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
@@ -32,7 +33,11 @@ const AntGameRouter = () => {
           <ChallengeList />
           <UserBar />
         </Route>
-        <Route path="/challenge/:id">
+        <Route path="/challenge/leaderboard/:id">
+          <Leaderboard />
+          <UserBar />
+        </Route>
+        <Route exact path="/challenge/:id">
           <ChallengeMap />
           <UserBar showRecords={true} />
         </Route>

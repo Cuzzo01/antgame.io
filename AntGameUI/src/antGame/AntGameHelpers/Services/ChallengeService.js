@@ -35,3 +35,14 @@ export async function getRecords(challengeID) {
       return null;
     });
 }
+
+export async function getLeaderboard(challengeID) {
+  return axios
+    .get(`/api/challenge/leaderboard/${challengeID}`)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      return null;
+    });
+}

@@ -55,7 +55,13 @@ const ListItem = (props) => {
         window.location = `/challenge/${props.id}`;
       }}
     >
-      <div className={styles.title}>{props.name}</div>
+      <div className={styles.title}>
+        <div>
+          <span className={styles.mapName}>{props.name}</span>
+          <br />
+          <LeaderboardLink id={props.id} />
+        </div>
+      </div>
       <div className={styles.records}>
         {AuthHandler.isAnon ? (
           <div />
@@ -75,5 +81,21 @@ const ListItem = (props) => {
         </div>
       </div>
     </div>
+  );
+};
+
+const LeaderboardLink = (props) => {
+  const history = useHistory();
+  return (
+    <span
+      className={styles.leaderboardLink}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        history.push(`/challenge/leaderboard/${props.id}`);
+      }}
+    >
+      Leaderboard
+    </span>
   );
 };

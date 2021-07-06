@@ -113,6 +113,28 @@ const getChallengeByChallengeId = async (id) => {
   };
 };
 
+const getLeaderboardByChallengeId = async (id) => {
+  const challengeObjectID = TryParseObjectID(id, "challengeID");
+
+  const collection = await getCollection("users");
+  // FIXME: There has got to be a way to do the sort in Mongo, this is gross
+  const result = await collection
+    .find(
+      { showOnLeaderboard: true, "challengeDetails.ID": challengeObjectID },
+      { projection: { username: 1, "challengeDetails.$": 1 } }
+    )
+    .map((result) => {
+      return {
+        id: result._id,
+        username: result.username,
+        pb: result.challengeDetails[0].pb,
+      };
+    })
+    .toArray();
+
+  return result;
+};
+
 const TryParseObjectID = (stringID, name) => {
   try {
     return new Mongo.ObjectID(stringID);
@@ -129,5 +151,6 @@ module.exports = {
   getRecordByChallenge,
   updateChallengeRecord,
   getRecordsByChallengeList,
+  getLeaderboardByChallengeId,
   // getChallengePBByUser,
 };

@@ -1,0 +1,25 @@
+.container {
+  max-width: 30em;
+  margin: 5em auto;
+}
+
+.title {
+  text-align: center;
+  padding-bottom: 1em;
+}
+
+.row {
+  border: 2px grey solid;
+  border-radius: 0.5em;
+  margin: 0.5em 1em;
+  padding: 0.5em 1em;
+}
+
+.rank {
+  font-family: "Courier Prime Bold";
+  padding-right: 0.5em;
+}
+
+.score {
+  float: right;
+}

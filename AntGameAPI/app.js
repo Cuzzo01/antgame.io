@@ -43,6 +43,7 @@ app.get("/challenge/:id/records", _challengeController.getRecords);
 app.post("/challenge/artifact", _challengeController.postRun);
 app.get("/challenge/:id", _challengeController.getChallenge);
 app.get("/challenges/active", _challengeController.getActiveChallenges);
+app.get("/challenge/leaderboard/:id", _challengeController.getLeaderboard);
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
