@@ -9,6 +9,7 @@
   line-height: 1.75em;
   display: grid;
   grid-template-columns: 20em auto 20em;
+  background-color: lightgray;
 }
 
 .username {

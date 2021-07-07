@@ -37,6 +37,7 @@ const saveNewUser = async (userObject) => {
     passHash: userObject.passHash,
     admin: userObject.admin,
     challengeDetails: [],
+    showOnLeaderboard: true
   };
   return await collection.insertOne(newUser);
 };
