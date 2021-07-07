@@ -11,7 +11,7 @@ const ChallengeList = () => {
 
   useEffect(() => {
     if (!AuthHandler.loggedIn) {
-      history.push({ pathname: "/login", search: "?redirect=/challenge" });
+      history.replace({ pathname: "/login", search: "?redirect=/challenge" });
       return;
     }
     getActiveChallenges().then((challengeResponse) => {

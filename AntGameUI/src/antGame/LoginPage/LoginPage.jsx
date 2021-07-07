@@ -13,8 +13,8 @@ const LoginPage = (props) => {
     const search = location.search;
     const params = new URLSearchParams(search);
     const redirectLoc = params.get("redirect");
-    if (redirectLoc) history.push(redirectLoc);
-    else history.push("/challenge");
+    if (redirectLoc) history.replace(redirectLoc);
+    else history.replace("/challenge");
   }
 
   function handleChange(event) {
