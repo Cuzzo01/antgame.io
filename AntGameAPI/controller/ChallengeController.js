@@ -28,7 +28,7 @@ async function postRun(req, res) {
     if (saveRun) {
       let runRecord = {
         score: runData.Score,
-        submissionTime: new Date().toISOString(),
+        submissionTime: new Date(),
         name: runData.Name,
         challengeID: runData.challengeID,
         clientID: runData.ClientID,
@@ -76,6 +76,7 @@ async function postRun(req, res) {
         );
         const recordEmpty =
           challengeRecord && Object.keys(challengeRecord).length === 0;
+        console.log(challengeRecord, recordEmpty)
         if (recordEmpty || challengeRecord.score < runData.Score) {
           isWorldRecord = true;
           ChallengeDao.updateChallengeRecord(
@@ -93,7 +94,7 @@ async function postRun(req, res) {
           score: runData.Score,
           name: user.username,
         };
-      else
+      else if (challengeRecord)
         response.wr = {
           score: challengeRecord.score,
           name: challengeRecord.username,

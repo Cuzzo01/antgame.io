@@ -174,9 +174,11 @@ class ChallengeHandler {
 
   async sendArtifact() {
     const response = await sendRunArtifact(this.artifact);
-    this.records.wr = response.wr;
-    this.checkForWrRun();
-    this.notifyRecordsListeners();
+    if (response.wr) {
+      this.records.wr = response.wr;
+      this.checkForWrRun();
+      this.notifyRecordsListeners();
+    }
   }
 
   checkForWrRun() {
