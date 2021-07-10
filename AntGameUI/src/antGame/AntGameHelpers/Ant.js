@@ -93,7 +93,8 @@ export class Ant {
   }
 
   getNewAngle() {
-    if (this.currentCell === WallValue) return;
+    if (this.currentCell === WallValue || this.currentCell === DirtValue)
+      return;
     if (this.checkSight()) {
       if (Math.random() < 0.01) this.wander();
     } else this.wander();
@@ -305,12 +306,15 @@ export class Ant {
         const wallToDirtOrWall =
           this.currentCell === WallValue &&
           (newCell === WallValue || newCell === FoodValue);
-        const foodToFoodOrDirt =
-          this.currentCell === FoodValue &&
-          (newCell === FoodValue || newCell === DirtValue);
+        // Maybe just check this conditionally on sandbox mode??
+        const foodToFoodOrDirt = false;
+        // this.currentCell === FoodValue &&
+        // (newCell === FoodValue || newCell === DirtValue);
         const dirtToDirt =
           this.currentCell === DirtValue && newCell === DirtValue;
-        if (wallToDirtOrWall || dirtToDirt || foodToFoodOrDirt) return true;
+        if (wallToDirtOrWall || dirtToDirt || foodToFoodOrDirt) {
+          return true;
+        }
 
         if (newCell === false || newCell === WallValue) {
           this.bounceOffWall(5);

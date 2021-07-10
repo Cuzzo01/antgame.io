@@ -44,7 +44,7 @@ const ChallengeList = () => {
 export default ChallengeList;
 
 const ListItem = (props) => {
-  console.log(typeof(props.records.wr))
+  console.log(typeof props.records.wr);
   return (
     <div
       href="/"
