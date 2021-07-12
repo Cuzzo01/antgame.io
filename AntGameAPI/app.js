@@ -42,8 +42,9 @@ app.post("/auth/createUser", _authController.createUser);
 app.get("/challenge/:id/records", _challengeController.getRecords);
 app.post("/challenge/artifact", _challengeController.postRun);
 app.get("/challenge/:id", _challengeController.getChallenge);
+app.get("/challenge/:id/pr", _challengeController.getPRHomeLocations);
 app.get("/challenges/active", _challengeController.getActiveChallenges);
-app.get("/challenge/leaderboard/:id", _challengeController.getLeaderboard);
+app.get("/challenge/:id/leaderboard", _challengeController.getLeaderboard);
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);

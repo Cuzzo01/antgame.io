@@ -325,6 +325,13 @@ export class MapHandler {
     this.respawnDecayableBlocks();
   };
 
+  setHomeLocations = locations => {
+    locations.forEach(location => {
+      this.setCellTo([location[0], location[1]], "h");
+    });
+    this.homeOnMap = locations.length;
+  };
+
   findNewDecayableBlocks = () => {
     let foodAdded = 0;
     for (let x = 0; x < MapBounds[0]; x++) {

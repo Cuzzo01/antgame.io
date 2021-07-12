@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getLeaderboard } from "../../AntGameHelpers/Services/ChallengeService";
+import { getLeaderboard } from "../../Challenge/ChallengeService";
 import styles from "./Leaderboard.module.css";
 
 const Leaderboard = props => {

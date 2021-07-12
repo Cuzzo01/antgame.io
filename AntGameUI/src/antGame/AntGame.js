@@ -382,6 +382,12 @@ export default class AntGame extends React.Component {
     this.setState({ showChallengeModal: false });
   };
 
+  loadPRHomeLocations = () => {
+    ChallengeHandler.loadPRRun().then(result => {
+      if (result !== false && this.state.emptyMap) this.setState({ emptyMap: false });
+    });
+  };
+
   render() {
     return (
       <div style={styles.container}>
@@ -411,6 +417,7 @@ export default class AntGame extends React.Component {
               getMapName={() => this.mapHandler.mapName}
               foodReturned={this.state.foodReturned}
               homeOnMap={this.state.homeOnMap}
+              loadPRHandler={this.loadPRHomeLocations}
             />
           </div>
           <Sketch setup={this.setup} draw={this.draw} windowResized={this.resizeHandler} />

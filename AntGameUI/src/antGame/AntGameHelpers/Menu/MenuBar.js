@@ -23,6 +23,7 @@ export default function MenuBar(props) {
         clearMapHandler={props.clearMapHandler}
         loadMapHandler={props.loadMapHandler}
         saveMapHandler={props.saveMapHandler}
+        loadPRHandler={props.loadPRHandler}
       />
       <div style={styles.middle}>
         <Timer time={props.time} active={props.timerActive} styles={styles.timer} />

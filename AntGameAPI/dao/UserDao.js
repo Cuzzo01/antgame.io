@@ -94,6 +94,28 @@ const addNewChallengeDetails = async (userID, challengeID, score, runID) => {
   );
 };
 
+const getPRRunIDByChallengeID = async (userID, challengeID) => {
+  const userObjectID = TryParseObjectID(userID, "userID");
+  const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
+
+  const collection = await getCollection("users");
+  const result = await collection.findOne(
+    {
+      _id: userObjectID,
+      "challengeDetails.ID": challengeObjectID,
+    },
+    {
+      projection: {
+        challengeDetails: {
+          $elemMatch: { ID: challengeObjectID },
+        },
+      },
+    }
+  );
+  if (!result) return null;
+  return result.challengeDetails[0].pbRunID;
+};
+
 const TryParseObjectID = (stringID, name) => {
   try {
     return new ObjectID(stringID);
@@ -108,4 +130,5 @@ module.exports = {
   getChallengeDetailsByUser,
   incrementChallengeRunCount,
   getUserPBsByChallengeList,
+  getPRRunIDByChallengeID,
 };

@@ -1,5 +1,5 @@
 import { Config } from "../config";
-import { getChallengeConfig, getRecords, sendRunArtifact } from "../AntGameHelpers/Services/ChallengeService";
+import { getChallengeConfig, getPRHomeLocations, getRecords, sendRunArtifact } from "./ChallengeService";
 import { v4 as uuidV4 } from "uuid";
 import AuthHandler from "../Auth/AuthHandler";
 
@@ -21,6 +21,7 @@ class ChallengeHandler {
     this.WrRun = false;
     this.recordListeners = [];
     this.wrListeners = [];
+    this.prHomeLocations = false;
   }
 
   set mapHandler(mapHandler) {
@@ -44,6 +45,16 @@ class ChallengeHandler {
   get config() {
     if (this._config) return this._config;
     else return false;
+  }
+
+  async loadPRRun() {
+    this._mapHandler.clearMap();
+    if (this.prHomeLocations === false) {
+      const locations = await getPRHomeLocations(this.config.id);
+      if (this.prHomeLocations === null) return;
+      this.prHomeLocations = locations;
+    }
+    this._mapHandler.setHomeLocations(this.prHomeLocations);
   }
 
   addRecordListener(callback) {

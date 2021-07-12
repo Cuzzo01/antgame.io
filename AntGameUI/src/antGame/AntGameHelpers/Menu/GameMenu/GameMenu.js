@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { PlayIcon, PauseIcon } from "../../Icons";
 import UploadMapButton from "../UploadMapButton";
 import { GameModeContext } from "../../../GameModeContext";
+import ChallengeHandler from "../../../Challenge/ChallengeHandler";
 import cssStyles from "./GameMenu.module.css";
 
 export default function GameMenu(props) {
@@ -36,7 +37,10 @@ export default function GameMenu(props) {
         handler={props.resetHandler}
         disabled={props.playState}
       />
-      <SettingButton key="clear" text={"Clear"} handler={props.clearMapHandler} disabled={props.playState} />
+      <SettingButton key="clear" text="Clear" handler={props.clearMapHandler} disabled={props.playState} />
+      {ChallengeHandler.records.pb ? (
+        <SettingButton key="PR" text="Load PR" handler={props.loadPRHandler} disabled={props.playState} />
+      ) : null}
       {gameMode.mode === "challenge" ? null : sandBoxButtons}
     </div>
   );

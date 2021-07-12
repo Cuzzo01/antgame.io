@@ -60,7 +60,6 @@ async function postRun(req, res) {
       if (saveRun && user.showOnLeaderboard !== false) {
         challengeRecord = await ChallengeDao.getRecordByChallenge(runData.challengeID);
         const recordEmpty = challengeRecord && Object.keys(challengeRecord).length === 0;
-        console.log(challengeRecord, recordEmpty);
         if (recordEmpty || challengeRecord.score < runData.Score) {
           isWorldRecord = true;
           ChallengeDao.updateChallengeRecord(runData.challengeID, runData.Score, user.username, user.id, runID);
@@ -187,10 +186,35 @@ async function getLeaderboard(req, res) {
   }
 }
 
+async function getPRHomeLocations(req, res) {
+  try {
+    if (RejectIfAnon(req, res)) return;
+
+    const user = req.user;
+    const challengeID = req.params.id;
+
+    // FIXME: Make a mongo aggregate function to do this lookup in just one call
+    const runID = await UserDao.getPRRunIDByChallengeID(user.id, challengeID);
+    const homePositions = await ChallengeDao.getRunHomePositionsByRunId(runID);
+
+    if (!homePositions) {
+      res.status(404);
+      res.send("No PR found");
+      return;
+    }
+    res.send({ home: homePositions });
+  } catch (e) {
+    console.log(e);
+    res.status(500);
+    res.send("Get leader board failed");
+  }
+}
+
 module.exports = {
   postRun,
   getChallenge,
   getActiveChallenges,
   getRecords,
   getLeaderboard,
+  getPRHomeLocations,
 };
