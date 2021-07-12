@@ -4,11 +4,9 @@ import { GameModeContext } from "../../../GameModeContext";
 import styles from "./BrushMenu.module.css";
 
 const BrushSizes = Config.brushSizes;
-const HomeBrush = Config.brushes.find((brush) => brush.name === "Home");
-const EraserBrush = Config.brushes.find((brush) => brush.name === "Eraser");
-const SmallBrushSize = Config.brushSizes.find(
-  (size) => size.name === "Small"
-).value;
+const HomeBrush = Config.brushes.find(brush => brush.name === "Home");
+const EraserBrush = Config.brushes.find(brush => brush.name === "Eraser");
+const SmallBrushSize = Config.brushSizes.find(size => size.name === "Small").value;
 
 export default function BrushMenu(props) {
   const gameMode = useContext(GameModeContext);
@@ -75,9 +73,7 @@ function OptionPicker(props) {
             props.handler(option.value);
             setIndex(i);
           }}
-          className={`${styles.menuElement} ${
-            activeOption ? styles.active : ""
-          }`}
+          className={`${styles.menuElement} ${activeOption ? styles.active : ""}`}
         >
           {optionName}
         </div>
@@ -87,9 +83,7 @@ function OptionPicker(props) {
 
   return (
     <div className={styles.brushMenu}>
-      <div className={props.disabled ? styles.disabledList : styles.optionList}>
-        {optionList}
-      </div>
+      <div className={props.disabled ? styles.disabledList : styles.optionList}>{optionList}</div>
     </div>
   );
 }

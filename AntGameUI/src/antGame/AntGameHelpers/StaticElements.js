@@ -22,12 +22,7 @@ export class StaticElements {
     graphic.noFill();
     graphic.stroke(color);
 
-    graphic.rect(
-      weight / 2,
-      weight / 2,
-      graphic.width - weight,
-      graphic.height - weight
-    );
+    graphic.rect(weight / 2, weight / 2, graphic.width - weight, graphic.height - weight);
   }
 
   static background(graphic) {

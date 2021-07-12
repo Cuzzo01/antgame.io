@@ -1,10 +1,7 @@
 import { Config } from "../config";
 
 const TrailMapOverSampleRate = 3;
-const MapBounds = [
-  Config.MapBounds[0] * TrailMapOverSampleRate,
-  Config.MapBounds[1] * TrailMapOverSampleRate,
-];
+const MapBounds = [Config.MapBounds[0] * TrailMapOverSampleRate, Config.MapBounds[1] * TrailMapOverSampleRate];
 const BorderWeight = Config.borderWeight;
 
 export class TrailHandler {
@@ -44,10 +41,7 @@ export class TrailHandler {
     }
     const drawableWidth = this.canvasBounds[0] - BorderWeight;
     const drawableHeight = this.canvasBounds[1] - BorderWeight;
-    this.pixelDensity = [
-      drawableWidth / MapBounds[0],
-      drawableHeight / MapBounds[1],
-    ];
+    this.pixelDensity = [drawableWidth / MapBounds[0], drawableHeight / MapBounds[1]];
   }
 
   prepareForAntUpdate() {
@@ -63,29 +57,17 @@ export class TrailHandler {
 
     const intTrailXY = MapXYToInt(trailXY);
     const maxValue = 4500 * (1 - transparency) + 100;
-    for (
-      let xOffset = -TrailMapOverSampleRate;
-      xOffset <= TrailMapOverSampleRate;
-      xOffset++
-    ) {
-      for (
-        let yOffset = -TrailMapOverSampleRate;
-        yOffset <= TrailMapOverSampleRate;
-        yOffset++
-      ) {
+    for (let xOffset = -TrailMapOverSampleRate; xOffset <= TrailMapOverSampleRate; xOffset++) {
+      for (let yOffset = -TrailMapOverSampleRate; yOffset <= TrailMapOverSampleRate; yOffset++) {
         const point = [intTrailXY[0] + xOffset, intTrailXY[1] + yOffset];
         const cellStrength = Math.round(
-          strength *
-            (1 -
-              (Math.abs(xOffset) + Math.abs(yOffset)) /
-                (4 * TrailMapOverSampleRate))
+          strength * (1 - (Math.abs(xOffset) + Math.abs(yOffset)) / (4 * TrailMapOverSampleRate))
         );
         if (cellStrength && this.mapXYInBounds(point)) {
           const currentValue = this.trailMap[point[0]][point[1]];
           if (currentValue < maxValue) {
             const newValue = currentValue + cellStrength;
-            this.trailMap[point[0]][point[1]] =
-              newValue > maxValue ? maxValue : newValue;
+            this.trailMap[point[0]][point[1]] = newValue > maxValue ? maxValue : newValue;
           }
         }
       }
@@ -133,8 +115,7 @@ export class TrailHandler {
     let toReturn = 0;
     for (let i = 0; i < pointsToWalk.length; i++) {
       let point = pointsToWalk[i];
-      if (this.mapXYInBounds(point))
-        toReturn += this.trailMap[point[0]][point[1]];
+      if (this.mapXYInBounds(point)) toReturn += this.trailMap[point[0]][point[1]];
     }
     return toReturn;
   }
@@ -153,20 +134,16 @@ export class TrailHandler {
   }
 
   mapXYToTrailXY(mapXY) {
-    return [
-      mapXY[0] * TrailMapOverSampleRate,
-      mapXY[1] * TrailMapOverSampleRate,
-    ];
+    return [mapXY[0] * TrailMapOverSampleRate, mapXY[1] * TrailMapOverSampleRate];
   }
 
   mapXYInBounds(mapXY) {
-    if (mapXY[0] >= 0 && mapXY[1] >= 0)
-      if (mapXY[0] < MapBounds[0] && mapXY[1] < MapBounds[1]) return true;
+    if (mapXY[0] >= 0 && mapXY[1] >= 0) if (mapXY[0] < MapBounds[0] && mapXY[1] < MapBounds[1]) return true;
     return false;
   }
 }
 
-const MapXYToInt = (mapXY) => {
+const MapXYToInt = mapXY => {
   return [Math.round(mapXY[0]), Math.round(mapXY[1])];
 };
 

@@ -4,7 +4,7 @@
   "description": "AntGame backend",
   "main": "app.js",
   "scripts": {
-    "prettier": "prettier --write .",
+    "prettier": "prettier --write . --print-width 120 --arrow-parens avoid",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

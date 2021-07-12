@@ -1,7 +1,7 @@
 import { useHistory } from "react-router-dom";
 import "./Timer.css";
 
-const TimeCounter = (props) => {
+const TimeCounter = props => {
   const path = window.location.pathname;
   const shouldLinkHome = path.startsWith("/map");
   const shouldLinkToChallengePage = path.startsWith("/challenge/");
@@ -12,7 +12,7 @@ const TimeCounter = (props) => {
 
   if (shouldLinkHome) linkPath = "/";
   else if (shouldLinkToChallengePage) linkPath = "/challenge";
-  const handleLinkClick = (e) => {
+  const handleLinkClick = e => {
     e.preventDefault();
     if (shouldLinkHome) history.push("/");
     if (shouldLinkToChallengePage) history.push("/challenge");
@@ -22,7 +22,7 @@ const TimeCounter = (props) => {
     <div style={props.styles}>
       {hasLink && !props.active ? (
         <div>
-          <a href={linkPath} alt="Test" onClick={(e) => handleLinkClick(e)}>
+          <a href={linkPath} alt="Test" onClick={e => handleLinkClick(e)}>
             <Timer active={props.active} time={props.time} />
           </a>
         </div>
@@ -33,7 +33,7 @@ const TimeCounter = (props) => {
   );
 };
 
-const Timer = (props) => {
+const Timer = props => {
   return (
     <h2 className={`timer ${props.active ? "active" : ""}`}>
       {props.time.min}:{props.time.sec}

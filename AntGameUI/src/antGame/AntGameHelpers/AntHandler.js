@@ -5,7 +5,7 @@ const Brushes = Config.brushes;
 const AntsToSpawn = Config.AntsToSpawn;
 const AntSize = Config.AntSize;
 const AntOffset = AntSize / 2;
-const HomeValue = Brushes.find((brush) => brush.name === "Home").value;
+const HomeValue = Brushes.find(brush => brush.name === "Home").value;
 
 export class AntsHandler {
   constructor(mapHandler) {
@@ -21,7 +21,7 @@ export class AntsHandler {
   drawAnts(graphics, antNoFoodImage, antFoodImage) {
     graphics.clear();
 
-    this.ants.forEach((ant) => {
+    this.ants.forEach(ant => {
       const canvasXY = this.mapHandler.mapXYToCanvasXY([ant.x, ant.y]);
       graphics.resetMatrix();
 
@@ -40,7 +40,7 @@ export class AntsHandler {
   }
 
   updateAnts(dropPoint) {
-    this.ants.forEach((ant) => {
+    this.ants.forEach(ant => {
       ant.getNewAngle();
       ant.walk(dropPoint);
     });
@@ -67,7 +67,7 @@ export class AntsHandler {
                 this.mapHandler,
                 homeTrailHandler,
                 foodTrailHandler,
-                Brushes.find((brush) => brush.value === map[x][y])
+                Brushes.find(brush => brush.value === map[x][y])
               )
             );
           }

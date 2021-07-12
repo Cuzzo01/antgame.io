@@ -24,8 +24,8 @@ const TrailDecayRate = Config.TrailDecayInterval;
 const Brushes = Config.brushes;
 const BrushSizeDefault = Config.brushSizes[Config.brushSizeDefaultIndex].value;
 const DefaultBrush = Brushes[Config.brushTypeDefaultIndex];
-const FoodValue = Brushes.find((brush) => brush.name === "Food").value;
-const HomeValue = Brushes.find((brush) => brush.name === "Home").value;
+const FoodValue = Brushes.find(brush => brush.name === "Food").value;
+const HomeValue = Brushes.find(brush => brush.name === "Home").value;
 const BorderWeight = Config.borderWeight;
 const TrailDropRate = Config.TrailDropRate;
 const FrameRate = Config.FrameRate;
@@ -47,10 +47,7 @@ export default class AntGame extends React.Component {
     this.blockDrawing = false;
     this.imageToSave = "";
 
-    this.timerHandler = new TimerHandler(
-      this.handleChallengeTimeout,
-      this.setTime
-    );
+    this.timerHandler = new TimerHandler(this.handleChallengeTimeout, this.setTime);
 
     this.mapHandler = new MapHandler(this.toggleTimer);
     this.antHandler = new AntHandler(this.mapHandler);
@@ -75,14 +72,8 @@ export default class AntGame extends React.Component {
       homeOnMap: 0,
     };
 
-    this.homeTrailHandler = new TrailHandler(
-      Brushes.find((brush) => brush.value === HomeValue).color,
-      this.mapHandler
-    );
-    this.foodTrailHandler = new TrailHandler(
-      Brushes.find((brush) => brush.value === FoodValue).color,
-      this.mapHandler
-    );
+    this.homeTrailHandler = new TrailHandler(Brushes.find(brush => brush.value === HomeValue).color, this.mapHandler);
+    this.foodTrailHandler = new TrailHandler(Brushes.find(brush => brush.value === FoodValue).color, this.mapHandler);
   }
 
   componentDidMount() {
@@ -109,7 +100,7 @@ export default class AntGame extends React.Component {
     clearInterval(this.mapUiUpdateInterval);
   }
 
-  setMapUiUpdate = (mili) => {
+  setMapUiUpdate = mili => {
     if (this.mapUiUpdateInterval) clearInterval(this.mapUiUpdateInterval);
     this.mapUiUpdateInterval = setInterval(() => {
       this.setState({
@@ -151,7 +142,7 @@ export default class AntGame extends React.Component {
     p5.frameRate(FrameRate);
   };
 
-  setupAndInitialize = (p5) => {
+  setupAndInitialize = p5 => {
     this.windowSize = [p5.windowWidth, p5.windowHeight];
     canvasW = p5.windowWidth - this.parentRef.offsetLeft * 2;
     canvasH = p5.windowHeight - this.parentRef.offsetTop * 1.5;
@@ -176,7 +167,7 @@ export default class AntGame extends React.Component {
     StaticElements.background(this.backgroundGraphic);
   };
 
-  draw = (p5) => {
+  draw = p5 => {
     if (this.state.playState && p5.frameCount % FrameRate === 0) {
       this.frameCount = p5.frameCount;
     }
@@ -192,10 +183,7 @@ export default class AntGame extends React.Component {
 
     if (p5.mouseIsPressed) this.handleMousePressed(p5);
 
-    if (
-      (this.state.playState && !Debug) ||
-      (Debug && p5.keyIsPressed && p5.key === "s")
-    ) {
+    if ((this.state.playState && !Debug) || (Debug && p5.keyIsPressed && p5.key === "s")) {
       if (p5.frameCount % TrailDropRate === 0) {
         this.antHandler.updateAnts(true);
       } else this.antHandler.updateAnts(false);
@@ -208,12 +196,7 @@ export default class AntGame extends React.Component {
     if (this.mapHandler.redrawMap) this.mapHandler.drawMap();
     else if (this.mapHandler.redrawFullMap) this.mapHandler.drawFullMap();
 
-    if (this.antHandler.redrawAnts)
-      this.antHandler.drawAnts(
-        this.antGraphic,
-        this.antImage,
-        this.antFoodImage
-      );
+    if (this.antHandler.redrawAnts) this.antHandler.drawAnts(this.antGraphic, this.antImage, this.antFoodImage);
 
     p5.image(this.backgroundGraphic, 0, 0);
     p5.image(this.foodTrailGraphic, 0, 0);
@@ -225,7 +208,7 @@ export default class AntGame extends React.Component {
     if (this.state.loading) this.setState({ loading: false });
   };
 
-  handleImageSave = (p5) => {
+  handleImageSave = p5 => {
     if (this.imageToSave === "trail") {
       p5.clear();
       p5.image(this.foodTrailGraphic, 0, 0);
@@ -245,7 +228,7 @@ export default class AntGame extends React.Component {
     this.imageToSave = "";
   };
 
-  resizeCanvas = (p5) => {
+  resizeCanvas = p5 => {
     this.setupAndInitialize(p5);
     p5.resizeCanvas(canvasW, canvasH);
     this.setState({ shouldResizeCanvas: false });
@@ -261,7 +244,7 @@ export default class AntGame extends React.Component {
     }
   };
 
-  handleMousePressed = (p5) => {
+  handleMousePressed = p5 => {
     if (this.state.playState || p5.mouseButton === "right") return;
 
     let mousePos = this.mapHandler.canvasXYToMapXY([p5.mouseX, p5.mouseY]);
@@ -276,15 +259,15 @@ export default class AntGame extends React.Component {
     }
   };
 
-  updateBrushSize = (size) => {
+  updateBrushSize = size => {
     this.brushSize = size;
   };
 
-  updateBrushType = (type) => {
+  updateBrushType = type => {
     this.brushType = type;
   };
 
-  updatePlayState = (state) => {
+  updatePlayState = state => {
     const IsChallenge = this.gamemode === "challenge";
     if (state) {
       if (this.state.emptyMap) return;
@@ -317,7 +300,7 @@ export default class AntGame extends React.Component {
     GTMEmitter.PlayHandler(state);
   };
 
-  toggleTimer = (state) => {
+  toggleTimer = state => {
     if (state) {
       this.timerInterval = setInterval(() => {
         this.timerHandler.handleTime(this.frameCount, this.setTime);
@@ -332,11 +315,11 @@ export default class AntGame extends React.Component {
     }
   };
 
-  setTime = (time) => {
+  setTime = time => {
     this.setState({ time: time });
   };
 
-  setMapName = (mapName) => {
+  setMapName = mapName => {
     this.mapHandler.name = mapName;
   };
 
@@ -352,16 +335,13 @@ export default class AntGame extends React.Component {
     GTMEmitter.SaveHandler();
   };
 
-  loadMapHandler = (map) => {
+  loadMapHandler = map => {
     if (this.mapHandler.loadMap(map)) this.setState({ emptyMap: false });
     GTMEmitter.LoadHandler();
   };
 
-  resizeHandler = (event) => {
-    if (
-      event.windowWidth === this.windowSize[0] &&
-      event.windowHeight === this.windowSize[1]
-    ) {
+  resizeHandler = event => {
+    if (event.windowWidth === this.windowSize[0] && event.windowHeight === this.windowSize[1]) {
       this.setState({ shouldResizeCanvas: false });
     } else this.setState({ shouldResizeCanvas: true });
   };
@@ -383,17 +363,17 @@ export default class AntGame extends React.Component {
     GTMEmitter.ResetHandler();
   };
 
-  saveImageHandler = (imageToSave) => {
+  saveImageHandler = imageToSave => {
     this.imageToSave = imageToSave;
     GTMEmitter.SaveImageHandler(imageToSave);
   };
 
-  setBlockDraw = (blockDrawing) => {
+  setBlockDraw = blockDrawing => {
     this.blockDrawing = blockDrawing;
   };
 
   loadSampleMap = () => {
-    this.mapHandler.loadSampleMap().then((_) => this.reset());
+    this.mapHandler.loadSampleMap().then(_ => this.reset());
     if (this.state.emptyMap) this.setState({ emptyMap: false });
     GTMEmitter.LoadSampleHandler();
   };
@@ -433,11 +413,7 @@ export default class AntGame extends React.Component {
               homeOnMap={this.state.homeOnMap}
             />
           </div>
-          <Sketch
-            setup={this.setup}
-            draw={this.draw}
-            windowResized={this.resizeHandler}
-          />
+          <Sketch setup={this.setup} draw={this.draw} windowResized={this.resizeHandler} />
         </div>
       </div>
     );

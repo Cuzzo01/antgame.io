@@ -41,10 +41,10 @@ class AuthHandler {
 
   configureInterceptors() {
     axios.interceptors.response.use(
-      (response) => {
+      response => {
         return response;
       },
-      (error) => {
+      error => {
         if (error.response.status === 401) {
           this.logout();
           const pathBack = window.location.pathname;
@@ -54,7 +54,7 @@ class AuthHandler {
       }
     );
 
-    axios.interceptors.request.use((config) => {
+    axios.interceptors.request.use(config => {
       if (this.token) {
         config.headers.Authorization = `Bearer ${this.token}`;
       }
@@ -63,7 +63,7 @@ class AuthHandler {
   }
 
   login(username, password) {
-    return getToken(username, password).then((result) => {
+    return getToken(username, password).then(result => {
       this._loggedIn = true;
       this.jwt = result;
       this.decodedToken = jwt_decode(this.jwt);
@@ -80,7 +80,7 @@ class AuthHandler {
   }
 
   loginAnon() {
-    return getAnonToken(localStorage.getItem("client-id")).then((result) => {
+    return getAnonToken(localStorage.getItem("client-id")).then(result => {
       this._loggedIn = true;
       this.jwt = result;
       this.decodedToken = jwt_decode(this.jwt);

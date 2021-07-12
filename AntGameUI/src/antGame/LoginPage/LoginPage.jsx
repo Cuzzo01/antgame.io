@@ -3,7 +3,7 @@ import styles from "./LoginPage.module.css";
 import AuthHandler from "../Auth/AuthHandler";
 import { useHistory, useLocation } from "react-router-dom";
 
-const LoginPage = (props) => {
+const LoginPage = props => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();
@@ -25,14 +25,14 @@ const LoginPage = (props) => {
 
   function handleSubmit(event) {
     event.preventDefault();
-    AuthHandler.login(username, password).then((result) => {
+    AuthHandler.login(username, password).then(result => {
       if (result === true) redirectOut();
     });
   }
 
   function continueWithoutLogin(event) {
     event.preventDefault();
-    AuthHandler.loginAnon().then((result) => {
+    AuthHandler.loginAnon().then(result => {
       if (result === true) redirectOut();
     });
   }
@@ -71,18 +71,10 @@ const LoginPage = (props) => {
         </div>
         <input type="submit" style={{ display: "none" }} />
         <div className={styles.buttonBar}>
-          <div
-            className={`${styles.divButton} ${styles.right}`}
-            href="#"
-            onClick={handleSubmit}
-          >
+          <div className={`${styles.divButton} ${styles.right}`} href="#" onClick={handleSubmit}>
             Submit
           </div>
-          <div
-            className={`${styles.divButton} ${styles.left}`}
-            href="#"
-            onClick={continueWithoutLogin}
-          >
+          <div className={`${styles.divButton} ${styles.left}`} href="#" onClick={continueWithoutLogin}>
             Skip
             <br />
             <span className={styles.subtext}>(scores won't save)</span>

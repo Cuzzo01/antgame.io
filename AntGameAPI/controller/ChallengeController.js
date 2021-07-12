@@ -10,10 +10,7 @@ async function postRun(req, res) {
     let saveRun = false;
     let currentDetails;
     if (runData.PB) {
-      currentDetails = await UserDao.getChallengeDetailsByUser(
-        user.id,
-        runData.challengeID
-      );
+      currentDetails = await UserDao.getChallengeDetailsByUser(user.id, runData.challengeID);
       if (currentDetails === null) saveRun = "New challenge";
       else if (currentDetails.pb < runData.Score) saveRun = "New PB";
     }
@@ -51,19 +48,9 @@ async function postRun(req, res) {
 
     if (!user.anon) {
       if (saveRun === "New PB") {
-        UserDao.updateChallengePBAndRunCount(
-          user.id,
-          runData.challengeID,
-          runData.Score,
-          runID
-        );
+        UserDao.updateChallengePBAndRunCount(user.id, runData.challengeID, runData.Score, runID);
       } else if (saveRun === "New challenge") {
-        UserDao.addNewChallengeDetails(
-          user.id,
-          runData.challengeID,
-          runData.Score,
-          runID
-        );
+        UserDao.addNewChallengeDetails(user.id, runData.challengeID, runData.Score, runID);
       } else {
         UserDao.incrementChallengeRunCount(user.id, runData.challengeID);
       }
@@ -71,21 +58,12 @@ async function postRun(req, res) {
       let isWorldRecord = false;
       let challengeRecord;
       if (saveRun && user.showOnLeaderboard !== false) {
-        challengeRecord = await ChallengeDao.getRecordByChallenge(
-          runData.challengeID
-        );
-        const recordEmpty =
-          challengeRecord && Object.keys(challengeRecord).length === 0;
-        console.log(challengeRecord, recordEmpty)
+        challengeRecord = await ChallengeDao.getRecordByChallenge(runData.challengeID);
+        const recordEmpty = challengeRecord && Object.keys(challengeRecord).length === 0;
+        console.log(challengeRecord, recordEmpty);
         if (recordEmpty || challengeRecord.score < runData.Score) {
           isWorldRecord = true;
-          ChallengeDao.updateChallengeRecord(
-            runData.challengeID,
-            runData.Score,
-            user.username,
-            user.id,
-            runID
-          );
+          ChallengeDao.updateChallengeRecord(runData.challengeID, runData.Score, user.username, user.id, runID);
         }
       }
       let response = {};
@@ -135,21 +113,17 @@ async function getActiveChallenges(req, res) {
     const activeChallenges = await ChallengeDao.getActiveChallenges();
 
     let challengeIDList = [];
-    activeChallenges.forEach((challenge) => {
+    activeChallenges.forEach(challenge => {
       challengeIDList.push(challenge.id);
     });
 
     let records = await ChallengeDao.getRecordsByChallengeList(challengeIDList);
     let userRecords = false;
     if (!user.anon) {
-      userRecords = await UserDao.getUserPBsByChallengeList(
-        user.id,
-        challengeIDList
-      );
+      userRecords = await UserDao.getUserPBsByChallengeList(user.id, challengeIDList);
       if (userRecords)
-        userRecords.forEach((userRecord) => {
-          if (records.hasOwnProperty(userRecord.ID))
-            records[userRecord.ID].pb = userRecord.pb;
+        userRecords.forEach(userRecord => {
+          if (records.hasOwnProperty(userRecord.ID)) records[userRecord.ID].pb = userRecord.pb;
         });
     }
 
@@ -175,10 +149,7 @@ async function getRecords(req, res) {
       };
 
     if (!user.anon) {
-      const challengeDetails = await UserDao.getChallengeDetailsByUser(
-        user.id,
-        challengeID
-      );
+      const challengeDetails = await UserDao.getChallengeDetailsByUser(user.id, challengeID);
       if (challengeDetails !== null) {
         response.pb = challengeDetails.pb;
       }
@@ -195,9 +166,7 @@ async function getRecords(req, res) {
 async function getLeaderboard(req, res) {
   try {
     const challengeID = req.params.id;
-    const leaderBoardEntries = await ChallengeDao.getLeaderboardByChallengeId(
-      challengeID
-    );
+    const leaderBoardEntries = await ChallengeDao.getLeaderboardByChallengeId(challengeID);
     const challenge = await ChallengeDao.getChallengeByChallengeId(challengeID);
 
     if (leaderBoardEntries.length === 0) {

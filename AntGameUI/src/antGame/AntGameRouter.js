@@ -2,13 +2,7 @@ import AntGame from "./AntGame";
 import ChallengeList from "./Challenge/List/ChallengeList";
 import LoginPage from "./LoginPage/LoginPage";
 import { Config } from "./config";
-import {
-  BrowserRouter,
-  Switch,
-  Route,
-  Redirect,
-  useParams,
-} from "react-router-dom";
+import { BrowserRouter, Switch, Route, Redirect, useParams } from "react-router-dom";
 import { GameModeContext } from "./GameModeContext";
 import AuthHandler from "./Auth/AuthHandler";
 import UserBar from "./UserBar/UserBar";
@@ -54,8 +48,7 @@ const AntGameRouter = () => {
 
 const ChallengeMap = () => {
   let { id } = useParams();
-  if (!AuthHandler.loggedIn)
-    return <Redirect to={`/login?redirect=/challenge/${id}`} />;
+  if (!AuthHandler.loggedIn) return <Redirect to={`/login?redirect=/challenge/${id}`} />;
   return (
     <GameModeContext.Provider value={{ mode: "challenge", challengeID: id }}>
       <AntGame />

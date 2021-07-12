@@ -1,9 +1,5 @@
 import { Config } from "../config";
-import {
-  getChallengeConfig,
-  getRecords,
-  sendRunArtifact,
-} from "../AntGameHelpers/Services/ChallengeService";
+import { getChallengeConfig, getRecords, sendRunArtifact } from "../AntGameHelpers/Services/ChallengeService";
 import { v4 as uuidV4 } from "uuid";
 import AuthHandler from "../Auth/AuthHandler";
 
@@ -76,7 +72,7 @@ class ChallengeHandler {
       }
       this.loading = true;
       this.configPromise = getChallengeConfig(this._challengeID)
-        .then((config) => {
+        .then(config => {
           this.loading = false;
           this._config = config;
           this._mapHandler.homeCellsAllowed = config.homeLimit;
@@ -96,7 +92,7 @@ class ChallengeHandler {
     if (this.records) return this.records;
     else if (this.recordsPromise) return this.recordsPromise;
     else {
-      this.recordsPromise = getRecords(this._challengeID).then((records) => {
+      this.recordsPromise = getRecords(this._challengeID).then(records => {
         this.records = records;
         this.notifyRecordsListeners();
         return records;
@@ -152,10 +148,7 @@ class ChallengeHandler {
     const mapHandler = this._mapHandler;
     this.score = Math.round(mapHandler.percentFoodReturned * 100000);
 
-    if (
-      !AuthHandler.isAnon &&
-      (!this.records?.pb || this.score > this.records.pb)
-    ) {
+    if (!AuthHandler.isAnon && (!this.records?.pb || this.score > this.records.pb)) {
       this.artifact.PB = true;
       if (!this.records) this.records = {};
       this.records.pb = this.score;
@@ -182,23 +175,18 @@ class ChallengeHandler {
   }
 
   checkForWrRun() {
-    if (
-      this.records.wr.score === this.artifact.Score &&
-      this.records.wr.name === AuthHandler.username
-    ) {
+    if (this.records.wr.score === this.artifact.Score && this.records.wr.name === AuthHandler.username) {
       this.WrRun = true;
     }
     this.notifyWrListeners();
   }
 
   notifyWrListeners() {
-    if (this.wrListeners)
-      this.wrListeners.forEach((callback) => callback(this.WrRun));
+    if (this.wrListeners) this.wrListeners.forEach(callback => callback(this.WrRun));
   }
 
   notifyRecordsListeners() {
-    if (this.recordListeners)
-      this.recordListeners.forEach((callback) => callback(this.records));
+    if (this.recordListeners) this.recordListeners.forEach(callback => callback(this.records));
   }
 }
 

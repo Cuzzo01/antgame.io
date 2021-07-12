@@ -71,14 +71,8 @@ export class TimerHandler {
       this.sec = 59;
     }
     this.displayTime = {
-      min:
-        parseInt(this.min / 10) === 0
-          ? "0" + this.min.toString()
-          : this.min.toString(),
-      sec:
-        parseInt(this.sec / 10) === 0
-          ? "0" + this.sec.toString()
-          : this.sec.toString(),
+      min: parseInt(this.min / 10) === 0 ? "0" + this.min.toString() : this.min.toString(),
+      sec: parseInt(this.sec / 10) === 0 ? "0" + this.sec.toString() : this.sec.toString(),
     };
   }
 }

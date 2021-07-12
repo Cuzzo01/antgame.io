@@ -81,7 +81,7 @@ async function createUser(req, res) {
       passHash: hashedPassword,
       admin: admin,
       challengeDetails: [],
-      showOnLeaderboard: true
+      showOnLeaderboard: true,
     });
     res.send("OK");
   } catch (e) {

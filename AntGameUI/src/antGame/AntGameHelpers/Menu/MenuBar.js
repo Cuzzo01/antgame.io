@@ -25,11 +25,7 @@ export default function MenuBar(props) {
         saveMapHandler={props.saveMapHandler}
       />
       <div style={styles.middle}>
-        <Timer
-          time={props.time}
-          active={props.timerActive}
-          styles={styles.timer}
-        />
+        <Timer time={props.time} active={props.timerActive} styles={styles.timer} />
         <FoodTracker
           active={props.timerActive}
           styles={styles.foodTracker}
@@ -38,9 +34,7 @@ export default function MenuBar(props) {
         />
       </div>
       <div style={{ textAlign: "right" }}>
-        {IsChallenge ? (
-          <HomeTracker homeOnMap={props.homeOnMap} greyedOut={brushDisabled} />
-        ) : null}
+        {IsChallenge ? <HomeTracker homeOnMap={props.homeOnMap} greyedOut={brushDisabled} /> : null}
         <BrushMenu
           styles={{ display: "inline-block" }}
           disableButtons={brushDisabled}

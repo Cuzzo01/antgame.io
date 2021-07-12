@@ -1,11 +1,11 @@
 const { Connection } = require("../dao/MongoClient");
 
-const getCollection = async (collection) => {
+const getCollection = async collection => {
   const connection = await Connection.open();
   return await connection.db("challenges").collection(collection);
 };
 
-const getAuthDetailsByUsername = async (username) => {
+const getAuthDetailsByUsername = async username => {
   const collection = await getCollection("users");
   const result = await collection.findOne({
     username_lower: username.toLowerCase(),
@@ -20,7 +20,7 @@ const getAuthDetailsByUsername = async (username) => {
   };
 };
 
-const IsUsernameTaken = async (username) => {
+const IsUsernameTaken = async username => {
   const collection = await getCollection("users");
   const result = await collection.findOne({
     username_lower: username.toLowerCase(),
@@ -29,7 +29,7 @@ const IsUsernameTaken = async (username) => {
   return true;
 };
 
-const saveNewUser = async (userObject) => {
+const saveNewUser = async userObject => {
   const collection = await getCollection("users");
   const newUser = {
     username: userObject.username,
@@ -37,7 +37,7 @@ const saveNewUser = async (userObject) => {
     passHash: userObject.passHash,
     admin: userObject.admin,
     challengeDetails: [],
-    showOnLeaderboard: true
+    showOnLeaderboard: true,
   };
   return await collection.insertOne(newUser);
 };

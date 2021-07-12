@@ -3,7 +3,7 @@ import AuthHandler from "../Auth/AuthHandler";
 import ChallengeHandler from "../Challenge/ChallengeHandler";
 import styles from "./RecordDisplay.module.css";
 
-const PersonalRecord = (props) => {
+const PersonalRecord = props => {
   const [record, setRecord] = useState();
   const [loading, setLoading] = useState(true);
 
@@ -12,7 +12,7 @@ const PersonalRecord = (props) => {
       setRecord("Login to track PRs");
       setLoading(false);
     } else
-      ChallengeHandler.addRecordListener((records) => {
+      ChallengeHandler.addRecordListener(records => {
         if (!records.pb) setRecord("No Personal Record");
         else setRecord(`Personal Record: ${records.pb}`);
         if (loading) setLoading(false);

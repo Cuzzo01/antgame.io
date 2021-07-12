@@ -1,6 +1,6 @@
 import "./FoodTracker.css";
 
-const FoodTracker = (props) => {
+const FoodTracker = props => {
   const foodReturned = props.foodReturned;
   let roundedFoodReturned = Math.round(foodReturned * 1000) / 10;
 
@@ -9,8 +9,7 @@ const FoodTracker = (props) => {
     displayAmount = Math.round(foodReturned * 100000);
   } else {
     if (roundedFoodReturned === 0) displayAmount = "00.0";
-    else if (roundedFoodReturned === 100 && foodReturned < 1)
-      displayAmount = "99.9";
+    else if (roundedFoodReturned === 100 && foodReturned < 1) displayAmount = "99.9";
     else {
       if (roundedFoodReturned < 10) displayAmount += "0";
       displayAmount += roundedFoodReturned;
@@ -21,9 +20,7 @@ const FoodTracker = (props) => {
 
   return (
     <div style={props.styles}>
-      <h2 className={`tracker ${props.active ? "active" : ""}`}>
-        {displayAmount}
-      </h2>
+      <h2 className={`tracker ${props.active ? "active" : ""}`}>{displayAmount}</h2>
     </div>
   );
 };

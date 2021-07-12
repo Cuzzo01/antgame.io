@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { getLeaderboard } from "../../AntGameHelpers/Services/ChallengeService";
 import styles from "./Leaderboard.module.css";
 
-const Leaderboard = (props) => {
+const Leaderboard = props => {
   const challengeID = useParams().id;
 
   const [loading, setLoading] = useState(true);
@@ -11,18 +11,11 @@ const Leaderboard = (props) => {
   const [title, setTitle] = useState();
 
   useEffect(() => {
-    getLeaderboard(challengeID).then((res) => {
+    getLeaderboard(challengeID).then(res => {
       let table = [];
       let count = 1;
-      res.leaderboard.forEach((data) => {
-        table.push(
-          <LeaderboardRow
-            key={data.id}
-            rank={count}
-            name={data.username}
-            pb={data.pb}
-          />
-        );
+      res.leaderboard.forEach(data => {
+        table.push(<LeaderboardRow key={data.id} rank={count} name={data.username} pb={data.pb} />);
         count++;
       });
       setRunData(table);
@@ -41,7 +34,7 @@ const Leaderboard = (props) => {
   );
 };
 
-const LeaderboardRow = (props) => {
+const LeaderboardRow = props => {
   return (
     <div className={styles.row}>
       <span className={styles.rank}>#{props.rank}</span>

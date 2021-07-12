@@ -14,17 +14,12 @@ const ChallengeList = () => {
       history.replace({ pathname: "/login", search: "?redirect=/challenge" });
       return;
     }
-    getActiveChallenges().then((challengeResponse) => {
+    getActiveChallenges().then(challengeResponse => {
       const records = challengeResponse.records;
       let list = [];
-      challengeResponse.challenges.forEach((challenge) => {
+      challengeResponse.challenges.forEach(challenge => {
         list.push(
-          <ListItem
-            key={challenge.id}
-            name={challenge.name}
-            records={records[challenge.id]}
-            id={challenge.id}
-          />
+          <ListItem key={challenge.id} name={challenge.name} records={records[challenge.id]} id={challenge.id} />
         );
       });
       setMenuList(list);
@@ -43,13 +38,13 @@ const ChallengeList = () => {
 };
 export default ChallengeList;
 
-const ListItem = (props) => {
+const ListItem = props => {
   console.log(typeof props.records.wr);
   return (
     <div
       href="/"
       className={styles.listItem}
-      onClick={(e) => {
+      onClick={e => {
         e.preventDefault();
         // Why does this break map render?? (prob because of lifecycle stuff)
         // history.push(`/challenge/${props.id}`)
@@ -85,12 +80,12 @@ const ListItem = (props) => {
   );
 };
 
-const LeaderboardLink = (props) => {
+const LeaderboardLink = props => {
   const history = useHistory();
   return (
     <span
       className={styles.leaderboardLink}
-      onClick={(e) => {
+      onClick={e => {
         e.preventDefault();
         e.stopPropagation();
         history.push(`/challenge/leaderboard/${props.id}`);

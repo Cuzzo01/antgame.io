@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import ChallengeHandler from "../../../Challenge/ChallengeHandler";
 import styles from "./HomeTracker.module.css";
 
-const HomeTracker = (props) => {
+const HomeTracker = props => {
   const [loading, setLoading] = useState(true);
   const [maxHome, setMaxHome] = useState();
 
   useEffect(() => {
-    ChallengeHandler.getConfig().then((config) => {
+    ChallengeHandler.getConfig().then(config => {
       setMaxHome(config.homeLimit);
       setLoading(false);
     });

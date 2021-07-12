@@ -1,15 +1,13 @@
 import axios from "axios";
 
 export async function sendRunArtifact(artifact) {
-  return axios
-    .post("/api/challenge/artifact", { data: artifact })
-    .then((res) => {
-      return res.data;
-    });
+  return axios.post("/api/challenge/artifact", { data: artifact }).then(res => {
+    return res.data;
+  });
 }
 
 export async function getChallengeConfig(id) {
-  return axios.get(`/api/challenge/${id}`).then((res) => {
+  return axios.get(`/api/challenge/${id}`).then(res => {
     return res.data;
   });
 }
@@ -17,10 +15,10 @@ export async function getChallengeConfig(id) {
 export async function getActiveChallenges() {
   return axios
     .get("/api/challenges/active")
-    .then((res) => {
+    .then(res => {
       return res.data;
     })
-    .catch((error) => {
+    .catch(error => {
       return [];
     });
 }
@@ -28,10 +26,10 @@ export async function getActiveChallenges() {
 export async function getRecords(challengeID) {
   return axios
     .get(`/api/challenge/${challengeID}/records`)
-    .then((res) => {
+    .then(res => {
       return res.data;
     })
-    .catch((error) => {
+    .catch(error => {
       return null;
     });
 }
@@ -39,10 +37,10 @@ export async function getRecords(challengeID) {
 export async function getLeaderboard(challengeID) {
   return axios
     .get(`/api/challenge/leaderboard/${challengeID}`)
-    .then((res) => {
+    .then(res => {
       return res.data;
     })
-    .catch((error) => {
+    .catch(error => {
       return null;
     });
 }

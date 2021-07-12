@@ -1,22 +1,19 @@
 const { Connection } = require("./MongoClient");
 const Mongo = require("mongodb");
 
-const getCollection = async (collection) => {
+const getCollection = async collection => {
   const connection = await Connection.open();
   return await connection.db("challenges").collection(collection);
 };
 
-const submitRun = async (runData) => {
+const submitRun = async runData => {
   if (runData.userID) {
     let userObjectID = TryParseObjectID(runData.userID, "userID");
 
     runData.userID = userObjectID;
   }
   if (runData.challengeID) {
-    let challengeObjectID = TryParseObjectID(
-      runData.challengeID,
-      "challengeID"
-    );
+    let challengeObjectID = TryParseObjectID(runData.challengeID, "challengeID");
 
     runData.challengeID = challengeObjectID;
   }
@@ -26,7 +23,7 @@ const submitRun = async (runData) => {
   return runID;
 };
 
-const getRecordByChallenge = async (challengeID) => {
+const getRecordByChallenge = async challengeID => {
   const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
 
   const collection = await getCollection("configs");
@@ -34,34 +31,25 @@ const getRecordByChallenge = async (challengeID) => {
   return result.record ? result.record : {};
 };
 
-const getRecordsByChallengeList = async (challengeIDList) => {
+const getRecordsByChallengeList = async challengeIDList => {
   let objectIDList = [];
-  challengeIDList.forEach((id) => {
+  challengeIDList.forEach(id => {
     const parseResult = TryParseObjectID(id, "listChallengeID");
     objectIDList.push(parseResult);
   });
 
   const collection = await getCollection("configs");
   const result = await collection
-    .find(
-      { _id: { $in: objectIDList } },
-      { projection: { "record.score": 1, "record.username": 1 } }
-    )
+    .find({ _id: { $in: objectIDList } }, { projection: { "record.score": 1, "record.username": 1 } })
     .toArray();
   let records = {};
-  result.forEach((record) => {
+  result.forEach(record => {
     records[record._id] = { wr: record.record };
   });
   return records;
 };
 
-const updateChallengeRecord = async (
-  challengeID,
-  score,
-  username,
-  userID,
-  runID
-) => {
+const updateChallengeRecord = async (challengeID, score, username, userID, runID) => {
   const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
   const userObjectID = TryParseObjectID(userID, "userID");
   const runObjectID = TryParseObjectID(runID, "runID");
@@ -87,7 +75,7 @@ const getActiveChallenges = async () => {
   const result = await collection.find({ active: true }).sort({ order: 1 });
   const activeConfigs = await result.toArray();
   let challengeList = [];
-  activeConfigs.forEach((config) => {
+  activeConfigs.forEach(config => {
     challengeList.push({
       name: config.name,
       id: config._id,
@@ -96,7 +84,7 @@ const getActiveChallenges = async () => {
   return challengeList;
 };
 
-const getChallengeByChallengeId = async (id) => {
+const getChallengeByChallengeId = async id => {
   const challengeObjectID = TryParseObjectID(id);
   if (!challengeObjectID) {
     console.log("Bad challenge ID passed in:", id);
@@ -114,7 +102,7 @@ const getChallengeByChallengeId = async (id) => {
   };
 };
 
-const getLeaderboardByChallengeId = async (id) => {
+const getLeaderboardByChallengeId = async id => {
   const challengeObjectID = TryParseObjectID(id, "challengeID");
 
   const collection = await getCollection("users");
@@ -146,6 +134,10 @@ const getLeaderboardByChallengeId = async (id) => {
     .toArray();
 
   return result;
+};
+
+const getRunHomePositionsByChallengeId = async id => {
+  const challengeObjectID = TryParseObjectID(id);
 };
 
 const TryParseObjectID = (stringID, name) => {

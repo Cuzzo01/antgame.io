@@ -4,7 +4,7 @@ import { GameModeContext } from "../../../GameModeContext";
 
 import "./OptionsMenu.css";
 
-const OptionsMenu = (props) => {
+const OptionsMenu = props => {
   const [showMenu, setShowMenu] = useState();
   const menuRef = useRef(null);
   const menuButtonRef = useRef(null);
@@ -26,8 +26,7 @@ const OptionsMenu = (props) => {
       const menuCurrent = menuRef.current;
       const buttonCurrent = menuButtonRef.current;
       const clickInMenu = menuCurrent && menuCurrent.contains(event.target);
-      const clickOnButton =
-        buttonCurrent && buttonCurrent.contains(event.target);
+      const clickOnButton = buttonCurrent && buttonCurrent.contains(event.target);
       if (!clickInMenu && !clickOnButton) {
         setShowMenu(false);
         props.blockDrawHandler(false);
@@ -39,7 +38,7 @@ const OptionsMenu = (props) => {
     };
   }, [menuRef, menuButtonRef, props]);
 
-  const getMenuCallback = (callback) => {
+  const getMenuCallback = callback => {
     return () => {
       callback();
       setShowMenu(false);
@@ -69,39 +68,17 @@ const OptionsMenu = (props) => {
             disabled={props.mapNameDisabled}
           />
           <MenuHeader>Save image of...</MenuHeader>
-          <MenuRow
-            onClick={getMenuCallback(() => props.saveImageHandler("trail"))}
-          >
-            Trails
-          </MenuRow>
-          <MenuRow
-            onClick={getMenuCallback(() => props.saveImageHandler("map"))}
-          >
-            Map
-          </MenuRow>
-          <MenuRow
-            onClick={getMenuCallback(() => props.saveImageHandler("map&trail"))}
-          >
-            Both
-          </MenuRow>
+          <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("trail"))}>Trails</MenuRow>
+          <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("map"))}>Map</MenuRow>
+          <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("map&trail"))}>Both</MenuRow>
           {!IsChallengeMode ? (
             <div>
               <MenuHeader>Maps</MenuHeader>
-              <MenuRow
-                onClick={getMenuCallback(() => props.loadSampleMapHandler())}
-              >
-                Load sample
-              </MenuRow>
+              <MenuRow onClick={getMenuCallback(() => props.loadSampleMapHandler())}>Load sample</MenuRow>
             </div>
           ) : null}
-          <MenuHeader styles={{ fontSize: "0.8em" }}>
-            Feedback & Map Submissions:
-          </MenuHeader>
-          <MenuRow
-            onClick={getMenuCallback(
-              () => (window.location = "mailto:feedback@antgame.io")
-            )}
-          >
+          <MenuHeader styles={{ fontSize: "0.8em" }}>Feedback & Map Submissions:</MenuHeader>
+          <MenuRow onClick={getMenuCallback(() => (window.location = "mailto:feedback@antgame.io"))}>
             feedback@antgame.io
           </MenuRow>
         </div>
@@ -110,10 +87,10 @@ const OptionsMenu = (props) => {
   );
 };
 
-const MapNameRow = (props) => {
+const MapNameRow = props => {
   const [mapName, setMapName] = useState(props.currentName);
 
-  const CheckIfEnter = (event) => {
+  const CheckIfEnter = event => {
     if (event.key === "Enter") SetName();
   };
 
@@ -132,7 +109,7 @@ const MapNameRow = (props) => {
         maxLength="15"
         value={mapName}
         type="text"
-        onChange={(e) => {
+        onChange={e => {
           setMapName(e.target.value);
           props.setMapNameHandler(e.target.value);
         }}
@@ -143,12 +120,12 @@ const MapNameRow = (props) => {
   );
 };
 
-const MenuRow = (props) => {
+const MenuRow = props => {
   return (
     <div className="menu-row">
       <a
         href="/"
-        onClick={(e) => {
+        onClick={e => {
           e.preventDefault();
           e.stopPropagation();
           props.onClick();
@@ -160,20 +137,15 @@ const MenuRow = (props) => {
   );
 };
 
-const Button = (props) => {
+const Button = props => {
   return (
-    <button
-      ref={props.reference}
-      disabled={props.disabled}
-      onClick={props.onClick}
-      className="button"
-    >
+    <button ref={props.reference} disabled={props.disabled} onClick={props.onClick} className="button">
       {props.children}
     </button>
   );
 };
 
-const MenuHeader = (props) => {
+const MenuHeader = props => {
   return (
     <div className="menu-header" style={props.styles}>
       {props.children}

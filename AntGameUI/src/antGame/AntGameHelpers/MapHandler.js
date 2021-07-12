@@ -11,9 +11,9 @@ const DirtPerCell = Config.DirtPerCell;
 const FoodPerDecayStep = FoodPerCell / BlockDecaySteps;
 const DirtDecayPerStep = DirtPerCell / BlockDecaySteps;
 const MinDecayableAlpha = Config.MinDecayableAlpha;
-const FoodValue = Brushes.find((brush) => brush.name === "Food").value;
-const HomeValue = Brushes.find((brush) => brush.name === "Home").value;
-const DirtValue = Brushes.find((brush) => brush.name === "Dirt").value;
+const FoodValue = Brushes.find(brush => brush.name === "Food").value;
+const HomeValue = Brushes.find(brush => brush.name === "Home").value;
+const DirtValue = Brushes.find(brush => brush.name === "Dirt").value;
 const SampleMaps = Config.SampleMaps;
 
 export class MapHandler {
@@ -78,15 +78,8 @@ export class MapHandler {
   setupMap(canvasWidth, canvasHeight) {
     const drawableWidth = canvasWidth - BorderWeight;
     const drawableHeight = canvasHeight - BorderWeight;
-    this.pixelDensity = [
-      (drawableWidth / MapBounds[0]).toFixed(2),
-      (drawableHeight / MapBounds[1]).toFixed(2),
-    ];
-    if (Config.debug)
-      console.log("Pixel density is: ", [
-        this.pixelDensity[0],
-        this.pixelDensity[1],
-      ]);
+    this.pixelDensity = [(drawableWidth / MapBounds[0]).toFixed(2), (drawableHeight / MapBounds[1]).toFixed(2)];
+    if (Config.debug) console.log("Pixel density is: ", [this.pixelDensity[0], this.pixelDensity[1]]);
   }
 
   clearMap() {
@@ -164,8 +157,8 @@ export class MapHandler {
 
   fetchAndLoadMap(path) {
     return fetch(path)
-      .then((response) => response.json())
-      .then((jsonData) => this.loadMap(jsonData, false));
+      .then(response => response.json())
+      .then(jsonData => this.loadMap(jsonData, false));
   }
 
   preloadMap(mapToLoad) {
@@ -192,25 +185,22 @@ export class MapHandler {
   }
 
   populateBrushColors() {
-    Brushes.forEach((brush) => {
+    Brushes.forEach(brush => {
       if (brush.decayable) {
         for (let i = 1; i <= BlockDecaySteps; i++) {
           const index = brush.value + i;
-          const alpha =
-            Math.round((255 - MinDecayableAlpha) * (i / BlockDecaySteps)) +
-            MinDecayableAlpha;
+          const alpha = Math.round((255 - MinDecayableAlpha) * (i / BlockDecaySteps)) + MinDecayableAlpha;
           this.brushColors[index] = this._graphics.color(brush.color);
           this.brushColors[index].setAlpha(alpha);
         }
       }
-      if (brush.color)
-        this.brushColors[brush.value] = this._graphics.color(brush.color);
+      if (brush.color) this.brushColors[brush.value] = this._graphics.color(brush.color);
     });
   }
 
   drawMap() {
     if (!this.graphicsSet) return;
-    this.cellsToDraw.forEach((cellPos) => {
+    this.cellsToDraw.forEach(cellPos => {
       let cell = this._map[cellPos[0]][cellPos[1]];
       if (cell === " ") {
         this.eraseCell(cellPos);
@@ -223,8 +213,7 @@ export class MapHandler {
           let strength;
           if (!cellAmount) strength = BlockDecaySteps;
           else {
-            const maxPerCell =
-              cell[0] === FoodValue ? FoodPerCell : DirtPerCell;
+            const maxPerCell = cell[0] === FoodValue ? FoodPerCell : DirtPerCell;
             strength = Math.ceil(BlockDecaySteps * (cellAmount / maxPerCell));
             this.eraseCell(cellPos);
           }
@@ -268,8 +257,7 @@ export class MapHandler {
   }
 
   mapXYInBounds(mapXY) {
-    if (mapXY[0] >= 0 && mapXY[1] >= 0)
-      if (mapXY[0] < MapBounds[0] && mapXY[1] < MapBounds[1]) return true;
+    if (mapXY[0] >= 0 && mapXY[1] >= 0) if (mapXY[0] < MapBounds[0] && mapXY[1] < MapBounds[1]) return true;
     return false;
   }
 
@@ -286,11 +274,7 @@ export class MapHandler {
 
         if (this._gameMode === "challenge") {
           if (currentValue !== " " && currentValue !== HomeValue) continue;
-          if (
-            cellText === HomeValue &&
-            this.homeOnMap >= this._homeCellsAllowed
-          )
-            continue;
+          if (cellText === HomeValue && this.homeOnMap >= this._homeCellsAllowed) continue;
         }
         if (this.foodToStopTime !== 0) {
           if (currentValue[0] === FoodValue) {
@@ -306,7 +290,7 @@ export class MapHandler {
     if (foodRemoved) this.foodOnMap -= foodRemoved;
   }
 
-  prepareForStart = (IsChallenge) => {
+  prepareForStart = IsChallenge => {
     if (IsChallenge) {
       this.countHomeOnMap(IsChallenge);
     }
@@ -317,8 +301,7 @@ export class MapHandler {
 
   calculateFoodToStopTime = () => {
     this.foodToStopTime = Math.floor(
-      (this.foodOnMap + this.foodReturned + this.foodInTransit) *
-        PercentFoodReturnedToStopTime
+      (this.foodOnMap + this.foodReturned + this.foodInTransit) * PercentFoodReturnedToStopTime
     );
   };
 
@@ -358,7 +341,7 @@ export class MapHandler {
     this.foodOnMap += foodAdded;
   };
 
-  countHomeOnMap = (recordLocations) => {
+  countHomeOnMap = recordLocations => {
     this.homeOnMap = 0;
     if (recordLocations) this.homeLocations = [];
     for (let x = 0; x < MapBounds[0]; x++) {
@@ -384,7 +367,7 @@ export class MapHandler {
     if (this.foodReturned === this.foodToStopTime) this.toggleTimer(false);
   };
 
-  decayDirt = (mapXY) => {
+  decayDirt = mapXY => {
     const intMapXY = MapXYToInt(mapXY);
     let cellValue = this._map[intMapXY[0]][intMapXY[1]];
     let cellAmount = parseInt(cellValue.substr(1));
@@ -399,7 +382,7 @@ export class MapHandler {
     }
   };
 
-  takeFood = (mapXY) => {
+  takeFood = mapXY => {
     const intMapXY = MapXYToInt(mapXY);
     let cellValue = this._map[intMapXY[0]][intMapXY[1]];
     let cellAmount = parseInt(cellValue.substr(1));
@@ -417,11 +400,11 @@ export class MapHandler {
   };
 
   respawnDecayableBlocks = () => {
-    this.foodToRespawn.forEach((cell) => {
+    this.foodToRespawn.forEach(cell => {
       this._map[cell[0]][cell[1]] = FoodValue;
     });
     this.foodToRespawn = [];
-    this.dirtToRespawn.forEach((cell) => {
+    this.dirtToRespawn.forEach(cell => {
       this._map[cell[0]][cell[1]] = DirtValue;
     });
     this.dirtToRespawn = [];
@@ -440,13 +423,13 @@ export class MapHandler {
     }
   }
 
-  getCell = (mapXY) => {
+  getCell = mapXY => {
     const intMapXY = MapXYToInt(mapXY);
     if (!this.checkInBounds(intMapXY)) return false;
     return this._map[intMapXY[0]][intMapXY[1]][0];
   };
 
-  checkInBounds = (mapXY) => {
+  checkInBounds = mapXY => {
     if (mapXY[0] < 0 || mapXY[0] >= MapBounds[0]) return false;
     if (mapXY[1] < 0 || mapXY[1] >= MapBounds[1]) return false;
     return true;
@@ -482,6 +465,6 @@ export class MapHandler {
   }
 }
 
-const MapXYToInt = (mapXY) => {
+const MapXYToInt = mapXY => {
   return [Math.round(mapXY[0]), Math.round(mapXY[1])];
 };

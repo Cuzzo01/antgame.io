@@ -1,14 +1,14 @@
 const { ObjectID } = require("mongodb");
 const { Connection } = require("./MongoClient");
 
-const getCollection = async (collection) => {
+const getCollection = async collection => {
   const connection = await Connection.open();
   return await connection.db("challenges").collection(collection);
 };
 
 const getUserPBsByChallengeList = async (userID, challengeIDList) => {
   let objectIDList = [];
-  challengeIDList.forEach((id) => {
+  challengeIDList.forEach(id => {
     const parseResult = TryParseObjectID(id, "listChallengeID");
     objectIDList.push(parseResult);
   });
@@ -36,12 +36,7 @@ const getChallengeDetailsByUser = async (userID, challengeID) => {
   return result.challengeDetails[0];
 };
 
-const updateChallengePBAndRunCount = async (
-  userID,
-  challengeID,
-  score,
-  runID
-) => {
+const updateChallengePBAndRunCount = async (userID, challengeID, score, runID) => {
   const userObjectID = TryParseObjectID(userID, "userId");
   const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
   const runObjectID = TryParseObjectID(runID, "runID");

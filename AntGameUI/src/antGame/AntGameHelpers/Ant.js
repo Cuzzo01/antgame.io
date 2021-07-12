@@ -12,9 +12,9 @@ const TrailDecayRange = Config.TrailDecayRange;
 const TrailTransparencyFloor = Config.TrailTransparencyFloor;
 const MapBounds = Config.MapBounds;
 const Brushes = Config.brushes;
-const FoodValue = Brushes.find((brush) => brush.name === "Food").value;
-const DirtValue = Brushes.find((brush) => brush.name === "Dirt").value;
-const WallValue = Brushes.find((brush) => brush.name === "Wall").value;
+const FoodValue = Brushes.find(brush => brush.name === "Food").value;
+const DirtValue = Brushes.find(brush => brush.name === "Dirt").value;
+const WallValue = Brushes.find(brush => brush.name === "Wall").value;
 
 export class Ant {
   constructor(pos, mapHandler, homeTrailHandler, foodTrailHandler, homeBrush) {
@@ -93,8 +93,7 @@ export class Ant {
   }
 
   getNewAngle() {
-    if (this.currentCell === WallValue || this.currentCell === DirtValue)
-      return;
+    if (this.currentCell === WallValue || this.currentCell === DirtValue) return;
     if (this.checkSight()) {
       if (Math.random() < 0.01) this.wander();
     } else this.wander();
@@ -124,34 +123,16 @@ export class Ant {
   }
 
   lookForFood(points) {
-    const leftScore = this.foodTrailHandler.checkLine(
-      points["front"],
-      points["left"]
-    );
-    const aheadScore = this.foodTrailHandler.checkLine(
-      points["front"],
-      points["ahead"]
-    );
-    const rightScore = this.foodTrailHandler.checkLine(
-      points["front"],
-      points["right"]
-    );
+    const leftScore = this.foodTrailHandler.checkLine(points["front"], points["left"]);
+    const aheadScore = this.foodTrailHandler.checkLine(points["front"], points["ahead"]);
+    const rightScore = this.foodTrailHandler.checkLine(points["front"], points["right"]);
     return this.navigate(leftScore, aheadScore, rightScore);
   }
 
   lookForHome(points) {
-    const leftScore = this.homeTrailHandler.checkLine(
-      points["front"],
-      points["left"]
-    );
-    const aheadScore = this.homeTrailHandler.checkLine(
-      points["front"],
-      points["ahead"]
-    );
-    const rightScore = this.homeTrailHandler.checkLine(
-      points["front"],
-      points["right"]
-    );
+    const leftScore = this.homeTrailHandler.checkLine(points["front"], points["left"]);
+    const aheadScore = this.homeTrailHandler.checkLine(points["front"], points["ahead"]);
+    const rightScore = this.homeTrailHandler.checkLine(points["front"], points["right"]);
     return this.navigate(leftScore, aheadScore, rightScore);
   }
 
@@ -169,10 +150,8 @@ export class Ant {
 
     if (this.dropsToSkip !== 0) return false;
     if (aheadScore === 0 && leftScore === 0 && rightScore === 0) return false;
-    if (aheadScore >= leftScore && aheadScore >= rightScore)
-      return this.takeAction("a");
-    if (rightScore === leftScore)
-      Math.random() < 0.5 ? this.turnLeft() : this.turnRight();
+    if (aheadScore >= leftScore && aheadScore >= rightScore) return this.takeAction("a");
+    if (rightScore === leftScore) Math.random() < 0.5 ? this.turnLeft() : this.turnRight();
     if (rightScore > leftScore) this.turnRight();
     if (leftScore > rightScore) this.turnLeft();
     return true;
@@ -235,20 +214,15 @@ export class Ant {
   }
 
   stayOnCourse() {
-    if (Math.random() < 0.3)
-      this.angle += toRad((Math.random() * 2 - 1) * StayOnCourseWanderAmount);
+    if (Math.random() < 0.3) this.angle += toRad((Math.random() * 2 - 1) * StayOnCourseWanderAmount);
   }
 
   turnLeft() {
-    this.angle -= toRad(
-      ExtraSmellTurnAmount * Math.random() + MinSmellTurnAmount
-    );
+    this.angle -= toRad(ExtraSmellTurnAmount * Math.random() + MinSmellTurnAmount);
   }
 
   turnRight() {
-    this.angle += toRad(
-      ExtraSmellTurnAmount * Math.random() + MinSmellTurnAmount
-    );
+    this.angle += toRad(ExtraSmellTurnAmount * Math.random() + MinSmellTurnAmount);
   }
 
   wander() {
@@ -303,15 +277,12 @@ export class Ant {
     if (pos[0] > 0 && pos[1] > 0) {
       if (pos[0] < MapBounds[0] && pos[1] < MapBounds[1]) {
         let newCell = this.mapHandler.getCell(pos);
-        const wallToDirtOrWall =
-          this.currentCell === WallValue &&
-          (newCell === WallValue || newCell === FoodValue);
+        const wallToDirtOrWall = this.currentCell === WallValue && (newCell === WallValue || newCell === FoodValue);
         // Maybe just check this conditionally on sandbox mode??
         const foodToFoodOrDirt = false;
         // this.currentCell === FoodValue &&
         // (newCell === FoodValue || newCell === DirtValue);
-        const dirtToDirt =
-          this.currentCell === DirtValue && newCell === DirtValue;
+        const dirtToDirt = this.currentCell === DirtValue && newCell === DirtValue;
         if (wallToDirtOrWall || dirtToDirt || foodToFoodOrDirt) {
           return true;
         }

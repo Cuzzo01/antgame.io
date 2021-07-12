@@ -41,8 +41,7 @@ export class SaveGameHandler {
   static Download(jsonData, fileName) {
     var textDoc = document.createElement("a");
 
-    textDoc.href =
-      "data:attachment/text," + encodeURI(JSON.stringify(jsonData));
+    textDoc.href = "data:attachment/text," + encodeURI(JSON.stringify(jsonData));
     textDoc.target = "_blank";
 
     textDoc.download = fileName;
@@ -64,8 +63,7 @@ export class SaveGameHandler {
   }
 }
 
-const CheckMapBounds = (map) => {
-  if (map.length !== MapBounds[0] || map[0].length !== MapBounds[1])
-    return false;
+const CheckMapBounds = map => {
+  if (map.length !== MapBounds[0] || map[0].length !== MapBounds[1]) return false;
   return true;
 };
