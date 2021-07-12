@@ -47,8 +47,8 @@ class AuthHandler {
       (error) => {
         if (error.response.status === 401) {
           this.logout();
-          const pathBath = window.location.pathname;
-          window.location = `/login?redirect=${pathBath}`;
+          const pathBack = window.location.pathname;
+          window.location = `/login?redirect=${pathBack}`;
         }
         return Promise.reject(error);
       }
@@ -69,7 +69,6 @@ class AuthHandler {
       this.decodedToken = jwt_decode(this.jwt);
       localStorage.setItem("jwt", this.jwt);
 
-      this.configureInterceptors();
       return true;
     });
   }
