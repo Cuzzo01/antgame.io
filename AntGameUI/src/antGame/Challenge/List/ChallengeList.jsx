@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./ChallengePage.module.css";
-import { getActiveChallenges } from "../../AntGameHelpers/Services/ChallengeService";
+import { getActiveChallenges } from "../../Challenge/ChallengeService";
 import AuthHandler from "../../Auth/AuthHandler";
 import { useHistory } from "react-router-dom";
 
