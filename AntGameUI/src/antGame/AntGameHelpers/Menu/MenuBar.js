@@ -1,5 +1,5 @@
 import GameMenu from "./GameMenu/GameMenu";
-import TimeCounter from "./Timer/Timer";
+import Timer from "./Timer/Timer";
 import BrushMenu from "./BrushMenu/BrushMenu";
 import OptionsMenu from "./OptionsMenu/OptionsMenu";
 import FoodTracker from "./FoodTracker/FoodTracker";
@@ -25,7 +25,7 @@ export default function MenuBar(props) {
         saveMapHandler={props.saveMapHandler}
       />
       <div style={styles.middle}>
-        <TimeCounter
+        <Timer
           time={props.time}
           active={props.timerActive}
           styles={styles.timer}
