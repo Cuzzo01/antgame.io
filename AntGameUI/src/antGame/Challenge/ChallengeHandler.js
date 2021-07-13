@@ -38,6 +38,7 @@ class ChallengeHandler {
 
   set challengeID(id) {
     this._challengeID = id;
+    this.prHomeLocations = false;
     this.getConfig();
     this.getRecords();
   }
@@ -164,6 +165,7 @@ class ChallengeHandler {
       if (!this.records) this.records = {};
       this.records.pb = this.score;
       this.notifyRecordsListeners();
+      this.prHomeLocations = this.artifact.HomeLocations;
     }
 
     this.generateSnapshot(mapHandler);

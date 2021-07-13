@@ -383,7 +383,7 @@ export default class AntGame extends React.Component {
   };
 
   loadPRHomeLocations = () => {
-    this.reset()
+    this.reset();
     ChallengeHandler.loadPRRun().then(result => {
       if (result !== false && this.state.emptyMap) this.setState({ emptyMap: false });
     });
