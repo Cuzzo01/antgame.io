@@ -146,14 +146,14 @@ class ChallengeHandler {
 
   generateSnapshot() {
     const mapHandler = this._mapHandler;
-    const timerHandler = this._timerHandler;
-    this.artifact.Snapshots.push({
-      ST: new Date().getTime(),
-      GT: timerHandler.displayTime,
-      FR: mapHandler.foodRatio,
-      FoM: mapHandler.foodOnMap,
-      FiT: mapHandler.foodInTransit,
-    });
+    const time = this._timerHandler.displayTime;
+    this.artifact.Snapshots.push([
+      new Date().getTime(),
+      `${time.min}:${time.sec}`,
+      mapHandler.foodRatio,
+      mapHandler.foodOnMap,
+      mapHandler.foodInTransit,
+    ]);
   }
 
   handleTimeout() {
