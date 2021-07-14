@@ -323,6 +323,7 @@ export class MapHandler {
     this.foodReturned = 0;
     this.foodInTransit = 0;
     this.respawnDecayableBlocks();
+    this.placeAndCountDecayableBlocks();
   };
 
   setHomeLocations = locations => {
