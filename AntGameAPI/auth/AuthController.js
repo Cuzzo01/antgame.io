@@ -95,7 +95,7 @@ async function createUser(req, res) {
 }
 
 const GetIpAddress = req => {
-  const cfIP = req.headers["cf-connecting-ip"];
+  const cfIP = req.headers["do-connecting-ip"];
   if (cfIP) return cfIP;
   const forwardIP = req.headers["x-forwarded-for"];
   if (forwardIP) return forwardIP;

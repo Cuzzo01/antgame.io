@@ -46,13 +46,6 @@ app.get("/challenge/:id/pr", _challengeController.getPRHomeLocations);
 app.get("/challenges/active", _challengeController.getActiveChallenges);
 app.get("/challenge/:id/leaderboard", _challengeController.getLeaderboard);
 
-const testCall = (req, res) => {
-  console.log(req.headers)
-
-  res.send("OK");
-};
-app.get("/test", testCall);
-
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
