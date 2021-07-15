@@ -8,6 +8,7 @@ async function verifyLogin(req, res) {
     const loginRequest = req.body;
     const username = loginRequest.user;
     const password = loginRequest.pass;
+    const clientID = loginRequest.clientID;
 
     const authDetails = await AuthDao.getAuthDetailsByUsername(username);
     if (authDetails === false) {
@@ -16,6 +17,8 @@ async function verifyLogin(req, res) {
       return;
     }
     if (await PasswordHandler.checkPassword(password, authDetails.passHash)) {
+      const clientIP = GetIpAddress(req);
+      await AuthDao.logLogin(authDetails.id, clientIP, clientID);
       const tokenObject = {
         id: authDetails.id,
         username: authDetails.username,
@@ -90,5 +93,14 @@ async function createUser(req, res) {
     res.send("Could not create user");
   }
 }
+
+const GetIpAddress = req => {
+  const cfIP = req.headers["cf-connecting-ip"];
+  if (cfIP) return cfIP;
+  const forwardIP = req.headers["x-forwarded-for"];
+  if (forwardIP) return forwardIP;
+  const sourceIP = req.connection.remoteAddress;
+  return sourceIP;
+};
 
 module.exports = { verifyLogin, createUser, getAnonymousToken };

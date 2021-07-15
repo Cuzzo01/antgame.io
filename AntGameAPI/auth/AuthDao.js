@@ -1,4 +1,5 @@
 const { Connection } = require("../dao/MongoClient");
+const { ObjectID } = require("mongodb");
 
 const getCollection = async collection => {
   const connection = await Connection.open();
@@ -42,4 +43,29 @@ const saveNewUser = async userObject => {
   return await collection.insertOne(newUser);
 };
 
-module.exports = { getAuthDetailsByUsername, IsUsernameTaken, saveNewUser };
+const logLogin = async (userID, IPAddress, clientID) => {
+  const userObjectID = TryParseObjectID(userID, "userID");
+  const collection = await getCollection("users");
+  const result = await collection.updateOne(
+    { _id: userObjectID },
+    {
+      $push: {
+        loginRecords: {
+          IP: IPAddress,
+          clientID: clientID,
+          time: new Date(),
+        },
+      },
+    }
+  );
+};
+
+const TryParseObjectID = (stringID, name) => {
+  try {
+    return new ObjectID(stringID);
+  } catch (e) {
+    throw `Threw on ${name} parsing in AuthDao: ${stringID}`;
+  }
+};
+
+module.exports = { getAuthDetailsByUsername, IsUsernameTaken, saveNewUser, logLogin };

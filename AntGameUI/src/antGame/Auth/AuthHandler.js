@@ -63,7 +63,7 @@ class AuthHandler {
   }
 
   login(username, password) {
-    return getToken(username, password).then(result => {
+    return getToken(username, password, localStorage.getItem("client-id")).then(result => {
       this._loggedIn = true;
       this.jwt = result;
       this.decodedToken = jwt_decode(this.jwt);
