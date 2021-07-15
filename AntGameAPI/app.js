@@ -10,7 +10,7 @@ const _authController = require("./auth/AuthController");
 const _userController = require("./controller/UserController");
 const WebTokenHandler = require("./auth/WebTokenHandler");
 
-const UnauthenticatedRoutes = ["/auth/login", "/auth/anonToken"];
+const UnauthenticatedRoutes = ["/auth/login", "/auth/anonToken", "/test"];
 
 app.use(bodyParser.json({ extended: true }));
 app.use(
@@ -45,6 +45,13 @@ app.get("/challenge/:id", _challengeController.getChallenge);
 app.get("/challenge/:id/pr", _challengeController.getPRHomeLocations);
 app.get("/challenges/active", _challengeController.getActiveChallenges);
 app.get("/challenge/:id/leaderboard", _challengeController.getLeaderboard);
+
+const testCall = (req, res) => {
+  let ip = req.headers['cf-connecting-ip'] || req.headers['x-forwarded-for'] || req.connection.remoteAddress
+  console.log(ip)
+  res.send("OK")
+}
+app.get("/test", testCall)
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
