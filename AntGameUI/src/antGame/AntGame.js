@@ -1,6 +1,6 @@
 import React from "react";
 import Sketch from "react-p5";
-import { disableBodyScroll } from "body-scroll-lock";
+import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 
 import { Config } from "./config";
 
@@ -36,9 +36,6 @@ export default class AntGame extends React.Component {
 
   constructor(props) {
     super(props);
-
-    let bodyElement = document.querySelector("body");
-    disableBodyScroll(bodyElement);
 
     this.brushSize = BrushSizeDefault;
     this.brushType = DefaultBrush.value;
@@ -94,10 +91,16 @@ export default class AntGame extends React.Component {
     this.mapHandler.gameMode = this.gamemode;
     this.timerHandler.gameMode = this.gamemode;
     this.timerHandler.updateTimeDisplay(this.setTime);
+
+    let bodyElement = document.querySelector("body");
+    disableBodyScroll(bodyElement);
   }
 
   componentWillUnmount() {
     clearInterval(this.mapUiUpdateInterval);
+
+    let bodyElement = document.querySelector("body");
+    enableBodyScroll(bodyElement);
   }
 
   setMapUiUpdate = mili => {
