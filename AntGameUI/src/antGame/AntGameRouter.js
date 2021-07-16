@@ -7,6 +7,7 @@ import { GameModeContext } from "./GameModeContext";
 import AuthHandler from "./Auth/AuthHandler";
 import UserBar from "./UserBar/UserBar";
 import Leaderboard from "./Challenge/Leaderboard/Leaderboard";
+import ErrorPage from "./ErrorPage/ErrorPage";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
@@ -15,6 +16,9 @@ const AntGameRouter = () => {
   return (
     <BrowserRouter>
       <Switch>
+        <Route exact path="/error">
+          <ErrorPage />
+        </Route>
         <Route exact path="/">
           <GameModeContext.Provider value={"sandbox"}>
             <AntGame mapToLoad={PreloadMapPath} />
