@@ -57,3 +57,9 @@
 .title p {
   margin: 0px;
 }
+
+.tooltip {
+  padding: 0.4em 0.8em !important;
+  font-size: 1em !important;
+  border-left: 0px solid black !important;
+}

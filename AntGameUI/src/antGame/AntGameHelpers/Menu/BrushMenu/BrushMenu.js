@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { Config } from "../../../config";
 import { GameModeContext } from "../../../GameModeContext";
+import ReactTooltip from "react-tooltip";
 import styles from "./BrushMenu.module.css";
 
 const BrushSizes = Config.brushSizes;
@@ -57,25 +58,47 @@ function OptionPicker(props) {
   const optionList = [];
   for (let i = 0; i < props.options.length; i++) {
     const option = props.options[i];
-    const optionName = option.shortName;
+    const optionSymbol = option.shortName;
+    const optionName = option.name;
     const activeOption = i === currentIndex;
+
+    const clickHandler = () => {
+      props.handler(option.value);
+      setIndex(i);
+    };
+
     if (props.disabled) {
       optionList.push(
         <div key={option.value} className={`${styles.disabledElement}`}>
-          {optionName}
+          <span data-tip data-for={optionSymbol}>
+            {optionSymbol}
+          </span>
+          <ReactTooltip id={optionSymbol}>{optionSymbol}</ReactTooltip>
         </div>
       );
     } else {
       optionList.push(
         <div
           key={option.value}
-          onClick={() => {
-            props.handler(option.value);
-            setIndex(i);
-          }}
           className={`${styles.menuElement} ${activeOption ? styles.active : ""}`}
+          data-tip
+          data-for={optionSymbol}
+          data-event="click focus"
         >
-          {optionName}
+          <span>{optionSymbol}</span>
+          <ReactTooltip
+            place="bottom"
+            id={optionSymbol}
+            globalEventOff="click"
+            effect="solid"
+            className={styles.tooltip}
+            afterShow={() => {
+              clickHandler();
+              setTimeout(ReactTooltip.hide, 1000);
+            }}
+          >
+            {optionName}
+          </ReactTooltip>
         </div>
       );
     }
