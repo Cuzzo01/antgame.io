@@ -70,10 +70,7 @@ function OptionPicker(props) {
     if (props.disabled) {
       optionList.push(
         <div key={option.value} className={`${styles.disabledElement}`}>
-          <span data-tip data-for={optionSymbol}>
-            {optionSymbol}
-          </span>
-          <ReactTooltip id={optionSymbol}>{optionSymbol}</ReactTooltip>
+          {optionSymbol}
         </div>
       );
     } else {
@@ -85,7 +82,7 @@ function OptionPicker(props) {
           data-for={optionSymbol}
           data-event="click focus"
         >
-          <span>{optionSymbol}</span>
+          {optionSymbol}
           <ReactTooltip
             place="bottom"
             id={optionSymbol}
