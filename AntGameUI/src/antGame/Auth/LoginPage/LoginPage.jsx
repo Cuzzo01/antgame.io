@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styles from "./LoginPage.module.css";
 import AuthHandler from "../AuthHandler";
-import { useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 
 const LoginPage = props => {
   const [username, setUsername] = useState("");
@@ -82,12 +82,8 @@ const LoginPage = props => {
         </div>
       </form>
       <br />
-      <div>
-        Just ask for a login.
-        <br />
-        accounts@antgame.io
-        <br />
-        (registration coming soon)
+      <div className={styles.registerLink}>
+        <Link to="/register">Create Account</Link>
       </div>
     </div>
   );

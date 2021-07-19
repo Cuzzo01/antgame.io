@@ -1,5 +1,8 @@
 import { useForm } from "react-hook-form";
 import styles from "./RegistrationPage.module.css";
+import { registerAccount } from "../AuthService";
+import AuthHandler from "../AuthHandler";
+import { useHistory, useLocation } from "react-router-dom";
 
 const RegistrationPage = props => {
   const {
@@ -7,9 +10,36 @@ const RegistrationPage = props => {
     formState: { errors },
     handleSubmit,
     getValues,
+    setError,
   } = useForm();
+  const history = useHistory();
+  const location = useLocation();
 
-  const onSubmit = data => console.log(data);
+  function redirectOut() {
+    const search = location.search;
+    const params = new URLSearchParams(search);
+    const redirectLoc = params.get("redirect");
+    if (redirectLoc) history.replace(redirectLoc);
+    else history.replace("/challenge");
+  }
+
+  const onSubmit = data => {
+    registerAccount(data.username, data.password, data.email, localStorage.getItem("client-id")).then(result => {
+      if (result === "usernameTaken")
+        setError("username", {
+          type: "manual",
+          message: "Username taken",
+        });
+      else {
+        AuthHandler.token = result;
+        redirectOut();
+      }
+    });
+  };
+
+  if (AuthHandler.loggedIn) {
+    redirectOut();
+  }
 
   return (
     <div className={styles.container}>
@@ -22,6 +52,7 @@ const RegistrationPage = props => {
             {...register("username", { required: true, minLength: "5", maxLength: "20" })}
             autoComplete="username"
           />
+          {errors.username?.type === "manual" && <ErrorMessage>{errors.username.message}</ErrorMessage>}
           {errors.username?.type === "required" && <ErrorMessage>Required</ErrorMessage>}
           {errors.username?.type === "minLength" && <ErrorMessage>Must be at least 5 characters</ErrorMessage>}
           {errors.username?.type === "maxLength" && <ErrorMessage>Cannot be over 20 characters</ErrorMessage>}
@@ -55,13 +86,17 @@ const RegistrationPage = props => {
           {errors.confirmPassword?.type === "passwordMatch" && <ErrorMessage>Passwords must match</ErrorMessage>}
         </div>
         <div className={styles.inputField}>
-          <label htmlFor="email">Email (Optional)</label>
+          <label htmlFor="email">
+            Email <strong>(Optional)</strong>
+          </label>
           <br />
-          <input {...register("email")} autoComplete="email" />
+          <input {...register("email")} autoComplete="email" type="email" />
           {errors.email ? <ErrorMessage>email is required</ErrorMessage> : null}
           <p className={styles.subtext}>Only used for account recovery</p>
         </div>
-        <input type="submit" />
+        <button className={styles.submitButton} type="submit">
+          Register Account
+        </button>
       </form>
     </div>
   );

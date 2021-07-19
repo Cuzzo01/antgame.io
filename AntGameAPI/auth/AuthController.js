@@ -63,6 +63,52 @@ async function getAnonymousToken(req, res) {
   }
 }
 
+async function registerUser(req, res) {
+  try {
+    const request = req.body;
+    const username = request.username;
+    const password = request.password;
+    const email = request.email;
+    const clientID = request.clientID;
+    const clientIP = GetIpAddress(req);
+
+    const usernameTaken = await AuthDao.IsUsernameTaken(username);
+    if (usernameTaken) {
+      res.status(409);
+      res.send("Username taken");
+      return;
+    }
+
+    const hashedPassword = await PasswordHandler.generatePasswordHash(password);
+    const user = await AuthDao.saveNewUser({
+      username: username,
+      passHash: hashedPassword,
+      admin: false,
+      challengeDetails: [],
+      showOnLeaderboard: true,
+      email: email.length > 0 && email,
+      registrationData: {
+        clientID: clientID,
+        IP: clientIP,
+        date: new Date(),
+      },
+    });
+
+    const tokenObject = {
+      id: user._id,
+      username: user.username,
+      admin: user.admin,
+    };
+    const token = WebTokenHandler.generateAccessToken(tokenObject);
+    res.send(token);
+    // res.send("OK")
+  } catch (e) {
+    console.log(e);
+    res.status(500);
+    res.send("Could not create user");
+  }
+}
+
 async function createUser(req, res) {
   try {
     if (RejectNotAdmin(req, res)) return;
@@ -103,4 +149,4 @@ const GetIpAddress = req => {
   return sourceIP;
 };
 
-module.exports = { verifyLogin, createUser, getAnonymousToken };
+module.exports = { verifyLogin, createUser, getAnonymousToken, registerUser };

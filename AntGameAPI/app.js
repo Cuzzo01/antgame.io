@@ -10,7 +10,7 @@ const _authController = require("./auth/AuthController");
 const _userController = require("./controller/UserController");
 const WebTokenHandler = require("./auth/WebTokenHandler");
 
-const UnauthenticatedRoutes = ["/auth/login", "/auth/anonToken", "/test"];
+const UnauthenticatedRoutes = ["/auth/login", "/auth/anonToken", "/auth/register", "/test"];
 
 app.use(bodyParser.json({ extended: true }));
 app.use(
@@ -37,6 +37,7 @@ app.use(
 
 app.post("/auth/login", _authController.verifyLogin);
 app.post("/auth/anonToken", _authController.getAnonymousToken);
+app.post("/auth/register", _authController.registerUser);
 app.post("/auth/createUser", _authController.createUser);
 
 app.get("/challenge/:id/records", _challengeController.getRecords);

@@ -32,15 +32,18 @@ const IsUsernameTaken = async username => {
 
 const saveNewUser = async userObject => {
   const collection = await getCollection("users");
-  const newUser = {
+  let newUser = {
     username: userObject.username,
     username_lower: userObject.username.toLowerCase(),
     passHash: userObject.passHash,
     admin: userObject.admin,
     challengeDetails: [],
     showOnLeaderboard: true,
+    registrationData: userObject.registrationData,
   };
-  return await collection.insertOne(newUser);
+  if (userObject.email.length > 0) newUser.email = userObject.email;
+  const result = await collection.insertOne(newUser);
+  return result.ops[0];
 };
 
 const logLogin = async (userID, IPAddress, clientID) => {

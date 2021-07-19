@@ -49,3 +49,11 @@
 .subtext {
   font-size: 0.75em;
 }
+
+.registerLink a {
+  color: blue;
+}
+
+.registerLink {
+  text-align: center;
+}

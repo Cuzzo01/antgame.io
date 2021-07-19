@@ -20,6 +20,13 @@ class AuthHandler {
     }
   }
 
+  set token(newToken) {
+    this._loggedIn = true;
+    this.jwt = newToken;
+    this.decodedToken = jwt_decode(this.jwt);
+    localStorage.setItem("jwt", this.jwt);
+  }
+
   get loggedIn() {
     return this._loggedIn;
   }
@@ -29,9 +36,8 @@ class AuthHandler {
   }
 
   get isAnon() {
-    if (this.loggedIn) {
-      return this.decodedToken.anon === true;
-    } else return null;
+    if (this.loggedIn) return this.decodedToken.anon === true;
+    else return null;
   }
 
   get username() {

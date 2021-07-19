@@ -16,6 +16,13 @@ export async function registerAccount(username, password, email, clientID) {
   return axios
     .post("/api/auth/register", { username: username, password: password, email: email, clientID: clientID })
     .then(res => {
-      console.log(res.data);
+      return res.data;
+    })
+    .catch(e => {
+      if (e.response.status === 409) {
+        return "usernameTaken";
+      } else {
+        window.location = "/error";
+      }
     });
 }
