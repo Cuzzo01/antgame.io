@@ -1,6 +1,6 @@
 import AntGame from "./AntGame";
 import ChallengeList from "./Challenge/List/ChallengeList";
-import LoginPage from "./LoginPage/LoginPage";
+import LoginPage from "./Auth/LoginPage/LoginPage";
 import { Config } from "./config";
 import { BrowserRouter, Switch, Route, Redirect, useParams } from "react-router-dom";
 import { GameModeContext } from "./GameModeContext";
@@ -8,6 +8,7 @@ import AuthHandler from "./Auth/AuthHandler";
 import UserBar from "./UserBar/UserBar";
 import Leaderboard from "./Challenge/Leaderboard/Leaderboard";
 import ErrorPage from "./ErrorPage/ErrorPage";
+import RegistrationPage from "./Auth/RegistrationPage/RegistrationPage";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
@@ -26,6 +27,9 @@ const AntGameRouter = () => {
         </Route>
         <Route path="/login">
           <LoginPage />
+        </Route>
+        <Route path="/register">
+          <RegistrationPage />
         </Route>
         <Route exact path="/challenge">
           <ChallengeList />

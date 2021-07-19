@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styles from "./LoginPage.module.css";
-import AuthHandler from "../Auth/AuthHandler";
+import AuthHandler from "../AuthHandler";
 import { useHistory, useLocation } from "react-router-dom";
 
 const LoginPage = props => {

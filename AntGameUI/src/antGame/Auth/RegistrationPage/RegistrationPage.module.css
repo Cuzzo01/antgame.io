@@ -1,0 +1,29 @@
+.container {
+  max-width: 30em;
+  margin: 3em auto;
+}
+
+.container h3 {
+  text-align: center;
+}
+
+.inputField {
+  margin: 1em 0;
+}
+
+input {
+  display: block;
+  width: 100%;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 0.5em;
+}
+
+.subtext {
+  font-size: 0.9em;
+  color: grey;
+  margin-top: 0.25em;
+}

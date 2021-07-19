@@ -51,9 +51,17 @@ const logLogin = async (userID, IPAddress, clientID) => {
     {
       $push: {
         loginRecords: {
-          IP: IPAddress,
-          clientID: clientID,
-          time: new Date(),
+          $each: [
+            {
+              IP: IPAddress,
+              clientID: clientID,
+              time: new Date(),
+            },
+          ],
+          $sort: {
+            time: -1,
+          },
+          $slice: 10,
         },
       },
     }
