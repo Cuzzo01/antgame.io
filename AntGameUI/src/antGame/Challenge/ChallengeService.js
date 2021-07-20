@@ -49,7 +49,6 @@ export async function getPRHomeLocations(challengeID) {
   return axios
     .get(`/api/challenge/${challengeID}/pr`)
     .then(res => {
-      console.log(res.data);
       return res.data.home;
     })
     .catch(error => {

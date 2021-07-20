@@ -40,7 +40,6 @@ export default class AntGame extends React.Component {
     this.brushSize = BrushSizeDefault;
     this.brushType = DefaultBrush.value;
     this.windowSize = [];
-    this.frameCount = 0;
     this.blockDrawing = false;
     this.imageToSave = "";
 
@@ -171,10 +170,6 @@ export default class AntGame extends React.Component {
   };
 
   draw = p5 => {
-    if (this.state.playState && p5.frameCount % FrameRate === 0) {
-      this.frameCount = p5.frameCount;
-    }
-
     if (this.imageToSave !== "") this.handleImageSave(p5);
 
     if (this.state.shouldResizeCanvas) {
@@ -185,16 +180,6 @@ export default class AntGame extends React.Component {
     }
 
     if (p5.mouseIsPressed) this.handleMousePressed(p5);
-
-    if ((this.state.playState && !Debug) || (Debug && p5.keyIsPressed && p5.key === "s")) {
-      if (p5.frameCount % TrailDropRate === 0) {
-        this.antHandler.updateAnts(true);
-      } else this.antHandler.updateAnts(false);
-      if (p5.frameCount % TrailDecayRate === 0) {
-        this.foodTrailHandler.decayTrail();
-        this.homeTrailHandler.decayTrail();
-      }
-    }
 
     if (this.mapHandler.redrawMap) this.mapHandler.drawMap();
     else if (this.mapHandler.redrawFullMap) this.mapHandler.drawFullMap();
@@ -294,8 +279,22 @@ export default class AntGame extends React.Component {
         this.mapHandler.findNewDecayableBlocks();
         this.mapHandler.calculateFoodToStopTime();
       }
+
+      const ticksPerSecond = FrameRate * 1.5;
+      const updateRate = 1000 / ticksPerSecond;
+      this.updateCount = 0;
+      this.gameLoopInterval = setInterval(() => {
+        this.updateCount++;
+        this.antHandler.updateAnts();
+        if (this.updateCount % TrailDecayRate === 0) {
+          this.foodTrailHandler.decayTrail();
+          this.homeTrailHandler.decayTrail();
+        }
+        if (this.state.timerActive && this.updateCount % ticksPerSecond === 0) this.timerHandler.tickTime();
+      }, updateRate);
     } else {
       clearInterval(this.challengeSnapshotInterval);
+      clearInterval(this.gameLoopInterval);
       this.setMapUiUpdate(100);
       this.toggleTimer(false);
     }
@@ -305,12 +304,8 @@ export default class AntGame extends React.Component {
 
   toggleTimer = state => {
     if (state) {
-      this.timerInterval = setInterval(() => {
-        this.timerHandler.handleTime(this.frameCount, this.setTime);
-      }, 1000);
       this.setState({ timerActive: true });
     } else {
-      clearInterval(this.timerInterval);
       this.setState({
         timerActive: false,
         foodReturned: this.mapHandler.percentFoodReturned,

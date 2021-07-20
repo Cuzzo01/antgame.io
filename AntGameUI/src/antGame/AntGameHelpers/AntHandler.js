@@ -39,10 +39,10 @@ export class AntsHandler {
     this.redrawAnts = false;
   }
 
-  updateAnts(dropPoint) {
+  updateAnts() {
     this.ants.forEach(ant => {
       ant.getNewAngle();
-      ant.walk(dropPoint);
+      ant.walk();
     });
     this.redrawAnts = true;
   }

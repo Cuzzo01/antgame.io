@@ -50,16 +50,13 @@ export class TimerHandler {
     this.updateTimeDisplay();
   }
 
-  handleTime(frameCount) {
-    if (this.frameCount !== frameCount) {
-      this.frameCount = frameCount;
-      if (this._gameMode === "challenge") {
-        this.sec--;
-        if (this.sec === 0 && this.min === 0) this.handleChallengeTimeout();
-      } else this.sec++;
-      this.updateDisplayTime();
-      this.setDisplayTimeFunc(this.displayTime);
-    }
+  tickTime() {
+    if (this._gameMode === "challenge") {
+      this.sec--;
+      if (this.sec === 0 && this.min === 0) this.handleChallengeTimeout();
+    } else this.sec++;
+    this.updateDisplayTime();
+    this.setDisplayTimeFunc(this.displayTime);
   }
 
   updateDisplayTime() {

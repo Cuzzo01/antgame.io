@@ -1,6 +1,4 @@
 export const Config = {
-  vUnderscan: 100,
-  hUnderscan: 10,
   borderWeight: 4,
   // // Deploy
   MapBounds: [200, 112],
@@ -33,7 +31,7 @@ export const Config = {
   FoodPerCell: 20,
   BackgroundColor: "#909497",
   StayOnCourseWanderAmount: 25,
-  FrameRate: 50,
+  FrameRate: 30,
   PercentFoodReturnedToStopTime: 0.99,
   TrailDecayRange: 300,
   TrailTransparencyFloor: 0.005,

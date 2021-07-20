@@ -15,6 +15,7 @@ const Brushes = Config.brushes;
 const FoodValue = Brushes.find(brush => brush.name === "Food").value;
 const DirtValue = Brushes.find(brush => brush.name === "Dirt").value;
 const WallValue = Brushes.find(brush => brush.name === "Wall").value;
+const TrailDropRate = Config.TrailDropRate;
 
 export class Ant {
   constructor(pos, mapHandler, homeTrailHandler, foodTrailHandler, homeBrush) {
@@ -105,13 +106,14 @@ export class Ant {
     }
   }
 
-  walk(pointDrop) {
-    if (pointDrop) this.currentCell = this.mapHandler.getCell(this._pos);
-    if (pointDrop && this.dropsToSkip > 0) {
+  walk() {
+    const dropPoint = Math.random() < 1 / TrailDropRate;
+    if (dropPoint) this.currentCell = this.mapHandler.getCell(this._pos);
+    if (dropPoint && this.dropsToSkip > 0) {
       this.dropsToSkip--;
       this.moveToNewPosition(false);
     } else {
-      this.moveToNewPosition(pointDrop);
+      this.moveToNewPosition(dropPoint);
     }
   }
 
