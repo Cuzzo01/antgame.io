@@ -1,5 +1,5 @@
 import { useHistory } from "react-router-dom";
-import "./Timer.css";
+import styles from "./Timer.module.css";
 
 const TimeCounter = props => {
   const path = window.location.pathname;
@@ -22,7 +22,7 @@ const TimeCounter = props => {
     <div style={props.styles}>
       {hasLink && !props.active ? (
         <div>
-          <a href={linkPath} alt="Test" onClick={e => handleLinkClick(e)}>
+          <a className={styles.link} href={linkPath} alt="Test" onClick={e => handleLinkClick(e)}>
             <Timer active={props.active} time={props.time} />
           </a>
         </div>
@@ -35,7 +35,7 @@ const TimeCounter = props => {
 
 const Timer = props => {
   return (
-    <h2 className={`timer ${props.active ? "active" : ""}`}>
+    <h2 className={`${styles.timer} ${props.active ? styles.active : ''}`}>
       {props.time.min}:{props.time.sec}
     </h2>
   );

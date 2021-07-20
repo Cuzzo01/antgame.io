@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getLeaderboard } from "../../Challenge/ChallengeService";
 import styles from "./Leaderboard.module.css";
 
@@ -12,6 +12,12 @@ const Leaderboard = props => {
 
   useEffect(() => {
     getLeaderboard(challengeID).then(res => {
+      if (res === null) {
+        setTitle("Error");
+        setRunData(<h5>No records for this challenge</h5>);
+        setLoading(false);
+        return;
+      }
       let table = [];
       let count = 1;
       res.leaderboard.forEach(data => {
@@ -30,6 +36,9 @@ const Leaderboard = props => {
         <h2>{title}</h2>
       </div>
       {runTable}
+      <div className={styles.link}>
+        <Link to="/challenge">Back</Link>
+      </div>
     </div>
   );
 };

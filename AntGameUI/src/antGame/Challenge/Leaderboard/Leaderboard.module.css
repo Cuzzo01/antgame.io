@@ -23,3 +23,9 @@
 .score {
   float: right;
 }
+
+.link {
+  margin-top: 3em;
+  color: blue;
+  text-align: center;
+}
