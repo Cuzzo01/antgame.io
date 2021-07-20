@@ -6,6 +6,7 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 const LoginPage = props => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [formState, setFormState] = useState("");
   const history = useHistory();
   const location = useLocation();
 
@@ -25,9 +26,12 @@ const LoginPage = props => {
 
   function handleSubmit(event) {
     event.preventDefault();
+    if (formState === "loading") return;
     AuthHandler.login(username, password).then(result => {
       if (result === true) redirectOut();
+      else if (result === false) setFormState("error");
     });
+    setFormState("loading");
   }
 
   function continueWithoutLogin(event) {
@@ -69,12 +73,13 @@ const LoginPage = props => {
             autoComplete="current-password"
           />
         </div>
+        {formState === "error" ? <div className={styles.error}>Login failed, try again</div> : null}
         <input type="submit" style={{ display: "none" }} />
         <div className={styles.buttonBar}>
-          <div className={`${styles.divButton} ${styles.right}`} href="#" onClick={handleSubmit}>
+          <div className={`${styles.divButton} ${styles.right}`} onClick={handleSubmit}>
             Submit
           </div>
-          <div className={`${styles.divButton} ${styles.left}`} href="#" onClick={continueWithoutLogin}>
+          <div className={`${styles.divButton} ${styles.left}`} onClick={continueWithoutLogin}>
             Skip
             <br />
             <span className={styles.subtext}>(scores won't save)</span>

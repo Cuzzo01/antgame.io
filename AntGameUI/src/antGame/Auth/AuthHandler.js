@@ -51,7 +51,8 @@ class AuthHandler {
         return response;
       },
       error => {
-        if (error.response.status === 401) {
+        const onLogin = window.location.pathname.contains("/login");
+        if (error.response.status === 401 && !onLogin) {
           this.logout();
           const pathBack = window.location.pathname;
           window.location = `/login?redirect=${pathBack}`;
@@ -71,14 +72,18 @@ class AuthHandler {
   }
 
   login(username, password) {
-    return getToken(username, password, localStorage.getItem("client-id")).then(result => {
-      this._loggedIn = true;
-      this.jwt = result;
-      this.decodedToken = jwt_decode(this.jwt);
-      localStorage.setItem("jwt", this.jwt);
+    return getToken(username, password, localStorage.getItem("client-id"))
+      .then(result => {
+        this._loggedIn = true;
+        this.jwt = result;
+        this.decodedToken = jwt_decode(this.jwt);
+        localStorage.setItem("jwt", this.jwt);
 
-      return true;
-    });
+        return true;
+      })
+      .catch(e => {
+        return false;
+      });
   }
 
   logout() {

@@ -57,3 +57,10 @@
 .registerLink {
   text-align: center;
 }
+
+.error {
+  background-color: red;
+  text-align: center;
+  color: white;
+  margin: 0.5em 0.6em;
+}

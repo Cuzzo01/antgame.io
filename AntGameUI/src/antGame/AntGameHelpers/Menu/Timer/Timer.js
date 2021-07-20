@@ -35,7 +35,7 @@ const TimeCounter = props => {
 
 const Timer = props => {
   return (
-    <h2 className={`${styles.timer} ${props.active ? styles.active : ''}`}>
+    <h2 className={`${styles.timer} ${props.active ? styles.active : ""}`}>
       {props.time.min}:{props.time.sec}
     </h2>
   );
