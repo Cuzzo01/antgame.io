@@ -28,23 +28,50 @@ const getRecordByChallenge = async challengeID => {
 
   const collection = await getCollection("configs");
   const result = await collection.findOne({ _id: challengeObjectID });
-  return result.record ? result.record : {};
+  if (result.records) {
+    return {
+      score: result.records[0].score,
+      username: result.records[0].username,
+    };
+  } else if (result.record) {
+    // TODO: Delete this else block when all active challenges have an entry for records
+    return result.record;
+  } else return {};
 };
 
 const getRecordsByChallengeList = async challengeIDList => {
-  let objectIDList = [];
+  let challengeObjectIDList = [];
   challengeIDList.forEach(id => {
     const parseResult = TryParseObjectID(id, "listChallengeID");
-    objectIDList.push(parseResult);
+    challengeObjectIDList.push(parseResult);
   });
 
   const collection = await getCollection("configs");
   const result = await collection
-    .find({ _id: { $in: objectIDList } }, { projection: { "record.score": 1, "record.username": 1 } })
+    .find({ _id: { $in: challengeObjectIDList } }, { projection: { _id: 1, records: { $slice: 1 } } })
     .toArray();
   let records = {};
-  result.forEach(record => {
-    records[record._id] = { wr: record.record };
+  result.forEach(challenge => {
+    if (challenge.records) {
+      const record = challenge.records[0];
+      records[challenge._id] = {
+        wr: {
+          score: record.score,
+          username: record.username,
+        },
+      };
+    } else if (challenge.record) {
+      // TODO: Delete this else block when all active challenges have an entry in records
+      const record = challenge.record;
+      records[challenge._id] = {
+        wr: {
+          score: record.score,
+          username: record.username,
+        },
+      };
+    } else {
+      records[challenge._id] = {};
+    }
   });
   return records;
 };
@@ -58,12 +85,19 @@ const updateChallengeRecord = async (challengeID, score, username, userID, runID
   const result = await collection.updateOne(
     { _id: challengeObjectID },
     {
-      $set: {
-        record: {
-          score: score,
-          username: username,
-          userID: userObjectID,
-          runID: runObjectID,
+      $push: {
+        records: {
+          $each: [
+            {
+              score: score,
+              username: username,
+              userID: userObjectID,
+              runID: runObjectID,
+            },
+          ],
+          $sort: {
+            score: -1,
+          },
         },
       },
     }
@@ -111,12 +145,14 @@ const getLeaderboardByChallengeId = async id => {
   const result = await collection
     .aggregate([
       { $unwind: "$challengeDetails" },
-      { $match: {
+      {
+        $match: {
           "challengeDetails.ID": challengeObjectID,
           showOnLeaderboard: true,
         },
       },
-      { $group: {
+      {
+        $group: {
           _id: "$_id",
           username: { $first: "$username" },
           pb: { $push: "$challengeDetails.pb" },

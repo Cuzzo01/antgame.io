@@ -27,7 +27,6 @@ const DefaultBrush = Brushes[Config.brushTypeDefaultIndex];
 const FoodValue = Brushes.find(brush => brush.name === "Food").value;
 const HomeValue = Brushes.find(brush => brush.name === "Home").value;
 const BorderWeight = Config.borderWeight;
-const TrailDropRate = Config.TrailDropRate;
 const FrameRate = Config.FrameRate;
 const PreloadMap = Config.PreloadMap;
 
