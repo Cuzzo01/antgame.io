@@ -164,7 +164,8 @@ const getLeaderboardByChallengeId = async id => {
         $group: {
           _id: "$_id",
           username: { $first: "$username" },
-          pb: { $push: "$challengeDetails.pb" },
+          pb: { $first: "$challengeDetails.pb" },
+          runID: { $first: "$challengeDetails.pbRunID"}
         },
       },
       { $sort: { pb: -1 } },
@@ -172,7 +173,18 @@ const getLeaderboardByChallengeId = async id => {
     ])
     .toArray();
 
-  return result;
+  let leaderboard = [];
+  result.forEach(challenge => {
+    const recordTime = challenge.runID.getTimestamp();
+    const timeDelta = new Date() - recordTime;
+    const timeString = getGeneralizedTimeString(timeDelta);
+    leaderboard.push({
+      username: challenge.username,
+      pb: challenge.pb,
+      age: timeString,
+    });
+  });
+  return leaderboard;
 };
 
 const getRunHomePositionsByRunId = async id => {

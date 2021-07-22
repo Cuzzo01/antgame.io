@@ -20,7 +20,7 @@
   padding-right: 0.5em;
 }
 
-.score {
+.right {
   float: right;
 }
 
@@ -28,4 +28,8 @@
   margin-top: 3em;
   color: blue;
   text-align: center;
+}
+
+.age {
+  font-size: 0.8em;
 }

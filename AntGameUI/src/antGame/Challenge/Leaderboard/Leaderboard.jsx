@@ -21,7 +21,7 @@ const Leaderboard = props => {
       let table = [];
       let count = 1;
       res.leaderboard.forEach(data => {
-        table.push(<LeaderboardRow key={data.id} rank={count} name={data.username} pb={data.pb} />);
+        table.push(<LeaderboardRow key={data.id} rank={count} name={data.username} pb={data.pb} age={data.age} />);
         count++;
       });
       setRunData(table);
@@ -48,7 +48,9 @@ const LeaderboardRow = props => {
     <div className={styles.row}>
       <span className={styles.rank}>#{props.rank}</span>
       <span>{props.name}</span>
-      <span className={styles.score}>{props.pb}</span>
+      <span className={styles.right}>
+        <span className={styles.age}>{props.age} ago</span> {props.pb}
+      </span>
     </div>
   );
 };
