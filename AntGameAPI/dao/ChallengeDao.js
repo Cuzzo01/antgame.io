@@ -1,5 +1,6 @@
 const { Connection } = require("./MongoClient");
 const Mongo = require("mongodb");
+const { getGeneralizedTimeString } = require("../helpers/TimeHelper");
 
 const getCollection = async collection => {
   const connection = await Connection.open();
@@ -54,19 +55,27 @@ const getRecordsByChallengeList = async challengeIDList => {
   result.forEach(challenge => {
     if (challenge.records) {
       const record = challenge.records[0];
+      const recordTime = record.runID.getTimestamp();
+      const timeDelta = new Date() - recordTime;
+      const timeString = getGeneralizedTimeString(timeDelta);
       records[challenge._id] = {
         wr: {
           score: record.score,
           username: record.username,
+          age: timeString,
         },
       };
     } else if (challenge.record) {
       // TODO: Delete this else block when all active challenges have an entry in records
       const record = challenge.record;
+      const recordTime = record.runID.getTimestamp();
+      const timeDelta = new Date() - recordTime;
+      const timeString = getGeneralizedTimeString(timeDelta);
       records[challenge._id] = {
         wr: {
           score: record.score,
           username: record.username,
+          age: timeString,
         },
       };
     } else {
