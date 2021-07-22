@@ -74,7 +74,7 @@ const ListItem = props => {
             "No record"
           ) : (
             <div className={styles.worldRecord}>
-              {props.records.wr.score} - {props.records.wr.username}{" "}
+              {props.records.wr.score}-{props.records.wr.username}{" "}
               <span className={styles.recordAge}>{props.records.wr.age} ago</span>
             </div>
           )}
