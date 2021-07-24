@@ -168,7 +168,7 @@ const getLeaderboardByChallengeId = async id => {
           runID: { $first: "$challengeDetails.pbRunID"}
         },
       },
-      { $sort: { pb: -1 } },
+      { $sort: { pb: -1, runID: 1 } },
       { $limit: 5 },
     ])
     .toArray();
