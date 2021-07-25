@@ -116,6 +116,78 @@ const getPRRunIDByChallengeID = async (userID, challengeID) => {
   return result.challengeDetails[0].pbRunID;
 };
 
+const getLeaderboardByChallengeId = async id => {
+  const challengeObjectID = TryParseObjectID(id, "challengeID");
+
+  const collection = await getCollection("users");
+  // prettier-ignore
+  const result = await collection
+    .aggregate([
+      { $unwind: "$challengeDetails" },
+      {
+        $match: {
+          "challengeDetails.ID": challengeObjectID,
+          showOnLeaderboard: true,
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          username: { $first: "$username" },
+          pb: { $first: "$challengeDetails.pb" },
+          runID: { $first: "$challengeDetails.pbRunID" }
+        },
+      },
+      { $sort: { pb: -1, runID: 1 } },
+      { $limit: 5 },
+    ])
+    .toArray();
+
+  let leaderboard = [];
+  result.forEach(challenge => {
+    const recordTime = challenge.runID.getTimestamp();
+    const timeDelta = new Date() - recordTime;
+    const timeString = getGeneralizedTimeString(timeDelta);
+    leaderboard.push({
+      username: challenge.username,
+      pb: challenge.pb,
+      age: timeString,
+    });
+  });
+  return leaderboard;
+};
+
+const getLeaderboardRankByScore = async (challengeID, score) => {
+  const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
+
+  const collection = await getCollection("users");
+  // prettier-ignore
+  const result = await collection
+    .aggregate([
+      { $unwind: "$challengeDetails" },
+      {
+        $match: {
+          "challengeDetails.ID": challengeObjectID,
+          showOnLeaderboard: true,
+          "challengeDetails.pb": {$gt: score}
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          username: { $first: "$username" },
+          pb: { $first: "$challengeDetails.pb" },
+          runID: { $first: "$challengeDetails.pbRunID"}
+        },
+      },
+      { $sort: { pb: -1, runID: 1 } },
+      { $count: "usersAhead" }
+    ])
+    .toArray();
+
+  return result[0];
+};
+
 const TryParseObjectID = (stringID, name) => {
   try {
     return new ObjectID(stringID);
@@ -131,4 +203,6 @@ module.exports = {
   incrementChallengeRunCount,
   getUserPBsByChallengeList,
   getPRRunIDByChallengeID,
+  getLeaderboardByChallengeId,
+  getLeaderboardRankByScore,
 };

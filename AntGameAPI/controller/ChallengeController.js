@@ -150,7 +150,9 @@ async function getRecords(req, res) {
     if (!user.anon) {
       const challengeDetails = await UserDao.getChallengeDetailsByUser(user.id, challengeID);
       if (challengeDetails !== null) {
-        response.pb = challengeDetails.pb;
+        const result = await UserDao.getLeaderboardRankByScore(challengeID, challengeDetails.pb);
+
+        (response.pr = challengeDetails.pb), (response.rank = result.usersAhead + 1);
       }
     }
 
@@ -165,7 +167,7 @@ async function getRecords(req, res) {
 async function getLeaderboard(req, res) {
   try {
     const challengeID = req.params.id;
-    const leaderBoardEntries = await ChallengeDao.getLeaderboardByChallengeId(challengeID);
+    const leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID);
     const challenge = await ChallengeDao.getChallengeByChallengeId(challengeID);
 
     if (leaderBoardEntries.length === 0) {

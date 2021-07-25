@@ -14,6 +14,6 @@ const WorldRecord = props => {
     });
   });
 
-  return <div>{loading ? null : <p className={styles.best}>{record}</p>}</div>;
+  return <div>{loading ? null : <p className={styles.bold}>{record}</p>}</div>;
 };
 export default WorldRecord;

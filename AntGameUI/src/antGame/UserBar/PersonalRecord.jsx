@@ -13,12 +13,20 @@ const PersonalRecord = props => {
       setLoading(false);
     } else
       ChallengeHandler.addRecordListener(records => {
-        if (!records.pb) setRecord("No Personal Record");
-        else setRecord(`Personal Record: ${records.pb}`);
+        if (!records.pr) setRecord("No Personal Record");
+        else
+          setRecord(
+            <div>
+              Personal Record: {records.pr} 
+              <span className={styles.bold} title="Leaderboard Rank">
+                &nbsp;#{records.rank}
+              </span>
+            </div>
+          );
         if (loading) setLoading(false);
       });
   }, [loading]);
 
-  return <div>{loading ? null : <p className={styles.best}>{record}</p>}</div>;
+  return <div>{loading ? null : record}</div>;
 };
 export default PersonalRecord;

@@ -145,48 +145,6 @@ const getChallengeByChallengeId = async id => {
   };
 };
 
-// FIXME: I should be in the usersDao
-const getLeaderboardByChallengeId = async id => {
-  const challengeObjectID = TryParseObjectID(id, "challengeID");
-
-  const collection = await getCollection("users");
-  // prettier-ignore
-  const result = await collection
-    .aggregate([
-      { $unwind: "$challengeDetails" },
-      {
-        $match: {
-          "challengeDetails.ID": challengeObjectID,
-          showOnLeaderboard: true,
-        },
-      },
-      {
-        $group: {
-          _id: "$_id",
-          username: { $first: "$username" },
-          pb: { $first: "$challengeDetails.pb" },
-          runID: { $first: "$challengeDetails.pbRunID"}
-        },
-      },
-      { $sort: { pb: -1, runID: 1 } },
-      { $limit: 5 },
-    ])
-    .toArray();
-
-  let leaderboard = [];
-  result.forEach(challenge => {
-    const recordTime = challenge.runID.getTimestamp();
-    const timeDelta = new Date() - recordTime;
-    const timeString = getGeneralizedTimeString(timeDelta);
-    leaderboard.push({
-      username: challenge.username,
-      pb: challenge.pb,
-      age: timeString,
-    });
-  });
-  return leaderboard;
-};
-
 const getRunHomePositionsByRunId = async id => {
   const runObjectID = TryParseObjectID(id);
 
@@ -219,6 +177,5 @@ module.exports = {
   getRecordByChallenge,
   updateChallengeRecord,
   getRecordsByChallengeList,
-  getLeaderboardByChallengeId,
   getRunHomePositionsByRunId,
 };
