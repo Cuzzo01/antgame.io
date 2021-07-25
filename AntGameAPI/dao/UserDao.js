@@ -177,7 +177,7 @@ const getLeaderboardRankByScore = async (challengeID, score) => {
     ])
     .toArray();
 
-  if (result[0]) return result[0]?.usersAhead + 1;
+  if (result.length > 0) return result[0]?.usersAhead + 1;
   return 1;
 };
 
