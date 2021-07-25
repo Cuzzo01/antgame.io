@@ -186,7 +186,8 @@ const getLeaderboardRankByScore = async (challengeID, score) => {
     ])
     .toArray();
 
-  return result[0].usersAhead + 1;
+  if (result[0]) return result[0]?.usersAhead + 1;
+  return 1;
 };
 
 const TryParseObjectID = (stringID, name) => {
