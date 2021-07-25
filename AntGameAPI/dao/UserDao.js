@@ -173,15 +173,6 @@ const getLeaderboardRankByScore = async (challengeID, score) => {
           "challengeDetails.pb": {$gt: score}
         },
       },
-      {
-        $group: {
-          _id: "$_id",
-          username: { $first: "$username" },
-          pb: { $first: "$challengeDetails.pb" },
-          runID: { $first: "$challengeDetails.pbRunID"}
-        },
-      },
-      { $sort: { pb: -1, runID: 1 } },
       { $count: "usersAhead" }
     ])
     .toArray();
