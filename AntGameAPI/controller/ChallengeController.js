@@ -55,6 +55,12 @@ async function postRun(req, res) {
         UserDao.incrementChallengeRunCount(user.id, runData.challengeID);
       }
 
+      let response = {};
+      if (runData.PB) {
+        const newRank = await UserDao.getLeaderboardRankByScore(runData.challengeID, runData.Score);
+        response.rank = newRank;
+      }
+
       let isWorldRecord = false;
       let challengeRecord;
       if (saveRun && user.showOnLeaderboard !== false) {
@@ -65,7 +71,6 @@ async function postRun(req, res) {
           ChallengeDao.updateChallengeRecord(runData.challengeID, runData.Score, user.username, user.id, runID);
         }
       }
-      let response = {};
       if (isWorldRecord)
         response.wr = {
           score: runData.Score,
@@ -150,9 +155,9 @@ async function getRecords(req, res) {
     if (!user.anon) {
       const challengeDetails = await UserDao.getChallengeDetailsByUser(user.id, challengeID);
       if (challengeDetails !== null) {
-        const result = await UserDao.getLeaderboardRankByScore(challengeID, challengeDetails.pb);
+        const rank = await UserDao.getLeaderboardRankByScore(challengeID, challengeDetails.pb);
 
-        (response.pr = challengeDetails.pb), (response.rank = result.usersAhead + 1);
+        (response.pr = challengeDetails.pb), (response.rank = rank);
       }
     }
 

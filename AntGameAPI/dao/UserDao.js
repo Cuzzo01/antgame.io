@@ -1,6 +1,6 @@
 const { ObjectID } = require("mongodb");
 const { Connection } = require("./MongoClient");
-const {getGeneralizedTimeString} = require("../helpers/TimeHelper")
+const { getGeneralizedTimeString } = require("../helpers/TimeHelper");
 
 const getCollection = async collection => {
   const connection = await Connection.open();
@@ -186,7 +186,7 @@ const getLeaderboardRankByScore = async (challengeID, score) => {
     ])
     .toArray();
 
-  return result[0];
+  return result[0].usersAhead + 1;
 };
 
 const TryParseObjectID = (stringID, name) => {

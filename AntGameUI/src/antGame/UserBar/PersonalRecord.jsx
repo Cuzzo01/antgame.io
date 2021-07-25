@@ -17,7 +17,7 @@ const PersonalRecord = props => {
         else
           setRecord(
             <div>
-              Personal Record: {records.pr} 
+              Personal Record: {records.pr}
               <span className={styles.bold} title="Leaderboard Rank">
                 &nbsp;#{records.rank}
               </span>

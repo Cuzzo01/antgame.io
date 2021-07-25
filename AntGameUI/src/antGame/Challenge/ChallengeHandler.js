@@ -160,10 +160,10 @@ class ChallengeHandler {
     const mapHandler = this._mapHandler;
     this.score = Math.round(mapHandler.percentFoodReturned * 100000);
 
-    if (!AuthHandler.isAnon && (!this.records?.pb || this.score > this.records.pb)) {
+    if (!AuthHandler.isAnon && (!this.records?.pr || this.score > this.records.pr)) {
       this.artifact.PB = true;
       if (!this.records) this.records = {};
-      this.records.pb = this.score;
+      this.records.pr = this.score;
       this.notifyRecordsListeners();
       this.prHomeLocations = this.artifact.HomeLocations;
     }
@@ -180,11 +180,17 @@ class ChallengeHandler {
 
   async sendArtifact() {
     const response = await sendRunArtifact(this.artifact);
+    let notify = false;
     if (response.wr) {
       this.records.wr = response.wr;
       this.checkForWrRun();
-      this.notifyRecordsListeners();
+      notify = true;
     }
+    if (response.rank) {
+      this.records.rank = response.rank;
+      notify = true;
+    }
+    if (notify) this.notifyRecordsListeners();
   }
 
   checkForWrRun() {

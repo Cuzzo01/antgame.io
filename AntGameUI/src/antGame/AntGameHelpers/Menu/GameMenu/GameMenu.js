@@ -38,7 +38,7 @@ export default function GameMenu(props) {
         disabled={props.playState}
       />
       <SettingButton key="clear" text="Clear" handler={props.clearMapHandler} disabled={props.playState} />
-      {ChallengeHandler.records.pb ? (
+      {ChallengeHandler.records.pr ? (
         <SettingButton key="PR" text="Load PR" handler={props.loadPRHandler} disabled={props.playState} />
       ) : null}
       {gameMode.mode === "challenge" ? null : sandBoxButtons}
