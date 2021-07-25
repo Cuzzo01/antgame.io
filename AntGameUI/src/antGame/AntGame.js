@@ -186,8 +186,8 @@ export default class AntGame extends React.Component {
     if (this.antHandler.redrawAnts) this.antHandler.drawAnts(this.antGraphic, this.antImage, this.antFoodImage);
 
     p5.image(this.backgroundGraphic, 0, 0);
-    p5.image(this.foodTrailGraphic, 0, 0);
     p5.image(this.homeTrailGraphic, 0, 0);
+    p5.image(this.foodTrailGraphic, 0, 0);
     p5.image(this.mapGraphic, 0, 0);
     p5.image(this.antGraphic, 0, 0);
     p5.image(this.staticElements, 0, 0);
