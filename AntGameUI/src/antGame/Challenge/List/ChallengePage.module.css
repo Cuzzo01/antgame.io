@@ -58,6 +58,7 @@ body {
 
 .leaderboardLink {
   font-size: 0.85em;
+  color: blue;
 }
 
 .leaderboardLink:hover {
