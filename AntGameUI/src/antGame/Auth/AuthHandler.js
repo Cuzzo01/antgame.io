@@ -1,6 +1,7 @@
 import jwt_decode from "jwt-decode";
 import axios from "axios";
 import { getToken, getAnonToken } from "./AuthService";
+import { sendRunArtifact } from "../Challenge/ChallengeService";
 
 class AuthHandler {
   constructor() {
@@ -51,7 +52,7 @@ class AuthHandler {
         return response;
       },
       error => {
-        const onLogin = window.location.pathname.contains("/login");
+        const onLogin = window.location.pathname.includes("/login");
         if (error.response.status === 401 && !onLogin) {
           this.logout();
           const pathBack = window.location.pathname;
@@ -79,11 +80,22 @@ class AuthHandler {
         this.decodedToken = jwt_decode(this.jwt);
         localStorage.setItem("jwt", this.jwt);
 
+        this.checkForAndSendUnsentArtifacts();
+
         return true;
       })
       .catch(e => {
         return false;
       });
+  }
+
+  async checkForAndSendUnsentArtifacts() {
+    if (localStorage.getItem("artifactToSend")) {
+      // TODO: Verify at least date (recent run) and clientID before sending
+      // Saving user and checking that too wouldn't be a bad idea
+      const response = await sendRunArtifact(JSON.parse(localStorage.getItem("artifactToSend")));
+      localStorage.removeItem("artifactToSend");
+    }
   }
 
   logout() {

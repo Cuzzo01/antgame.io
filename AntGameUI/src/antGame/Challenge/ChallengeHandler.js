@@ -184,18 +184,22 @@ class ChallengeHandler {
   }
 
   async sendArtifact() {
-    const response = await sendRunArtifact(this.artifact);
-    let notify = false;
-    if (response.wr) {
-      this.records.wr = response.wr;
-      this.checkForWrRun();
-      notify = true;
+    try {
+      const response = await sendRunArtifact(this.artifact);
+      let notify = false;
+      if (response.wr) {
+        this.records.wr = response.wr;
+        this.checkForWrRun();
+        notify = true;
+      }
+      if (response.rank) {
+        this.records.rank = response.rank;
+        notify = true;
+      }
+      if (notify) this.notifyRecordsListeners();
+    } catch (e) {
+      localStorage.setItem("artifactToSend", JSON.stringify(this.artifact));
     }
-    if (response.rank) {
-      this.records.rank = response.rank;
-      notify = true;
-    }
-    if (notify) this.notifyRecordsListeners();
   }
 
   checkForWrRun() {

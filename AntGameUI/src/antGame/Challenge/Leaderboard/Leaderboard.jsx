@@ -49,8 +49,6 @@ const Leaderboard = props => {
 };
 
 const LeaderboardRow = props => {
-  if (props.rank === 1) console.log("first");
-
   let placeStyle = "";
   switch (props.rank) {
     case 1:
