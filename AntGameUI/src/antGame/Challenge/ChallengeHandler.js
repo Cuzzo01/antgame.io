@@ -65,6 +65,7 @@ class ChallengeHandler {
 
   clearConfig() {
     this._config = null;
+    this.records = false;
   }
 
   addRecordListener(callback) {
@@ -78,7 +79,7 @@ class ChallengeHandler {
 
   async getConfig() {
     if (this._config) return this._config;
-    if (this.loading) return this.configPromise;
+    if (this.loadingConfig) return this.configPromise;
     else {
       if (Config.Challenge.overrideServerConfig) {
         this._config = Config.Challenge.config;
@@ -91,10 +92,10 @@ class ChallengeHandler {
       } else if (Config.Challenge.overrideChallengeID) {
         this.challengeID = Config.ChallengeID;
       }
-      this.loading = true;
+      this.loadingConfig = true;
       this.configPromise = getChallengeConfig(this._challengeID)
         .then(config => {
-          this.loading = false;
+          this.loadingConfig = false;
           this._config = config;
           this._mapHandler.homeCellsAllowed = config.homeLimit;
           this._mapHandler.fetchAndLoadMap(config.mapPath);
@@ -111,9 +112,11 @@ class ChallengeHandler {
 
   async getRecords() {
     if (this.records) return this.records;
-    else if (this.recordsPromise) return this.recordsPromise;
+    else if (this.loadingRecords) return this.recordsPromise;
     else {
+      this.loadingRecords = true;
       this.recordsPromise = getRecords(this._challengeID).then(records => {
+        this.loadingRecords = false;
         this.records = records;
         this.notifyRecordsListeners();
         return records;
