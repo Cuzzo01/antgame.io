@@ -26,6 +26,11 @@ class ChallengeHandler {
 
   set mapHandler(mapHandler) {
     this._mapHandler = mapHandler;
+    const config = this.config;
+    if (config) {
+      this._mapHandler.homeCellsAllowed = config.homeLimit;
+      this._mapHandler.fetchAndLoadMap(config.mapPath);
+    }
   }
 
   get isPB() {

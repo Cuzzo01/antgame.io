@@ -1,32 +1,36 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import AuthHandler from "../Auth/AuthHandler";
 import ChallengeHandler from "../Challenge/ChallengeHandler";
 import styles from "./RecordDisplay.module.css";
 
 const PersonalRecord = props => {
-  const [record, setRecord] = useState();
+  const [content, setContent] = useState();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const challengeID = window.location.pathname.substr(-24);
     if (AuthHandler.isAnon) {
-      setRecord("Login to track PRs");
+      setContent("Login to track PRs");
       setLoading(false);
     } else
       ChallengeHandler.addRecordListener(records => {
-        if (!records.pr) setRecord("No Personal Record");
+        if (!records.pr) setContent("No Personal Record");
         else
-          setRecord(
+          setContent(
             <div>
-              Personal Record: {records.pr}
-              <span className={styles.bold} title="Leaderboard Rank">
-                &nbsp;#{records.rank}
-              </span>
+              Personal Record: {records.pr}&nbsp;
+              <Link to={`/challenge/leaderboard/${challengeID}`}>
+                <span className={styles.bold} title="Leaderboard">
+                  #{records.rank}
+                </span>
+              </Link>
             </div>
           );
         if (loading) setLoading(false);
       });
   }, [loading]);
 
-  return <div>{loading ? null : record}</div>;
+  return <div>{loading ? null : content}</div>;
 };
 export default PersonalRecord;

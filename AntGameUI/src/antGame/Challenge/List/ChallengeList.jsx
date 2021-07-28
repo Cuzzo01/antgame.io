@@ -39,15 +39,15 @@ const ChallengeList = () => {
 export default ChallengeList;
 
 const ListItem = props => {
+  const history = useHistory();
+
   return (
     <div
       href="/"
       className={styles.listItem}
       onClick={e => {
         e.preventDefault();
-        // Why does this break map render?? (prob because of lifecycle stuff)
-        // history.push(`/challenge/${props.id}`)
-        window.location = `/challenge/${props.id}`;
+        history.push(`/challenge/${props.id}`);
       }}
     >
       <div className={styles.title}>

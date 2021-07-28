@@ -24,12 +24,33 @@
   float: right;
 }
 
-.link {
-  margin-top: 3em;
+.nav {
+  padding: 0.25em 0.75em;
+  margin: 0.25em 0.75em;
+  border-bottom: 2px solid black;
   color: blue;
-  text-align: center;
 }
 
 .age {
   font-size: 0.8em;
+}
+
+.navLeft {
+  float: left;
+}
+
+.navRight {
+  text-align: right;
+}
+
+.first {
+  background-color: #d6af36;
+}
+
+.second {
+  background-color: #a7a7ad;
+}
+
+.third {
+  background-color: #a77044;
 }

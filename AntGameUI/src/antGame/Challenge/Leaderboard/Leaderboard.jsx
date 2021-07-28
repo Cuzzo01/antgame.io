@@ -35,17 +35,39 @@ const Leaderboard = props => {
       <div className={styles.title}>
         <h2>{title}</h2>
       </div>
-      {runTable}
-      <div className={styles.link}>
-        <Link to="/challenge">Back</Link>
+      <div className={styles.nav}>
+        <div className={styles.navLeft}>
+          <Link to="/challenge">Menu</Link>
+        </div>
+        <div className={styles.navRight}>
+          <Link to={`/challenge/${challengeID}`}>Play Challenge</Link>
+        </div>
       </div>
+      {runTable}
     </div>
   );
 };
 
 const LeaderboardRow = props => {
+  if (props.rank === 1) console.log("first");
+
+  let placeStyle = "";
+  switch (props.rank) {
+    case 1:
+      placeStyle += styles.first;
+      break;
+    case 2:
+      placeStyle += styles.second;
+      break;
+    case 3:
+      placeStyle += styles.third;
+      break;
+    default:
+      break;
+  }
+
   return (
-    <div className={styles.row}>
+    <div className={`${styles.row} ${placeStyle}`} key={props.key}>
       <span className={styles.rank}>#{props.rank}</span>
       <span>{props.name}</span>
       <span className={styles.right}>
