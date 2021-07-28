@@ -63,6 +63,10 @@ class ChallengeHandler {
     this._mapHandler.setHomeLocations(this.prHomeLocations);
   }
 
+  clearConfig() {
+    this._config = null;
+  }
+
   addRecordListener(callback) {
     this.recordListeners.push(callback);
     if (this.records) callback(this.records);
