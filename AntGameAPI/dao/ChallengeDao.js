@@ -1,4 +1,4 @@
-const Connection = require("./MongoClient");
+const { Connection } = require("./MongoClient");
 const Mongo = require("mongodb");
 const { getGeneralizedTimeString } = require("../helpers/TimeHelper");
 

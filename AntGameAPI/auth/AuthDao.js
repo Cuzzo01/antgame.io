@@ -1,4 +1,4 @@
-const Connection = require("../dao/MongoClient");
+const { Connection } = require("../dao/MongoClient");
 const { ObjectID } = require("mongodb");
 
 const getCollection = async collection => {
