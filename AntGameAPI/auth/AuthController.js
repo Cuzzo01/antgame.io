@@ -1,5 +1,5 @@
 const AuthDao = require("./AuthDao");
-const WebTokenHandler = require("./WebTokenHandler");
+const TokenHandler = require("./WebTokenHandler");
 const PasswordHandler = require("./PasswordHandler");
 const { RejectNotAdmin } = require("./AuthHelpers");
 
@@ -27,7 +27,7 @@ async function verifyLogin(req, res) {
       if (authDetails.showOnLeaderboard === false) {
         tokenObject.showOnLeaderboard = false;
       }
-      const token = WebTokenHandler.generateAccessToken(tokenObject);
+      const token = TokenHandler.generateAccessToken(tokenObject);
       res.send(token);
       return;
     }
@@ -49,7 +49,7 @@ async function getAnonymousToken(req, res) {
       res.send("Client ID required");
       return;
     }
-    const token = WebTokenHandler.generateAccessToken({
+    const token = TokenHandler.generateAccessToken({
       clientID: data.clientID,
       anon: true,
       admin: false,
@@ -99,9 +99,8 @@ async function registerUser(req, res) {
       username: user.username,
       admin: user.admin,
     };
-    const token = WebTokenHandler.generateAccessToken(tokenObject);
+    const token = TokenHandler.generateAccessToken(tokenObject);
     res.send(token);
-    // res.send("OK")
   } catch (e) {
     console.log(e);
     res.status(500);

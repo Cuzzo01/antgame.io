@@ -8,13 +8,13 @@ const port = 8080;
 const _challengeController = require("./controller/ChallengeController");
 const _authController = require("./auth/AuthController");
 const _userController = require("./controller/UserController");
-const WebTokenHandler = require("./auth/WebTokenHandler");
+const TokenHandler = require("./auth/WebTokenHandler");
 
 const UnauthenticatedRoutes = ["/auth/login", "/auth/anonToken", "/auth/register", "/test"];
 
 app.use(bodyParser.json({ extended: true }));
 app.use(
-  jwt({ secret: WebTokenHandler.secret, algorithms: ["HS256"] }).unless({
+  jwt({ secret: TokenHandler.secret, algorithms: ["HS256"] }).unless({
     path: UnauthenticatedRoutes,
   }),
   function (err, req, res, next) {
