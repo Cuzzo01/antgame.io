@@ -20,4 +20,4 @@ class Connection {
     return this.db;
   }
 }
-module.exports = { Connection };
+module.exports = new Connection();

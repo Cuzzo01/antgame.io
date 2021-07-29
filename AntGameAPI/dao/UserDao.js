@@ -1,5 +1,5 @@
 const { ObjectID } = require("mongodb");
-const { Connection } = require("./MongoClient");
+const Connection = require("./MongoClient");
 const { getGeneralizedTimeString } = require("../helpers/TimeHelper");
 
 const getCollection = async collection => {
