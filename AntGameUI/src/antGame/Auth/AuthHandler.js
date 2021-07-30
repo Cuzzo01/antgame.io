@@ -93,7 +93,7 @@ class AuthHandler {
     if (localStorage.getItem("artifactToSend")) {
       // TODO: Verify at least date (recent run) and clientID before sending
       // Saving user and checking that too wouldn't be a bad idea
-      const response = await sendRunArtifact(JSON.parse(localStorage.getItem("artifactToSend")));
+      await sendRunArtifact(JSON.parse(localStorage.getItem("artifactToSend")));
       localStorage.removeItem("artifactToSend");
     }
   }

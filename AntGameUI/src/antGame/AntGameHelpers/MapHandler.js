@@ -60,6 +60,7 @@ export class MapHandler {
   }
 
   get homeCellCount() {
+    this.countHomeOnMap();
     return this.homeOnMap;
   }
 
@@ -351,6 +352,7 @@ export class MapHandler {
 
   countHomeOnMap = recordLocations => {
     this.homeOnMap = 0;
+    if (!this._map.length) return;
     if (recordLocations) this.homeLocations = [];
     for (let x = 0; x < MapBounds[0]; x++) {
       for (let y = 0; y < MapBounds[1]; y++) {
