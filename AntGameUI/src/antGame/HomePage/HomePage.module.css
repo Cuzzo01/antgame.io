@@ -1,6 +1,6 @@
 .container {
-  width: 50rem;
-  max-width: 70%;
+  width: 60em;
+  max-width: 80%;
   margin: 0 auto;
 }
 
@@ -16,28 +16,35 @@ img {
 }
 
 .links {
-  width: 40em;
-  max-width: 70%;
   margin: 0 auto;
   text-align: center;
-  /* display: grid;
-    grid-template-columns: 75% 25%; */
+  display: grid;
+  grid-template-columns: 70% auto;
+  column-gap: 2em;
 }
 
 .link {
-  /* height: 10em; */
-  margin: 2em;
-  padding: 3em;
+  height: 5rem;
+  margin: 1em 0;
   background-color: black;
   color: white;
   display: block;
-  border-radius: 3em;
+  border-radius: 2.5em;
   font-family: "Courier Prime Bold";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.sandboxLink {
+  font-size: 0.9em;
 }
 
 .link:hover {
   text-decoration: none;
   color: white;
+  background-color: #515a5a;
 }
 
 .subtext {

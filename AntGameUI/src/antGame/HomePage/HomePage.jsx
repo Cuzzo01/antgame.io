@@ -9,12 +9,14 @@ const HomePage = () => {
       </div>
       <div className={styles.links}>
         <Link to="/challenge" className={`${styles.link}`}>
-          Play Challenge Mode
+          Challenge Mode
         </Link>
-        <Link to="/sandbox" className={`${styles.link}`}>
-          Sandbox Mode
-          <br />
-          <span className={styles.subtext}>(Map Editor)</span>
+        <Link to="/sandbox" className={`${styles.link} ${styles.sandboxLink}`}>
+          <span>
+            Sandbox Mode
+            <br />
+            <span className={styles.subtext}>(Map Editor)</span>
+          </span>
         </Link>
       </div>
     </div>
