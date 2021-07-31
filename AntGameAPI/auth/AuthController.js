@@ -10,6 +10,11 @@ async function verifyLogin(req, res) {
     const password = loginRequest.pass;
     const clientID = loginRequest.clientID;
 
+    if (!username || !password || !clientID) {
+      res.sendStatus(400);
+      return;
+    }
+
     const authDetails = await AuthDao.getAuthDetailsByUsername(username);
     if (authDetails === false) {
       res.status(401);
@@ -23,6 +28,7 @@ async function verifyLogin(req, res) {
         id: authDetails.id,
         username: authDetails.username,
         admin: authDetails.admin,
+        clientID: clientID,
       };
       if (authDetails.showOnLeaderboard === false) {
         tokenObject.showOnLeaderboard = false;
