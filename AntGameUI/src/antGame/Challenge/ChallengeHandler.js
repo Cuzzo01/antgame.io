@@ -3,10 +3,6 @@ import { getChallengeConfig, getPRHomeLocations, getRecords, sendRunArtifact } f
 import { v4 as uuidV4 } from "uuid";
 import AuthHandler from "../Auth/AuthHandler";
 
-const AntsToSpawn = Config.AntsToSpawn;
-const FoodPerCell = Config.FoodPerCell;
-const DirtPerCell = Config.DirtPerCell;
-
 class ChallengeHandler {
   constructor() {
     this.clientID = localStorage.getItem("client-id");
@@ -39,6 +35,10 @@ class ChallengeHandler {
 
   set timerHandler(timerHandler) {
     this._timerHandler = timerHandler;
+  }
+
+  set antHandler(antHandler) {
+    this._antHandler = antHandler;
   }
 
   set challengeID(id) {
@@ -177,9 +177,9 @@ class ChallengeHandler {
     this.artifact.GameConfig = {
       MapPath: this.config.mapPath,
       Time: this.config.seconds,
-      AntsToSpawn: AntsToSpawn,
-      FoodPerCell: FoodPerCell,
-      DirtPerCell: DirtPerCell,
+      spawnedAnts: this._antHandler.ants.length,
+      FoodPerCell: this._mapHandler.foodPerCell,
+      DirtPerCell: this._mapHandler.dirtPerCell,
     };
 
     this.artifact.Timing.SystemStopTime = new Date().getTime();

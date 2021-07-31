@@ -68,6 +68,14 @@ export class MapHandler {
     this._homeCellsAllowed = homeCellsAllowed;
   }
 
+  get foodPerCell() {
+    return FoodPerCell;
+  }
+
+  get dirtPerCell() {
+    return DirtPerCell;
+  }
+
   set graphic(graphics) {
     this._graphics = graphics;
     this._graphics.noStroke();

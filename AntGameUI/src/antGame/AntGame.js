@@ -81,6 +81,7 @@ export default class AntGame extends React.Component {
       this.challengeHandler.challengeID = challengeID;
       this.challengeHandler.mapHandler = this.mapHandler;
       this.challengeHandler.timerHandler = this.timerHandler;
+      this.challengeHandler.antHandler = this.antHandler;
 
       this.setState({
         showChallengeModal: false,

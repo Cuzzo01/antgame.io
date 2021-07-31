@@ -58,7 +58,7 @@ async function postRun(req, res) {
       runID = await ChallengeDao.submitRun(runRecord);
 
       if (verificationResult !== "verified") {
-        res.sendStatus(400);
+        res.sendStatus(418);
         return;
       }
 

@@ -19,24 +19,31 @@ const VerifyArtifact = async (runData, clientID) => {
 const ReportedConfigMatchesExpectedConfig = (runData, expectedConfig) => {
   const TimeMatches = expectedConfig.seconds === runData.GameConfig.Time;
   if (!TimeMatches) return "Time mismatch";
+
   const MapPathMatches = expectedConfig.mapPath === runData.GameConfig.MapPath;
   if (!MapPathMatches) return "MapPath mismatch";
-  const AntsToSpawnMatches = AntsToSpawn === runData.GameConfig.AntsToSpawn;
-  if (!AntsToSpawnMatches) return "AntsToSpawn mismatch";
-  const FoodPerCellMatches = FoodPerCell === runData.GameConfig.FoodPerCell;
-  if (!FoodPerCellMatches) return "FoodPerCell mismatch";
-  const DirtPerCellMatches = DirtPerCell === runData.GameConfig.DirtPerCell;
-  if (!DirtPerCellMatches) return "DirtPerCell mismatch";
+
   const CorrectNumberOfHomes = parseInt(expectedConfig.homeLimit) >= runData.HomeLocations.length;
   if (!CorrectNumberOfHomes) return "Too many homes";
+
+  const antsPerCell = Math.round(AntsToSpawn / runData.HomeLocations.length);
+  const expectedAntsSpawned = antsPerCell * runData.HomeLocations.length;
+  const AntsToSpawnMatches = expectedAntsSpawned === runData.GameConfig.spawnedAnts;
+  if (!AntsToSpawnMatches) return "spawned ants mismatched mismatch";
+
+  const FoodPerCellMatches = FoodPerCell === runData.GameConfig.FoodPerCell;
+  if (!FoodPerCellMatches) return "FoodPerCell mismatch";
+
+  const DirtPerCellMatches = DirtPerCell === runData.GameConfig.DirtPerCell;
+  if (!DirtPerCellMatches) return "DirtPerCell mismatch";
   return true;
 };
 
 const SystemElapsedTimeLongerThanConfigTime = runData => {
   const systemElapsedTimeMilis = runData.Timing.SystemStopTime - runData.Timing.SystemStartTime;
-  const systemElapsedTimeSecs = systemElapsedTimeMilis / 1000;
+  const systemElapsedTimeSecs = Math.round(systemElapsedTimeMilis / 1000);
   const minTimeElapsed = runData.GameConfig.Time;
-  return systemElapsedTimeSecs > minTimeElapsed;
+  return systemElapsedTimeSecs >= minTimeElapsed;
 };
 
 const SnapshotLengthMatchesConfigTime = runData => {
