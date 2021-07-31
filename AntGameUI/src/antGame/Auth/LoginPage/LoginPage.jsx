@@ -30,6 +30,7 @@ const LoginPage = props => {
     AuthHandler.login(username, password).then(result => {
       if (result === true) redirectOut();
       else if (result === false) setFormState("error");
+      else if (result === "banned") setFormState("banned");
     });
     setFormState("loading");
   }
@@ -74,6 +75,7 @@ const LoginPage = props => {
           />
         </div>
         {formState === "error" ? <div className={styles.error}>Login failed, try again</div> : null}
+        {formState === "banned" ? <div className={styles.error}>Account banned</div> : null}
         <input type="submit" style={{ display: "none" }} />
         <div className={styles.buttonBar}>
           <div className={`${styles.divButton} ${styles.right}`} onClick={handleSubmit}>

@@ -21,7 +21,14 @@ async function verifyLogin(req, res) {
       res.send("Invalid login");
       return;
     }
+
     if (await PasswordHandler.checkPassword(password, authDetails.passHash)) {
+      if (authDetails.banned === true) {
+        res.status(403);
+        res.send("Account banned");
+        return;
+      }
+
       const clientIP = GetIpAddress(req);
       await AuthDao.logLogin(authDetails.id, clientIP, clientID);
       const tokenObject = {

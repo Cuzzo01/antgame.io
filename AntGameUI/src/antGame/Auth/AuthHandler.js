@@ -85,6 +85,7 @@ class AuthHandler {
         return true;
       })
       .catch(e => {
+        if (e.response.status === 403) return "banned";
         return false;
       });
   }

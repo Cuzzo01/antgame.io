@@ -12,12 +12,14 @@ const getAuthDetailsByUsername = async username => {
     username_lower: username.toLowerCase(),
   });
   if (result === null) return false;
+
   return {
     id: result._id,
     username: result.username,
     passHash: result.passHash,
     admin: result.admin,
     showOnLeaderboard: result.showOnLeaderboard,
+    banned: result.banned ?? false,
   };
 };
 
