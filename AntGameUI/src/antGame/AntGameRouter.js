@@ -9,6 +9,7 @@ import UserBar from "./UserBar/UserBar";
 import Leaderboard from "./Challenge/Leaderboard/Leaderboard";
 import ErrorPage from "./ErrorPage/ErrorPage";
 import RegistrationPage from "./Auth/RegistrationPage/RegistrationPage";
+import HomePage from "./HomePage/HomePage";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
@@ -21,6 +22,9 @@ const AntGameRouter = () => {
           <ErrorPage />
         </Route>
         <Route exact path="/">
+          <HomePage />
+        </Route>
+        <Route path="/sandbox">
           <GameModeContext.Provider value={"sandbox"}>
             <AntGame mapToLoad={PreloadMapPath} />
           </GameModeContext.Provider>

@@ -98,7 +98,7 @@ export default class AntGame extends React.Component {
     clearInterval(this.mapUiUpdateInterval);
 
     let bodyElement = document.querySelector("body");
-    this.challengeHandler.clearConfig();
+    this.challengeHandler?.clearConfig();
     enableBodyScroll(bodyElement);
   }
 

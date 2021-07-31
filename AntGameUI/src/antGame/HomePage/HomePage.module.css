@@ -1,0 +1,46 @@
+.container {
+  width: 50rem;
+  max-width: 70%;
+  margin: 0 auto;
+}
+
+.title {
+  margin-top: 2em;
+  background-color: black;
+  padding: 1em;
+  border-radius: 1.5em;
+}
+
+img {
+  max-width: 100%;
+}
+
+.links {
+  width: 40em;
+  max-width: 70%;
+  margin: 0 auto;
+  text-align: center;
+  /* display: grid;
+    grid-template-columns: 75% 25%; */
+}
+
+.link {
+  /* height: 10em; */
+  margin: 2em;
+  padding: 3em;
+  background-color: black;
+  color: white;
+  display: block;
+  border-radius: 3em;
+  font-family: "Courier Prime Bold";
+}
+
+.link:hover {
+  text-decoration: none;
+  color: white;
+}
+
+.subtext {
+  font-size: 0.8em;
+  font-family: "Courier Prime";
+}
