@@ -1,5 +1,5 @@
 const { ObjectID } = require("mongodb");
-const { Connection } = require("./MongoClient");
+const Connection = require("./MongoClient");
 const { getGeneralizedTimeString } = require("../helpers/TimeHelper");
 
 const getCollection = async collection => {
@@ -170,7 +170,7 @@ const getLeaderboardRankByScore = async (challengeID, score) => {
         $match: {
           "challengeDetails.ID": challengeObjectID,
           showOnLeaderboard: true,
-          "challengeDetails.pb": {$gt: score}
+          "challengeDetails.pb": { $gt: score }
         },
       },
       { $count: "usersAhead" }

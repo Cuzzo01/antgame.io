@@ -6,7 +6,11 @@ const Options = {
 };
 
 class Connection {
-  static async open() {
+  constructor() {
+    this.open();
+  }
+
+  async open() {
     if (this.db) return this.db;
 
     let ConnectionString;
@@ -20,4 +24,5 @@ class Connection {
     return this.db;
   }
 }
-module.exports = { Connection };
+const SingletonInstance = new Connection()
+module.exports = SingletonInstance;
