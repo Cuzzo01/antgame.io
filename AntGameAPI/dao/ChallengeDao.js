@@ -139,7 +139,7 @@ const getChallengeByChallengeId = async id => {
   return {
     id: result._id,
     mapPath: result.mapPath,
-    time: result.time,
+    seconds: result.seconds,
     homeLimit: result.homeLimit,
     name: result.name,
   };

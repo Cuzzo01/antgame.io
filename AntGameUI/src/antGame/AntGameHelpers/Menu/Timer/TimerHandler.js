@@ -44,8 +44,8 @@ export class TimerHandler {
   }
 
   resetTime() {
-    this.min = parseInt(this._defaultTime.min);
-    this.sec = parseInt(this._defaultTime.sec);
+    this.min = parseInt(Math.floor(this._defaultTime / 60));
+    this.sec = parseInt(this._defaultTime % 60);
     this.updateDisplayTime();
     this.updateTimeDisplay();
   }

@@ -86,7 +86,7 @@ class ChallengeHandler {
         const config = Config.Challenge.config;
         this._mapHandler.homeCellsAllowed = config.homeLimit;
         this._mapHandler.fetchAndLoadMap(config.mapPath);
-        this._timerHandler.defaultTime = config.time;
+        this._timerHandler.defaultTime = config.seconds;
         this._timerHandler.resetTime();
         return config;
       } else if (Config.Challenge.overrideChallengeID) {
@@ -99,7 +99,7 @@ class ChallengeHandler {
           this._config = config;
           this._mapHandler.homeCellsAllowed = config.homeLimit;
           this._mapHandler.fetchAndLoadMap(config.mapPath);
-          this._timerHandler.defaultTime = config.time;
+          this._timerHandler.defaultTime = config.seconds;
           this._timerHandler.resetTime();
           return config;
         })
@@ -143,13 +143,6 @@ class ChallengeHandler {
     this.artifact.Name = config.name;
     this.artifact.Env = this.env;
     this.artifact.challengeID = this._challengeID;
-    this.artifact.GameConfig = {
-      MapPath: config.mapPath,
-      Time: config.time,
-      AntsToSpawn: AntsToSpawn,
-      FoodPerCell: FoodPerCell,
-      DirtPerCell: DirtPerCell,
-    };
     this.artifact.Timing = {
       SystemStartTime: new Date().getTime(),
     };
@@ -181,6 +174,13 @@ class ChallengeHandler {
     }
 
     this.generateSnapshot(mapHandler);
+    this.artifact.GameConfig = {
+      MapPath: this.config.mapPath,
+      Time: this.config.seconds,
+      AntsToSpawn: AntsToSpawn,
+      FoodPerCell: FoodPerCell,
+      DirtPerCell: DirtPerCell,
+    };
 
     this.artifact.Timing.SystemStopTime = new Date().getTime();
     this.artifact.FoodConsumed = mapHandler.foodToRespawn.length;
