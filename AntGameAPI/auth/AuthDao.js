@@ -19,7 +19,7 @@ const getAuthDetailsByUsername = async username => {
     passHash: result.passHash,
     admin: result.admin,
     showOnLeaderboard: result.showOnLeaderboard,
-    banned: result.banned ?? false,
+    banned: result.banned,
   };
 };
 
