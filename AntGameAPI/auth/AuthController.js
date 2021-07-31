@@ -2,6 +2,7 @@ const AuthDao = require("./AuthDao");
 const TokenHandler = require("./WebTokenHandler");
 const PasswordHandler = require("./PasswordHandler");
 const { RejectNotAdmin } = require("./AuthHelpers");
+const { RegistrationDataSatisfiesCriteria } = require("../helpers/RegistrationHelper");
 
 async function verifyLogin(req, res) {
   try {
@@ -84,6 +85,11 @@ async function registerUser(req, res) {
     const email = request.email;
     const clientID = request.clientID;
     const clientIP = GetIpAddress(req);
+
+    if (!RegistrationDataSatisfiesCriteria(username, password, clientID)) {
+      res.sendStatus(400)
+      return
+    }
 
     const usernameTaken = await AuthDao.IsUsernameTaken(username);
     if (usernameTaken) {
