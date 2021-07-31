@@ -27,7 +27,6 @@ async function postRun(req, res) {
       else runTags.push({ name: "falsely claimed pb" });
     }
 
-
     if (saveRun === false) {
       // Where save limiting logic will live in the future
       // Only set to true % of time you want random run saved

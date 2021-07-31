@@ -10,6 +10,7 @@ import Leaderboard from "./Challenge/Leaderboard/Leaderboard";
 import ErrorPage from "./ErrorPage/ErrorPage";
 import RegistrationPage from "./Auth/RegistrationPage/RegistrationPage";
 import HomePage from "./HomePage/HomePage";
+import AdminHome from "./Admin/AdminHome";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
@@ -23,6 +24,10 @@ const AntGameRouter = () => {
         </Route>
         <Route exact path="/">
           <HomePage />
+        </Route>
+        <Route path="/admin">
+          <AdminPath />
+          <UserBar />
         </Route>
         <Route path="/sandbox">
           <GameModeContext.Provider value={"sandbox"}>
@@ -55,6 +60,17 @@ const AntGameRouter = () => {
         </Route>
       </Switch>
     </BrowserRouter>
+  );
+};
+
+const AdminPath = () => {
+  if (!AuthHandler.loggedIn) return <Redirect to={"/login?redirect=/admin"} />;
+  if (!AuthHandler.isAdmin) return <Redirect to={"/"} />;
+
+  return (
+    <div>
+      <AdminHome />
+    </div>
   );
 };
 

@@ -123,7 +123,6 @@ async function registerUser(req, res) {
 
 async function createUser(req, res) {
   try {
-    if (RejectNotAdmin(req, res)) return;
     const request = req.body;
     const username = request.username;
     const password = request.password;

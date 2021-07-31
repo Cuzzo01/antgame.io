@@ -1,8 +1,10 @@
-const RejectNotAdmin = (req, res) => {
-  if (req.user.admin) return false;
-  res.status(401);
-  res.send("Not admin");
-  return true;
+const RejectNotAdmin = (req, res, next) => {
+  if (req.user.admin !== true) {
+    res.status(401);
+    res.send("Not admin");
+    return;
+  }
+  next();
 };
 
 const RejectIfAnon = (req, res) => {

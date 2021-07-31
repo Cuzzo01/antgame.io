@@ -41,6 +41,11 @@ class AuthHandler {
     else return null;
   }
 
+  get isAdmin() {
+    if (this.loggedIn) return this.decodedToken.admin === true;
+    return null;
+  }
+
   get username() {
     if (this.loggedIn) return this.decodedToken.username;
     else return null;

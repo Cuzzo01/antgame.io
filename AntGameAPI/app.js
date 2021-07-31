@@ -8,9 +8,11 @@ const port = 8080;
 const _challengeController = require("./controller/ChallengeController");
 const _authController = require("./auth/AuthController");
 const _userController = require("./controller/UserController");
+const _adminController = require("./controller/AdminController");
 const TokenHandler = require("./auth/WebTokenHandler");
+const { RejectNotAdmin } = require("./auth/AuthHelpers");
 
-const UnauthenticatedRoutes = ["/auth/login", "/auth/anonToken", "/auth/register", "/test"];
+const UnauthenticatedRoutes = ["/auth/login", "/auth/anonToken", "/auth/register"];
 
 app.use(bodyParser.json({ extended: true }));
 app.use(
@@ -35,10 +37,12 @@ app.use(
   }
 );
 
+app.get("/admin/stats", RejectNotAdmin, _adminController.getStats);
+
 app.post("/auth/login", _authController.verifyLogin);
 app.post("/auth/anonToken", _authController.getAnonymousToken);
 app.post("/auth/register", _authController.registerUser);
-app.post("/auth/createUser", _authController.createUser);
+app.post("/auth/createUser", RejectNotAdmin, _authController.createUser);
 
 app.get("/challenge/:id/records", _challengeController.getRecords);
 app.post("/challenge/artifact", _challengeController.postRun);

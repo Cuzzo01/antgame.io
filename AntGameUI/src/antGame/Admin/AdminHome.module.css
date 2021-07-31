@@ -1,0 +1,13 @@
+.container {
+  max-width: 60em;
+  margin: 2em auto;
+}
+
+.header {
+  margin-top: 0.5em;
+  border-bottom: 2px solid black;
+}
+
+.activePage {
+  margin: 1em;
+}
