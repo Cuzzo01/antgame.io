@@ -11,20 +11,22 @@ async function postRun(req, res) {
     let runTags = [];
 
     let saveRun = false;
-    let currentDetails;
-    if (runData.PB) {
-      currentDetails = await UserDao.getChallengeDetailsByUser(user.id, runData.challengeID);
-      if (currentDetails === null) saveRun = "New challenge";
-      else if (currentDetails.pb < runData.Score) saveRun = "New PB";
-      if (saveRun) runTags.push({ name: "pr", metadata: { runNumber: (currentDetails ? currentDetails.runs : 0) + 1 } });
-      else runTags.push({ name: "falsely claimed pb" });
-    }
-
     const verificationResult = await VerifyArtifact(runData, user.clientID);
     if (verificationResult !== "verified") {
       runTags.push({ name: "failed verification", metadata: { result: verificationResult } });
       saveRun = "Verify Failed";
     }
+
+    let currentDetails;
+    if (runData.PB && verificationResult === "verified") {
+      currentDetails = await UserDao.getChallengeDetailsByUser(user.id, runData.challengeID);
+      if (currentDetails === null) saveRun = "New challenge";
+      else if (currentDetails.pb < runData.Score) saveRun = "New PB";
+      if (saveRun)
+        runTags.push({ name: "pr", metadata: { runNumber: (currentDetails ? currentDetails.runs : 0) + 1 } });
+      else runTags.push({ name: "falsely claimed pb" });
+    }
+
 
     if (saveRun === false) {
       // Where save limiting logic will live in the future
