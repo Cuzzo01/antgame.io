@@ -29,7 +29,7 @@ const getRecordByChallenge = async challengeID => {
 
   const collection = await getCollection("configs");
   const result = await collection.findOne({ _id: challengeObjectID });
-  if (result.records[0]) {
+  if (result.records && result.records[0]) {
     return {
       score: result.records[0].score,
       username: result.records[0].username,
