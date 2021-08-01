@@ -1,7 +1,7 @@
-import { Nav } from "react-bootstrap";
-import { Route, Switch, useHistory } from "react-router";
+import { useHistory } from "react-router";
 import styles from "./AdminHome.module.css";
-import Stats from "./Stats/Stats";
+import AdminRouter from "./AdminRouter";
+import { Link } from "react-router-dom";
 
 const AdminHome = props => {
   const history = useHistory();
@@ -11,26 +11,15 @@ const AdminHome = props => {
     <div className={styles.container}>
       <div className={styles.header}>
         <h1>Admin Portal</h1>
-        <Nav variant="tabs" onSelect={handleSelect}>
-          <Nav.Item>
-            <Nav.Link eventKey="stats">Stats</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey="runs">Runs</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey="users">Users</Nav.Link>
-          </Nav.Item>
-        </Nav>
+        <div className={styles.nav}>
+          <Link to="/admin/stats">Stats</Link>
+          <Link to="/admin/runs">Runs</Link>
+          <Link to="/admin/users">Users</Link>
+          <Link to="/admin/configs">Configs</Link>
+        </div>
       </div>
       <div className={styles.activePage}>
-        <Switch>
-          <Route path="/admin/stats">
-            <Stats />
-          </Route>
-          <Route path="/admin/runs">Runs</Route>
-          <Route path="/admin/users">Users</Route>
-        </Switch>
+        <AdminRouter />
       </div>
     </div>
   );

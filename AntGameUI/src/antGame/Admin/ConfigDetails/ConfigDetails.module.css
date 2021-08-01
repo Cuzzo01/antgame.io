@@ -1,0 +1,57 @@
+.header {
+  display: grid;
+  grid-template-columns: 30% auto 20%;
+  align-items: center;
+  grid-gap: 1em;
+}
+
+.badge {
+  border-radius: 2em;
+  text-align: center;
+  padding: 0.5em;
+  color: white;
+  font-family: "Courier Prime Bold";
+}
+
+.active {
+  background-color: darkgreen;
+}
+
+.inactive {
+  background-color: red;
+}
+
+.toggleButton {
+  float: right;
+  background-color: darkgray;
+  padding: 0.5em;
+  border-radius: 0.5em;
+}
+
+.recordsSection {
+  margin: 1em 3em;
+}
+
+.toggleButton:hover {
+  cursor: pointer;
+  background-color: grey;
+}
+
+.divButton {
+  background-color: darkgray;
+  padding-left: 1.5em;
+  border-radius: 0.5em;
+}
+
+.divButton:hover {
+  cursor: pointer;
+  background-color: grey;
+}
+
+.recordsList {
+  margin-top: 1em;
+}
+
+.recordEntry {
+  margin: 1em 0;
+}

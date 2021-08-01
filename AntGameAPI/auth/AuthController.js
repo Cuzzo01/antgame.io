@@ -87,8 +87,8 @@ async function registerUser(req, res) {
     const clientIP = GetIpAddress(req);
 
     if (!RegistrationDataSatisfiesCriteria(username, password, clientID)) {
-      res.sendStatus(400)
-      return
+      res.sendStatus(400);
+      return;
     }
 
     const usernameTaken = await AuthDao.IsUsernameTaken(username);

@@ -1,5 +1,6 @@
 .container {
-  max-width: 60em;
+  width: 60em;
+  max-width: 75%;
   margin: 2em auto;
 }
 
@@ -10,4 +11,10 @@
 
 .activePage {
   margin: 1em;
+}
+
+.nav :not(:first-child) {
+  margin-left: 0.75em;
+  padding-left: 0.75em;
+  border-left: 2px solid black;
 }

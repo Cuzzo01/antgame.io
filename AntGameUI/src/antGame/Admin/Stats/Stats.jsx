@@ -21,22 +21,21 @@ const Stats = props => {
 
 const StatsDisplay = props => {
   const stats = props.data;
-  console.log(stats.loginStats);
 
-  let loginStats = [];
-  for (const [hours, users] of Object.entries(stats.loginStats)) {
-    loginStats.push(
+  let uniqueUserStats = [];
+  for (const [hours, users] of Object.entries(stats.uniqueUserStats)) {
+    uniqueUserStats.push(
       <div key={hours} className={styles.rightJustify}>
-        {hours}hr - <span className={styles.bold}>{users}</span>
+        {hours}hr:<span className={styles.bold}>{users}</span>
       </div>
     );
   }
 
   return (
     <div>
-      <div className={styles.loginStats}>
+      <div className={styles.uniqueUserStats}>
         <h6>Unique Users</h6>
-        {loginStats}
+        {uniqueUserStats}
       </div>
     </div>
   );

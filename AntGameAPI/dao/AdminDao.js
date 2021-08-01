@@ -16,4 +16,35 @@ const getUsersLoggedIn = async hoursBack => {
   return { hours: hoursBack, users: result };
 };
 
-module.exports = { getUsersLoggedIn };
+const getConfigListFromDB = async () => {
+  const collection = await getCollection("configs");
+  const result = await collection
+    .find(
+      {},
+      { projection: { name: 1, seconds: 1, active: 1, record: { $first: "$records" }, order: 1, homeLimit: 1 } }
+    )
+    .sort({ order: 1 })
+    .toArray();
+  return result;
+};
+
+const getConfigDetailsByID = async id => {
+  const configObjectID = TryParseObjectID(id, "ChallengeID");
+
+  const collection = await getCollection("configs");
+  const result = await collection.findOne(
+    { _id: configObjectID },
+    { projection: { mapPath: 1, seconds: 1, homeLimit: 1, name: 1, order: 1, seconds: 1, records: 1, active: 1 } }
+  );
+  return result;
+};
+
+const TryParseObjectID = (stringID, name) => {
+  try {
+    return new Mongo.ObjectID(stringID);
+  } catch (e) {
+    throw `Threw on ${name} parsing in AuthDao: ${stringID}`;
+  }
+};
+
+module.exports = { getUsersLoggedIn, getConfigListFromDB, getConfigDetailsByID };

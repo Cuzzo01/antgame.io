@@ -24,5 +24,5 @@ class Connection {
     return this.db;
   }
 }
-const SingletonInstance = new Connection()
+const SingletonInstance = new Connection();
 module.exports = SingletonInstance;

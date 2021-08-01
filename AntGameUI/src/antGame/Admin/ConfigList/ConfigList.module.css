@@ -1,0 +1,13 @@
+.listElement {
+  margin: 0.5em 0em;
+  padding: 1em;
+  border: 2px solid black;
+  border-radius: 1em;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 50% 50%;
+}
+
+.rightAlign {
+  text-align: right;
+}
