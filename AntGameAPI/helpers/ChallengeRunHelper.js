@@ -7,6 +7,14 @@ const DirtPerCell = 50;
 
 const VerifyArtifact = async (runData, clientID) => {
   if (runData.ClientID !== clientID) return "non-matching clientID";
+
+  try {
+    runData.Score = parseInt(runData.Score);
+  } catch (e) {
+    return "failed to parse score";
+  }
+  if (ScoreIsInfinity(runData)) return "score is infinity";
+
   if (!ScoreMatchesFinalSnapshot(runData)) return "non matching reported and final snapshot score";
   if (!SnapshotLengthMatchesConfigTime(runData)) return "not enough snapshots for config time";
   if (!SystemElapsedTimeLongerThanConfigTime(runData)) return "system elapsed time shorter than config time";
@@ -16,6 +24,10 @@ const VerifyArtifact = async (runData, clientID) => {
   const SnapshotAnalysis = AnalyzeSnapshots(runData.Snapshots);
   if (SnapshotAnalysis !== true) return `snapshot analysis failed : ${SnapshotAnalysis}`;
   return "verified";
+};
+
+const ScoreIsInfinity = runData => {
+  return !isFinite(runData.Score);
 };
 
 const ReportedConfigMatchesExpectedConfig = (runData, expectedConfig) => {
