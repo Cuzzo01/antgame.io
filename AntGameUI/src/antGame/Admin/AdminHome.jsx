@@ -1,12 +1,8 @@
-import { useHistory } from "react-router";
 import styles from "./AdminHome.module.css";
 import AdminRouter from "./AdminRouter";
 import { Link } from "react-router-dom";
 
 const AdminHome = props => {
-  const history = useHistory();
-  const handleSelect = eventKey => history.push(`/admin/${eventKey}`);
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>

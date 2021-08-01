@@ -17,3 +17,9 @@ export const getConfigDetails = async id => {
     return res.data;
   });
 };
+
+export const putConfigDetails = async (id, fields) => {
+  return axios.put(`/api/admin/config/${id}`, fields).catch(e => {
+    return false;
+  });
+};

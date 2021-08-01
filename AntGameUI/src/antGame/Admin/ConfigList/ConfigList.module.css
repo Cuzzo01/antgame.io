@@ -11,3 +11,29 @@
 .rightAlign {
   text-align: right;
 }
+
+.even {
+  background-color: #ccd1d1;
+}
+
+.odd {
+  background-color: #b2babb;
+}
+
+.active {
+  background-color: darkgreen;
+}
+
+.inactive {
+  background-color: red;
+}
+
+.activeBadge span {
+  padding: 0.2em 0.4em;
+  color: white;
+  border-radius: 0.5em;
+}
+
+.bold {
+  font-family: "Courier Prime Bold";
+}

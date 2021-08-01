@@ -39,12 +39,21 @@ const getConfigDetailsByID = async id => {
   return result;
 };
 
+const updateConfigByID = async (id, updateObject) => {
+  const configObjectID = TryParseObjectID(id, "ChallengeID");
+
+  const collection = await getCollection("configs");
+  const result = await collection.updateOne({ _id: configObjectID }, { $set: updateObject });
+
+  return true;
+};
+
+module.exports = { getUsersLoggedIn, getConfigListFromDB, getConfigDetailsByID, updateConfigByID };
+
 const TryParseObjectID = (stringID, name) => {
   try {
     return new Mongo.ObjectID(stringID);
   } catch (e) {
-    throw `Threw on ${name} parsing in AuthDao: ${stringID}`;
+    throw `Threw on ${name} parsing in Admin: ${stringID}`;
   }
 };
-
-module.exports = { getUsersLoggedIn, getConfigListFromDB, getConfigDetailsByID };

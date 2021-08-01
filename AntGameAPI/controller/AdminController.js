@@ -1,4 +1,4 @@
-const { getUsersLoggedIn, getConfigListFromDB, getConfigDetailsByID } = require("../dao/AdminDao");
+const { getUsersLoggedIn, getConfigListFromDB, getConfigDetailsByID, updateConfigByID } = require("../dao/AdminDao");
 
 async function getStats(req, res) {
   let response = {
@@ -36,13 +36,15 @@ async function getConfigDetails(req, res) {
     const id = req.params.id;
     let result = await getConfigDetailsByID(id);
 
-    let modifiedRecords = result.records;
-    for (let i = 0; i < modifiedRecords.length; i++) {
-      const record = modifiedRecords[i];
-      const timestamp = record.runID.getTimestamp();
-      modifiedRecords[i].time = timestamp;
+    if (result.records) {
+      let modifiedRecords = result.records;
+      for (let i = 0; i < modifiedRecords.length; i++) {
+        const record = modifiedRecords[i];
+        const timestamp = record.runID.getTimestamp();
+        modifiedRecords[i].time = timestamp;
+      }
+      result.records = modifiedRecords;
     }
-    result.records = modifiedRecords;
     res.send(result);
   } catch (e) {
     console.log(e);
@@ -51,4 +53,41 @@ async function getConfigDetails(req, res) {
   }
 }
 
-module.exports = { getStats, getConfigList, getConfigDetails };
+async function putConfig(req, res) {
+  try {
+    const request = req.body;
+
+    const id = req.params.id;
+
+    const newOrder = request.order;
+    const newActive = request.active;
+
+    const putRequest = {};
+    if (newOrder !== undefined) {
+      if (typeof newOrder !== "number") {
+        res.sendStatus(400);
+        return;
+      } else {
+        putRequest.order = newOrder;
+      }
+    }
+
+    if (newActive !== undefined) {
+      if (typeof newActive !== "boolean") {
+        res.sendStatus(400);
+        return;
+      } else {
+        putRequest.active = newActive;
+      }
+    }
+
+    updateConfigByID(id, putRequest);
+    res.sendStatus(200);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+    return;
+  }
+}
+
+module.exports = { getStats, getConfigList, getConfigDetails, putConfig };
