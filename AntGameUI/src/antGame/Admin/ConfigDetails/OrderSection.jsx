@@ -15,12 +15,14 @@ const OrderSection = props => {
       <div className={styles.orderEdit}>
         <span>Order:</span>{" "}
         {editable ? (
-          <input
-            type="number"
-            className={styles.orderInput}
-            onChange={e => setOrderInputValue(e.target.value)}
-            value={orderInputValue}
-          />
+          <form onSubmit={() => saveEdit()}>
+            <input
+              type="number"
+              className={styles.orderInput}
+              onChange={e => setOrderInputValue(e.target.value)}
+              value={orderInputValue}
+            />
+          </form>
         ) : (
           <span>{props.currentOrder}</span>
         )}

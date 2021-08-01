@@ -4,19 +4,19 @@ import styles from "./ConfigList.module.css";
 import { Link } from "react-router-dom";
 
 const ConfigList = props => {
-  const [activeConfigList, setActiveConfigList] = useState(false);
-  const [inactiveConfigList, setInactiveConfigList] = useState(false);
+  const [orderConfigList, setOrderConfigList] = useState(false);
+  const [noOrderConfigList, setNoOrderConfigList] = useState(false);
 
   useEffect(() => {
     getConfigList().then(configs => {
-      const activeConfigs = configs.filter(config => config.active === true);
-      const inactiveConfigs = configs.filter(config => config.active === false);
+      const orderConfigs = configs.filter(config => config.order);
+      const noOrderConfigs = configs.filter(config => !config.order);
 
-      const activeList = generateConfigList(activeConfigs);
-      const inactiveList = generateConfigList(inactiveConfigs);
+      const orderList = generateConfigList(orderConfigs);
+      const noOrderList = generateConfigList(noOrderConfigs);
 
-      setActiveConfigList(activeList);
-      setInactiveConfigList(inactiveList);
+      setOrderConfigList(orderList);
+      setNoOrderConfigList(noOrderList);
     });
   }, []);
 
@@ -32,9 +32,9 @@ const ConfigList = props => {
   return (
     <div>
       <h4>Active Configs</h4>
-      {activeConfigList ? activeConfigList : null}
+      {orderConfigList ? orderConfigList : null}
       <h4 style={{ "margin-top": "1em" }}>Inactive Configs</h4>
-      {inactiveConfigList ? inactiveConfigList : null}
+      {noOrderConfigList ? noOrderConfigList : null}
       {}
     </div>
   );

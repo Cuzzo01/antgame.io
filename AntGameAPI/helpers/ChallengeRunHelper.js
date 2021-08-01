@@ -9,11 +9,13 @@ const VerifyArtifact = async (runData, clientID) => {
   if (runData.ClientID !== clientID) return "non-matching clientID";
 
   try {
+    console.log(runData);
     runData.Score = parseInt(runData.Score);
+    console.log(runData);
   } catch (e) {
     return "failed to parse score";
   }
-  if (ScoreIsInfinity(runData)) return "score is infinity";
+  if (!isFinite(runData.Score)) return "score is infinity";
 
   if (!ScoreMatchesFinalSnapshot(runData)) return "non matching reported and final snapshot score";
   if (!SnapshotLengthMatchesConfigTime(runData)) return "not enough snapshots for config time";
@@ -24,10 +26,6 @@ const VerifyArtifact = async (runData, clientID) => {
   const SnapshotAnalysis = AnalyzeSnapshots(runData.Snapshots);
   if (SnapshotAnalysis !== true) return `snapshot analysis failed : ${SnapshotAnalysis}`;
   return "verified";
-};
-
-const ScoreIsInfinity = runData => {
-  return !isFinite(runData.Score);
 };
 
 const ReportedConfigMatchesExpectedConfig = (runData, expectedConfig) => {
