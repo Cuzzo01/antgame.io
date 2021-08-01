@@ -9,9 +9,7 @@ const VerifyArtifact = async (runData, clientID) => {
   if (runData.ClientID !== clientID) return "non-matching clientID";
 
   try {
-    console.log(runData);
     runData.Score = parseInt(runData.Score);
-    console.log(runData);
   } catch (e) {
     return "failed to parse score";
   }

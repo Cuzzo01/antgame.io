@@ -8,7 +8,7 @@ export class TimerHandler {
     this.lastFrameCount = 0;
     this.gameMode = "";
 
-    this._defaultTime = { min: 0, sec: 0 };
+    this._defaultTime = 0;
 
     this.displayTime = {
       min: "00",
@@ -44,8 +44,8 @@ export class TimerHandler {
   }
 
   resetTime() {
-    this.min = parseInt(Math.floor(this._defaultTime / 60));
-    this.sec = parseInt(this._defaultTime % 60);
+    this.min = parseInt(Math.floor(this._defaultTime / 60)) ?? 0;
+    this.sec = parseInt(this._defaultTime % 60) ?? 0;
     this.updateDisplayTime();
     this.updateTimeDisplay();
   }
