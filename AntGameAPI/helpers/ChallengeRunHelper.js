@@ -13,6 +13,8 @@ const VerifyArtifact = async (runData, clientID) => {
   const expectedConfig = await getChallengeByChallengeId(runData.challengeID);
   const ConfigMatchResult = ReportedConfigMatchesExpectedConfig(runData, expectedConfig);
   if (ConfigMatchResult !== true) return `reported config did not match expected : ${ConfigMatchResult}`;
+  const SnapshotAnalysis = AnalyzeSnapshots(runData.Snapshots);
+  if (SnapshotAnalysis !== true) return `snapshot analysis failed : ${SnapshotAnalysis}`;
   return "verified";
 };
 
@@ -43,7 +45,8 @@ const SystemElapsedTimeLongerThanConfigTime = runData => {
   const systemElapsedTimeMilis = runData.Timing.SystemStopTime - runData.Timing.SystemStartTime;
   const systemElapsedTimeSecs = Math.round(systemElapsedTimeMilis / 1000);
   const minTimeElapsed = runData.GameConfig.Time;
-  return systemElapsedTimeSecs >= minTimeElapsed;
+  const marginOfError = minTimeElapsed * 0.01;
+  return systemElapsedTimeSecs >= minTimeElapsed - marginOfError;
 };
 
 const SnapshotLengthMatchesConfigTime = runData => {
@@ -56,6 +59,48 @@ const SnapshotLengthMatchesConfigTime = runData => {
 const ScoreMatchesFinalSnapshot = runData => {
   const snapshotScore = Math.round(runData.Snapshots[runData.Snapshots.length - 1][2] * 100000);
   return runData.Score === snapshotScore;
+};
+
+const AnalyzeSnapshots = snapshots => {
+  const totalFood = snapshots[0][3];
+
+  let lastSnapshot = false;
+  let deltaExceptions = [];
+  for (let i = 0; i < snapshots.length; i++) {
+    const snapshot = snapshots[i];
+
+    const percent = snapshot[2];
+    const foodOnMap = snapshot[3];
+    const foodInTransit = snapshot[4];
+
+    const percentGuess = (totalFood - (foodOnMap + foodInTransit)) / totalFood;
+    const guessDelta = Math.round(Math.abs(percent - percentGuess) * 10000);
+    if (guessDelta > 0) deltaExceptions.push([i, guessDelta]);
+
+    if (!lastSnapshot) lastSnapshot = snapshot;
+    else {
+      const gameTimeDelta = lastSnapshot[1] - snapshot[1];
+      if (gameTimeDelta > 6) return `game time delta out of bounds (${gameTimeDelta}, ${i})`;
+
+      const score = snapshot[2];
+      if (score > 0.1) {
+        const lastScore = lastSnapshot[2];
+        const scoreDelta = score - lastScore;
+        const percentScoreDelta = (scoreDelta / lastScore) * 100;
+        if (percentScoreDelta < 0)
+          return `negative score change between snapshots (${percentScoreDelta.toFixed(2)}, ${i})`;
+        const EarlyDelta = score < 0.4;
+        const smallPercentDelta = percentScoreDelta !== Infinity && percentScoreDelta > 25;
+        const largePercentDelta = percentScoreDelta !== Infinity && percentScoreDelta > 100;
+        if ((EarlyDelta && largePercentDelta) || (!EarlyDelta && smallPercentDelta))
+          return `score change out of bounds (${percentScoreDelta}, ${i})`;
+      }
+
+      lastSnapshot = snapshot;
+    }
+  }
+  if (deltaExceptions.length > 0) return `guess delta exceptions (${deltaExceptions})`;
+  return true;
 };
 
 module.exports = { VerifyArtifact };

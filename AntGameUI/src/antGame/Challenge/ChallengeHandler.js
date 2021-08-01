@@ -151,11 +151,11 @@ class ChallengeHandler {
 
   generateSnapshot() {
     const mapHandler = this._mapHandler;
-    const time = this._timerHandler.displayTime;
+    const time = this._timerHandler.min * 60 + this._timerHandler.sec;
     this.artifact.Snapshots.push([
       new Date().getTime(),
-      `${time.min}:${time.sec}`,
-      mapHandler.foodRatio,
+      time,
+      mapHandler.percentFoodReturned,
       mapHandler.foodOnMap,
       mapHandler.foodInTransit,
     ]);

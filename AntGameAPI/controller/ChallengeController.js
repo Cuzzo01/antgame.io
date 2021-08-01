@@ -13,7 +13,7 @@ async function postRun(req, res) {
     let saveRun = false;
     const verificationResult = await VerifyArtifact(runData, user.clientID);
     if (verificationResult !== "verified") {
-      runTags.push({ name: "failed verification", metadata: { result: verificationResult } });
+      runTags.push({ "failed verification": { result: verificationResult } });
       saveRun = "Verify Failed";
     }
 
@@ -22,9 +22,8 @@ async function postRun(req, res) {
       currentDetails = await UserDao.getChallengeDetailsByUser(user.id, runData.challengeID);
       if (currentDetails === null) saveRun = "New challenge";
       else if (currentDetails.pb < runData.Score) saveRun = "New PB";
-      if (saveRun)
-        runTags.push({ name: "pr", metadata: { runNumber: (currentDetails ? currentDetails.runs : 0) + 1 } });
-      else runTags.push({ name: "falsely claimed pb" });
+      if (saveRun) runTags.push({ pr: { runNumber: (currentDetails ? currentDetails.runs : 0) + 1 } });
+      else runTags.push({ "falsely claimed pb": { pb: currentDetails.pb, score: runData.Score } });
     }
 
     if (saveRun === false) {

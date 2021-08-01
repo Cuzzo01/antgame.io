@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Accordion } from "react-bootstrap";
 import { getConfigDetails } from "../AdminService";
 import styles from "./ConfigDetails.module.css";
 import RecordsList from "./RecordsList";
@@ -11,7 +10,7 @@ const ConfigDetails = props => {
     getConfigDetails(props.id).then(details => {
       setDetails(details);
     });
-  }, []);
+  }, [props]);
 
   return (
     <div>

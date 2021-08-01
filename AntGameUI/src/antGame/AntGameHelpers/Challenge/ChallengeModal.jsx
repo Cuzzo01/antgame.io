@@ -22,7 +22,7 @@ const ChallengeModal = props => {
           {props.challengeHandler?.isPB ? (
             <div>
               <h5 className={styles.newPB}>New Personal Record</h5>
-              <h6>Leaderboard Rank: {records.rank}</h6>
+              <h6>Leaderboard Rank: {records?.rank}</h6>
             </div>
           ) : null}
         </div>
