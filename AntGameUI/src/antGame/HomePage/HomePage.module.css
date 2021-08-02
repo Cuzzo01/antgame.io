@@ -26,7 +26,7 @@ img {
 .link {
   height: 5rem;
   margin: 1em 0;
-  background-color: black;
+  background-color: #40260f;
   color: white;
   display: block;
   border-radius: 2.5em;
@@ -37,14 +37,14 @@ img {
   text-decoration: none;
 }
 
-.sandboxLink {
-  font-size: 0.9em;
-}
-
 .link:hover {
   text-decoration: none;
-  color: white;
-  background-color: #515a5a;
+  color: black;
+  background-color: #673d18;
+}
+
+.sandboxLink {
+  font-size: 0.9em;
 }
 
 .subtext {
