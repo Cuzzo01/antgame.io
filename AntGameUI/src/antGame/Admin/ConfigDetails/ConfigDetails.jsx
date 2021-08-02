@@ -55,7 +55,7 @@ const ConfigDetails = props => {
             <h5>Details</h5>
             Homes: {details.homeLimit}
             <br />
-            Map: {getMapStringFromMapPath(details.mapPath)}
+            Map: {details.mapPath}
             <br />
             Time: {details.seconds} sec
           </div>
@@ -77,13 +77,3 @@ const ConfigDetails = props => {
   );
 };
 export default ConfigDetails;
-
-const getMapStringFromMapPath = mapPath => {
-  const pathArray = mapPath.split("/");
-  const domainIndex = pathArray.indexOf(MapDomain);
-  let toReturn = pathArray[domainIndex + 1];
-  for (let i = domainIndex + 2; i < pathArray.length; i++) {
-    toReturn += `/${pathArray[i]}`;
-  }
-  return toReturn;
-};

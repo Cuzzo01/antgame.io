@@ -19,7 +19,23 @@ export const getConfigDetails = async id => {
 };
 
 export const putConfigDetails = async (id, fields) => {
-  return axios.put(`/api/admin/config/${id}`, fields).catch(e => {
-    return false;
-  });
+  return axios
+    .put(`/api/admin/config/${id}`, fields)
+    .then(res => {
+      return true;
+    })
+    .catch(e => {
+      return false;
+    });
+};
+
+export const postConfig = async newConfig => {
+  return axios
+    .post(`/api/admin/config`, newConfig)
+    .then(res => {
+      return res.data;
+    })
+    .catch(e => {
+      return false;
+    });
 };

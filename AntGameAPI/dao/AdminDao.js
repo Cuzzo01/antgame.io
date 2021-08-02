@@ -48,7 +48,13 @@ const updateConfigByID = async (id, updateObject) => {
   return true;
 };
 
-module.exports = { getUsersLoggedIn, getConfigListFromDB, getConfigDetailsByID, updateConfigByID };
+const addNewConfig = async config => {
+  const collection = await getCollection("configs");
+  const result = await collection.insertOne(config);
+  return result.ops[0];
+};
+
+module.exports = { getUsersLoggedIn, getConfigListFromDB, getConfigDetailsByID, updateConfigByID, addNewConfig };
 
 const TryParseObjectID = (stringID, name) => {
   try {

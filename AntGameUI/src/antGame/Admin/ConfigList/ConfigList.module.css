@@ -37,3 +37,17 @@
 .bold {
   font-family: "Courier Prime Bold";
 }
+
+.newConfigButton {
+  background-color: #ccd1d1;
+  float: right;
+  padding: 0.2em;
+  border-radius: 0.3em;
+  color: black !important;
+  text-decoration: none;
+}
+
+.newConfigButton:hover {
+  cursor: pointer;
+  background-color: #b2babb;
+}

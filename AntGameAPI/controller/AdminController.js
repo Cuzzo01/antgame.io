@@ -1,4 +1,10 @@
-const { getUsersLoggedIn, getConfigListFromDB, getConfigDetailsByID, updateConfigByID } = require("../dao/AdminDao");
+const {
+  getUsersLoggedIn,
+  getConfigListFromDB,
+  getConfigDetailsByID,
+  updateConfigByID,
+  addNewConfig,
+} = require("../dao/AdminDao");
 
 async function getStats(req, res) {
   let response = {
@@ -90,4 +96,35 @@ async function putConfig(req, res) {
   }
 }
 
-module.exports = { getStats, getConfigList, getConfigDetails, putConfig };
+async function postConfig(req, res) {
+  try {
+    const newConfigRequest = req.body;
+
+    const mapPath = newConfigRequest.mapPath;
+    const name = newConfigRequest.name;
+    const time = parseInt(newConfigRequest.time);
+    const homeLimit = parseInt(newConfigRequest.homeLimit);
+
+    if (!mapPath || !time || !name || !homeLimit) {
+      res.sendStatus(400);
+      return;
+    }
+
+    const newConfig = {
+      name: name,
+      mapPath: mapPath,
+      seconds: time,
+      homeLimit: homeLimit,
+      active: false,
+    };
+
+    const result = await addNewConfig(newConfig);
+    res.send(result._id);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+    return;
+  }
+}
+
+module.exports = { getStats, getConfigList, getConfigDetails, putConfig, postConfig };

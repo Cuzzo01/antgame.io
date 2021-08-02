@@ -41,6 +41,7 @@ app.get("/admin/stats", RejectNotAdmin, _adminController.getStats);
 app.get("/admin/configList", RejectNotAdmin, _adminController.getConfigList);
 app.get("/admin/config/:id", RejectNotAdmin, _adminController.getConfigDetails);
 app.put("/admin/config/:id", RejectNotAdmin, _adminController.putConfig);
+app.post("/admin/config", RejectNotAdmin, _adminController.postConfig);
 
 app.post("/auth/login", _authController.verifyLogin);
 app.post("/auth/anonToken", _authController.getAnonymousToken);

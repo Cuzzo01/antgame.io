@@ -6,7 +6,7 @@ const OrderSection = props => {
   const [orderInputValue, setOrderInputValue] = useState(props.currentOrder);
 
   const saveEdit = () => {
-    props.handleSave(parseInt(orderInputValue));
+    props.handleSave(parseFloat(orderInputValue));
     setEditable(false);
   };
 
@@ -18,6 +18,7 @@ const OrderSection = props => {
           <form onSubmit={() => saveEdit()}>
             <input
               type="number"
+              step="0.1"
               className={styles.orderInput}
               onChange={e => setOrderInputValue(e.target.value)}
               value={orderInputValue}

@@ -31,6 +31,9 @@ const ConfigList = props => {
 
   return (
     <div>
+      <Link to="/admin/newConfig" className={`${styles.newConfigButton} ${styles.bold}`}>
+        New Config
+      </Link>
       <h4>Active Configs</h4>
       {orderConfigList ? orderConfigList : null}
       <h4 style={{ "margin-top": "1em" }}>Inactive Configs</h4>

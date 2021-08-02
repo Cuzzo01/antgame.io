@@ -1,6 +1,7 @@
 import { Route, Switch, useParams } from "react-router-dom";
 import ConfigDetails from "./ConfigDetails/ConfigDetails";
 import ConfigList from "./ConfigList/ConfigList";
+import CreateConfig from "./CreateConfig/CreateConfig";
 import Stats from "./Stats/Stats";
 
 const AdminRouter = () => {
@@ -13,6 +14,9 @@ const AdminRouter = () => {
       <Route path="/admin/users">Users</Route>
       <Route path="/admin/configs">
         <ConfigList />
+      </Route>
+      <Route path="/admin/newConfig">
+        <CreateConfig />
       </Route>
       <Route path="/admin/config/:id">
         <ConfigDetailsPage />
