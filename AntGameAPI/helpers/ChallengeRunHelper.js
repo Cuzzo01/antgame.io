@@ -91,8 +91,8 @@ const AnalyzeSnapshots = snapshots => {
       if (gameTimeDelta > 6) return `game time delta out of bounds (${gameTimeDelta}, ${i})`;
 
       const score = snapshot[2];
-      if (score > 0.1) {
-        const lastScore = lastSnapshot[2];
+      const lastScore = lastSnapshot[2];
+      if (lastScore > 0.1) {
         const scoreDelta = score - lastScore;
         const percentScoreDelta = (scoreDelta / lastScore) * 100;
         if (percentScoreDelta < 0)
