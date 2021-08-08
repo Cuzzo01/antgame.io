@@ -17,10 +17,12 @@ const VerifyArtifact = async (runData, clientID) => {
 
   if (!ScoreMatchesFinalSnapshot(runData)) return "non matching reported and final snapshot score";
   if (!SnapshotLengthMatchesConfigTime(runData)) return "not enough snapshots for config time";
-  if (!SystemElapsedTimeLongerThanConfigTime(runData)) return "system elapsed time shorter than config time";
+  if (!SystemElapsedTimeLongerThanConfigTime(runData))
+    return "system elapsed time shorter than config time";
   const expectedConfig = await getChallengeByChallengeId(runData.challengeID);
   const ConfigMatchResult = ReportedConfigMatchesExpectedConfig(runData, expectedConfig);
-  if (ConfigMatchResult !== true) return `reported config did not match expected : ${ConfigMatchResult}`;
+  if (ConfigMatchResult !== true)
+    return `reported config did not match expected : ${ConfigMatchResult}`;
   const SnapshotAnalysis = AnalyzeSnapshots(runData.Snapshots);
   if (SnapshotAnalysis !== true) return `snapshot analysis failed : ${SnapshotAnalysis}`;
   return "verified";

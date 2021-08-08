@@ -22,7 +22,8 @@ async function postRun(req, res) {
       currentDetails = await UserDao.getChallengeDetailsByUser(user.id, runData.challengeID);
       if (currentDetails === null) saveRun = "New challenge";
       else if (currentDetails.pb < runData.Score) saveRun = "New PB";
-      if (saveRun) runTags.push({ pr: { runNumber: (currentDetails ? currentDetails.runs : 0) + 1 } });
+      if (saveRun)
+        runTags.push({ pr: { runNumber: (currentDetails ? currentDetails.runs : 0) + 1 } });
       else runTags.push({ "falsely claimed pb": { pb: currentDetails.pb, score: runData.Score } });
     }
 
@@ -73,7 +74,10 @@ async function postRun(req, res) {
 
         let response = {};
         if (runData.PB) {
-          const newRank = await UserDao.getLeaderboardRankByScore(runData.challengeID, runData.Score);
+          const newRank = await UserDao.getLeaderboardRankByScore(
+            runData.challengeID,
+            runData.Score
+          );
           response.rank = newRank;
         }
 
@@ -84,7 +88,13 @@ async function postRun(req, res) {
           const recordEmpty = challengeRecord && Object.keys(challengeRecord).length === 0;
           if (recordEmpty || challengeRecord.score < runData.Score) {
             isWorldRecord = true;
-            ChallengeDao.updateChallengeRecord(runData.challengeID, runData.Score, user.username, user.id, runID);
+            ChallengeDao.updateChallengeRecord(
+              runData.challengeID,
+              runData.Score,
+              user.username,
+              user.id,
+              runID
+            );
           }
         }
 

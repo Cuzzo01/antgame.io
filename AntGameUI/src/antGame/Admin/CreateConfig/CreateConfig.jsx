@@ -31,7 +31,9 @@ const CreateConfig = () => {
           <label htmlFor="Name">Name</label>
           <input {...register("name", { required: true, maxLength: 25 })} />
           {errors.name?.type === "required" && <ErrorMessage>Required</ErrorMessage>}
-          {errors.name?.type === "maxLength" && <ErrorMessage>Cannot be over 25 characters</ErrorMessage>}
+          {errors.name?.type === "maxLength" && (
+            <ErrorMessage>Cannot be over 25 characters</ErrorMessage>
+          )}
         </div>
         <div className={styles.inputGroup}>
           <label htmlFor="mapPath">Map Path</label>

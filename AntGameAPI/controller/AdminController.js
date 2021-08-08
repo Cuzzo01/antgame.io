@@ -171,4 +171,12 @@ const send400 = (res, message) => {
   res.send(message);
 };
 
-module.exports = { getStats, getConfigList, getConfigDetails, patchConfig, postConfig, getRuns, getUserDetails };
+module.exports = {
+  getStats,
+  getConfigList,
+  getConfigDetails,
+  patchConfig,
+  postConfig,
+  getRuns,
+  getUserDetails,
+};

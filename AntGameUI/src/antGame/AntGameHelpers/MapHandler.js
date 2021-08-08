@@ -87,8 +87,12 @@ export class MapHandler {
   setupMap(canvasWidth, canvasHeight) {
     const drawableWidth = canvasWidth - BorderWeight;
     const drawableHeight = canvasHeight - BorderWeight;
-    this.pixelDensity = [(drawableWidth / MapBounds[0]).toFixed(2), (drawableHeight / MapBounds[1]).toFixed(2)];
-    if (Config.debug) console.log("Pixel density is: ", [this.pixelDensity[0], this.pixelDensity[1]]);
+    this.pixelDensity = [
+      (drawableWidth / MapBounds[0]).toFixed(2),
+      (drawableHeight / MapBounds[1]).toFixed(2),
+    ];
+    if (Config.debug)
+      console.log("Pixel density is: ", [this.pixelDensity[0], this.pixelDensity[1]]);
   }
 
   clearMap() {
@@ -198,7 +202,8 @@ export class MapHandler {
       if (brush.decayable) {
         for (let i = 1; i <= BlockDecaySteps; i++) {
           const index = brush.value + i;
-          const alpha = Math.round((255 - MinDecayableAlpha) * (i / BlockDecaySteps)) + MinDecayableAlpha;
+          const alpha =
+            Math.round((255 - MinDecayableAlpha) * (i / BlockDecaySteps)) + MinDecayableAlpha;
           this.brushColors[index] = this._graphics.color(brush.color);
           this.brushColors[index].setAlpha(alpha);
         }
@@ -266,7 +271,8 @@ export class MapHandler {
   }
 
   mapXYInBounds(mapXY) {
-    if (mapXY[0] >= 0 && mapXY[1] >= 0) if (mapXY[0] < MapBounds[0] && mapXY[1] < MapBounds[1]) return true;
+    if (mapXY[0] >= 0 && mapXY[1] >= 0)
+      if (mapXY[0] < MapBounds[0] && mapXY[1] < MapBounds[1]) return true;
     return false;
   }
 

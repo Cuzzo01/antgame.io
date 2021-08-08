@@ -30,14 +30,20 @@ export default function MenuBar(props) {
       <div className={IsChallenge ? styles.challengeMiddle : styles.middle}>
         {IsChallenge ? (
           <div className={styles.challengeName}>
-            <h3 className={props.timerActive ? styles.active : ""}>{ChallengeHandler.config.name}</h3>
+            <h3 className={props.timerActive ? styles.active : ""}>
+              {ChallengeHandler.config.name}
+            </h3>
           </div>
         ) : null}
         <div className={IsChallenge ? styles.timerChallenge : styles.timer}>
           <Timer time={props.time} active={props.timerActive} />
         </div>
         <div className={styles.foodTracker}>
-          <FoodTracker active={props.timerActive} foodReturned={props.foodReturned} IsChallenge={IsChallenge} />
+          <FoodTracker
+            active={props.timerActive}
+            foodReturned={props.foodReturned}
+            IsChallenge={IsChallenge}
+          />
         </div>
       </div>
       <div className={styles.alignRight}>

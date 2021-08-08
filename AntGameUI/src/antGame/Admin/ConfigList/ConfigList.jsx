@@ -38,7 +38,13 @@ const generateConfigList = configs => {
   let list = [];
   for (let i = 0; i < configs.length; i++) {
     const config = configs[i];
-    list.push(<ConfigListElement theme={i % 2 === 0 ? styles.even : styles.odd} key={config._id} config={config} />);
+    list.push(
+      <ConfigListElement
+        theme={i % 2 === 0 ? styles.even : styles.odd}
+        key={config._id}
+        config={config}
+      />
+    );
   }
   return list;
 };
@@ -49,12 +55,14 @@ const ConfigListElement = props => {
     <div className={`${styles.listElement} ${props.theme}`}>
       <div>
         <Link to={`/admin/config/${config._id}`}>
-          {config.order ? `(${config.order})` : "(-)"} <span className={styles.bold}>{config.name}</span>
+          {config.order ? `(${config.order})` : "(-)"}{" "}
+          <span className={styles.bold}>{config.name}</span>
         </Link>
       </div>
       {config.record ? (
         <div className={styles.rightAlign}>
-          {config.record.score} - <Link to={`/admin/user/${config.record.userID}`}>{config.record.username}</Link>
+          {config.record.score} -{" "}
+          <Link to={`/admin/user/${config.record.userID}`}>{config.record.username}</Link>
         </div>
       ) : (
         <div />

@@ -1,5 +1,10 @@
 import { Config } from "../config";
-import { getChallengeConfig, getPRHomeLocations, getRecords, sendRunArtifact } from "./ChallengeService";
+import {
+  getChallengeConfig,
+  getPRHomeLocations,
+  getRecords,
+  sendRunArtifact,
+} from "./ChallengeService";
 import { v4 as uuidV4 } from "uuid";
 import AuthHandler from "../Auth/AuthHandler";
 
@@ -210,7 +215,10 @@ class ChallengeHandler {
   }
 
   checkForWrRun() {
-    if (this.records.wr.score === this.artifact.Score && this.records.wr.name === AuthHandler.username) {
+    if (
+      this.records.wr.score === this.artifact.Score &&
+      this.records.wr.name === AuthHandler.username
+    ) {
       this.WrRun = true;
     }
     this.notifyWrListeners();

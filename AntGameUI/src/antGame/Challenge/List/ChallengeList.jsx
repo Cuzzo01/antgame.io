@@ -19,7 +19,12 @@ const ChallengeList = () => {
       let list = [];
       challengeResponse.challenges.forEach(challenge => {
         list.push(
-          <ListItem key={challenge.id} name={challenge.name} records={records[challenge.id]} id={challenge.id} />
+          <ListItem
+            key={challenge.id}
+            name={challenge.name}
+            records={records[challenge.id]}
+            id={challenge.id}
+          />
         );
       });
       setMenuList(list);

@@ -15,7 +15,9 @@ const ChallengeModal = props => {
 
   return (
     <Modal show={props.show} onHide={() => props.closeModal()} backdrop="static" keyboard={false}>
-      <Modal.Header className={styles.header}>Results: {props.challengeHandler?.config.name}</Modal.Header>
+      <Modal.Header className={styles.header}>
+        Results: {props.challengeHandler?.config.name}
+      </Modal.Header>
       <Modal.Body className={styles.body}>
         <div className={styles.runInfo}>
           {isWrRun ? <h4 className={styles.newWR}>New World Record!</h4> : null}

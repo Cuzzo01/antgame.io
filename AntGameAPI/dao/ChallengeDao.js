@@ -49,7 +49,10 @@ const getRecordsByChallengeList = async challengeIDList => {
 
   const collection = await getCollection("configs");
   const result = await collection
-    .find({ _id: { $in: challengeObjectIDList } }, { projection: { _id: 1, records: { $slice: 1 }, record: 1 } })
+    .find(
+      { _id: { $in: challengeObjectIDList } },
+      { projection: { _id: 1, records: { $slice: 1 }, record: 1 } }
+    )
     .toArray();
   let records = {};
   result.forEach(challenge => {

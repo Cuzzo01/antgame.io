@@ -24,7 +24,12 @@ const RegistrationPage = props => {
   }
 
   const onSubmit = data => {
-    registerAccount(data.username, data.password, data.email, localStorage.getItem("client-id")).then(result => {
+    registerAccount(
+      data.username,
+      data.password,
+      data.email,
+      localStorage.getItem("client-id")
+    ).then(result => {
       if (result === "usernameTaken")
         setError("username", {
           type: "manual",
@@ -52,10 +57,16 @@ const RegistrationPage = props => {
             {...register("username", { required: true, minLength: "5", maxLength: "20" })}
             autoComplete="username"
           />
-          {errors.username?.type === "manual" && <ErrorMessage>{errors.username.message}</ErrorMessage>}
+          {errors.username?.type === "manual" && (
+            <ErrorMessage>{errors.username.message}</ErrorMessage>
+          )}
           {errors.username?.type === "required" && <ErrorMessage>Required</ErrorMessage>}
-          {errors.username?.type === "minLength" && <ErrorMessage>Must be at least 5 characters</ErrorMessage>}
-          {errors.username?.type === "maxLength" && <ErrorMessage>Cannot be over 20 characters</ErrorMessage>}
+          {errors.username?.type === "minLength" && (
+            <ErrorMessage>Must be at least 5 characters</ErrorMessage>
+          )}
+          {errors.username?.type === "maxLength" && (
+            <ErrorMessage>Cannot be over 20 characters</ErrorMessage>
+          )}
         </div>
         <div className={styles.inputField}>
           <label htmlFor="password">Password</label>
@@ -66,8 +77,12 @@ const RegistrationPage = props => {
             autoComplete="new-password"
           />
           {errors.password?.type === "required" && <ErrorMessage>Required</ErrorMessage>}
-          {errors.password?.type === "minLength" && <ErrorMessage>Must be at least 8 characters</ErrorMessage>}
-          {errors.password?.type === "maxLength" && <ErrorMessage>Cannot be over 100 characters</ErrorMessage>}
+          {errors.password?.type === "minLength" && (
+            <ErrorMessage>Must be at least 8 characters</ErrorMessage>
+          )}
+          {errors.password?.type === "maxLength" && (
+            <ErrorMessage>Cannot be over 100 characters</ErrorMessage>
+          )}
         </div>
         <div className={styles.inputField}>
           <label htmlFor="confirmPassword">Confirm Password</label>
@@ -83,7 +98,9 @@ const RegistrationPage = props => {
             autoComplete="new-password"
           />
           {errors.confirmPassword?.type === "required" && <ErrorMessage>Required</ErrorMessage>}
-          {errors.confirmPassword?.type === "passwordMatch" && <ErrorMessage>Passwords must match</ErrorMessage>}
+          {errors.confirmPassword?.type === "passwordMatch" && (
+            <ErrorMessage>Passwords must match</ErrorMessage>
+          )}
         </div>
         <div className={styles.inputField}>
           <label htmlFor="email">

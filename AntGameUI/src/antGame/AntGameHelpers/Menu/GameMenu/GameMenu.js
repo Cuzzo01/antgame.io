@@ -16,10 +16,17 @@ export default function GameMenu(props) {
   });
 
   if (props.mapClear)
-    sandBoxButtons.push(<UploadMapButton key="upload" styles={styles.button} loadMapHandler={props.loadMapHandler} />);
+    sandBoxButtons.push(
+      <UploadMapButton key="upload" styles={styles.button} loadMapHandler={props.loadMapHandler} />
+    );
   else
     sandBoxButtons.push(
-      <SettingButton key="save" handler={props.saveMapHandler} disabled={props.playState} text="Save" />
+      <SettingButton
+        key="save"
+        handler={props.saveMapHandler}
+        disabled={props.playState}
+        text="Save"
+      />
     );
 
   return (
@@ -37,9 +44,19 @@ export default function GameMenu(props) {
         handler={props.resetHandler}
         disabled={props.playState}
       />
-      <SettingButton key="clear" text="Clear" handler={props.clearMapHandler} disabled={props.playState} />
+      <SettingButton
+        key="clear"
+        text="Clear"
+        handler={props.clearMapHandler}
+        disabled={props.playState}
+      />
       {ChallengeHandler.records.pr ? (
-        <SettingButton key="PR" text="Load PR" handler={props.loadPRHandler} disabled={props.playState} />
+        <SettingButton
+          key="PR"
+          text="Load PR"
+          handler={props.loadPRHandler}
+          disabled={props.playState}
+        />
       ) : null}
       {gameMode.mode === "challenge" ? null : sandBoxButtons}
     </div>
@@ -48,7 +65,12 @@ export default function GameMenu(props) {
 
 const SettingButton = props => {
   return (
-    <button className={props.className} disabled={props.disabled} style={styles.button} onClick={() => props.handler()}>
+    <button
+      className={props.className}
+      disabled={props.disabled}
+      style={styles.button}
+      onClick={() => props.handler()}
+    >
       {props.text}
     </button>
   );

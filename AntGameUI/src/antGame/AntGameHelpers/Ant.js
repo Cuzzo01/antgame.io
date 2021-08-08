@@ -216,7 +216,8 @@ export class Ant {
   }
 
   stayOnCourse() {
-    if (Math.random() < 0.3) this.angle += toRad((Math.random() * 2 - 1) * StayOnCourseWanderAmount);
+    if (Math.random() < 0.3)
+      this.angle += toRad((Math.random() * 2 - 1) * StayOnCourseWanderAmount);
   }
 
   turnLeft() {
@@ -279,7 +280,8 @@ export class Ant {
     if (pos[0] > 0 && pos[1] > 0) {
       if (pos[0] < MapBounds[0] && pos[1] < MapBounds[1]) {
         let newCell = this.mapHandler.getCell(pos);
-        const wallToDirtOrWall = this.currentCell === WallValue && (newCell === WallValue || newCell === FoodValue);
+        const wallToDirtOrWall =
+          this.currentCell === WallValue && (newCell === WallValue || newCell === FoodValue);
         // Maybe just check this conditionally on sandbox mode??
         const foodToFoodOrDirt = false;
         // this.currentCell === FoodValue &&

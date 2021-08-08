@@ -11,7 +11,9 @@ const RunsList = props => {
       let list = [];
       for (let i = 0; i < runs.length; i++) {
         const run = runs[i];
-        list.push(<RunsListElement theme={i % 2 === 0 ? styles.even : styles.odd} run={run} key={run._id} />);
+        list.push(
+          <RunsListElement theme={i % 2 === 0 ? styles.even : styles.odd} run={run} key={run._id} />
+        );
       }
       setRunsList(list);
     });

@@ -70,15 +70,21 @@ const OptionsMenu = props => {
           <MenuHeader>Save image of...</MenuHeader>
           <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("trail"))}>Trails</MenuRow>
           <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("map"))}>Map</MenuRow>
-          <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("map&trail"))}>Both</MenuRow>
+          <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("map&trail"))}>
+            Both
+          </MenuRow>
           {!IsChallengeMode ? (
             <div>
               <MenuHeader>Maps</MenuHeader>
-              <MenuRow onClick={getMenuCallback(() => props.loadSampleMapHandler())}>Load sample</MenuRow>
+              <MenuRow onClick={getMenuCallback(() => props.loadSampleMapHandler())}>
+                Load sample
+              </MenuRow>
             </div>
           ) : null}
           <MenuHeader styles={{ fontSize: "0.8em" }}>Feedback & Map Submissions:</MenuHeader>
-          <MenuRow onClick={getMenuCallback(() => (window.location = "mailto:feedback@antgame.io"))}>
+          <MenuRow
+            onClick={getMenuCallback(() => (window.location = "mailto:feedback@antgame.io"))}
+          >
             feedback@antgame.io
           </MenuRow>
         </div>
@@ -139,7 +145,12 @@ const MenuRow = props => {
 
 const Button = props => {
   return (
-    <button ref={props.reference} disabled={props.disabled} onClick={props.onClick} className={styles.button}>
+    <button
+      ref={props.reference}
+      disabled={props.disabled}
+      onClick={props.onClick}
+      className={styles.button}
+    >
       {props.children}
     </button>
   );

@@ -68,7 +68,11 @@ const ConfigDetails = props => {
             />
           </div>
           <div className={styles.recordsSection}>
-            <ExpandList title={"Records"} itemsToList={getRecordsList(details.records)} emptyMessage={"No Records"} />
+            <ExpandList
+              title={"Records"}
+              itemsToList={getRecordsList(details.records)}
+              emptyMessage={"No Records"}
+            />
           </div>
         </div>
       ) : null}

@@ -21,7 +21,16 @@ const getConfigListFromDB = async () => {
   const result = await collection
     .find(
       {},
-      { projection: { name: 1, seconds: 1, active: 1, record: { $first: "$records" }, order: 1, homeLimit: 1 } }
+      {
+        projection: {
+          name: 1,
+          seconds: 1,
+          active: 1,
+          record: { $first: "$records" },
+          order: 1,
+          homeLimit: 1,
+        },
+      }
     )
     .sort({ order: 1 })
     .toArray();
@@ -34,7 +43,18 @@ const getConfigDetailsByID = async id => {
   const collection = await getCollection("configs");
   const result = await collection.findOne(
     { _id: configObjectID },
-    { projection: { mapPath: 1, seconds: 1, homeLimit: 1, name: 1, order: 1, seconds: 1, records: 1, active: 1 } }
+    {
+      projection: {
+        mapPath: 1,
+        seconds: 1,
+        homeLimit: 1,
+        name: 1,
+        order: 1,
+        seconds: 1,
+        records: 1,
+        active: 1,
+      },
+    }
   );
   return result;
 };

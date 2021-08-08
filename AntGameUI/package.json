@@ -29,7 +29,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prettier": "prettier --write . --print-width 120 --arrow-parens avoid",
+    "prettier": "prettier --write . --print-width 100 --arrow-parens avoid",
     "eslint": "eslint src --max-warnings=0"
   },
   "eslintConfig": {

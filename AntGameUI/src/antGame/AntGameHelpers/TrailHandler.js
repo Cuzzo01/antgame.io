@@ -1,7 +1,10 @@
 import { Config } from "../config";
 
 const TrailMapOverSampleRate = 3;
-const MapBounds = [Config.MapBounds[0] * TrailMapOverSampleRate, Config.MapBounds[1] * TrailMapOverSampleRate];
+const MapBounds = [
+  Config.MapBounds[0] * TrailMapOverSampleRate,
+  Config.MapBounds[1] * TrailMapOverSampleRate,
+];
 const BorderWeight = Config.borderWeight;
 
 export class TrailHandler {
@@ -138,7 +141,8 @@ export class TrailHandler {
   }
 
   mapXYInBounds(mapXY) {
-    if (mapXY[0] >= 0 && mapXY[1] >= 0) if (mapXY[0] < MapBounds[0] && mapXY[1] < MapBounds[1]) return true;
+    if (mapXY[0] >= 0 && mapXY[1] >= 0)
+      if (mapXY[0] < MapBounds[0] && mapXY[1] < MapBounds[1]) return true;
     return false;
   }
 }

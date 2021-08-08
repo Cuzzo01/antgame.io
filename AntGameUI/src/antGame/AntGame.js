@@ -66,8 +66,14 @@ export default class AntGame extends React.Component {
       homeOnMap: 0,
     };
 
-    this.homeTrailHandler = new TrailHandler(Brushes.find(brush => brush.value === HomeValue).color, this.mapHandler);
-    this.foodTrailHandler = new TrailHandler(Brushes.find(brush => brush.value === FoodValue).color, this.mapHandler);
+    this.homeTrailHandler = new TrailHandler(
+      Brushes.find(brush => brush.value === HomeValue).color,
+      this.mapHandler
+    );
+    this.foodTrailHandler = new TrailHandler(
+      Brushes.find(brush => brush.value === FoodValue).color,
+      this.mapHandler
+    );
   }
 
   componentDidMount() {
@@ -184,7 +190,8 @@ export default class AntGame extends React.Component {
     if (this.mapHandler.redrawMap) this.mapHandler.drawMap();
     else if (this.mapHandler.redrawFullMap) this.mapHandler.drawFullMap();
 
-    if (this.antHandler.redrawAnts) this.antHandler.drawAnts(this.antGraphic, this.antImage, this.antFoodImage);
+    if (this.antHandler.redrawAnts)
+      this.antHandler.drawAnts(this.antGraphic, this.antImage, this.antFoodImage);
 
     p5.image(this.backgroundGraphic, 0, 0);
     p5.image(this.homeTrailGraphic, 0, 0);
@@ -288,7 +295,8 @@ export default class AntGame extends React.Component {
           this.foodTrailHandler.decayTrail();
           this.homeTrailHandler.decayTrail();
         }
-        if (this.state.timerActive && this.updateCount % ticksPerSecond === 0) this.timerHandler.tickTime();
+        if (this.state.timerActive && this.updateCount % ticksPerSecond === 0)
+          this.timerHandler.tickTime();
       }, updateRate);
     } else {
       clearInterval(this.challengeSnapshotInterval);

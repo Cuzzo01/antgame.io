@@ -21,7 +21,15 @@ const Leaderboard = props => {
       let table = [];
       let count = 1;
       res.leaderboard.forEach(data => {
-        table.push(<LeaderboardRow key={data.id} rank={count} name={data.username} pb={data.pb} age={data.age} />);
+        table.push(
+          <LeaderboardRow
+            key={data.id}
+            rank={count}
+            name={data.username}
+            pb={data.pb}
+            age={data.age}
+          />
+        );
         count++;
       });
       setRunData(table);
