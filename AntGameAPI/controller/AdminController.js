@@ -1,26 +1,41 @@
 const {
-  getUsersLoggedIn,
+  getUserLoginCount,
   getConfigListFromDB,
   getConfigDetailsByID,
   updateConfigByID,
   addNewConfig,
   getRecentRuns,
   getUserDetailsByID,
+  getNewAccountCount,
 } = require("../dao/AdminDao");
 
 async function getStats(req, res) {
   let response = {
     uniqueUserStats: {},
+    newAccountStats: {},
   };
 
   let loginStatPromises = [];
-  loginStatPromises.push(getUsersLoggedIn(24));
-  loginStatPromises.push(getUsersLoggedIn(72));
-  loginStatPromises.push(getUsersLoggedIn(168));
+  loginStatPromises.push(getUserLoginCount(24));
+  loginStatPromises.push(getUserLoginCount(168));
+  loginStatPromises.push(getUserLoginCount(720));
+
+  let newAccountStatPromises = [];
+  newAccountStatPromises.push(getNewAccountCount(24));
+  newAccountStatPromises.push(getNewAccountCount(168));
+  newAccountStatPromises.push(getNewAccountCount(720));
 
   await Promise.all(loginStatPromises).then(values => {
     values.forEach(result => {
-      response.uniqueUserStats[result.hours] = result.users;
+      const label = getLabelFromResult(result);
+      response.uniqueUserStats[label] = result.users;
+    });
+  });
+
+  await Promise.all(newAccountStatPromises).then(values => {
+    values.forEach(result => {
+      let label = getLabelFromResult(result);
+      response.newAccountStats[label] = result.newAccounts;
     });
   });
 
@@ -169,6 +184,14 @@ async function getRuns(req, res) {
 const send400 = (res, message) => {
   res.status(400);
   res.send(message);
+};
+
+const getLabelFromResult = result => {
+  let label = "";
+  if (result.hours === 24) label = "24Hs";
+  else if (result.hours === 168) label = "7Ds";
+  else if (result.hours === 720) label = "30Ds";
+  return label;
 };
 
 module.exports = {

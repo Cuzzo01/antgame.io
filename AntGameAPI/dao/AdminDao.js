@@ -6,7 +6,7 @@ const getCollection = async collection => {
   return await connection.db("challenges").collection(collection);
 };
 
-const getUsersLoggedIn = async hoursBack => {
+const getUserLoginCount = async hoursBack => {
   const collection = await getCollection("users");
   const result = await collection
     .find({
@@ -14,6 +14,16 @@ const getUsersLoggedIn = async hoursBack => {
     })
     .count();
   return { hours: hoursBack, users: result };
+};
+
+const getNewAccountCount = async hoursBack => {
+  const collection = await getCollection("users");
+  const result = await collection
+    .find({
+      "registrationData.date": { $gt: new Date(Date.now() - hoursBack * 60 * 60 * 1000) },
+    })
+    .count();
+  return { hours: hoursBack, newAccounts: result };
 };
 
 const getConfigListFromDB = async () => {
@@ -107,13 +117,14 @@ const getRecentRuns = async count => {
 };
 
 module.exports = {
-  getUsersLoggedIn,
+  getUserLoginCount,
   getConfigListFromDB,
   getConfigDetailsByID,
   updateConfigByID,
   addNewConfig,
   getRecentRuns,
   getUserDetailsByID,
+  getNewAccountCount,
 };
 
 const TryParseObjectID = (stringID, name) => {

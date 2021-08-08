@@ -31,9 +31,7 @@ export default function MenuBar(props) {
       <div className={IsChallenge ? styles.challengeMiddle : styles.middle}>
         {IsChallenge ? (
           <div className={styles.challengeName}>
-            <h3>
-              {ChallengeHandler.config.name}
-            </h3>
+            <h3>{ChallengeHandler.config.name}</h3>
           </div>
         ) : null}
         <div className={IsChallenge ? styles.timerChallenge : styles.timer}>

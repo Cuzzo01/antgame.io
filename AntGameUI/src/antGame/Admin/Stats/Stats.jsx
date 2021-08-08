@@ -23,10 +23,19 @@ const StatsDisplay = props => {
   const stats = props.data;
 
   let uniqueUserStats = [];
-  for (const [hours, users] of Object.entries(stats.uniqueUserStats)) {
+  for (const [label, count] of Object.entries(stats.uniqueUserStats)) {
     uniqueUserStats.push(
-      <div key={hours} className={styles.rightJustify}>
-        {hours}hr:<span className={styles.bold}>{users}</span>
+      <div key={label} className={styles.rightJustify}>
+        {label}:<span className={styles.bold}>{count}</span>
+      </div>
+    );
+  }
+
+  let newAccountStats = [];
+  for (const [label, count] of Object.entries(stats.newAccountStats)) {
+    newAccountStats.push(
+      <div key={label} className={styles.rightJustify}>
+        {label}:<span className={styles.bold}>{count}</span>
       </div>
     );
   }
@@ -34,8 +43,12 @@ const StatsDisplay = props => {
   return (
     <div>
       <div className={styles.uniqueUserStats}>
-        <h6>Unique Users</h6>
+        <h6>Unique User Logins</h6>
         {uniqueUserStats}
+      </div>
+      <div className={styles.uniqueUserStats}>
+        <h6>New Accounts</h6>
+        {newAccountStats}
       </div>
     </div>
   );
