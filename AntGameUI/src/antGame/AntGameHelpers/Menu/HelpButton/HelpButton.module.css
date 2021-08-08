@@ -1,0 +1,20 @@
+.container {
+  display: inline-block;
+}
+
+.button:hover {
+  fill: #424949;
+  cursor: pointer;
+}
+
+.bold {
+  font-family: "Courier Prime Bold";
+}
+
+.header {
+  font-size: 1.2em;
+}
+
+.center {
+  margin: 0 auto;
+}

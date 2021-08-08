@@ -8,6 +8,7 @@ import { GameModeContext } from "../../GameModeContext";
 import { useContext } from "react";
 import styles from "./MenuBar.module.css";
 import ChallengeHandler from "../../Challenge/ChallengeHandler";
+import HelpButton from "./HelpButton/HelpButton";
 
 export default function MenuBar(props) {
   const gameMode = useContext(GameModeContext);
@@ -53,15 +54,19 @@ export default function MenuBar(props) {
           brushSizeHandler={props.brushSizeHandler}
           brushTypeHandler={props.brushTypeHandler}
         />
-        <OptionsMenu
-          playState={props.playState}
-          mapNameDisabled={IsChallenge}
-          blockDrawHandler={props.blockDrawHandler}
-          saveImageHandler={props.saveImageHandler}
-          loadSampleMapHandler={props.loadSampleMapHandler}
-          setMapNameHandler={props.setMapNameHandler}
-          getMapName={props.getMapName}
-        />
+        {IsChallenge ? (
+          <HelpButton />
+        ) : (
+          <OptionsMenu
+            playState={props.playState}
+            mapNameDisabled={IsChallenge}
+            blockDrawHandler={props.blockDrawHandler}
+            saveImageHandler={props.saveImageHandler}
+            loadSampleMapHandler={props.loadSampleMapHandler}
+            setMapNameHandler={props.setMapNameHandler}
+            getMapName={props.getMapName}
+          />
+        )}
       </div>
     </div>
   );
