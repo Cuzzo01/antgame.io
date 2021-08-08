@@ -55,7 +55,7 @@ export default function MenuBar(props) {
           brushTypeHandler={props.brushTypeHandler}
         />
         {IsChallenge ? (
-          <HelpButton />
+          <HelpButton blockDrawHandler={props.blockDrawHandler} />
         ) : (
           <OptionsMenu
             playState={props.playState}

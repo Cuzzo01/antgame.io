@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { InfoIcon } from "../../Icons";
 import styles from "./HelpButton.module.css";
 
 const HelpButton = props => {
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    props.blockDrawHandler(showModal);
+  }, [showModal]);
 
   return (
     <span>
