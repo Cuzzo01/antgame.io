@@ -47,7 +47,7 @@ export const postConfig = async newConfig => {
 };
 
 export const getRecentRuns = async count => {
-  return axios.get("/admin/runs", { params: { by: "recent", count: count } }).then(res => {
+  return axios.get("/api/admin/runs", { params: { by: "recent", count: count } }).then(res => {
     return res.data;
   });
 };
