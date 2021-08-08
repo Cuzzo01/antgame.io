@@ -14,6 +14,11 @@ const { RejectNotAdmin } = require("./auth/AuthHelpers");
 
 const UnauthenticatedRoutes = ["/auth/login", "/auth/anonToken", "/auth/register"];
 
+const send400 = (res, message) => {
+  res.status(400);
+  res.send(message);
+};
+
 app.use(bodyParser.json({ extended: true }));
 app.use(
   jwt({ secret: TokenHandler.secret, algorithms: ["HS256"] }).unless({
@@ -23,12 +28,10 @@ app.use(
     if (!err) {
       next();
     } else if (err.code === "credentials_required") {
-      res.status(401);
-      res.send("JWT required");
+      send400(res, "JWT required");
       return;
     } else if (err.code === "invalid_token") {
-      res.status(401);
-      res.send("Invalid JWT");
+      send400(res, "Invalid JWT");
       return;
     }
     console.log("Unknown AuthError:", err);
@@ -40,7 +43,9 @@ app.use(
 app.get("/admin/stats", RejectNotAdmin, _adminController.getStats);
 app.get("/admin/configList", RejectNotAdmin, _adminController.getConfigList);
 app.get("/admin/config/:id", RejectNotAdmin, _adminController.getConfigDetails);
-app.put("/admin/config/:id", RejectNotAdmin, _adminController.putConfig);
+app.get("/admin/user/:id", RejectNotAdmin, _adminController.getUserDetails);
+app.get("/admin/runs", RejectNotAdmin, _adminController.getRuns);
+app.patch("/admin/config/:id", RejectNotAdmin, _adminController.patchConfig);
 app.post("/admin/config", RejectNotAdmin, _adminController.postConfig);
 
 app.post("/auth/login", _authController.verifyLogin);

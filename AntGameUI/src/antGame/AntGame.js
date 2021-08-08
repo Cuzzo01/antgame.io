@@ -54,7 +54,6 @@ export default class AntGame extends React.Component {
     }
 
     this.state = {
-      loading: true,
       emptyMap: emptyMap,
       shouldResizeCanvas: false,
       playState: false,
@@ -148,7 +147,7 @@ export default class AntGame extends React.Component {
   setupAndInitialize = p5 => {
     this.windowSize = [p5.windowWidth, p5.windowHeight];
     canvasW = p5.windowWidth - this.parentRef.offsetLeft * 2;
-    canvasH = p5.windowHeight - this.parentRef.offsetTop * 1.5;
+    canvasH = p5.windowHeight - this.parentRef.offsetTop * 1.25;
 
     if (Debug) console.log(`canvasSize: ${[canvasW, canvasH]}`);
 
@@ -193,8 +192,6 @@ export default class AntGame extends React.Component {
     p5.image(this.mapGraphic, 0, 0);
     p5.image(this.antGraphic, 0, 0);
     p5.image(this.staticElements, 0, 0);
-
-    if (this.state.loading) this.setState({ loading: false });
   };
 
   handleImageSave = p5 => {

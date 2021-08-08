@@ -52,6 +52,7 @@
 
 .container {
   text-align: right;
+  display: inline-block;
 }
 
 .title p {

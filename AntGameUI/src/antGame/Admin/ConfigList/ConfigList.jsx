@@ -20,15 +20,6 @@ const ConfigList = props => {
     });
   }, []);
 
-  const generateConfigList = configs => {
-    let list = [];
-    for (let i = 0; i < configs.length; i++) {
-      const config = configs[i];
-      list.push(<ConfigListElement theme={i % 2 === 0 ? styles.even : styles.odd} key={config._id} config={config} />);
-    }
-    return list;
-  };
-
   return (
     <div>
       <Link to="/admin/newConfig" className={`${styles.newConfigButton} ${styles.bold}`}>
@@ -41,6 +32,15 @@ const ConfigList = props => {
       {}
     </div>
   );
+};
+
+const generateConfigList = configs => {
+  let list = [];
+  for (let i = 0; i < configs.length; i++) {
+    const config = configs[i];
+    list.push(<ConfigListElement theme={i % 2 === 0 ? styles.even : styles.odd} key={config._id} config={config} />);
+  }
+  return list;
 };
 
 const ConfigListElement = props => {

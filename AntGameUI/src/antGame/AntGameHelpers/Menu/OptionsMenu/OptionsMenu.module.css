@@ -3,6 +3,10 @@
   padding: 0.25em 0.5em;
 }
 
+.container {
+  display: inline;
+}
+
 .menu {
   position: absolute;
   right: 2vw;
@@ -14,30 +18,30 @@
   text-align: left;
 }
 
-.menu-row a {
+.menuRow a {
   display: block;
   text-decoration: none;
   color: black;
   padding-left: 0.2em;
 }
 
-.menu-row {
+.menuRow {
   border-radius: 0.5em;
   margin: 0.15em;
   padding-left: 0.25em;
 }
 
-.menu-row:hover {
+.menuRow:hover {
   background: lightgray;
 }
 
-.menu-header {
+.menuHeader {
   padding: 0 0.25em;
   color: grey;
   border-bottom: 1px grey solid;
 }
 
-.menu-name-input-row {
+.menuNameInputRow {
   margin: 0.5em 0.2em;
 }
 .menu-name-input-row input {

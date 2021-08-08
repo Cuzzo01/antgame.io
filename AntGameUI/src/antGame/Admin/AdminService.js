@@ -18,9 +18,15 @@ export const getConfigDetails = async id => {
   });
 };
 
-export const putConfigDetails = async (id, fields) => {
+export const getUserDetails = async id => {
+  return axios.get(`/api/admin/user/${id}`).then(res => {
+    return res.data;
+  });
+};
+
+export const patchConfigDetails = async (id, fields) => {
   return axios
-    .put(`/api/admin/config/${id}`, fields)
+    .patch(`/api/admin/config/${id}`, fields)
     .then(res => {
       return true;
     })
@@ -38,4 +44,10 @@ export const postConfig = async newConfig => {
     .catch(e => {
       return false;
     });
+};
+
+export const getRecentRuns = async count => {
+  return axios.get("/admin/runs", { params: { by: "recent", count: count } }).then(res => {
+    return res.data;
+  });
 };

@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useContext } from "react";
 import { MenuIcon } from "../../Icons";
 import { GameModeContext } from "../../../GameModeContext";
 
-import "./OptionsMenu.css";
+import styles from "./OptionsMenu.module.css";
 
 const OptionsMenu = props => {
   const [showMenu, setShowMenu] = useState();
@@ -46,7 +46,7 @@ const OptionsMenu = props => {
   };
 
   return (
-    <div style={props.styles}>
+    <div className={styles.container}>
       <Button
         reference={menuButtonRef}
         disabled={props.playState}
@@ -59,7 +59,7 @@ const OptionsMenu = props => {
       </Button>
 
       {showMenu ? (
-        <div className="menu" ref={menuRef}>
+        <div className={styles.menu} ref={menuRef}>
           <MenuHeader>Map Name</MenuHeader>
           <MapNameRow
             currentName={props.getMapName()}
@@ -101,10 +101,10 @@ const MapNameRow = props => {
 
   useEffect(() => {
     if (props.mapName) setMapName(props.mapName);
-  }, [props]);
+  }, [props.mapName]);
 
   return (
-    <div className="menu-name-input-row">
+    <div className={styles.menuNameInputRow}>
       <input
         maxLength="15"
         value={mapName}
@@ -122,7 +122,7 @@ const MapNameRow = props => {
 
 const MenuRow = props => {
   return (
-    <div className="menu-row">
+    <div className={styles.menuRow}>
       <a
         href="/"
         onClick={e => {
@@ -139,7 +139,7 @@ const MenuRow = props => {
 
 const Button = props => {
   return (
-    <button ref={props.reference} disabled={props.disabled} onClick={props.onClick} className="button">
+    <button ref={props.reference} disabled={props.disabled} onClick={props.onClick} className={styles.button}>
       {props.children}
     </button>
   );
@@ -147,7 +147,7 @@ const Button = props => {
 
 const MenuHeader = props => {
   return (
-    <div className="menu-header" style={props.styles}>
+    <div className={styles.menuHeader} style={props.styles}>
       {props.children}
     </div>
   );

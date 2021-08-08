@@ -2,7 +2,9 @@ import { Route, Switch, useParams } from "react-router-dom";
 import ConfigDetails from "./ConfigDetails/ConfigDetails";
 import ConfigList from "./ConfigList/ConfigList";
 import CreateConfig from "./CreateConfig/CreateConfig";
+import RunsList from "./Runs/RunsList";
 import Stats from "./Stats/Stats";
+import UserDetails from "./UserDetails/UserDetails";
 
 const AdminRouter = () => {
   return (
@@ -10,8 +12,13 @@ const AdminRouter = () => {
       <Route path="/admin/stats">
         <Stats />
       </Route>
-      <Route path="/admin/runs">Runs</Route>
+      <Route path="/admin/runs">
+        <RunsList />
+      </Route>
       <Route path="/admin/users">Users</Route>
+      <Route path="/admin/user/:id">
+        <UserDetailsPage />
+      </Route>
       <Route path="/admin/configs">
         <ConfigList />
       </Route>
@@ -29,4 +36,9 @@ export default AdminRouter;
 const ConfigDetailsPage = () => {
   let { id } = useParams();
   return <ConfigDetails id={id} />;
+};
+
+const UserDetailsPage = () => {
+  let { id } = useParams();
+  return <UserDetails id={id} />;
 };

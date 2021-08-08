@@ -6,6 +6,8 @@ import FoodTracker from "./FoodTracker/FoodTracker";
 import HomeTracker from "./HomeTracker/HomeTracker";
 import { GameModeContext } from "../../GameModeContext";
 import { useContext } from "react";
+import styles from "./MenuBar.module.css";
+import ChallengeHandler from "../../Challenge/ChallengeHandler";
 
 export default function MenuBar(props) {
   const gameMode = useContext(GameModeContext);
@@ -14,7 +16,7 @@ export default function MenuBar(props) {
   const brushDisabled = props.playState || unresetChallengeMode;
 
   return (
-    <div style={styles.container}>
+    <div className={styles.container}>
       <GameMenu
         playState={props.playState}
         playButtonHandler={props.playButtonHandler}
@@ -25,19 +27,22 @@ export default function MenuBar(props) {
         saveMapHandler={props.saveMapHandler}
         loadPRHandler={props.loadPRHandler}
       />
-      <div style={styles.middle}>
-        <Timer time={props.time} active={props.timerActive} styles={styles.timer} />
-        <FoodTracker
-          active={props.timerActive}
-          styles={styles.foodTracker}
-          foodReturned={props.foodReturned}
-          IsChallenge={IsChallenge}
-        />
+      <div className={IsChallenge ? styles.challengeMiddle : styles.middle}>
+        {IsChallenge ? (
+          <div className={styles.challengeName}>
+            <h3 className={props.timerActive ? styles.active : ""}>{ChallengeHandler.config.name}</h3>
+          </div>
+        ) : null}
+        <div className={IsChallenge ? styles.timerChallenge : styles.timer}>
+          <Timer time={props.time} active={props.timerActive} />
+        </div>
+        <div className={styles.foodTracker}>
+          <FoodTracker active={props.timerActive} foodReturned={props.foodReturned} IsChallenge={IsChallenge} />
+        </div>
       </div>
-      <div style={{ textAlign: "right" }}>
+      <div className={styles.alignRight}>
         {IsChallenge ? <HomeTracker homeOnMap={props.homeOnMap} greyedOut={brushDisabled} /> : null}
         <BrushMenu
-          styles={{ display: "inline-block" }}
           disableButtons={brushDisabled}
           brushSizeHandler={props.brushSizeHandler}
           brushTypeHandler={props.brushTypeHandler}
@@ -50,30 +55,8 @@ export default function MenuBar(props) {
           loadSampleMapHandler={props.loadSampleMapHandler}
           setMapNameHandler={props.setMapNameHandler}
           getMapName={props.getMapName}
-          styles={{ display: "inline" }}
         />
       </div>
     </div>
   );
 }
-
-const styles = {
-  foodTracker: {
-    textAlign: "left",
-    paddingLeft: "0.4em",
-  },
-  timer: {
-    textAlign: "right",
-    paddingRight: "0.5em",
-    borderRight: "3px solid black",
-  },
-  middle: {
-    display: "grid",
-    gridTemplateColumns: "50% 50%",
-  },
-  container: {
-    display: "grid",
-    gridTemplateColumns: "19em auto 19em",
-    alignItems: "center",
-  },
-};

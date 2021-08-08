@@ -39,6 +39,28 @@ const getConfigDetailsByID = async id => {
   return result;
 };
 
+const getUserDetailsByID = async id => {
+  const userObjectID = TryParseObjectID(id, "UserID");
+
+  const collection = await getCollection("users");
+  const result = await collection.findOne(
+    { _id: userObjectID },
+    {
+      projection: {
+        username: 1,
+        loginRecords: 1,
+        admin: 1,
+        showOnLeaderboard: 1,
+        banned: 1,
+        registrationData: 1,
+        email: 1,
+      },
+    }
+  );
+
+  return result;
+};
+
 const updateConfigByID = async (id, updateObject) => {
   const configObjectID = TryParseObjectID(id, "ChallengeID");
 
@@ -54,7 +76,25 @@ const addNewConfig = async config => {
   return result.ops[0];
 };
 
-module.exports = { getUsersLoggedIn, getConfigListFromDB, getConfigDetailsByID, updateConfigByID, addNewConfig };
+const getRecentRuns = async count => {
+  const collection = await getCollection("runs");
+  const result = await collection
+    .find({}, { projection: { submissionTime: 1, name: 1, userID: 1, score: 1, challengeID: 1 } })
+    .sort({ submissionTime: -1 })
+    .limit(count)
+    .toArray();
+  return result;
+};
+
+module.exports = {
+  getUsersLoggedIn,
+  getConfigListFromDB,
+  getConfigDetailsByID,
+  updateConfigByID,
+  addNewConfig,
+  getRecentRuns,
+  getUserDetailsByID,
+};
 
 const TryParseObjectID = (stringID, name) => {
   try {

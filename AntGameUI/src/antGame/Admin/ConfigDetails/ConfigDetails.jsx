@@ -1,18 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getConfigDetails, putConfigDetails } from "../AdminService";
+import { getConfigDetails, patchConfigDetails } from "../AdminService";
 import styles from "./ConfigDetails.module.css";
 import OrderSection from "./OrderSection";
 import RecordsList from "./RecordsList";
-
-const MapDomain = "antgame.nyc3.cdn.digitaloceanspaces.com";
 
 const ConfigDetails = props => {
   const [details, setDetails] = useState(false);
 
   useEffect(() => {
     populateDetails(props.id);
-  }, [props]);
+  }, [props.id]);
 
   const populateDetails = id => {
     getConfigDetails(id).then(details => {
@@ -21,13 +19,13 @@ const ConfigDetails = props => {
   };
 
   const setActive = state => {
-    putConfigDetails(props.id, { active: state }).then(result => {
+    patchConfigDetails(props.id, { active: state }).then(result => {
       populateDetails(props.id);
     });
   };
 
   const setOrder = newOrder => {
-    putConfigDetails(props.id, { order: newOrder }).then(result => {
+    patchConfigDetails(props.id, { order: newOrder }).then(result => {
       populateDetails(props.id);
     });
   };

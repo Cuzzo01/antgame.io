@@ -1,0 +1,52 @@
+.foodTracker {
+  text-align: left;
+  padding-left: 0.5em;
+}
+
+.timer {
+  text-align: right;
+  padding-right: 0.5em;
+  border-right: 3px solid black;
+}
+
+.timerChallenge {
+  text-align: center;
+  padding: 0 0.5em;
+  border-right: 3px solid black;
+  border-left: 3px solid black;
+}
+
+.middle {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+.challengeMiddle {
+  display: grid;
+  grid-template-columns: 44% 11% 44%;
+  align-items: center;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 19em auto 19em;
+  align-items: center;
+}
+
+.alignRight {
+  text-align: right;
+}
+
+.challengeName {
+  text-align: right;
+  font-family: "Courier Prime Bold";
+  padding-right: 0.5em;
+}
+
+.challengeMiddle h3 {
+  margin: 0;
+}
+
+.active {
+  color: green;
+}

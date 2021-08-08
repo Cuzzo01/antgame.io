@@ -1,0 +1,33 @@
+.container {
+  margin: 0 0.5em;
+}
+
+.runRow {
+  background-color: grey;
+  margin: 0.5em 0;
+  padding: 0.5em;
+  display: grid;
+  grid-template-columns: 30% auto 15% 17%;
+  border: 2px solid black;
+  border-radius: 1em;
+}
+
+.userID {
+  text-align: left;
+}
+
+.challengeName {
+  text-align: right;
+}
+
+.score {
+  text-align: right;
+}
+
+.even {
+  background-color: #ccd1d1;
+}
+
+.odd {
+  background-color: #b2babb;
+}

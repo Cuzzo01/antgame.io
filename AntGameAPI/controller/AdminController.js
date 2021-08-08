@@ -4,6 +4,8 @@ const {
   getConfigDetailsByID,
   updateConfigByID,
   addNewConfig,
+  getRecentRuns,
+  getUserDetailsByID,
 } = require("../dao/AdminDao");
 
 async function getStats(req, res) {
@@ -59,7 +61,19 @@ async function getConfigDetails(req, res) {
   }
 }
 
-async function putConfig(req, res) {
+async function getUserDetails(req, res) {
+  try {
+    const id = req.params.id;
+    let result = await getUserDetailsByID(id);
+
+    res.send(result);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+}
+
+async function patchConfig(req, res) {
   try {
     const request = req.body;
 
@@ -127,4 +141,34 @@ async function postConfig(req, res) {
   }
 }
 
-module.exports = { getStats, getConfigList, getConfigDetails, putConfig, postConfig };
+async function getRuns(req, res) {
+  try {
+    const query = req.query;
+    if (query.by === "recent") {
+      const count = query.count;
+      if (!count) {
+        send400(res, "Must specify count");
+        return;
+      } else if (count > 50) {
+        send400(res, "Count too high");
+        return;
+      }
+      const results = await getRecentRuns(parseInt(count));
+      res.send(results);
+    } else {
+      send400(res, "Unknown by value");
+      return;
+    }
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+    return;
+  }
+}
+
+const send400 = (res, message) => {
+  res.status(400);
+  res.send(message);
+};
+
+module.exports = { getStats, getConfigList, getConfigDetails, patchConfig, postConfig, getRuns, getUserDetails };

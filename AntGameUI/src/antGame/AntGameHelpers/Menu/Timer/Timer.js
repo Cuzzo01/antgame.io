@@ -19,13 +19,11 @@ const TimeCounter = props => {
   };
 
   return (
-    <div style={props.styles}>
+    <div>
       {hasLink && !props.active ? (
-        <div>
-          <a className={styles.link} href={linkPath} alt="Test" onClick={e => handleLinkClick(e)}>
-            <Timer active={props.active} time={props.time} />
-          </a>
-        </div>
+        <a className={styles.link} href={linkPath} alt="Test" onClick={e => handleLinkClick(e)}>
+          <Timer active={props.active} time={props.time} />
+        </a>
       ) : (
         <Timer active={props.active} time={props.time} />
       )}

@@ -1,0 +1,15 @@
+.divButton {
+  background-color: #b2babb;
+  padding-left: 1.5em;
+  border-radius: 0.5em;
+}
+
+.divButton:hover {
+  cursor: pointer;
+  background-color: grey;
+}
+
+.listElement {
+  margin: 1em 0;
+  padding-left: 1.5em;
+}
