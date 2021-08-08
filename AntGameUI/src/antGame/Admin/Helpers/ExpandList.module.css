@@ -1,6 +1,6 @@
 .divButton {
   background-color: #b2babb;
-  padding-left: 1.5em;
+  padding: 0.5em 1.5em;
   border-radius: 0.5em;
 }
 
@@ -9,7 +9,17 @@
   background-color: grey;
 }
 
+.list {
+  padding-bottom: 0.5em;
+}
+
 .listElement {
   margin: 1em 0;
-  padding-left: 1.5em;
+  padding: 0 1.5em;
+}
+
+.container {
+  margin: 1em;
+  background-color: #ccd1d1;
+  border-radius: 0.5em;
 }

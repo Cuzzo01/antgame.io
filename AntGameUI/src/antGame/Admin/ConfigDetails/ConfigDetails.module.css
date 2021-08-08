@@ -28,10 +28,6 @@
   border-radius: 0.5em;
 }
 
-.recordsSection {
-  margin: 1em 3em;
-}
-
 .toggleButton:hover {
   cursor: pointer;
   background-color: grey;
@@ -46,14 +42,6 @@
 .divButton:hover {
   cursor: pointer;
   background-color: grey;
-}
-
-.recordsList {
-  margin-top: 1em;
-}
-
-.recordEntry {
-  margin: 1em 0;
 }
 
 .divSection {

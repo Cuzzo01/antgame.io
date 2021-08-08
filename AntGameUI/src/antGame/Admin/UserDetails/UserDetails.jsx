@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getUserDetails } from "../AdminService";
 import ExpandList from "../Helpers/ExpandList";
+import { GetTimeString } from "../Helpers/FunctionHelpers";
 import styles from "./UserDetails.module.css";
 
 const UserDetails = props => {
@@ -28,16 +29,16 @@ const UserDetails = props => {
             <h5>Registration Data</h5>
             {details.registrationData ? (
               <div>
-                <p>IP: {details.registrationData.IP}</p>
+                <p>IP: {getFormattedIpString(details.registrationData.IP)}</p>
                 <p>ClientID: {details.registrationData.clientID}</p>
-                <p>Date: {getTimeString(details.registrationData.date)}</p>
+                <p>Date: {GetTimeString(details.registrationData.date)}</p>
                 <p>Email: {details.email ? details.email : "No Email"}</p>
               </div>
             ) : (
               "No Details"
             )}
           </div>
-          <div className={styles.divSection}>
+          <div>
             <ExpandList
               title={"Logins"}
               itemsToList={getLoginsList(details.loginRecords)}
@@ -62,8 +63,8 @@ const getLoginsList = loginRecords => {
 
     listToReturn.push(
       <div className={styles.loginListItem}>
-        <span title={"Local Time"}>({getTimeString(record.time)})</span>
-        <span className={styles.alignRight}>{record.IP}</span>
+        <span title={"Local Time"}>({GetTimeString(record.time)})</span>
+        <span className={styles.alignRight}>{getFormattedIpString(record.IP)}</span>
         <span className={styles.alignRight}>{record.clientID}</span>
       </div>
     );
@@ -71,7 +72,12 @@ const getLoginsList = loginRecords => {
   return listToReturn;
 };
 
-const getTimeString = dateTimeString => {
-  const date = new Date(dateTimeString);
-  return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+const getFormattedIpString = IP => {
+  // IPv4
+  if (IP.length <= 15) return IP;
+  // IPv6
+  else {
+    const IPArray = IP.split(":");
+    return IPArray.slice(0, 4).join(":");
+  }
 };

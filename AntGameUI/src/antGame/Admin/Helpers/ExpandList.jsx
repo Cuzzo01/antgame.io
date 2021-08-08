@@ -11,18 +11,18 @@ const ExpandList = props => {
 
   useEffect(() => {
     let list = [];
-    if (props.itemsToList) {
+    if (props.itemsToList && props.itemsToList.length !== 0) {
       for (let i = 0; i < props.itemsToList.length; i++) {
         list.push(ExpandListElement(props.itemsToList[i]));
       }
     } else {
-      list = props.emptyMessage;
+      list = ExpandListElement(props.emptyMessage);
     }
     setList(list);
-  }, [props.itemsToList]);
+  }, [props.itemsToList, props.emptyMessage]);
 
   return (
-    <div>
+    <div className={styles.container}>
       <div className={styles.divButton} onClick={() => setExpanded(!expanded)}>
         {props.title}
       </div>

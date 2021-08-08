@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getConfigDetails, patchConfigDetails } from "../AdminService";
+import ExpandList from "../Helpers/ExpandList";
+import { GetTimeString } from "../Helpers/FunctionHelpers";
 import styles from "./ConfigDetails.module.css";
 import OrderSection from "./OrderSection";
-import RecordsList from "./RecordsList";
 
 const ConfigDetails = props => {
   const [details, setDetails] = useState(false);
@@ -67,7 +68,7 @@ const ConfigDetails = props => {
             />
           </div>
           <div className={styles.recordsSection}>
-            <RecordsList records={details.records} />
+            <ExpandList title={"Records"} itemsToList={getRecordsList(details.records)} emptyMessage={"No Records"} />
           </div>
         </div>
       ) : null}
@@ -75,3 +76,21 @@ const ConfigDetails = props => {
   );
 };
 export default ConfigDetails;
+
+const getRecordsList = records => {
+  let listToReturn = [];
+
+  for (let i = 0; i < records.length; i++) {
+    const record = records[i];
+
+    listToReturn.push(
+      <div>
+        <span title="Local time">({GetTimeString(record.time)})</span>
+        &nbsp;
+        <Link to={`/admin/run/${record.runID}`}>{record.score}</Link> -{" "}
+        <Link to={`/admin/user/${record.userID}`}>{record.username}</Link>
+      </div>
+    );
+  }
+  return listToReturn;
+};
