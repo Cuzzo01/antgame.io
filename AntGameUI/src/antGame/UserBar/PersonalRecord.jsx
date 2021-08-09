@@ -9,12 +9,13 @@ const PersonalRecord = props => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let listenerID = 0;
     const challengeID = window.location.pathname.substr(-24);
     if (AuthHandler.isAnon) {
       setContent("Login to track PRs");
       setLoading(false);
-    } else
-      ChallengeHandler.addRecordListener(records => {
+    } else {
+      listenerID = ChallengeHandler.addRecordListener(records => {
         if (!records.pr) setContent("No Personal Record");
         else
           setContent(
@@ -29,6 +30,11 @@ const PersonalRecord = props => {
           );
         if (loading) setLoading(false);
       });
+    }
+
+    return () => {
+      ChallengeHandler.removeRecordListener(listenerID);
+    };
   }, [loading]);
 
   return <div>{loading ? null : content}</div>;

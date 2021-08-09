@@ -13,7 +13,7 @@ export default function GameMenu(props) {
 
   useEffect(() => {
     if (flashReset === true) setTimeout(() => setFlashReset(false), 900);
-  });
+  }, [flashReset]);
 
   if (props.mapClear)
     sandBoxButtons.push(

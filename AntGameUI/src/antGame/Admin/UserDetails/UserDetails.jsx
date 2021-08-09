@@ -9,7 +9,6 @@ const UserDetails = props => {
 
   useEffect(() => {
     getUserDetails(props.id).then(result => {
-      console.log(result);
       setDetails(result);
     });
   }, [props.id]);

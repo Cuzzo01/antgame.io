@@ -9,9 +9,13 @@ const ChallengeModal = props => {
   const [records, setRecords] = useState();
 
   useEffect(() => {
-    ChallengeHandler.addWrListener(isWrRun => setIsWrRun(isWrRun));
-    ChallengeHandler.addRecordListener(records => setRecords(records));
-  });
+    const wrID = ChallengeHandler.addWrListener(isWrRun => setIsWrRun(isWrRun));
+    const recordID = ChallengeHandler.addRecordListener(records => setRecords(records));
+    return () => {
+      ChallengeHandler.removeWrListener(wrID);
+      ChallengeHandler.removeRecordListener(recordID);
+    };
+  }, []);
 
   return (
     <Modal show={props.show} onHide={() => props.closeModal()} backdrop="static" keyboard={false}>

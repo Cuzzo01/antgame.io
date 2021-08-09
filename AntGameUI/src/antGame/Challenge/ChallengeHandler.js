@@ -74,12 +74,24 @@ class ChallengeHandler {
   }
 
   addRecordListener(callback) {
+    const index = this.recordListeners.length;
     this.recordListeners.push(callback);
     if (this.records) callback(this.records);
+    return index;
   }
 
   addWrListener(callback) {
+    const index = this.wrListeners.length;
     this.wrListeners.push(callback);
+    return index;
+  }
+
+  removeRecordListener(id) {
+    this.recordListeners[id] = null;
+  }
+
+  removeWrListener(id) {
+    this.wrListeners[id] = null;
   }
 
   async getConfig() {
@@ -225,11 +237,17 @@ class ChallengeHandler {
   }
 
   notifyWrListeners() {
-    if (this.wrListeners) this.wrListeners.forEach(callback => callback(this.WrRun));
+    if (this.wrListeners)
+      this.wrListeners.forEach(callback => {
+        if (callback) callback(this.WrRun);
+      });
   }
 
   notifyRecordsListeners() {
-    if (this.recordListeners) this.recordListeners.forEach(callback => callback(this.records));
+    if (this.recordListeners)
+      this.recordListeners.forEach(callback => {
+        if (callback) callback(this.records);
+      });
   }
 }
 
