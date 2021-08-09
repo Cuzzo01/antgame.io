@@ -48,7 +48,7 @@ const Leaderboard = props => {
           <Link to="/challenge">Menu</Link>
         </div>
         <div className={styles.navRight}>
-          <Link to={`/challenge/${challengeID}`}>Play Challenge</Link>
+          <a href={`/challenge/${challengeID}`}>Play Challenge</a>
         </div>
       </div>
       {runTable}

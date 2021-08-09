@@ -16,7 +16,7 @@ const WorldRecord = props => {
     return () => {
       ChallengeHandler.removeRecordListener(listenerID);
     };
-  }, []);
+  }, [loading]);
 
   return <div>{loading ? null : <span className={styles.bold}>{record}</span>}</div>;
 };

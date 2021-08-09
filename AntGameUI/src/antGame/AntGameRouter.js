@@ -80,7 +80,6 @@ const ChallengeMap = () => {
   return (
     <GameModeContext.Provider value={{ mode: "challenge", challengeID: id }}>
       <AntGame />
-      {/* < */}
     </GameModeContext.Provider>
   );
 };

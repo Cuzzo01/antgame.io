@@ -155,8 +155,6 @@ export default class AntGame extends React.Component {
     canvasW = p5.windowWidth - this.parentRef.offsetLeft * 2;
     canvasH = p5.windowHeight - this.parentRef.offsetTop * 1.25;
 
-    if (Debug) console.log(`canvasSize: ${[canvasW, canvasH]}`);
-
     this.mapHandler.setupMap(canvasW, canvasH);
     this.mapHandler.redrawMap = true;
 

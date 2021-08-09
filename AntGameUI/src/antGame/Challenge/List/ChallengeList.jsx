@@ -52,7 +52,9 @@ const ListItem = props => {
       className={styles.listItem}
       onClick={e => {
         e.preventDefault();
-        history.push(`/challenge/${props.id}`);
+        // This still breaks aspect ratio of game
+        // history.push(`/challenge/${props.id}`);
+        window.location = `/challenge/${props.id}`;
       }}
     >
       <div className={styles.title}>
