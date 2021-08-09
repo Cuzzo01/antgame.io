@@ -63,7 +63,8 @@ const SnapshotLengthMatchesConfigTime = runData => {
   const numOfSnapshots = runData.Snapshots.length;
   const configTime = runData.GameConfig.Time;
   const minNumOfSnapshots = configTime / 5;
-  return numOfSnapshots >= minNumOfSnapshots;
+  const marginOfError = Math.round(minNumOfSnapshots * 0.01)
+  return numOfSnapshots >= minNumOfSnapshots - marginOfError;
 };
 
 const ScoreMatchesFinalSnapshot = runData => {
