@@ -84,17 +84,19 @@ export default ConfigDetails;
 const getRecordsList = records => {
   let listToReturn = [];
 
-  for (let i = 0; i < records.length; i++) {
-    const record = records[i];
+  if (records) {
+    for (let i = 0; i < records.length; i++) {
+      const record = records[i];
 
-    listToReturn.push(
-      <div>
-        <span title="Local time">({GetTimeString(record.time)})</span>
-        &nbsp;
-        <Link to={`/admin/run/${record.runID}`}>{record.score}</Link> -{" "}
-        <Link to={`/admin/user/${record.userID}`}>{record.username}</Link>
-      </div>
-    );
+      listToReturn.push(
+        <div>
+          <span title="Local time">({GetTimeString(record.time)})</span>
+          &nbsp;
+          <Link to={`/admin/run/${record.runID}`}>{record.score}</Link> -{" "}
+          <Link to={`/admin/user/${record.userID}`}>{record.username}</Link>
+        </div>
+      );
+    }
   }
   return listToReturn;
 };
