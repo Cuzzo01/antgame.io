@@ -30,10 +30,6 @@ export class AntsHandler {
       graphics.translate(-AntOffset, -AntOffset);
       const antImage = ant.hasFood ? antFoodImage : antNoFoodImage;
       graphics.image(antImage, 0, 0, AntSize, AntSize);
-
-      if (Config.debug) {
-        drawDebugAnt(graphics, ant);
-      }
     });
 
     this.redrawAnts = false;
@@ -83,20 +79,3 @@ export class AntsHandler {
     this.redrawAnts = true;
   }
 }
-
-const drawDebugAnt = (graphics, ant) => {
-  graphics.resetMatrix();
-
-  const front = ant.front;
-  const ahead = ant.ahead;
-  const left = ant.left;
-  const right = ant.right;
-  graphics.fill("red");
-  graphics.circle(front[0], front[1], 5);
-  graphics.fill("blue");
-  graphics.circle(ahead[0], ahead[1], 5);
-  graphics.fill("orange");
-  graphics.circle(left[0], left[1], 5);
-  graphics.fill("purple");
-  graphics.circle(right[0], right[1], 5);
-};

@@ -1,29 +1,28 @@
-import { useHistory } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import styles from "./Timer.module.css";
 
 const TimeCounter = props => {
-  const path = window.location.pathname;
-  const shouldLinkHome = path.startsWith("/map");
-  const shouldLinkToChallengePage = path.startsWith("/challenge/");
-  const history = useHistory();
+  const [hasLink, setHasLink] = useState(false);
+  const [linkPath, setLinkPath] = useState("");
 
-  const hasLink = shouldLinkHome || shouldLinkToChallengePage;
-  let linkPath = "";
+  useEffect(() => {
+    const path = window.location.pathname;
+    const shouldLinkToSandbox = path.startsWith("/map");
+    const shouldLinkToChallengePage = path.startsWith("/challenge/");
 
-  if (shouldLinkHome) linkPath = "/";
-  else if (shouldLinkToChallengePage) linkPath = "/challenge";
-  const handleLinkClick = e => {
-    e.preventDefault();
-    if (shouldLinkHome) history.push("/");
-    if (shouldLinkToChallengePage) history.push("/challenge");
-  };
+    setHasLink(shouldLinkToSandbox || shouldLinkToChallengePage);
+
+    if (shouldLinkToSandbox) setLinkPath("/sandbox");
+    else if (shouldLinkToChallengePage) setLinkPath("/challenge");
+  }, []);
 
   return (
     <div>
       {hasLink && !props.active ? (
-        <a className={styles.link} href={linkPath} alt="Test" onClick={e => handleLinkClick(e)}>
+        <Link className={styles.link} to={linkPath}>
           <Timer active={props.active} time={props.time} />
-        </a>
+        </Link>
       ) : (
         <Timer active={props.active} time={props.time} />
       )}

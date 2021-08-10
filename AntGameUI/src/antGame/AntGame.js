@@ -19,7 +19,6 @@ import ChallengeModal from "./AntGameHelpers/Challenge/ChallengeModal";
 let canvasW, canvasH;
 let lastMousePos = [-1, -1];
 
-const Debug = Config.debug;
 const TrailDecayRate = Config.TrailDecayInterval;
 const Brushes = Config.brushes;
 const BrushSizeDefault = Config.brushSizes[Config.brushSizeDefaultIndex].value;
@@ -135,17 +134,6 @@ export default class AntGame extends React.Component {
     p5.createCanvas(canvasW, canvasH).parent(parentRef);
 
     if (!this.mapHandler.mapSetup) this.mapHandler.generateMap();
-    if (Debug) {
-      console.log(`mapSize: ${this.mapHandler.mapSize}`);
-      StaticElements.grid(
-        this.staticElements,
-        this.mapHandler.mapSize,
-        this.mapHandler.pixelDensity,
-        155,
-        canvasW,
-        canvasH
-      );
-    }
 
     p5.frameRate(FrameRate);
   };
@@ -158,8 +146,6 @@ export default class AntGame extends React.Component {
     this.mapHandler.setupMap(canvasW, canvasH);
     this.mapHandler.redrawMap = true;
 
-    this.backgroundGraphic = p5.createGraphics(canvasW, canvasH);
-    this.staticElements = p5.createGraphics(canvasW, canvasH);
     this.antGraphic = p5.createGraphics(canvasW, canvasH);
     this.mapGraphic = p5.createGraphics(canvasW, canvasH);
     this.homeTrailGraphic = p5.createGraphics(canvasW, canvasH);
@@ -168,9 +154,6 @@ export default class AntGame extends React.Component {
     this.homeTrailHandler.graphic = this.homeTrailGraphic;
     this.foodTrailHandler.graphic = this.foodTrailGraphic;
     this.mapHandler.graphic = this.mapGraphic;
-
-    StaticElements.border(this.staticElements, BorderWeight, 0);
-    StaticElements.background(this.backgroundGraphic);
   };
 
   draw = p5 => {
@@ -191,12 +174,12 @@ export default class AntGame extends React.Component {
     if (this.antHandler.redrawAnts)
       this.antHandler.drawAnts(this.antGraphic, this.antImage, this.antFoodImage);
 
-    p5.image(this.backgroundGraphic, 0, 0);
+    StaticElements.background(p5);
     p5.image(this.homeTrailGraphic, 0, 0);
     p5.image(this.foodTrailGraphic, 0, 0);
     p5.image(this.mapGraphic, 0, 0);
     p5.image(this.antGraphic, 0, 0);
-    p5.image(this.staticElements, 0, 0);
+    StaticElements.border(p5, BorderWeight, 0);
   };
 
   handleImageSave = p5 => {
@@ -223,16 +206,6 @@ export default class AntGame extends React.Component {
     this.setupAndInitialize(p5);
     p5.resizeCanvas(canvasW, canvasH);
     this.setState({ shouldResizeCanvas: false });
-    if (Debug) {
-      StaticElements.grid(
-        this.staticElements,
-        this.mapHandler.mapSize,
-        this.mapHandler.pixelDensity,
-        155,
-        canvasW,
-        canvasH
-      );
-    }
   };
 
   handleMousePressed = p5 => {

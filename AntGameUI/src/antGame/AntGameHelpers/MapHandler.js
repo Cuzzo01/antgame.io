@@ -85,8 +85,8 @@ export class MapHandler {
   }
 
   setupMap(canvasWidth, canvasHeight) {
-    const drawableWidth = canvasWidth - BorderWeight;
-    const drawableHeight = canvasHeight - BorderWeight;
+    const drawableWidth = canvasWidth - BorderWeight * 2;
+    const drawableHeight = canvasHeight - BorderWeight * 2;
     this.pixelDensity = [
       (drawableWidth / MapBounds[0]).toFixed(2),
       (drawableHeight / MapBounds[1]).toFixed(2),
