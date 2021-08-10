@@ -23,7 +23,7 @@
 
 .challengeMiddle {
   display: grid;
-  grid-template-columns: 44% 8vw auto;
+  grid-template-columns: 44% 7vw auto;
   align-items: center;
 }
 
