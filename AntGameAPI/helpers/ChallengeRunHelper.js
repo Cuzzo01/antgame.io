@@ -16,8 +16,9 @@ const VerifyArtifact = async (runData, clientID) => {
   if (!isFinite(runData.Score)) return "score is infinity";
 
   if (!ScoreMatchesFinalSnapshot(runData)) return "non matching reported and final snapshot score";
-  const snapshotLengthResult = SnapshotLengthMatchesConfigTime(runData)
-  if (!snapshotLengthResult) return `not enough snapshots for config time : ${snapshotLengthResult}`;
+  const snapshotLengthResult = SnapshotLengthMatchesConfigTime(runData);
+  if (!snapshotLengthResult)
+    return `not enough snapshots for config time : ${snapshotLengthResult}`;
   if (!SystemElapsedTimeLongerThanConfigTime(runData))
     return "system elapsed time shorter than config time";
   const expectedConfig = await getChallengeByChallengeId(runData.challengeID);
@@ -64,10 +65,10 @@ const SnapshotLengthMatchesConfigTime = runData => {
   const numOfSnapshots = runData.Snapshots.length;
   const configTime = runData.GameConfig.Time;
   const minNumOfSnapshots = configTime / 5;
-  const marginOfError = Math.ceil(minNumOfSnapshots * 0.01)
+  const marginOfError = Math.ceil(minNumOfSnapshots * 0.01);
   if (numOfSnapshots >= minNumOfSnapshots - marginOfError)
     return `(${numOfSnapshots}, ${minNumOfSnapshots - marginOfError})`;
-  return true
+  return true;
 };
 
 const ScoreMatchesFinalSnapshot = runData => {

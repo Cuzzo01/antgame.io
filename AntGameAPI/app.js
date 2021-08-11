@@ -9,6 +9,7 @@ const _challengeController = require("./controller/ChallengeController");
 const _authController = require("./auth/AuthController");
 const _userController = require("./controller/UserController");
 const _adminController = require("./controller/AdminController");
+const _flagController = require("./controller/FlagController");
 const TokenHandler = require("./auth/WebTokenHandler");
 const { RejectNotAdmin } = require("./auth/AuthHelpers");
 
@@ -47,6 +48,8 @@ app.get("/admin/user/:id", RejectNotAdmin, _adminController.getUserDetails);
 app.get("/admin/runs", RejectNotAdmin, _adminController.getRuns);
 app.patch("/admin/config/:id", RejectNotAdmin, _adminController.patchConfig);
 app.post("/admin/config", RejectNotAdmin, _adminController.postConfig);
+
+app.get("/flag/:name", _flagController.getFlag);
 
 app.post("/auth/login", _authController.verifyLogin);
 app.post("/auth/anonToken", _authController.getAnonymousToken);
