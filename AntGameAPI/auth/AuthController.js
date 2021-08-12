@@ -1,7 +1,7 @@
 const AuthDao = require("./AuthDao");
 const TokenHandler = require("./WebTokenHandler");
 const PasswordHandler = require("./PasswordHandler");
-const { RejectNotAdmin } = require("./AuthHelpers");
+const FlagHandler = require("../handler/FlagHandler");
 const { RegistrationDataSatisfiesCriteria } = require("../helpers/RegistrationHelper");
 
 async function verifyLogin(req, res) {
@@ -88,6 +88,11 @@ async function registerUser(req, res) {
 
     if (!RegistrationDataSatisfiesCriteria(username, password, clientID)) {
       res.sendStatus(400);
+      return;
+    }
+
+    if ((await FlagHandler.getFlagValue("allowAccountRegistration")) === false) {
+      res.sendStatus(406);
       return;
     }
 

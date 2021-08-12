@@ -3,6 +3,8 @@ import styles from "./RegistrationPage.module.css";
 import { registerAccount } from "../AuthService";
 import AuthHandler from "../AuthHandler";
 import { useHistory, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { getFlag } from "../../Helpers/FlagService";
 
 const RegistrationPage = props => {
   const {
@@ -14,6 +16,12 @@ const RegistrationPage = props => {
   } = useForm();
   const history = useHistory();
   const location = useLocation();
+
+  useEffect(() => {
+    getFlag("allowAccountRegistration").then(value => {
+      if (value !== true) history.replace("/");
+    });
+  }, []);
 
   function redirectOut() {
     const search = location.search;

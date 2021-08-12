@@ -13,7 +13,7 @@ const _flagController = require("./controller/FlagController");
 const TokenHandler = require("./auth/WebTokenHandler");
 const { RejectNotAdmin } = require("./auth/AuthHelpers");
 
-const UnauthenticatedRoutes = ["/auth/login", "/auth/anonToken", "/auth/register"];
+const UnauthenticatedRoutes = ["/auth/login", "/auth/anonToken", "/auth/register", /\/flag*/];
 
 const send400 = (res, message) => {
   res.status(400);

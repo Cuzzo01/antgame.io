@@ -1,15 +1,12 @@
 import { Link } from "react-router-dom";
 import styles from "./HomePage.module.css";
-import backgroundImage from "./background.webp"
+import backgroundImage from "./background.webp";
 
 const HomePage = () => {
   return (
     <div className={styles.container}>
       <div className={styles.title}>
-        <img
-          src={backgroundImage}
-          alt="Antgame.io"
-        />
+        <img src={backgroundImage} alt="Antgame.io" />
       </div>
       <div className={styles.links}>
         <Link to="/challenge" className={`${styles.link}`}>

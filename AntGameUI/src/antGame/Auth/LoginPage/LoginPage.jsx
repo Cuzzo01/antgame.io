@@ -1,14 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./LoginPage.module.css";
 import AuthHandler from "../AuthHandler";
 import { Link, useHistory, useLocation } from "react-router-dom";
+import { getFlag } from "../../Helpers/FlagService";
 
 const LoginPage = props => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [formState, setFormState] = useState("");
+  const [allowRegistration, setAllowRegistration] = useState(false);
   const history = useHistory();
   const location = useLocation();
+
+  useEffect(() => {
+    getFlag("allowAccountRegistration")
+      .then(value => {
+        setAllowRegistration(value);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }, []);
 
   function redirectOut() {
     const search = location.search;
@@ -89,9 +101,11 @@ const LoginPage = props => {
         </div>
       </form>
       <br />
-      <div className={styles.registerLink}>
-        <Link to="/register">Create Account</Link>
-      </div>
+      {allowRegistration ? (
+        <div className={styles.registerLink}>
+          <Link to="/register">Create Account</Link>
+        </div>
+      ) : null}
     </div>
   );
 };
