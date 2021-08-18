@@ -63,7 +63,7 @@
 }
 
 .ownRow {
-  border-bottom: 0.2em dashed grey;
-  border-top: 0.2em dashed grey;
+  border-bottom: 0.2em dashed;
+  border-top: 0.2em dashed;
   border-color: black;
 }
