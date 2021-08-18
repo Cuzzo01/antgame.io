@@ -1,6 +1,5 @@
 const { ObjectID } = require("mongodb");
 const Connection = require("./MongoClient");
-const { getGeneralizedTimeString } = require("../helpers/TimeHelper");
 
 const getCollection = async collection => {
   const connection = await Connection.open();
@@ -144,18 +143,7 @@ const getLeaderboardByChallengeId = async id => {
     ])
     .toArray();
 
-  let leaderboard = [];
-  result.forEach(challenge => {
-    const recordTime = challenge.runID.getTimestamp();
-    const timeDelta = new Date() - recordTime;
-    const timeString = getGeneralizedTimeString(timeDelta);
-    leaderboard.push({
-      username: challenge.username,
-      pb: challenge.pb,
-      age: timeString,
-    });
-  });
-  return leaderboard;
+  return result;
 };
 
 const getLeaderboardRankByScore = async (challengeID, score) => {

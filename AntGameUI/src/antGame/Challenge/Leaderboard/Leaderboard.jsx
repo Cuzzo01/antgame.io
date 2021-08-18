@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getLeaderboard } from "../../Challenge/ChallengeService";
 import styles from "./Leaderboard.module.css";
+import AuthHandler from "../../Auth/AuthHandler";
 
 const Leaderboard = props => {
   const challengeID = useParams().id;
@@ -12,6 +13,8 @@ const Leaderboard = props => {
 
   useEffect(() => {
     getLeaderboard(challengeID).then(res => {
+      const currentUsername = AuthHandler.username;
+
       if (res === null) {
         setTitle("Error");
         setRunData(<h5>No records for this challenge</h5>);
@@ -19,18 +22,22 @@ const Leaderboard = props => {
         return;
       }
       let table = [];
-      let count = 1;
+      let lastRank = 0;
       res.leaderboard.forEach(data => {
+        if (data.rank !== lastRank + 1) {
+          table.push(<div className={styles.hr} />);
+        }
+        lastRank = data.rank;
         table.push(
           <LeaderboardRow
+            ownRow={data.username === currentUsername}
             key={data.id}
-            rank={count}
+            rank={data.rank}
             name={data.username}
             pb={data.pb}
             age={data.age}
           />
         );
-        count++;
       });
       setRunData(table);
       setTitle(res.name);
@@ -73,7 +80,10 @@ const LeaderboardRow = props => {
   }
 
   return (
-    <div className={`${styles.row} ${placeStyle}`} key={props.key}>
+    <div
+      className={`${styles.row} ${placeStyle} ${props.ownRow ? styles.ownRow : ""}`}
+      key={props.key}
+    >
       <span className={styles.rank}>#{props.rank}</span>
       <span>{props.name}</span>
       <span className={styles.right}>

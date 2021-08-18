@@ -21,7 +21,7 @@ const RegistrationPage = props => {
     getFlag("allowAccountRegistration").then(value => {
       if (value !== true) history.replace("/");
     });
-  }, []);
+  }, [history]);
 
   function redirectOut() {
     const search = location.search;

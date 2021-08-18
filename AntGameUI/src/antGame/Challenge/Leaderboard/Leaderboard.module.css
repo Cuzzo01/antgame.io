@@ -4,6 +4,13 @@
   font-family: "Courier Prime Bold";
 }
 
+.hr {
+  display: block;
+  background-color: black;
+  height: 0.1em;
+  margin: 1em 0.5em;
+}
+
 .title {
   text-align: center;
   padding-bottom: 1em;
@@ -53,4 +60,10 @@
 
 .third {
   background-color: #a77044;
+}
+
+.ownRow {
+  border-bottom: 0.2em dashed grey;
+  border-top: 0.2em dashed grey;
+  border-color: black;
 }

@@ -2,6 +2,7 @@ const { RejectIfAnon } = require("../auth/AuthHelpers");
 const ChallengeDao = require("../dao/ChallengeDao");
 const UserDao = require("../dao/UserDao");
 const { VerifyArtifact } = require("../helpers/ChallengeRunHelper");
+const { getGeneralizedTimeString } = require("../helpers/TimeHelper");
 
 async function postRun(req, res) {
   try {
@@ -199,6 +200,7 @@ async function getRecords(req, res) {
 
 async function getLeaderboard(req, res) {
   try {
+    const user = req.user;
     const challengeID = req.params.id;
     const leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID);
     const challenge = await ChallengeDao.getChallengeByChallengeId(challengeID);
@@ -209,9 +211,47 @@ async function getLeaderboard(req, res) {
       return;
     }
 
+    let leaderboardData = [];
+    let onLeaderboard = false;
+    for (let i = 0; i < leaderBoardEntries.length; i++) {
+      const entry = leaderBoardEntries[i];
+      const recordTime = entry.runID.getTimestamp();
+      const timeDelta = new Date() - recordTime;
+      const timeString = getGeneralizedTimeString(timeDelta);
+
+      if (entry._id == user.id) {
+        onLeaderboard = true;
+      }
+
+      leaderboardData.push({
+        rank: i + 1,
+        username: entry.username,
+        pb: entry.pb,
+        age: timeString,
+      });
+    }
+
+    if (!onLeaderboard) {
+      const pr = await UserDao.getChallengeDetailsByUser(user.id, challengeID);
+      if (pr) {
+        const rank = await UserDao.getLeaderboardRankByScore(challengeID, pr.pb);
+
+        const recordTime = pr.ID.getTimestamp();
+        const timeDelta = new Date() - recordTime;
+        const timeString = getGeneralizedTimeString(timeDelta);
+
+        leaderboardData.push({
+          rank: rank,
+          username: user.username,
+          pb: pr.pb,
+          age: timeString,
+        });
+      }
+    }
+
     const response = {
       name: challenge.name,
-      leaderboard: leaderBoardEntries,
+      leaderboard: leaderboardData,
     };
     res.send(response);
   } catch (e) {
