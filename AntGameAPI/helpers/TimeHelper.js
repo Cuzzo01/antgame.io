@@ -11,4 +11,11 @@ const getGeneralizedTimeString = milliseconds => {
   return `${Math.floor(weeks)}w`;
 };
 
-module.exports = { getGeneralizedTimeString };
+const getGeneralizedTimeStringFromObjectID = objectID => {
+  const recordTime = objectID.getTimestamp();
+  const timeDelta = new Date() - recordTime;
+  const timeString = getGeneralizedTimeString(timeDelta);
+  return timeString;
+};
+
+module.exports = { getGeneralizedTimeString, getGeneralizedTimeStringFromObjectID };

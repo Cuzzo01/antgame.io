@@ -169,6 +169,36 @@ const getLeaderboardRankByScore = async (challengeID, score) => {
   return 1;
 };
 
+const getPRByLeaderboardRank = async (challengeID, rank) => {
+  const challengeObjectID = TryParseObjectID(challengeID, "ChallengeID");
+
+  const collection = await getCollection("users");
+  const result = await collection
+    .aggregate([
+      { $unwind: "$challengeDetails" },
+      {
+        $match: {
+          "challengeDetails.ID": challengeObjectID,
+          showOnLeaderboard: true,
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          username: { $first: "$username" },
+          pb: { $first: "$challengeDetails.pb" },
+          runID: { $first: "$challengeDetails.pbRunID" },
+        },
+      },
+      { $sort: { pb: -1, runID: 1 } },
+      { $skip: rank - 1 },
+      { $limit: 1 },
+    ])
+    .toArray();
+
+  return result[0];
+};
+
 const TryParseObjectID = (stringID, name) => {
   try {
     return new ObjectID(stringID);
@@ -186,4 +216,5 @@ module.exports = {
   getPRRunIDByChallengeID,
   getLeaderboardByChallengeId,
   getLeaderboardRankByScore,
+  getPRByLeaderboardRank,
 };
