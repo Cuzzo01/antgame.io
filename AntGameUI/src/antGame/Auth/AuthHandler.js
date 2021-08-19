@@ -84,6 +84,7 @@ class AuthHandler {
         this.jwt = result;
         this.decodedToken = jwt_decode(this.jwt);
         localStorage.setItem("jwt", this.jwt);
+        localStorage.setItem("checkForMOTD", true);
 
         this.checkForAndSendUnsentArtifacts();
 
@@ -99,8 +100,13 @@ class AuthHandler {
     if (localStorage.getItem("artifactToSend")) {
       // TODO: Verify at least date (recent run) and clientID before sending
       // Saving user and checking that too wouldn't be a bad idea
-      await sendRunArtifact(JSON.parse(localStorage.getItem("artifactToSend")));
-      localStorage.removeItem("artifactToSend");
+      sendRunArtifact(JSON.parse(localStorage.getItem("artifactToSend")))
+        .then(() => {
+          localStorage.removeItem("artifactToSend");
+        })
+        .catch(e => {
+          if (e.response.status === 418) localStorage.removeItem("artifactToSend");
+        });
     }
   }
 

@@ -2,38 +2,43 @@ import styles from "./UserBar.module.css";
 import AuthHandler from "../Auth/AuthHandler";
 import PersonalRecord from "./PersonalRecord";
 import WorldRecord from "./WorldRecord";
+import { Link } from "react-router-dom";
 
 const UserBar = props => {
   return (
     <div className={styles.container}>
       <div className={styles.personalRecord}>{props.showRecords ? <PersonalRecord /> : null}</div>
-      <div className={styles.worldRecord}>{props.showRecords ? <WorldRecord /> : null}</div>
+      <div className={styles.worldRecord}>
+        {props.showRecords ? <WorldRecord /> : null}
+        {props.showLinkHome ? <Link to="/">Home</Link> : null}
+      </div>
+
       <div className={styles.username}>
-        {AuthHandler.isAnon ? (
+        {!AuthHandler.loggedIn || AuthHandler.isAnon ? (
           <div>
             Not logged in.{" "}
-            <a
+            <Link
               className={styles.loginLink}
-              href={`/login?redirect=${window.location.pathname}`}
+              to={`/login?redirect=${window.location.pathname}`}
               onClick={() => {
                 AuthHandler.logout();
               }}
             >
               Login
-            </a>
+            </Link>
           </div>
         ) : (
           <div>
             {AuthHandler.username}
-            <a
+            <Link
               className={styles.loginLink}
-              href={`/login`}
+              to="/home"
               onClick={() => {
                 AuthHandler.logout();
               }}
             >
               Logout
-            </a>
+            </Link>
           </div>
         )}
       </div>

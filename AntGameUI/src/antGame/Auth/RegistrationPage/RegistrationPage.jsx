@@ -18,9 +18,13 @@ const RegistrationPage = props => {
   const location = useLocation();
 
   useEffect(() => {
-    getFlag("allowAccountRegistration").then(value => {
-      if (value !== true) history.replace("/");
-    });
+    getFlag("allowAccountRegistration")
+      .then(value => {
+        if (value !== true) history.replace("/");
+      })
+      .catch(e => {
+        history.replace("/");
+      });
   }, [history]);
 
   function redirectOut() {

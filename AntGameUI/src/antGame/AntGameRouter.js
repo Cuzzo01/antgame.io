@@ -11,55 +11,60 @@ import ErrorPage from "./ErrorPage/ErrorPage";
 import RegistrationPage from "./Auth/RegistrationPage/RegistrationPage";
 import HomePage from "./HomePage/HomePage";
 import AdminHome from "./Admin/AdminHome";
+import MOTD from "./MOTD/Motd";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
 
 const AntGameRouter = () => {
   return (
-    <BrowserRouter>
-      <Switch>
-        <Route exact path="/error">
-          <ErrorPage />
-        </Route>
-        <Route exact path="/">
-          <HomePage />
-        </Route>
-        <Route path="/admin">
-          <AdminPath />
-          <UserBar />
-        </Route>
-        <Route path="/sandbox">
-          <GameModeContext.Provider value={"sandbox"}>
-            <AntGame mapToLoad={PreloadMapPath} />
-          </GameModeContext.Provider>
-        </Route>
-        <Route path="/login">
-          <LoginPage />
-        </Route>
-        <Route path="/register">
-          <RegistrationPage />
-        </Route>
-        <Route exact path="/challenge">
-          <ChallengeList />
-          <UserBar />
-        </Route>
-        <Route path="/challenge/leaderboard/:id">
-          <Leaderboard />
-          <UserBar />
-        </Route>
-        <Route exact path="/challenge/:id">
-          <ChallengeMap />
-          <UserBar showRecords={true} />
-        </Route>
-        <Route path="/map/:mapName">
-          <LoadMapFromParams />
-        </Route>
-        <Route path="/">
-          <Redirect to="/" />
-        </Route>
-      </Switch>
-    </BrowserRouter>
+    <div>
+      <BrowserRouter>
+        <Switch>
+          <Route exact path="/error">
+            <ErrorPage />
+          </Route>
+          <Route exact path="/">
+            <HomePage />
+          </Route>
+          <Route path="/admin">
+            <AdminPath />
+            <UserBar />
+          </Route>
+          <Route path="/sandbox">
+            <GameModeContext.Provider value={"sandbox"}>
+              <AntGame mapToLoad={PreloadMapPath} />
+            </GameModeContext.Provider>
+            <UserBar showLinkHome />
+          </Route>
+          <Route path="/login">
+            <LoginPage />
+          </Route>
+          <Route path="/register">
+            <RegistrationPage />
+          </Route>
+          <Route exact path="/challenge">
+            <MOTD />
+            <ChallengeList />
+            <UserBar showLinkHome />
+          </Route>
+          <Route path="/challenge/leaderboard/:id">
+            <Leaderboard />
+            <UserBar />
+          </Route>
+          <Route exact path="/challenge/:id">
+            <ChallengeMap />
+            <UserBar showRecords />
+          </Route>
+          <Route path="/map/:mapName">
+            <LoadMapFromParams />
+          </Route>
+          <Route path="/">
+            <Redirect to="/" />
+          </Route>
+        </Switch>
+      </BrowserRouter>
+    </div>
   );
 };
 
