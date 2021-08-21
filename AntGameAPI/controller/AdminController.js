@@ -8,6 +8,8 @@ const {
   getUserDetailsByID,
   getNewAccountCount,
   updateUserByID,
+  getRecentlyCreatedUsers,
+  getRecentlyLoggedInUsers,
 } = require("../dao/AdminDao");
 
 async function getStats(req, res) {
@@ -145,6 +147,42 @@ async function patchConfig(req, res) {
   }
 }
 
+async function getUsers(req, res) {
+  try {
+    const query = req.query;
+    if (query.by === "recentlyCreated") {
+      const count = query.count;
+      if (!count) {
+        send400(res, "Must specify count");
+        return;
+      } else if (count > 25) {
+        send400(res, "Count too high");
+        return;
+      }
+      const results = await getRecentlyCreatedUsers(parseInt(count));
+      res.send(results);
+    } else if (query.by === "recentlyLoggedIn") {
+      const count = query.count;
+      if (!count) {
+        send400(res, "Must specify count");
+        return;
+      } else if (count > 25) {
+        send400(res, "Count too high");
+        return;
+      }
+      const results = await getRecentlyLoggedInUsers(parseInt(count));
+      res.send(results);
+    } else {
+      send400(res, "Unknown by value");
+      return;
+    }
+  } catch (e) {
+    console.error(e);
+    res.sendStatus(500);
+    return;
+  }
+}
+
 async function getUserDetails(req, res) {
   try {
     const id = req.params.id;
@@ -228,6 +266,7 @@ module.exports = {
   getConfigDetails,
   postConfig,
   patchConfig,
+  getUsers,
   getUserDetails,
   patchUser,
   getRuns,
