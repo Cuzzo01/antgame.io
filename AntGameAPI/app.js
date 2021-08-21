@@ -47,11 +47,12 @@ app.use(
     res.send("Unauthorized");
   },
   async function (req, res, next) {
-    const userID = req.user?.id;
-    if (!userID) {
+    if (!req.user) {
       next();
       return;
     }
+
+    const userID = req.user?.id;
     const IsTokenValid = await TokenRevokedHandler.isTokenValid(userID);
     if (IsTokenValid === false) {
       res.sendStatus(401);
@@ -65,6 +66,7 @@ app.get("/admin/stats", RejectNotAdmin, _adminController.getStats);
 app.get("/admin/configList", RejectNotAdmin, _adminController.getConfigList);
 app.get("/admin/config/:id", RejectNotAdmin, _adminController.getConfigDetails);
 app.patch("/admin/config/:id", RejectNotAdmin, _adminController.patchConfig);
+// app.get("/admin/users", RejectNotAdmin, _adminController.getUsers)
 app.get("/admin/user/:id", RejectNotAdmin, _adminController.getUserDetails);
 app.patch("/admin/user/:id", RejectNotAdmin, _adminController.patchUser);
 app.get("/admin/runs", RejectNotAdmin, _adminController.getRuns);
