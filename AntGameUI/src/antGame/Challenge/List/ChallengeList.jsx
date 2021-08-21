@@ -59,7 +59,7 @@ const ListItem = props => {
     >
       <div className={styles.title}>
         <div>
-          <span className={styles.mapName}>{props.name}</span>
+          <span className={styles.bold}>{props.name}</span>
           <br />
           <LeaderboardLink id={props.id} />
         </div>
@@ -69,9 +69,18 @@ const ListItem = props => {
           <div />
         ) : (
           <div className={styles.pr}>
-            Personal Record
-            <br />
-            {props.records.pb ? props.records.pb : "No record"}
+            {props.records.pb ? (
+              <span>
+                Personal Record
+                <br />
+                {props.records.rank ? (
+                  <span className={styles.bold}>(#{props.records.rank})</span>
+                ) : null}{" "}
+                {props.records.pb}
+              </span>
+            ) : (
+              "No PR"
+            )}
           </div>
         )}
         <div className={styles.wr}>
