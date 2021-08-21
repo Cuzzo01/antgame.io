@@ -6,6 +6,7 @@ const getCollection = async collection => {
   return await connection.db("challenges").collection(collection);
 };
 
+//#region Stats
 const getUserLoginCount = async hoursBack => {
   const collection = await getCollection("users");
   const result = await collection
@@ -25,7 +26,9 @@ const getNewAccountCount = async hoursBack => {
     .count();
   return { hours: hoursBack, newAccounts: result };
 };
+//#endregion Stats
 
+//#region Configs
 const getConfigListFromDB = async () => {
   const collection = await getCollection("configs");
   const result = await collection
@@ -69,28 +72,6 @@ const getConfigDetailsByID = async id => {
   return result;
 };
 
-const getUserDetailsByID = async id => {
-  const userObjectID = TryParseObjectID(id, "UserID");
-
-  const collection = await getCollection("users");
-  const result = await collection.findOne(
-    { _id: userObjectID },
-    {
-      projection: {
-        username: 1,
-        loginRecords: 1,
-        admin: 1,
-        showOnLeaderboard: 1,
-        banned: 1,
-        registrationData: 1,
-        email: 1,
-      },
-    }
-  );
-
-  return result;
-};
-
 const updateConfigByID = async (id, updateObject) => {
   const configObjectID = TryParseObjectID(id, "ChallengeID");
 
@@ -105,7 +86,49 @@ const addNewConfig = async config => {
   const result = await collection.insertOne(config);
   return result.ops[0];
 };
+//#endregion Configs
 
+//#region Users
+const getUserDetailsByID = async id => {
+  const userObjectID = TryParseObjectID(id, "UserID");
+
+  const collection = await getCollection("users");
+  const result = await collection.findOne(
+    { _id: userObjectID },
+    {
+      projection: UserDetailsProjection,
+    }
+  );
+
+  return result;
+};
+
+const updateUserByID = async (id, updateObject) => {
+  const userObjectID = TryParseObjectID(id, "UserID");
+
+  const collection = await getCollection("users");
+  const result = await collection.findOneAndUpdate(
+    { _id: userObjectID },
+    { $set: updateObject },
+    { projection: UserDetailsProjection, returnDocument: "after" }
+  );
+
+  return result.value;
+};
+
+const UserDetailsProjection = {
+  username: 1,
+  loginRecords: 1,
+  admin: 1,
+  showOnLeaderboard: 1,
+  banned: 1,
+  registrationData: 1,
+  email: 1,
+};
+
+//#endregion Users
+
+//#region Runs
 const getRecentRuns = async count => {
   const collection = await getCollection("runs");
   const result = await collection
@@ -115,16 +138,18 @@ const getRecentRuns = async count => {
     .toArray();
   return result;
 };
+//#endregion Runs
 
 module.exports = {
   getUserLoginCount,
+  getNewAccountCount,
   getConfigListFromDB,
   getConfigDetailsByID,
   updateConfigByID,
   addNewConfig,
-  getRecentRuns,
   getUserDetailsByID,
-  getNewAccountCount,
+  updateUserByID,
+  getRecentRuns,
 };
 
 const TryParseObjectID = (stringID, name) => {

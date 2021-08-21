@@ -7,6 +7,7 @@ const {
   getRecentRuns,
   getUserDetailsByID,
   getNewAccountCount,
+  updateUserByID,
 } = require("../dao/AdminDao");
 
 async function getStats(req, res) {
@@ -76,55 +77,6 @@ async function getConfigDetails(req, res) {
   }
 }
 
-async function getUserDetails(req, res) {
-  try {
-    const id = req.params.id;
-    let result = await getUserDetailsByID(id);
-
-    res.send(result);
-  } catch (e) {
-    console.log(e);
-    res.sendStatus(500);
-  }
-}
-
-async function patchConfig(req, res) {
-  try {
-    const request = req.body;
-
-    const id = req.params.id;
-
-    const newOrder = request.order;
-    const newActive = request.active;
-
-    const putRequest = {};
-    if (newOrder !== undefined) {
-      if (typeof newOrder !== "number") {
-        res.sendStatus(400);
-        return;
-      } else {
-        putRequest.order = newOrder;
-      }
-    }
-
-    if (newActive !== undefined) {
-      if (typeof newActive !== "boolean") {
-        res.sendStatus(400);
-        return;
-      } else {
-        putRequest.active = newActive;
-      }
-    }
-
-    updateConfigByID(id, putRequest);
-    res.sendStatus(200);
-  } catch (e) {
-    console.log(e);
-    res.sendStatus(500);
-    return;
-  }
-}
-
 async function postConfig(req, res) {
   try {
     const newConfigRequest = req.body;
@@ -149,6 +101,82 @@ async function postConfig(req, res) {
 
     const result = await addNewConfig(newConfig);
     res.send(result._id);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+    return;
+  }
+}
+
+async function patchConfig(req, res) {
+  try {
+    const request = req.body;
+
+    const id = req.params.id;
+
+    const newOrder = request.order;
+    const newActive = request.active;
+
+    const patchRequest = {};
+    if (newOrder !== undefined) {
+      if (typeof newOrder !== "number") {
+        res.sendStatus(400);
+        return;
+      } else {
+        patchRequest.order = newOrder;
+      }
+    }
+
+    if (newActive !== undefined) {
+      if (typeof newActive !== "boolean") {
+        res.sendStatus(400);
+        return;
+      } else {
+        patchRequest.active = newActive;
+      }
+    }
+
+    await updateConfigByID(id, patchRequest);
+    res.sendStatus(200);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+    return;
+  }
+}
+
+async function getUserDetails(req, res) {
+  try {
+    const id = req.params.id;
+    let result = await getUserDetailsByID(id);
+
+    res.send(result);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+}
+
+async function patchUser(req, res) {
+  try {
+    const request = req.body;
+
+    const id = req.params.id;
+
+    const newBanned = request.banned;
+
+    let patchRequest = {};
+    if (newBanned !== undefined) {
+      if (typeof newBanned !== "boolean") {
+        res.sendStatus(400);
+        return;
+      } else {
+        patchRequest.banned = newBanned;
+      }
+    }
+
+    const newDetails = await updateUserByID(id, patchRequest);
+    res.send(newDetails);
   } catch (e) {
     console.log(e);
     res.sendStatus(500);
@@ -198,8 +226,9 @@ module.exports = {
   getStats,
   getConfigList,
   getConfigDetails,
-  patchConfig,
   postConfig,
-  getRuns,
+  patchConfig,
   getUserDetails,
+  patchUser,
+  getRuns,
 };

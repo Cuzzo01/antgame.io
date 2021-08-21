@@ -50,9 +50,10 @@ app.use(
 app.get("/admin/stats", RejectNotAdmin, _adminController.getStats);
 app.get("/admin/configList", RejectNotAdmin, _adminController.getConfigList);
 app.get("/admin/config/:id", RejectNotAdmin, _adminController.getConfigDetails);
-app.get("/admin/user/:id", RejectNotAdmin, _adminController.getUserDetails);
-app.get("/admin/runs", RejectNotAdmin, _adminController.getRuns);
 app.patch("/admin/config/:id", RejectNotAdmin, _adminController.patchConfig);
+app.get("/admin/user/:id", RejectNotAdmin, _adminController.getUserDetails);
+app.patch("/admin/user/:id", RejectNotAdmin, _adminController.patchUser);
+app.get("/admin/runs", RejectNotAdmin, _adminController.getRuns);
 app.post("/admin/config", RejectNotAdmin, _adminController.postConfig);
 
 app.get("/flag/:name", _flagController.getFlag);
