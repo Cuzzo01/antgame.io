@@ -52,7 +52,7 @@ app.use(
       return;
     }
 
-    const userID = req.user?.id;
+    const userID = req.user.id;
     const IsTokenValid = await TokenRevokedHandler.isTokenValid(userID);
     if (IsTokenValid === false) {
       res.sendStatus(401);
