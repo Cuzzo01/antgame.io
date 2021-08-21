@@ -11,6 +11,7 @@ const _userController = require("./controller/UserController");
 const _adminController = require("./controller/AdminController");
 const _flagController = require("./controller/FlagController");
 const TokenHandler = require("./auth/WebTokenHandler");
+const TokenRevokedHandler = require("./handler/TokenRevokedHandler");
 const { RejectNotAdmin } = require("./auth/AuthHelpers");
 
 const UnauthenticatedRoutes = [
@@ -44,6 +45,19 @@ app.use(
     console.log("Unknown AuthError:", err);
     res.status(401);
     res.send("Unauthorized");
+  },
+  async function (req, res, next) {
+    const userID = req.user?.id;
+    if (!userID) {
+      next();
+      return;
+    }
+    const IsTokenValid = await TokenRevokedHandler.isTokenValid(userID);
+    if (IsTokenValid === false) {
+      res.sendStatus(401);
+      return;
+    }
+    next();
   }
 );
 
