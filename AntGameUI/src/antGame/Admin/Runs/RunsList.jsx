@@ -36,7 +36,7 @@ const RunsListElement = props => {
         {submissionDateTime.toLocaleDateString()} {submissionDateTime.toLocaleTimeString()}
       </span>
       <span className={styles.userID}>
-        <Link to={`/admin/user/${props.run.userID}`}>{props.run.userID.substr(-6)}</Link>
+        <Link to={`/admin/user/${props.run.userID}`}>{props.run.userID ? props.run.userID.substr(-6) : "N/A"}</Link>
       </span>
       <span className={styles.score}>
         <Link to={`/admin/run/${props.run._id}`}>{props.run.score}</Link>

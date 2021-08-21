@@ -199,6 +199,16 @@ const getPRByLeaderboardRank = async (challengeID, rank) => {
   return result[0];
 };
 
+const isUserBanned = async id => {
+  const userObjectID = TryParseObjectID(id, "UserID");
+
+  const collection = await getCollection("users");
+  const result = await collection.findOne({ _id: userObjectID }, { projection: { banned: 1 } });
+
+  if (result.banned === true) return true;
+  return false;
+};
+
 const TryParseObjectID = (stringID, name) => {
   try {
     return new ObjectID(stringID);
@@ -217,4 +227,5 @@ module.exports = {
   getLeaderboardByChallengeId,
   getLeaderboardRankByScore,
   getPRByLeaderboardRank,
+  isUserBanned,
 };

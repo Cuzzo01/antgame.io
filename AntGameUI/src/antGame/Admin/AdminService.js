@@ -24,6 +24,17 @@ export const getUserDetails = async id => {
   });
 };
 
+export const patchUserDetails = async (id, fields) => {
+  return axios
+    .patch(`/api/admin/user/${id}`, fields)
+    .then(res => {
+      return res.data;
+    })
+    .catch(e => {
+      return false;
+    });
+};
+
 export const patchConfigDetails = async (id, fields) => {
   return axios
     .patch(`/api/admin/config/${id}`, fields)

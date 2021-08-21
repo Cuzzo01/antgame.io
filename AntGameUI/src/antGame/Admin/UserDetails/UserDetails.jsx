@@ -1,17 +1,30 @@
 import { useEffect, useState } from "react";
-import { getUserDetails } from "../AdminService";
+import { getUserDetails, patchUserDetails } from "../AdminService";
 import ExpandList from "../Helpers/ExpandList";
 import { GetTimeString } from "../Helpers/FunctionHelpers";
 import styles from "./UserDetails.module.css";
+import { Button } from "react-bootstrap";
 
 const UserDetails = props => {
   const [details, setDetails] = useState(false);
 
   useEffect(() => {
-    getUserDetails(props.id).then(result => {
+    populateDetails(props.id);
+  }, [props.id]);
+
+  const populateDetails = id => {
+    getUserDetails(id).then(result => {
+      console.log(result);
       setDetails(result);
     });
-  }, [props.id]);
+  };
+
+  const setBanned = newBanned => {
+    patchUserDetails(props.id, { banned: newBanned }).then(result => {
+      console.log(result);
+      setDetails(result);
+    });
+  };
 
   return (
     <div>
@@ -36,6 +49,12 @@ const UserDetails = props => {
             ) : (
               "No Details"
             )}
+          </div>
+          <div className={styles.divSection}>
+            <h5>Actions</h5>
+            <Button onClick={() => setBanned(!details.banned)}>
+              {details.banned ? "Unban User" : "Ban User"}
+            </Button>
           </div>
           <div>
             <ExpandList

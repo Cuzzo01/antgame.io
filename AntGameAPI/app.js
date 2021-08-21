@@ -11,6 +11,7 @@ const _userController = require("./controller/UserController");
 const _adminController = require("./controller/AdminController");
 const _flagController = require("./controller/FlagController");
 const TokenHandler = require("./auth/WebTokenHandler");
+const TokenRevokedHandler = require("./handler/TokenRevokedHandler");
 const { RejectNotAdmin } = require("./auth/AuthHelpers");
 
 const UnauthenticatedRoutes = [
@@ -44,15 +45,31 @@ app.use(
     console.log("Unknown AuthError:", err);
     res.status(401);
     res.send("Unauthorized");
+  },
+  async function (req, res, next) {
+    if (!req.user) {
+      next();
+      return;
+    }
+
+    const userID = req.user.id;
+    const IsTokenValid = await TokenRevokedHandler.isTokenValid(userID);
+    if (IsTokenValid === false) {
+      res.sendStatus(401);
+      return;
+    }
+    next();
   }
 );
 
 app.get("/admin/stats", RejectNotAdmin, _adminController.getStats);
 app.get("/admin/configList", RejectNotAdmin, _adminController.getConfigList);
 app.get("/admin/config/:id", RejectNotAdmin, _adminController.getConfigDetails);
-app.get("/admin/user/:id", RejectNotAdmin, _adminController.getUserDetails);
-app.get("/admin/runs", RejectNotAdmin, _adminController.getRuns);
 app.patch("/admin/config/:id", RejectNotAdmin, _adminController.patchConfig);
+app.get("/admin/users", RejectNotAdmin, _adminController.getUsers);
+app.get("/admin/user/:id", RejectNotAdmin, _adminController.getUserDetails);
+app.patch("/admin/user/:id", RejectNotAdmin, _adminController.patchUser);
+app.get("/admin/runs", RejectNotAdmin, _adminController.getRuns);
 app.post("/admin/config", RejectNotAdmin, _adminController.postConfig);
 
 app.get("/flag/:name", _flagController.getFlag);
