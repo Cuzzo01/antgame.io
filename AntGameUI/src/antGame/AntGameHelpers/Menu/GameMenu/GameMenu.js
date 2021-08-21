@@ -5,14 +5,19 @@ import UploadMapButton from "../UploadMapButton";
 import { GameModeContext } from "../../../GameModeContext";
 import ChallengeHandler from "../../../Challenge/ChallengeHandler";
 import cssStyles from "./GameMenu.module.css";
+import { getFlag } from "../../../Helpers/FlagService";
 
 export default function GameMenu(props) {
   const [flashReset, setFlashReset] = useState(false);
+  const [disablePlay, setDisablePlay] = useState(true);
   const gameMode = useContext(GameModeContext);
   let sandBoxButtons = [];
 
   useEffect(() => {
     if (flashReset === true) setTimeout(() => setFlashReset(false), 900);
+    getFlag("allow-challenge-runs").then(value => {
+      if (value === true) setDisablePlay(false);
+    });
   }, [flashReset]);
 
   if (props.mapClear)
@@ -32,6 +37,7 @@ export default function GameMenu(props) {
   return (
     <div style={styles.container}>
       <SettingButton
+        disabled={disablePlay}
         text={props.playState ? <PauseIcon /> : <PlayIcon />}
         handler={() => {
           const result = props.playButtonHandler(!props.playState);

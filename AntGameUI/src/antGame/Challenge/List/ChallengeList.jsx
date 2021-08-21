@@ -44,7 +44,7 @@ const ChallengeList = () => {
 export default ChallengeList;
 
 const ListItem = props => {
-  const history = useHistory();
+  // const history = useHistory();
 
   return (
     <div
