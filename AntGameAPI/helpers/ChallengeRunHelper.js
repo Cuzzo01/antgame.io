@@ -30,7 +30,7 @@ const VerifyArtifact = async (runData, clientID) => {
 
   const SnapshotAnalysis = AnalyzeSnapshots(runData.Snapshots);
   if (SnapshotAnalysis !== true) return `snapshot analysis failed : ${SnapshotAnalysis}`;
-  
+
   return "verified";
 };
 

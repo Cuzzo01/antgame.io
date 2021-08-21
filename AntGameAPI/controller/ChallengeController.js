@@ -31,7 +31,8 @@ async function postRun(req, res) {
     if (saveRun === false) {
       // Where save limiting logic will live in the future
       // Only set to true % of time you want random run saved
-      saveRun = true;
+      if (Math.random() > 0.1) saveRun = "No Snapshot";
+      else saveRun = true;
     }
 
     let runID;
@@ -45,13 +46,14 @@ async function postRun(req, res) {
         env: runData.Env,
         details: {
           homeLocations: runData.HomeLocations,
-          gameConfig: runData.GameConfig,
           timing: runData.Timing,
-          snapshots: runData.Snapshots,
           foodConsumed: runData.FoodConsumed,
         },
         tags: runTags,
       };
+
+      if (saveRun !== "No Snapshot") runRecord.details.snapshots = runData.Snapshots;
+
       if (user.id) {
         runRecord.userID = user.id;
       } else {
@@ -84,7 +86,7 @@ async function postRun(req, res) {
 
         let isWorldRecord = false;
         let challengeRecord;
-        if (user.showOnLeaderboard !== false) {
+        if (user.showOnLeaderboard !== false && runData.PB) {
           challengeRecord = await ChallengeDao.getRecordByChallenge(runData.challengeID);
           const recordEmpty = challengeRecord && Object.keys(challengeRecord).length === 0;
           if (recordEmpty || challengeRecord.score < runData.Score) {
