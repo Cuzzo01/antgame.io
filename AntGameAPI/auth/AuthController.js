@@ -2,7 +2,10 @@ const AuthDao = require("./AuthDao");
 const TokenHandler = require("./WebTokenHandler");
 const PasswordHandler = require("./PasswordHandler");
 const FlagHandler = require("../handler/FlagHandler");
-const { RegistrationDataSatisfiesCriteria } = require("../helpers/RegistrationHelper");
+const {
+  RegistrationDataSatisfiesCriteria,
+  IsAllowedUsername,
+} = require("../helpers/RegistrationHelper");
 
 async function verifyLogin(req, res) {
   try {
@@ -93,6 +96,12 @@ async function registerUser(req, res) {
 
     if ((await FlagHandler.getFlagValue("allowAccountRegistration")) === false) {
       res.sendStatus(406);
+      return;
+    }
+
+    if (!IsAllowedUsername(username)) {
+      res.status(409);
+      res.send("Username taken");
       return;
     }
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
 import { getFlag } from "../Helpers/FlagService";
+import GenericModal from "../Helpers/GenericModal";
 import styles from "./Motd.module.css";
 
 const MOTD = () => {
@@ -24,17 +24,13 @@ const MOTD = () => {
   return (
     <div>
       {modalData !== false ? (
-        <Modal show onHide={() => setModalData(false)}>
-          <Modal.Header>
-            <Modal.Title>{modalData.title}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className={styles.body} dangerouslySetInnerHTML={{ __html: modalData.text }}></div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={() => setModalData(false)}>Close</Button>
-          </Modal.Footer>
-        </Modal>
+        <GenericModal
+          onHide={() => setModalData(false)}
+          title={modalData.title}
+          body={
+            <div className={styles.body} dangerouslySetInnerHTML={{ __html: modalData.text }} />
+          }
+        />
       ) : null}
     </div>
   );
