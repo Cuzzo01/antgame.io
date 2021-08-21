@@ -3,6 +3,7 @@ const ChallengeDao = require("../dao/ChallengeDao");
 const UserDao = require("../dao/UserDao");
 const { VerifyArtifact } = require("../helpers/ChallengeRunHelper");
 const { getGeneralizedTimeStringFromObjectID } = require("../helpers/TimeHelper");
+const FlagHandler = require("../handler/FlagHandler");
 
 async function postRun(req, res) {
   try {
@@ -156,10 +157,34 @@ async function getActiveChallenges(req, res) {
     let userRecords = false;
     if (!user.anon) {
       userRecords = await UserDao.getUserPBsByChallengeList(user.id, challengeIDList);
-      if (userRecords)
+      if (userRecords) {
+        const shouldGetRanks = await FlagHandler.getFlagValue("show-rank-on-challenge-list");
+
+        let rankPromises = [];
         userRecords.forEach(userRecord => {
-          if (records.hasOwnProperty(userRecord.ID)) records[userRecord.ID].pb = userRecord.pb;
+          const challengeID = userRecord.ID;
+          if (records.hasOwnProperty(challengeID)) {
+            records[challengeID].pb = userRecord.pb;
+
+            if (shouldGetRanks) {
+              rankPromises.push(
+                UserDao.getLeaderboardRankByScore(challengeID, userRecord.pb).then(rank => {
+                  return {
+                    id: challengeID,
+                    rank: rank,
+                  };
+                })
+              );
+            }
+          }
         });
+
+        await Promise.all(rankPromises).then(rankResults => {
+          rankResults.forEach(rank => {
+            records[rank.id].rank = rank.rank;
+          });
+        });
+      }
     }
 
     res.send({ challenges: activeChallenges, records: records });
