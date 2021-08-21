@@ -13,7 +13,13 @@ const _flagController = require("./controller/FlagController");
 const TokenHandler = require("./auth/WebTokenHandler");
 const { RejectNotAdmin } = require("./auth/AuthHelpers");
 
-const UnauthenticatedRoutes = ["/auth/login", "/auth/anonToken", "/auth/register", /\/flag*/];
+const UnauthenticatedRoutes = [
+  "/auth/login",
+  "/auth/anonToken",
+  "/auth/register",
+  /\/flag*/,
+  "/health",
+];
 
 const send400 = (res, message) => {
   res.status(400);
@@ -62,6 +68,8 @@ app.get("/challenge/:id", _challengeController.getChallenge);
 app.get("/challenge/:id/pr", _challengeController.getPRHomeLocations);
 app.get("/challenges/active", _challengeController.getActiveChallenges);
 app.get("/challenge/:id/leaderboard", _challengeController.getLeaderboard);
+
+app.get("/health", (req, res) => res.sendStatus(200));
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
