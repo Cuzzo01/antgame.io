@@ -7,7 +7,7 @@
   margin: 0.5em 0;
   padding: 0.5em;
   display: grid;
-  grid-template-columns: 30% auto 15% 25%;
+  grid-template-columns: 30% auto 5% 15% 25%;
   border: 2px solid black;
   border-radius: 1em;
 }
@@ -30,4 +30,28 @@
 
 .odd {
   background-color: #b2babb;
+}
+
+.redBackground {
+  background-color: #f1948a;
+}
+
+.yellowBackground {
+  background-color: #f7dc6f;
+}
+
+.purpleText {
+  color: white;
+  background-color: #884ea0;
+  padding: 0.1em;
+}
+
+.greenText {
+  color: white;
+  background-color: #1e8449;
+  padding: 0.1em;
+}
+
+.bold {
+  font-family: "Courier Prime Bold";
 }
