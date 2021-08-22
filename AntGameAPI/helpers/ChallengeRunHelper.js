@@ -122,15 +122,14 @@ const AnalyzeSnapshots = snapshots => {
           if (percentScoreDelta !== Infinity && percentScoreDelta > 25)
             outOfBounds = `(${percentScoreDelta}, ${i}, 25)`;
         }
+        if (outOfBounds !== false) return `score change out of bounds (${percentScoreDelta}, ${i})`;
       }
-      if (outOfBounds !== false) return `score change out of bounds (${percentScoreDelta}, ${i})`;
     }
 
     lastSnapshot = snapshot;
   }
-}
-if (deltaExceptions.length > 0) return `guess delta exceptions (${deltaExceptions})`;
-return true;
+  if (deltaExceptions.length > 0) return `guess delta exceptions (${deltaExceptions})`;
+  return true;
 };
 
 module.exports = { VerifyArtifact };
