@@ -13,14 +13,19 @@ async function postRun(req, res) {
     let runTags = [];
 
     let saveRun = false;
-    const verificationResult = await VerifyArtifact(runData, user.clientID);
+
+    const RejectUnverifiedRuns = await FlagHandler.getFlagValue("reject-anticheat-fail-runs");
+    let verificationResult = await VerifyArtifact(runData, user.clientID);
     if (verificationResult !== "verified") {
+      if (RejectUnverifiedRuns === false) verificationResult += "*IGNORED*";
       runTags.push({ "failed verification": { result: verificationResult } });
       saveRun = "Verify Failed";
     }
 
     let currentDetails;
-    if (runData.PB && verificationResult === "verified") {
+    if (runData.PB) {
+      if (RejectUnverifiedRuns && verificationResult !== "verified") return;
+      
       currentDetails = await UserDao.getChallengeDetailsByUser(user.id, runData.challengeID);
       if (currentDetails === null) saveRun = "New challenge";
       else if (currentDetails.pb < runData.Score) saveRun = "New PB";
@@ -33,7 +38,10 @@ async function postRun(req, res) {
       // Where save limiting logic will live in the future
       // Only set to true % of time you want random run saved
       if (Math.random() > 0.1) saveRun = "No Snapshot";
-      else saveRun = true;
+      else {
+        saveRun = true;
+        runTags.push({ "random snapshot save": true });
+      }
     }
 
     let runID;
@@ -62,7 +70,7 @@ async function postRun(req, res) {
       }
       runID = await ChallengeDao.submitRun(runRecord);
 
-      if (verificationResult !== "verified") {
+      if (RejectUnverifiedRuns && verificationResult !== "verified") {
         res.sendStatus(418);
         return;
       }
