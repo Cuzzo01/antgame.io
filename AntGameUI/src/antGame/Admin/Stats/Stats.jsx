@@ -40,6 +40,15 @@ const StatsDisplay = props => {
     );
   }
 
+  let runCountStats = [];
+  for (const [label, count] of Object.entries(stats.runCountStats)) {
+    runCountStats.push(
+      <div key={label} className={styles.rightJustify}>
+        {label}:<span className={styles.bold}>{count}</span>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className={styles.uniqueUserStats}>
@@ -49,6 +58,10 @@ const StatsDisplay = props => {
       <div className={styles.uniqueUserStats}>
         <h6>New Accounts</h6>
         {newAccountStats}
+      </div>
+      <div className={styles.uniqueUserStats}>
+        <h6>Runs Submitted</h6>
+        {runCountStats}
       </div>
     </div>
   );

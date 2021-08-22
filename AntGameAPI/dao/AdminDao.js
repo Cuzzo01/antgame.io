@@ -26,6 +26,14 @@ const getNewAccountCount = async hoursBack => {
     .count();
   return { hours: hoursBack, newAccounts: result };
 };
+
+const getRunCount = async hoursBack => {
+  const collection = await getCollection("runs");
+  const result = await collection
+    .find({ submissionTime: { $gt: new Date(Date.now() - hoursBack * 60 * 60 * 1000) } })
+    .count();
+  return { hours: hoursBack, runCount: result };
+};
 //#endregion Stats
 
 //#region Configs
@@ -166,6 +174,7 @@ const getRecentRuns = async count => {
 module.exports = {
   getUserLoginCount,
   getNewAccountCount,
+  getRunCount,
   getConfigListFromDB,
   getConfigDetailsByID,
   updateConfigByID,
