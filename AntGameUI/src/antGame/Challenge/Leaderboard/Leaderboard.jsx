@@ -41,6 +41,7 @@ const Leaderboard = props => {
       });
       setRunData(table);
       setTitle(res.name);
+      document.title = `${res.name} - Leaderboard`;
       setLoading(false);
     });
   }, [challengeID]);

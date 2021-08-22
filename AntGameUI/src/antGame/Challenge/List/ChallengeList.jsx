@@ -10,6 +10,7 @@ const ChallengeList = () => {
   const history = useHistory();
 
   useEffect(() => {
+    document.title = "Challenge List - AntGame";
     if (!AuthHandler.loggedIn) {
       history.replace({ pathname: "/login", search: "?redirect=/challenge" });
       return;
