@@ -111,30 +111,26 @@ const AnalyzeSnapshots = snapshots => {
         const percentScoreDelta = (scoreDelta / lastScore) * 100;
         if (percentScoreDelta < 0)
           return `negative score change between snapshots (${percentScoreDelta.toFixed(2)}, ${i})`;
-        const EarlyDelta = score < 0.4;
         let outOfBounds = false;
-        switch (score) {
-          case score > 0.4:
-            if (percentScoreDelta !== Infinity && percentScoreDelta > 110)
-              outOfBounds = `(${percentScoreDelta}, ${i}, 100)`;
-            break;
-          case score > 0.6:
-            if (percentScoreDelta !== Infinity && percentScoreDelta > 50)
-              outOfBounds = `(${percentScoreDelta}, ${i}, 50)`;
-            break;
-          default:
-            if (percentScoreDelta !== Infinity && percentScoreDelta > 25)
-              outOfBounds = `(${percentScoreDelta}, ${i}, 25)`;
-            break;
+        if (score < 0.4) {
+          if (percentScoreDelta !== Infinity && percentScoreDelta > 110)
+            outOfBounds = `(${percentScoreDelta}, ${i}, 100)`;
+        } else if (score < 0.6) {
+          if (percentScoreDelta !== Infinity && percentScoreDelta > 50)
+            outOfBounds = `(${percentScoreDelta}, ${i}, 50)`;
+        } else {
+          if (percentScoreDelta !== Infinity && percentScoreDelta > 25)
+            outOfBounds = `(${percentScoreDelta}, ${i}, 25)`;
         }
-        if (outOfBounds !== false) return `score change out of bounds (${percentScoreDelta}, ${i})`;
       }
-
-      lastSnapshot = snapshot;
+      if (outOfBounds !== false) return `score change out of bounds (${percentScoreDelta}, ${i})`;
     }
+
+    lastSnapshot = snapshot;
   }
-  if (deltaExceptions.length > 0) return `guess delta exceptions (${deltaExceptions})`;
-  return true;
+}
+if (deltaExceptions.length > 0) return `guess delta exceptions (${deltaExceptions})`;
+return true;
 };
 
 module.exports = { VerifyArtifact };
