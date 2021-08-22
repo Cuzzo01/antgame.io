@@ -33,6 +33,15 @@ async function verifyLogin(req, res) {
         return;
       }
 
+      if (authDetails.admin === false) {
+        const allowLogin = await FlagHandler.getFlagValue("allow-logins");
+        if (allowLogin !== true) {
+          res.status(405);
+          res.send("logins are disabled");
+          return;
+        }
+      }
+
       const clientIP = GetIpAddress(req);
       await AuthDao.logLogin(authDetails.id, clientIP, clientID);
       const tokenObject = {

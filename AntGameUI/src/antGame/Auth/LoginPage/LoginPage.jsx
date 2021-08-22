@@ -16,7 +16,7 @@ const LoginPage = props => {
 
   useEffect(() => {
     getFlag("allow-logins").then(value => {
-      if (value !== true) {
+      if (value !== true && !window.location.href.includes("/admin")) {
         setAllowLogins(false);
         setDisabledMessage(value);
       } else {
@@ -49,9 +49,11 @@ const LoginPage = props => {
     event.preventDefault();
     if (formState === "loading") return;
     AuthHandler.login(username, password).then(result => {
+      console.log(result);
       if (result === true) redirectOut();
       else if (result === false) setFormState("error");
       else if (result === "banned") setFormState("banned");
+      else if (result === "disabled") setFormState("disabled");
     });
     setFormState("loading");
   }
@@ -101,6 +103,7 @@ const LoginPage = props => {
               <div className={styles.error}>Login failed, try again</div>
             ) : null}
             {formState === "banned" ? <div className={styles.error}>Account banned</div> : null}
+            {formState === "disabled" ? <div className={styles.error}>Login disabled</div> : null}
             <input type="submit" style={{ display: "none" }} />
             <div className={styles.buttonBar}>
               <div className={`${styles.divButton} ${styles.right}`} onClick={handleSubmit}>
