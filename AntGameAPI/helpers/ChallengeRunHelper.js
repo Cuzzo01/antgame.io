@@ -6,7 +6,8 @@ const FoodPerCell = 20;
 const DirtPerCell = 50;
 
 const VerifyArtifact = async (runData, clientID) => {
-  // if (runData.ClientID !== clientID) return `non-matching clientID : (${clientID}, ${runData.clientID})`;
+  if (runData.ClientID !== clientID)
+    return `non-matching clientID : (${clientID}, ${runData.clientID})`;
 
   try {
     runData.Score = parseInt(runData.Score);
