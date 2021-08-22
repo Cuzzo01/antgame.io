@@ -112,7 +112,10 @@ const AnalyzeSnapshots = snapshots => {
         if (percentScoreDelta < 0)
           return `negative score change between snapshots (${percentScoreDelta.toFixed(2)}, ${i})`;
         let outOfBounds = false;
-        if (score < 0.4) {
+        if (lastScore < 0.2) {
+          if (percentScoreDelta !== Infinity && percentScoreDelta > 150)
+            outOfBounds = `(${percentScoreDelta}, ${i}, 150)`;
+        } else if (score < 0.4) {
           if (percentScoreDelta !== Infinity && percentScoreDelta > 110)
             outOfBounds = `(${percentScoreDelta}, ${i}, 100)`;
         } else if (score < 0.6) {
