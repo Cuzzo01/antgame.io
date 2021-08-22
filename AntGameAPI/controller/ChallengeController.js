@@ -17,21 +17,35 @@ async function postRun(req, res) {
     const RejectUnverifiedRuns = await FlagHandler.getFlagValue("reject-anticheat-fail-runs");
     let verificationResult = await VerifyArtifact(runData, user.clientID);
     if (verificationResult !== "verified") {
-      if (RejectUnverifiedRuns === false) verificationResult += "*IGNORED*";
-      runTags.push({ "failed verification": { result: verificationResult } });
+      if (RejectUnverifiedRuns === false) verificationResult += " *IGNORED*";
+      runTags.push({ type: "failed verification", metadata: { reason: verificationResult } });
       saveRun = "Verify Failed";
     }
 
     let currentDetails;
+    let isPB = false;
     if (runData.PB) {
-      if (RejectUnverifiedRuns && verificationResult !== "verified") return;
-      
-      currentDetails = await UserDao.getChallengeDetailsByUser(user.id, runData.challengeID);
-      if (currentDetails === null) saveRun = "New challenge";
-      else if (currentDetails.pb < runData.Score) saveRun = "New PB";
-      if (saveRun)
-        runTags.push({ pr: { runNumber: (currentDetails ? currentDetails.runs : 0) + 1 } });
-      else runTags.push({ "falsely claimed pb": { pb: currentDetails.pb, score: runData.Score } });
+      if (verificationResult === "verified" || RejectUnverifiedRuns === false) {
+        currentDetails = await UserDao.getChallengeDetailsByUser(user.id, runData.challengeID);
+        if (currentDetails === null) {
+          isPB = true;
+          saveRun = "New challenge";
+        } else if (currentDetails.pb < runData.Score) {
+          isPB = true;
+          saveRun = "New PB";
+        }
+
+        if (isPB)
+          runTags.push({
+            type: "pr",
+            metadata: { runNumber: (currentDetails ? currentDetails.runs : 0) + 1 },
+          });
+        else
+          runTags.push({
+            type: "falsely claimed pb",
+            metadata: { pb: currentDetails.pb, score: runData.Score },
+          });
+      }
     }
 
     if (saveRun === false) {
@@ -40,7 +54,7 @@ async function postRun(req, res) {
       if (Math.random() > 0.1) saveRun = "No Snapshot";
       else {
         saveRun = true;
-        runTags.push({ "random snapshot save": true });
+        runTags.push({ type: "random snapshot save" });
       }
     }
 
@@ -76,10 +90,10 @@ async function postRun(req, res) {
       }
 
       if (!user.anon) {
-        if (saveRun === "New PB") {
-          UserDao.updateChallengePBAndRunCount(user.id, runData.challengeID, runData.Score, runID);
-        } else if (saveRun === "New challenge") {
+        if (isPB && currentDetails === null) {
           UserDao.addNewChallengeDetails(user.id, runData.challengeID, runData.Score, runID);
+        } else if (isPB && currentDetails.pb) {
+          UserDao.updateChallengePBAndRunCount(user.id, runData.challengeID, runData.Score, runID);
         } else {
           UserDao.incrementChallengeRunCount(user.id, runData.challengeID);
         }
@@ -107,6 +121,8 @@ async function postRun(req, res) {
               user.id,
               runID
             );
+
+            ChallengeDao.addTagToRun(runID, { type: "wr" });
           }
         }
 

@@ -7,7 +7,7 @@ const DirtPerCell = 50;
 
 const VerifyArtifact = async (runData, clientID) => {
   if (runData.ClientID !== clientID)
-    return `non-matching clientID : (${clientID}, ${runData.clientID})`;
+    return `non-matching clientID : (${clientID}, ${runData.ClientID})`;
 
   try {
     runData.Score = parseInt(runData.Score);
