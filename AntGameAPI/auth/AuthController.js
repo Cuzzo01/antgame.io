@@ -140,6 +140,7 @@ async function registerUser(req, res) {
       id: user._id,
       username: user.username,
       admin: user.admin,
+      clientID: clientID,
     };
     const token = TokenHandler.generateAccessToken(tokenObject);
     res.send(token);
