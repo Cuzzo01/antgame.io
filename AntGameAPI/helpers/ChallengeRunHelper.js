@@ -63,7 +63,7 @@ const SystemElapsedTimeLongerThanConfigTime = runData => {
   const systemElapsedTimeSecs = Math.round(systemElapsedTimeMilis / 1000);
   const minTimeElapsed = runData.GameConfig.Time;
   const marginOfError = Math.round(minTimeElapsed * 0.01);
-  if (systemElapsedTimeSecs <= minTimeElapsed - marginOfError)
+  if (systemElapsedTimeSecs < minTimeElapsed - marginOfError)
     return `(${systemElapsedTimeSecs}, ${minTimeElapsed - marginOfError})`;
   return true;
 };
