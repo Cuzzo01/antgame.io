@@ -69,9 +69,9 @@ const LoginPage = props => {
 
   return (
     <div className={styles.container}>
-      <h3 className={`${styles.title} ${styles.bold}`}>Login</h3>
       {allowLogins ? (
         <div>
+          <h3 className={`${styles.title} ${styles.bold}`}>Login</h3>
           <form onSubmit={handleSubmit}>
             <div className={styles.inputField}>
               <label htmlFor="username">Username:</label>
@@ -122,7 +122,7 @@ const LoginPage = props => {
         </div>
       ) : (
         <div className={styles.disabledMessage}>
-          <h5>Logins are currently disabled.</h5>
+          <h3 className={`${styles.title} ${styles.bold}`}>AntGame Is Offline</h3>
           <br />
           {disabledMessage}
         </div>
