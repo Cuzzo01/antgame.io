@@ -6,7 +6,7 @@ const FoodPerCell = 20;
 const DirtPerCell = 50;
 
 const VerifyArtifact = async (runData, clientID) => {
-  // if (runData.ClientID !== clientID) return `non-matching clientID : (${clientID, runData.clientID})`;
+  // if (runData.ClientID !== clientID) return `non-matching clientID : (${clientID}, ${runData.clientID})`;
 
   try {
     runData.Score = parseInt(runData.Score);
@@ -20,8 +20,9 @@ const VerifyArtifact = async (runData, clientID) => {
   if (!snapshotLengthResult)
     return `not enough snapshots for config time : ${snapshotLengthResult}`;
 
-  if (!SystemElapsedTimeLongerThanConfigTime(runData))
-    return "system elapsed time shorter than config time";
+  const systemElapsedTimeResult = SystemElapsedTimeLongerThanConfigTime(runData);
+  if (systemElapsedTimeResult !== true)
+    return `system elapsed time shorter than config time : ${systemElapsedTimeResult}`;
 
   const expectedConfig = await getChallengeByChallengeId(runData.challengeID);
   const ConfigMatchResult = ReportedConfigMatchesExpectedConfig(runData, expectedConfig);
@@ -62,7 +63,9 @@ const SystemElapsedTimeLongerThanConfigTime = runData => {
   const systemElapsedTimeSecs = Math.round(systemElapsedTimeMilis / 1000);
   const minTimeElapsed = runData.GameConfig.Time;
   const marginOfError = Math.round(minTimeElapsed * 0.01);
-  return systemElapsedTimeSecs >= minTimeElapsed - marginOfError;
+  if (systemElapsedTimeSecs >= minTimeElapsed - marginOfError)
+    return `(${systemElapsedTimeSecs}, ${minTimeElapsed - marginOfError})`;
+  return true;
 };
 
 const SnapshotLengthMatchesConfigTime = runData => {
@@ -109,10 +112,22 @@ const AnalyzeSnapshots = snapshots => {
         if (percentScoreDelta < 0)
           return `negative score change between snapshots (${percentScoreDelta.toFixed(2)}, ${i})`;
         const EarlyDelta = score < 0.4;
-        const smallPercentDelta = percentScoreDelta !== Infinity && percentScoreDelta > 25;
-        const largePercentDelta = percentScoreDelta !== Infinity && percentScoreDelta > 100;
-        if ((EarlyDelta && largePercentDelta) || (!EarlyDelta && smallPercentDelta))
-          return `score change out of bounds (${percentScoreDelta}, ${i})`;
+        let outOfBounds = false;
+        switch (score) {
+          case score < 0.4:
+            if (percentScoreDelta !== Infinity && percentScoreDelta > 110)
+              outOfBounds = `(${percentScoreDelta}, ${i}, 100)`;
+            break;
+          case score < 0.6:
+            if (percentScoreDelta !== Infinity && percentScoreDelta > 50)
+              outOfBounds = `(${percentScoreDelta}, ${i}, 50)`;
+            break;
+          default:
+            if (percentScoreDelta !== Infinity && percentScoreDelta > 25)
+              outOfBounds = `(${percentScoreDelta}, ${i}, 25)`;
+            break;
+        }
+        if (outOfBounds !== false) return `score change out of bounds (${percentScoreDelta}, ${i})`;
       }
 
       lastSnapshot = snapshot;
