@@ -7,7 +7,7 @@
   margin: 0.5em 0;
   padding: 0.5em;
   display: grid;
-  grid-template-columns: 30% auto 15% 17%;
+  grid-template-columns: 30% auto 15% 25%;
   border: 2px solid black;
   border-radius: 1em;
 }
