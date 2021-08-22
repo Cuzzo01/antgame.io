@@ -35,9 +35,8 @@ const UserList = () => {
 export default UserList;
 
 const UsersListElement = props => {
-  console.log(props.user);
   return (
-    <div className={`${styles.userRow} ${props.theme}`}>
+    <div className={`${styles.userRow} ${props.theme} ${props.user.banned ? styles.banned : null}`}>
       <span className={""}>
         <Link to={`/admin/user/${props.user._id}`}>{props.user.username}</Link>
       </span>

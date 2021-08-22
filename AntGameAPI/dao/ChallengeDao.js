@@ -10,18 +10,29 @@ const getCollection = async collection => {
 const submitRun = async runData => {
   if (runData.userID) {
     let userObjectID = TryParseObjectID(runData.userID, "userID");
-
     runData.userID = userObjectID;
   }
+
   if (runData.challengeID) {
     let challengeObjectID = TryParseObjectID(runData.challengeID, "challengeID");
-
     runData.challengeID = challengeObjectID;
   }
+
   const collection = await getCollection("runs");
   const result = await collection.insertOne(runData);
   const runID = result.ops[0]._id;
   return runID;
+};
+
+const addTagToRun = async (id, tag) => {
+  const runObjectID = TryParseObjectID(id, "RunID");
+
+  const collection = await getCollection("runs");
+  const result = await collection.updateOne(
+    { _id: runObjectID },
+    { $push: { tags: { $each: [tag] } } }
+  );
+  return;
 };
 
 const getRecordByChallenge = async challengeID => {
@@ -157,6 +168,7 @@ const TryParseObjectID = (stringID, name) => {
 
 module.exports = {
   submitRun,
+  addTagToRun,
   getActiveChallenges,
   getChallengeByChallengeId,
   getRecordByChallenge,

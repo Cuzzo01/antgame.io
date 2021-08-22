@@ -92,7 +92,7 @@ const addNewConfig = async config => {
 const getRecentlyCreatedUsers = async count => {
   const collection = await getCollection("users");
   const result = await collection
-    .find({}, { projection: { username: 1, registrationData: 1 } })
+    .find({}, { projection: { username: 1, registrationData: 1, banned: 1 } })
     .sort({ "registrationData.date": -1 })
     .limit(count)
     .toArray();
@@ -152,7 +152,10 @@ const UserDetailsProjection = {
 const getRecentRuns = async count => {
   const collection = await getCollection("runs");
   const result = await collection
-    .find({}, { projection: { submissionTime: 1, name: 1, userID: 1, score: 1, challengeID: 1 } })
+    .find(
+      {},
+      { projection: { submissionTime: 1, name: 1, userID: 1, score: 1, challengeID: 1, tags: 1 } }
+    )
     .sort({ submissionTime: -1 })
     .limit(count)
     .toArray();

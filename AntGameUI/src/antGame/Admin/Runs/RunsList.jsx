@@ -30,8 +30,24 @@ export default RunsList;
 
 const RunsListElement = props => {
   const submissionDateTime = new Date(props.run.submissionTime);
+  const [bodyTagStyles, setBodyTagStyles] = useState("");
+  const [scoreTagStyles, setScoreTagStyles] = useState("");
+
+  useEffect(() => {
+    const tags = props.run.tags;
+    if (tags.find(tag => tag.type === "failed verification" || tag.type === "falsely claimed pb"))
+      setBodyTagStyles(styles.redBackground);
+    if (tags.find(tag => tag.type === "wr"))
+      setScoreTagStyles(`${styles.purpleText} ${styles.bold}`);
+    else if (tags.find(tag => tag.type === "pr"))
+      setScoreTagStyles(`${styles.greenText} ${styles.bold}`);
+
+    if (tags.find(tag => tag.type === "random snapshot save"))
+      setBodyTagStyles(styles.yellowBackground);
+  }, [props.run.tags]);
+
   return (
-    <div className={`${styles.runRow} ${props.theme}`}>
+    <div className={`${styles.runRow} ${props.theme} ${bodyTagStyles}`}>
       <span className={styles.time}>
         {submissionDateTime.toLocaleDateString()} {submissionDateTime.toLocaleTimeString()}
       </span>
@@ -42,8 +58,11 @@ const RunsListElement = props => {
           "N/A"
         )}
       </span>
-      <span className={styles.score}>
-        <Link to={`/admin/run/${props.run._id}`}>{props.run.score}</Link>
+      <span>{props.run.tags ? props.run.tags.length : 0}</span>
+      <span className={`${styles.score}`}>
+        <Link className={scoreTagStyles} to={`/admin/run/${props.run._id}`}>
+          {props.run.score}
+        </Link>
       </span>
       <span className={styles.challengeName}>
         <Link to={`/admin/config/${props.run.challengeID}`}>{props.run.name}</Link>
