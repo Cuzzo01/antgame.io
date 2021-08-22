@@ -5,6 +5,7 @@ import CreateConfig from "./CreateConfig/CreateConfig";
 import RunsList from "./Runs/RunsList";
 import Stats from "./Stats/Stats";
 import UserDetails from "./UserDetails/UserDetails";
+import UserList from "./Users/UserList";
 
 const AdminRouter = () => {
   return (
@@ -15,7 +16,9 @@ const AdminRouter = () => {
       <Route path="/admin/runs">
         <RunsList />
       </Route>
-      <Route path="/admin/users">Users</Route>
+      <Route path="/admin/users">
+        <UserList />
+      </Route>
       <Route path="/admin/user/:id">
         <UserDetailsPage />
       </Route>

@@ -76,6 +76,7 @@ const boolToString = bool => {
 
 const getLoginsList = loginRecords => {
   let listToReturn = [];
+  if (!loginRecords) return listToReturn;
   for (let i = 0; i < loginRecords.length; i++) {
     const record = loginRecords[i];
 

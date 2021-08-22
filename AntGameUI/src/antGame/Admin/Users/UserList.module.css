@@ -1,0 +1,20 @@
+.container {
+  margin: 0 0.5em;
+}
+
+.userRow {
+  margin: 0.5em 0;
+  padding: 0.5em;
+  display: grid;
+  grid-template-columns: 30% auto 15% 17%;
+  border: 2px solid black;
+  border-radius: 1em;
+}
+
+.even {
+  background-color: #ccd1d1;
+}
+
+.odd {
+  background-color: #b2babb;
+}

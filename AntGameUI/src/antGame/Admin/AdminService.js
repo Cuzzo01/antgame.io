@@ -24,6 +24,14 @@ export const getUserDetails = async id => {
   });
 };
 
+export const getRecentlyCreatedUsers = async count => {
+  return axios
+    .get(`/api/admin/users`, { params: { by: "recentlyCreated", count: count } })
+    .then(res => {
+      return res.data;
+    });
+};
+
 export const patchUserDetails = async (id, fields) => {
   return axios
     .patch(`/api/admin/user/${id}`, fields)

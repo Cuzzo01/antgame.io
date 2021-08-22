@@ -58,9 +58,17 @@
   text-align: center;
 }
 
+.bold {
+  font-family: "Courier Prime Bold";
+}
+
 .error {
   background-color: red;
   text-align: center;
   color: white;
   margin: 0.5em 0.6em;
+}
+
+.disabledMessage {
+  text-align: center;
 }
