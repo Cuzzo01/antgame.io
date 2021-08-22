@@ -114,11 +114,11 @@ const AnalyzeSnapshots = snapshots => {
         const EarlyDelta = score < 0.4;
         let outOfBounds = false;
         switch (score) {
-          case score < 0.4:
+          case score > 0.4:
             if (percentScoreDelta !== Infinity && percentScoreDelta > 110)
               outOfBounds = `(${percentScoreDelta}, ${i}, 100)`;
             break;
-          case score < 0.6:
+          case score > 0.6:
             if (percentScoreDelta !== Infinity && percentScoreDelta > 50)
               outOfBounds = `(${percentScoreDelta}, ${i}, 50)`;
             break;
