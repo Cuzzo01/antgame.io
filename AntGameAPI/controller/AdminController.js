@@ -10,12 +10,14 @@ const {
   updateUserByID,
   getRecentlyCreatedUsers,
   getRecentlyLoggedInUsers,
+  getRunCount,
 } = require("../dao/AdminDao");
 
 async function getStats(req, res) {
   let response = {
     uniqueUserStats: {},
     newAccountStats: {},
+    runCountStats: {},
   };
 
   let loginStatPromises = [];
@@ -28,6 +30,11 @@ async function getStats(req, res) {
   newAccountStatPromises.push(getNewAccountCount(168));
   newAccountStatPromises.push(getNewAccountCount(720));
 
+  let runCountStatPromises = [];
+  runCountStatPromises.push(getRunCount(24));
+  runCountStatPromises.push(getRunCount(72));
+  runCountStatPromises.push(getRunCount(168));
+
   await Promise.all(loginStatPromises).then(values => {
     values.forEach(result => {
       const label = getLabelFromResult(result);
@@ -37,8 +44,15 @@ async function getStats(req, res) {
 
   await Promise.all(newAccountStatPromises).then(values => {
     values.forEach(result => {
-      let label = getLabelFromResult(result);
+      const label = getLabelFromResult(result);
       response.newAccountStats[label] = result.newAccounts;
+    });
+  });
+
+  await Promise.all(runCountStatPromises).then(values => {
+    values.forEach(result => {
+      const label = getLabelFromResult(result);
+      response.runCountStats[label] = result.runCount;
     });
   });
 
@@ -254,7 +268,9 @@ const send400 = (res, message) => {
 
 const getLabelFromResult = result => {
   let label = "";
-  if (result.hours === 24) label = "24Hs";
+  if (result.hours === 12) label = "12Hs";
+  else if (result.hours === 24) label = "24Hs";
+  else if (result.hours === 72) label = "3Ds";
   else if (result.hours === 168) label = "7Ds";
   else if (result.hours === 720) label = "30Ds";
   return label;

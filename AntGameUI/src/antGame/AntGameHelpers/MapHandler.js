@@ -125,7 +125,7 @@ export class MapHandler {
     this.dirtToRespawn = [];
     this.foodToStopTime = 0;
     this.mapName = "";
-    document.title = "AntGame";
+    if (this._gameMode !== "challenge") document.title = "AntGame";
     for (let x = 0; x < MapBounds[0]; x++) {
       this._map[x] = [];
       for (let y = 0; y < MapBounds[1]; y++) {
@@ -152,7 +152,6 @@ export class MapHandler {
       this.mapName = "Old Map";
     }
     if (setTitle && loadResult.name) this.setTitle(this.mapName);
-    else this.setTitle("");
 
     this._map = loadResult.map;
     this.countHomeOnMap();
@@ -165,7 +164,7 @@ export class MapHandler {
 
   setTitle(mapName) {
     if (mapName) document.title = `${mapName} - AntGame`;
-    else document.title = "AntGame";
+    // else document.title = "AntGame";
   }
 
   fetchAndLoadMap(path) {

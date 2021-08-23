@@ -99,8 +99,8 @@ class ChallengeHandler {
     if (this.loadingConfig) return this.configPromise;
     else {
       if (Config.Challenge.overrideServerConfig) {
-        this._config = Config.Challenge.config;
         const config = Config.Challenge.config;
+        this._config = config;
         this._mapHandler.homeCellsAllowed = config.homeLimit;
         this._mapHandler.fetchAndLoadMap(config.mapPath);
         this._timerHandler.defaultTime = config.seconds;
