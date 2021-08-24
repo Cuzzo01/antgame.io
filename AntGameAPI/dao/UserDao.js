@@ -17,7 +17,13 @@ const getUserPBsByChallengeList = async (userID, challengeIDList) => {
   const collection = await getCollection("users");
   const result = await collection.findOne(
     { _id: userObjectID, "challengeDetails.ID": { $in: objectIDList } },
-    { projection: { "challengeDetails.ID": 1, "challengeDetails.pb": 1 } }
+    {
+      projection: {
+        "challengeDetails.ID": 1,
+        "challengeDetails.pb": 1,
+        "challengeDetails.runs": 1,
+      },
+    }
   );
   if (!result) return null;
   return result.challengeDetails;
@@ -128,6 +134,7 @@ const getLeaderboardByChallengeId = async id => {
         $match: {
           "challengeDetails.ID": challengeObjectID,
           showOnLeaderboard: true,
+          banned: {$ne: true}
         },
       },
       {
@@ -158,7 +165,8 @@ const getLeaderboardRankByScore = async (challengeID, score) => {
         $match: {
           "challengeDetails.ID": challengeObjectID,
           showOnLeaderboard: true,
-          "challengeDetails.pb": { $gt: score }
+          "challengeDetails.pb": { $gt: score },
+          banned: {$ne: true},
         },
       },
       { $count: "usersAhead" }
@@ -180,6 +188,7 @@ const getPRByLeaderboardRank = async (challengeID, rank) => {
         $match: {
           "challengeDetails.ID": challengeObjectID,
           showOnLeaderboard: true,
+          banned: { $ne: true },
         },
       },
       {

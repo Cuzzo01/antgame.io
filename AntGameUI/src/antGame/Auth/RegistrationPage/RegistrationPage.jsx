@@ -66,7 +66,12 @@ const RegistrationPage = props => {
           <label htmlFor="username">Username</label>
           <br />
           <input
-            {...register("username", { required: true, minLength: "5", maxLength: "20" })}
+            {...register("username", {
+              required: true,
+              minLength: "5",
+              maxLength: "20",
+              pattern: /^\S*$/,
+            })}
             autoComplete="username"
           />
           {errors.username?.type === "manual" && (
@@ -78,6 +83,9 @@ const RegistrationPage = props => {
           )}
           {errors.username?.type === "maxLength" && (
             <ErrorMessage>Cannot be over 20 characters</ErrorMessage>
+          )}
+          {errors.username?.type === "pattern" && (
+            <ErrorMessage>Username can't contain whitespace</ErrorMessage>
           )}
         </div>
         <div className={styles.inputField}>

@@ -108,9 +108,8 @@ async function postRun(req, res) {
         }
 
         let isWorldRecord = false;
-        let challengeRecord;
+        let challengeRecord = await ChallengeDao.getRecordByChallenge(runData.challengeID);
         if (user.showOnLeaderboard !== false && runData.PB) {
-          challengeRecord = await ChallengeDao.getRecordByChallenge(runData.challengeID);
           const recordEmpty = challengeRecord && Object.keys(challengeRecord).length === 0;
           if (recordEmpty || challengeRecord.score < runData.Score) {
             isWorldRecord = true;
@@ -126,16 +125,18 @@ async function postRun(req, res) {
           }
         }
 
-        if (isWorldRecord)
+        if (isWorldRecord) {
           response.wr = {
             score: runData.Score,
             name: user.username,
           };
-        else if (challengeRecord)
+          response.isWrRun = true;
+        } else if (challengeRecord) {
           response.wr = {
             score: challengeRecord.score,
             name: challengeRecord.username,
           };
+        }
 
         res.send(response);
         return;
@@ -189,6 +190,7 @@ async function getActiveChallenges(req, res) {
           const challengeID = userRecord.ID;
           if (records.hasOwnProperty(challengeID)) {
             records[challengeID].pb = userRecord.pb;
+            records[challengeID].runs = userRecord.runs;
 
             if (shouldGetRanks) {
               rankPromises.push(

@@ -210,30 +210,22 @@ class ChallengeHandler {
   async sendArtifact() {
     try {
       const response = await sendRunArtifact(this.artifact);
-      let notify = false;
+
       if (response.wr) {
         this.records.wr = response.wr;
-        this.checkForWrRun();
-        notify = true;
+        if (response.isWrRun) {
+          this.WrRun = true;
+          this.notifyWrListeners();
+        }
       }
+
       if (response.rank) {
         this.records.rank = response.rank;
-        notify = true;
       }
-      if (notify) this.notifyRecordsListeners();
+      this.notifyRecordsListeners();
     } catch (e) {
       localStorage.setItem("artifactToSend", JSON.stringify(this.artifact));
     }
-  }
-
-  checkForWrRun() {
-    if (
-      this.records.wr.score === this.artifact.Score &&
-      this.records.wr.name === AuthHandler.username
-    ) {
-      this.WrRun = true;
-    }
-    this.notifyWrListeners();
   }
 
   notifyWrListeners() {
