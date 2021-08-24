@@ -165,7 +165,8 @@ const getLeaderboardRankByScore = async (challengeID, score) => {
         $match: {
           "challengeDetails.ID": challengeObjectID,
           showOnLeaderboard: true,
-          "challengeDetails.pb": { $gt: score }
+          "challengeDetails.pb": { $gt: score },
+          banned: {$ne: true},
         },
       },
       { $count: "usersAhead" }
@@ -187,6 +188,7 @@ const getPRByLeaderboardRank = async (challengeID, rank) => {
         $match: {
           "challengeDetails.ID": challengeObjectID,
           showOnLeaderboard: true,
+          banned: { $ne: true },
         },
       },
       {
