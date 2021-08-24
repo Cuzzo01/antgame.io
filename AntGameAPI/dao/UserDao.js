@@ -128,6 +128,7 @@ const getLeaderboardByChallengeId = async id => {
         $match: {
           "challengeDetails.ID": challengeObjectID,
           showOnLeaderboard: true,
+          banned: {$ne: true}
         },
       },
       {
