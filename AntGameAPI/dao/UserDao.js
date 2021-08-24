@@ -17,7 +17,13 @@ const getUserPBsByChallengeList = async (userID, challengeIDList) => {
   const collection = await getCollection("users");
   const result = await collection.findOne(
     { _id: userObjectID, "challengeDetails.ID": { $in: objectIDList } },
-    { projection: { "challengeDetails.ID": 1, "challengeDetails.pb": 1 } }
+    {
+      projection: {
+        "challengeDetails.ID": 1,
+        "challengeDetails.pb": 1,
+        "challengeDetails.runs": 1,
+      },
+    }
   );
   if (!result) return null;
   return result.challengeDetails;

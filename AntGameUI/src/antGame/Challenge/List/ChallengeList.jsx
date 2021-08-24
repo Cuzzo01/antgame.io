@@ -63,7 +63,7 @@ const ListItem = props => {
             <span className={styles.bold}>{props.name}</span>
           </div>
         </div>
-        <div className={styles.records}>
+        <div className={styles.challengeData}>
           {AuthHandler.isAnon ? (
             <div />
           ) : (
@@ -72,10 +72,15 @@ const ListItem = props => {
                 <span>
                   Personal Record
                   <br />
-                  {props.records.rank ? (
-                    <span className={styles.bold}>(#{props.records.rank})</span>
-                  ) : null}{" "}
+                  {props.records.runs ? (
+                    <span>
+                      Runs:<span className={styles.bold}>{props.records.runs}</span>&nbsp;
+                    </span>
+                  ) : null}
                   {props.records.pb}
+                  {props.records.rank ? (
+                    <span className={styles.bold}>&nbsp;(#{props.records.rank})</span>
+                  ) : null}
                 </span>
               ) : (
                 "No PR"

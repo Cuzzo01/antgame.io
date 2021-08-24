@@ -38,7 +38,7 @@ body {
   align-items: center;
 }
 
-.records {
+.challengeData {
   display: grid;
   grid-template-columns: 45% 55%;
 }

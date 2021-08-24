@@ -190,6 +190,7 @@ async function getActiveChallenges(req, res) {
           const challengeID = userRecord.ID;
           if (records.hasOwnProperty(challengeID)) {
             records[challengeID].pb = userRecord.pb;
+            records[challengeID].runs = userRecord.runs;
 
             if (shouldGetRanks) {
               rankPromises.push(
