@@ -209,6 +209,14 @@ const isUserBanned = async id => {
   return false;
 };
 
+const getUsernameByID = async id => {
+  const userObjectID = TryParseObjectID(id, "UserID");
+
+  const collection = await getCollection("users");
+  const result = await collection.findOne({ _id: userObjectID }, { projection: { username: 1 } });
+  return result.username;
+};
+
 const TryParseObjectID = (stringID, name) => {
   try {
     return new ObjectID(stringID);
@@ -228,4 +236,5 @@ module.exports = {
   getLeaderboardRankByScore,
   getPRByLeaderboardRank,
   isUserBanned,
+  getUsernameByID,
 };

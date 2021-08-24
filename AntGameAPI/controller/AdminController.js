@@ -12,6 +12,7 @@ const {
   getRecentlyLoggedInUsers,
   getRunCount,
 } = require("../dao/AdminDao");
+const UserIdToUsernameHandler = require("../handler/UserIdToUsernameHandler");
 
 async function getStats(req, res) {
   let response = {
@@ -249,6 +250,14 @@ async function getRuns(req, res) {
         return;
       }
       const results = await getRecentRuns(parseInt(count));
+
+      // console.log(results)
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i];
+        results[i].username = await UserIdToUsernameHandler.getUsername(result.userID);
+        // console.log(result.userID, await UserIdToUsernameHandler.getUsername(result.userID))
+      }
+
       res.send(results);
     } else {
       send400(res, "Unknown by value");

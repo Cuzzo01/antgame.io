@@ -5,8 +5,8 @@ import { useEffect } from "react";
 
 const AdminHome = props => {
   useEffect(() => {
-    document.title = "Admin Portal"
-  }, [])
+    document.title = "Admin Portal";
+  }, []);
 
   return (
     <div className={styles.container}>
