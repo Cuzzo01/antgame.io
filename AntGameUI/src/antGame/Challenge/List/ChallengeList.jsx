@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./ChallengePage.module.css";
 import { getActiveChallenges } from "../../Challenge/ChallengeService";
 import AuthHandler from "../../Auth/AuthHandler";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 const ChallengeList = () => {
   const [loading, setLoading] = useState(true);
@@ -48,55 +48,55 @@ const ListItem = props => {
   // const history = useHistory();
 
   return (
-    <div
-      href="/"
-      className={styles.listItem}
-      onClick={e => {
-        e.preventDefault();
-        // This still breaks aspect ratio of game
-        // history.push(`/challenge/${props.id}`);
-        window.location = `/challenge/${props.id}`;
-      }}
-    >
-      <div className={styles.title}>
-        <div>
-          <span className={styles.bold}>{props.name}</span>
-          <br />
-          <LeaderboardLink id={props.id} />
-        </div>
-      </div>
-      <div className={styles.records}>
-        {AuthHandler.isAnon ? (
-          <div />
-        ) : (
-          <div className={styles.pr}>
-            {props.records.pb ? (
-              <span>
-                Personal Record
-                <br />
-                {props.records.rank ? (
-                  <span className={styles.bold}>(#{props.records.rank})</span>
-                ) : null}{" "}
-                {props.records.pb}
-              </span>
-            ) : (
-              "No PR"
-            )}
+    <div className={styles.listItem}>
+      <div
+        className={styles.challengeCard}
+        onClick={e => {
+          e.preventDefault();
+          // This still breaks aspect ratio of game
+          // history.push(`/challenge/${props.id}`);
+          window.location = `/challenge/${props.id}`;
+        }}
+      >
+        <div className={styles.title}>
+          <div>
+            <span className={styles.bold}>{props.name}</span>
           </div>
-        )}
-        <div className={styles.wr}>
-          World Record
-          <br />
-          {!props.records.wr || Object.keys(props.records.wr).length === 0 ? (
-            "No record"
+        </div>
+        <div className={styles.records}>
+          {AuthHandler.isAnon ? (
+            <div />
           ) : (
-            <div className={styles.worldRecord}>
-              {props.records.wr.score}-{props.records.wr.username}{" "}
-              <span className={styles.recordAge}>{props.records.wr.age} ago</span>
+            <div className={styles.pr}>
+              {props.records.pb ? (
+                <span>
+                  Personal Record
+                  <br />
+                  {props.records.rank ? (
+                    <span className={styles.bold}>(#{props.records.rank})</span>
+                  ) : null}{" "}
+                  {props.records.pb}
+                </span>
+              ) : (
+                "No PR"
+              )}
             </div>
           )}
+          <div className={`${styles.wr} ${styles.bold}`}>
+            World Record
+            <br />
+            {!props.records.wr || Object.keys(props.records.wr).length === 0 ? (
+              "No record"
+            ) : (
+              <div className={styles.worldRecord}>
+                {props.records.wr.score}-{props.records.wr.username}{" "}
+                <span className={styles.recordAge}>{props.records.wr.age} ago</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
+      <LeaderboardLink id={props.id} />
     </div>
   );
 };
@@ -104,15 +104,11 @@ const ListItem = props => {
 const LeaderboardLink = props => {
   const history = useHistory();
   return (
-    <span
-      className={styles.leaderboardLink}
-      onClick={e => {
-        e.preventDefault();
-        e.stopPropagation();
-        history.push(`/challenge/leaderboard/${props.id}`);
-      }}
+    <Link
+      className={`${styles.leaderboardLink} ${styles.bold}`}
+      to={`/challenge/leaderboard/${props.id}`}
     >
-      Leaderboard
-    </span>
+      <span>Leaderboard</span>
+    </Link>
   );
 };
