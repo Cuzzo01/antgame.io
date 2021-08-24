@@ -15,6 +15,7 @@ const LoginPage = props => {
   const location = useLocation();
 
   useEffect(() => {
+    document.title = "Login"
     getFlag("allow-logins").then(value => {
       if (value !== true && !window.location.href.includes("/admin")) {
         setAllowLogins(false);
