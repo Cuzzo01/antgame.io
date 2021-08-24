@@ -38,10 +38,10 @@ const VerifyArtifact = async (runData, clientID) => {
 
 const ReportedConfigMatchesExpectedConfig = (runData, expectedConfig) => {
   const TimeMatches = expectedConfig.seconds === runData.GameConfig.Time;
-  if (!TimeMatches) return "Time mismatch";
+  if (!TimeMatches) return `Time mismatch (${runData.GameConfig.Time})`;
 
   const MapPathMatches = expectedConfig.mapPath === runData.GameConfig.MapPath;
-  if (!MapPathMatches) return "MapPath mismatch";
+  if (!MapPathMatches) return `MapPath mismatch (${runData.GameConfig.mapPath})`;
 
   const CorrectNumberOfHomes = parseInt(expectedConfig.homeLimit) >= runData.HomeLocations.length;
   if (!CorrectNumberOfHomes) return "Too many homes";
@@ -49,13 +49,13 @@ const ReportedConfigMatchesExpectedConfig = (runData, expectedConfig) => {
   const antsPerCell = Math.round(AntsToSpawn / runData.HomeLocations.length);
   const expectedAntsSpawned = antsPerCell * runData.HomeLocations.length;
   const AntsToSpawnMatches = expectedAntsSpawned === runData.GameConfig.spawnedAnts;
-  if (!AntsToSpawnMatches) return "spawned ants mismatched mismatch";
+  if (!AntsToSpawnMatches) return `spawned ants mismatched (${runData.GameConfig.spawnedAnts})`;
 
   const FoodPerCellMatches = FoodPerCell === runData.GameConfig.FoodPerCell;
-  if (!FoodPerCellMatches) return "FoodPerCell mismatch";
+  if (!FoodPerCellMatches) return `FoodPerCell mismatch (${runData.GameConfig.FoodPerCell})`;
 
   const DirtPerCellMatches = DirtPerCell === runData.GameConfig.DirtPerCell;
-  if (!DirtPerCellMatches) return "DirtPerCell mismatch";
+  if (!DirtPerCellMatches) return `DirtPerCell mismatch (${runData.GameConfig.DirtPerCell})`;
   return true;
 };
 
@@ -116,10 +116,10 @@ const AnalyzeSnapshots = snapshots => {
         if (lastScore < 0.2) {
           if (percentScoreDelta !== Infinity && percentScoreDelta > 150)
             outOfBounds = `(${percentScoreDelta}, ${i}, 150)`;
-        } else if (score < 0.4) {
+        } else if (lastScore < 0.4) {
           if (percentScoreDelta !== Infinity && percentScoreDelta > 110)
             outOfBounds = `(${percentScoreDelta}, ${i}, 100)`;
-        } else if (score < 0.6) {
+        } else if (lastScore < 0.6) {
           if (percentScoreDelta !== Infinity && percentScoreDelta > 50)
             outOfBounds = `(${percentScoreDelta}, ${i}, 50)`;
         } else {
