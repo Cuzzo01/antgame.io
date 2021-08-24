@@ -211,7 +211,6 @@ class ChallengeHandler {
     try {
       const response = await sendRunArtifact(this.artifact);
 
-      debugger;
       if (response.wr) {
         this.records.wr = response.wr;
         if (response.isWrRun) {
