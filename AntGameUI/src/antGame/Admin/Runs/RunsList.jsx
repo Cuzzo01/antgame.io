@@ -53,7 +53,7 @@ const RunsListElement = props => {
       </span>
       <span className={styles.userID}>
         {props.run.userID ? (
-          <Link to={`/admin/user/${props.run.userID}`}>{props.run.userID.substr(8, 10)}</Link>
+          <Link to={`/admin/user/${props.run.userID}`}>{props.run.username}</Link>
         ) : (
           "N/A"
         )}

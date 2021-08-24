@@ -5,8 +5,8 @@ import { useEffect } from "react";
 
 const HomePage = () => {
   useEffect(() => {
-    document.title = "AntGame"
-  }, [])
+    document.title = "AntGame";
+  }, []);
 
   return (
     <div className={styles.container}>
