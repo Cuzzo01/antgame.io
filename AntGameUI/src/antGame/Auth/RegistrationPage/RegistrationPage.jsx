@@ -69,7 +69,7 @@ const RegistrationPage = props => {
             {...register("username", {
               required: true,
               minLength: "5",
-              maxLength: "20",
+              maxLength: "15",
               pattern: /^\S*$/,
             })}
             autoComplete="username"
@@ -82,7 +82,7 @@ const RegistrationPage = props => {
             <ErrorMessage>Must be at least 5 characters</ErrorMessage>
           )}
           {errors.username?.type === "maxLength" && (
-            <ErrorMessage>Cannot be over 20 characters</ErrorMessage>
+            <ErrorMessage>Cannot be over 15 characters</ErrorMessage>
           )}
           {errors.username?.type === "pattern" && (
             <ErrorMessage>Username can't contain whitespace</ErrorMessage>
