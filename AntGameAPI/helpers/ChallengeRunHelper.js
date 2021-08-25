@@ -102,8 +102,10 @@ const AnalyzeSnapshots = snapshots => {
 
     if (!lastSnapshot) lastSnapshot = snapshot;
     else {
-      const gameTimeDelta = lastSnapshot[1] - snapshot[1];
-      if (gameTimeDelta > 6) return `game time delta out of bounds (${gameTimeDelta}, ${i})`;
+      // Disabling due to high false positive rate
+      // FIXME: Is this check important? Should it be deleted or just reworked?
+      // const gameTimeDelta = lastSnapshot[1] - snapshot[1];
+      // if (gameTimeDelta > 6) return `game time delta out of bounds (${gameTimeDelta}, ${i})`;
 
       const score = snapshot[2];
       const lastScore = lastSnapshot[2];
