@@ -22,6 +22,7 @@ const ChallengeModal = props => {
       {props.show ? (
         <GenericModal
           alwaysShow
+          closeMessage={props.challengeHandler?.score.toString().includes("69") ? "Nice" : "Close"}
           title={`Results: ${props.challengeHandler?.config.name}`}
           onHide={() => props.closeModal()}
           body={
