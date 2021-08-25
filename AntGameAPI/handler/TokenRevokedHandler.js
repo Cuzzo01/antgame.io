@@ -26,7 +26,7 @@ class TokenRevokedHandler {
         IsValid = !IsBanned;
         this.resultCache.setItem(userID, IsValid, this.timeToCache.getValue());
       } catch (e) {
-        console.error("Threw error getting token status in TokenRevokedHandler", e);
+        console.error(`Threw error getting token status in TokenRevokedHandler (${userID})`, e);
         return null;
       }
       return IsValid;
