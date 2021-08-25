@@ -387,7 +387,8 @@ export class MapHandler {
   returnFood = () => {
     this.foodReturned++;
     this.foodInTransit--;
-    if (this.foodReturned === this.foodToStopTime) this.toggleTimer(false);
+    if (this.foodReturned === this.foodToStopTime && this._gameMode === "sandbox")
+      this.toggleTimer(false);
   };
 
   decayDirt = mapXY => {
