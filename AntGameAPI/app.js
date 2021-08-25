@@ -52,7 +52,7 @@ app.use(
       return;
     }
 
-    if (req.user.admin !== true) {
+    if (!req.user.admin && !req.user.anon) {
       const userID = req.user.id;
       const IsTokenValid = await TokenRevokedHandler.isTokenValid(userID);
       if (IsTokenValid === false) {
