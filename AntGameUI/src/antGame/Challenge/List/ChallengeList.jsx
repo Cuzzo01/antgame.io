@@ -89,13 +89,15 @@ const ListItem = props => {
           )}
           <div className={`${styles.wr} ${styles.bold}`}>
             World Record
+            {props.records.wr ? (
+              <span className={styles.recordAge}>{props.records.wr.age} ago</span>
+            ) : null}
             <br />
             {!props.records.wr || Object.keys(props.records.wr).length === 0 ? (
               "No record"
             ) : (
               <div className={styles.worldRecord}>
                 {props.records.wr.score}-{props.records.wr.username}{" "}
-                <span className={styles.recordAge}>{props.records.wr.age} ago</span>
               </div>
             )}
           </div>
@@ -113,7 +115,7 @@ const LeaderboardLink = props => {
       className={`${styles.leaderboardLink} ${styles.bold}`}
       to={`/challenge/leaderboard/${props.id}`}
     >
-      <span>Leaderboard</span>
+      Leaderboard
     </Link>
   );
 };
