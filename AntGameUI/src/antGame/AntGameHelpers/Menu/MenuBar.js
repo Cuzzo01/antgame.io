@@ -60,7 +60,7 @@ export default function MenuBar(props) {
             mapNameDisabled={IsChallenge}
             blockDrawHandler={props.blockDrawHandler}
             saveImageHandler={props.saveImageHandler}
-            loadSampleMapHandler={props.loadSampleMapHandler}
+            loadMapHandler={props.loadMapHandler}
             setMapNameHandler={props.setMapNameHandler}
             getMapName={props.getMapName}
           />

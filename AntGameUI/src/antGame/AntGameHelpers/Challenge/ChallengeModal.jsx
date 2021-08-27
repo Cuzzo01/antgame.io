@@ -28,6 +28,14 @@ const ChallengeModal = props => {
           body={
             <div className={styles.body}>
               <div className={styles.runInfo}>
+                {AuthHandler.isAnon ? (
+                  <h6>
+                    <br />
+                    Score not saved
+                    <br />
+                    Login to get on the leaderboard
+                  </h6>
+                ) : null}
                 {isWrRun ? <h4 className={styles.newWR}>New World Record!</h4> : null}
                 {props.challengeHandler?.isPB ? (
                   <div>
@@ -38,14 +46,6 @@ const ChallengeModal = props => {
               </div>
               <h5 className={styles.score}>Score</h5>
               <h5>{props.challengeHandler?.score}</h5>
-              {AuthHandler.isAnon ? (
-                <h6>
-                  <br />
-                  Score not saved
-                  <br />
-                  Login to save score.
-                </h6>
-              ) : null}
             </div>
           }
         />

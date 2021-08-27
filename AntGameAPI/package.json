@@ -17,6 +17,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.9",
     "prettier": "^2.3.2",
+    "simplex-noise": "^3.0.0",
     "the-big-username-blacklist": "^1.5.2"
   }
 }
