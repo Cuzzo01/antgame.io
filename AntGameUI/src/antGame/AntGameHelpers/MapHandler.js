@@ -40,6 +40,7 @@ export class MapHandler {
     this.mapName = "";
     this.lastLoadedSamplePath = "";
     this._gameMode = "";
+    this.foodReturnedLocations = {};
   }
 
   set gameMode(mode) {
@@ -58,6 +59,10 @@ export class MapHandler {
   get percentFoodReturned() {
     this.calculateFoodRatio();
     return this.foodRatio;
+  }
+
+  get homeFoodCounts() {
+    return this.foodReturnedLocations;
   }
 
   get homeCellCount() {
@@ -317,6 +322,7 @@ export class MapHandler {
     this.placeAndCountDecayableBlocks();
     this.calculateFoodToStopTime();
     this.foodReturned = 0;
+    this.foodReturnedLocations = {};
   };
 
   calculateFoodToStopTime = () => {
@@ -341,6 +347,7 @@ export class MapHandler {
 
   handleReset = () => {
     this.foodReturned = 0;
+    this.foodReturnedLocations = {};
     this.foodInTransit = 0;
     this.respawnDecayableBlocks();
     this.placeAndCountDecayableBlocks();
@@ -390,9 +397,13 @@ export class MapHandler {
     this.foodRatio = this.foodReturned / totalFood;
   };
 
-  returnFood = () => {
+  returnFood = homePosition => {
     this.foodReturned++;
     this.foodInTransit--;
+    const homePositionInt = MapXYToInt(homePosition);
+    if (this.foodReturnedLocations[homePositionInt])
+      this.foodReturnedLocations[homePositionInt] += 1;
+    else this.foodReturnedLocations[homePositionInt] = 1;
     if (this.foodReturned === this.foodToStopTime && this._gameMode === "sandbox")
       this.toggleTimer(false);
   };

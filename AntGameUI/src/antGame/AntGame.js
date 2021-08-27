@@ -390,7 +390,6 @@ export default class AntGame extends React.Component {
               playButtonHandler={this.updatePlayState}
               resetHandler={this.resetHandler}
               clearMapHandler={this.clearMap}
-              loadMapHandler={this.loadMapHandler}
               saveMapHandler={this.saveMapHandler}
               mapClear={this.state.emptyMap}
               brushSizeHandler={this.updateBrushSize}
