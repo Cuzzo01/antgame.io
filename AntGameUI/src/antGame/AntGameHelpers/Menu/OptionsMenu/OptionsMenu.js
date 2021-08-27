@@ -1,6 +1,5 @@
-import { useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useRef } from "react";
 import { MenuIcon } from "../../Icons";
-import { GameModeContext } from "../../../GameModeContext";
 import AuthHandler from "../../../Auth/AuthHandler";
 
 import styles from "./OptionsMenu.module.css";
@@ -9,9 +8,6 @@ const OptionsMenu = props => {
   const [showMenu, setShowMenu] = useState();
   const menuRef = useRef(null);
   const menuButtonRef = useRef(null);
-
-  const gameMode = useContext(GameModeContext);
-  const IsChallengeMode = gameMode.mode === "challenge";
 
   useEffect(() => {
     if (props.playState && showMenu) {

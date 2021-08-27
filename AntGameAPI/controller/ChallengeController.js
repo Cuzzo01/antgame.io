@@ -75,7 +75,22 @@ async function postRun(req, res) {
         tags: runTags,
       };
 
-      if (saveRun !== "No Snapshot") runRecord.details.snapshots = runData.Snapshots;
+      if (saveRun !== "No Snapshot") {
+        let snapshots = false;
+        try {
+          snapshots = runData.Snapshots.map(snapshot => {
+            return [
+              ...snapshot.slice(0, snapshot.length - 1),
+              JSON.parse(snapshot[snapshot.length - 1]),
+            ];
+          });
+        } catch (e) {
+          console.log(e);
+          console.log("Unable to parse snapshots, using unparsed");
+          runRecord.tags.push({ type: "Unparsable snapshots" });
+        }
+        runRecord.details.snapshots = snapshots ? snapshots : runData.Snapshots;
+      }
 
       if (user.id) {
         runRecord.userID = user.id;
