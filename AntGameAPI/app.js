@@ -10,6 +10,7 @@ const _authController = require("./auth/AuthController");
 const _userController = require("./controller/UserController");
 const _adminController = require("./controller/AdminController");
 const _flagController = require("./controller/FlagController");
+const _mapController = require("./controller/MapController");
 const TokenHandler = require("./auth/WebTokenHandler");
 const TokenRevokedHandler = require("./handler/TokenRevokedHandler");
 const { RejectNotAdmin } = require("./auth/AuthHelpers");
@@ -75,6 +76,8 @@ app.get("/admin/runs", RejectNotAdmin, _adminController.getRuns);
 app.post("/admin/config", RejectNotAdmin, _adminController.postConfig);
 
 app.get("/flag/:name", _flagController.getFlag);
+
+app.get("/map", RejectNotAdmin, _mapController.getRandomMap);
 
 app.post("/auth/login", _authController.verifyLogin);
 app.post("/auth/anonToken", _authController.getAnonymousToken);

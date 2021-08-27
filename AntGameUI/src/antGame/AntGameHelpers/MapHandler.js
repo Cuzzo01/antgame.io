@@ -1,3 +1,4 @@
+import axios from "axios";
 import { Config } from "../config";
 import { SaveGameHandler } from "./SaveGameHandler";
 
@@ -168,9 +169,9 @@ export class MapHandler {
   }
 
   fetchAndLoadMap(path) {
-    return fetch(path)
-      .then(response => response.json())
-      .then(jsonData => this.loadMap(jsonData, false));
+    return axios.get(path).then(res => {
+      this.loadMap(res.data, true);
+    });
   }
 
   preloadMap(mapToLoad) {

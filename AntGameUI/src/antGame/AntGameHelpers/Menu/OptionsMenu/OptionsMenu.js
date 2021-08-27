@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useContext } from "react";
 import { MenuIcon } from "../../Icons";
 import { GameModeContext } from "../../../GameModeContext";
+import AuthHandler from "../../../Auth/AuthHandler";
 
 import styles from "./OptionsMenu.module.css";
 
@@ -73,11 +74,14 @@ const OptionsMenu = props => {
           <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("map&trail"))}>
             Both
           </MenuRow>
-          {!IsChallengeMode ? (
+          <MenuHeader>Maps</MenuHeader>
+          <MenuRow onClick={getMenuCallback(() => props.loadMapHandler("sample"))}>
+            Load sample
+          </MenuRow>
+          {AuthHandler.isAdmin ? (
             <div>
-              <MenuHeader>Maps</MenuHeader>
-              <MenuRow onClick={getMenuCallback(() => props.loadSampleMapHandler())}>
-                Load sample
+              <MenuRow onClick={getMenuCallback(() => props.loadMapHandler("generated"))}>
+                Generate Map
               </MenuRow>
             </div>
           ) : null}
