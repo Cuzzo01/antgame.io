@@ -85,6 +85,7 @@ const ScoreMatchesFinalSnapshot = runData => {
 };
 
 const AnalyzeSnapshots = snapshots => {
+  // FIXME: Should this value be validated? Maybe store it in the DB for each map?
   const totalFood = snapshots[0][3];
 
   let lastSnapshot = false;
@@ -95,6 +96,16 @@ const AnalyzeSnapshots = snapshots => {
     const percent = snapshot[2];
     const foodOnMap = snapshot[3];
     const foodInTransit = snapshot[4];
+    const homeFoodCounts = JSON.parse(snapshot[5]);
+
+    let currentFoodReturned = 0;
+    for (const [homePos, foodCount] of Object.entries(homeFoodCounts)) {
+      currentFoodReturned += foodCount;
+    }
+    const calculatedPercent = (currentFoodReturned / totalFood).toFixed(4);
+    const roundedPercent = percent.toFixed(4);
+    if (calculatedPercent !== roundedPercent)
+      return `calculated percent doesn't match reported (${calculatedPercent}, ${roundedPercent}, ${i})`;
 
     const percentGuess = (totalFood - (foodOnMap + foodInTransit)) / totalFood;
     const guessDelta = Math.round(Math.abs(percent - percentGuess) * 10000);

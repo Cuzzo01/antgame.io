@@ -298,7 +298,7 @@ export class Ant {
 
         if (newCell === this.homeBrush.value) {
           if (this.hasFood) {
-            this.mapHandler.returnFood();
+            this.mapHandler.returnFood(pos);
             this.foodChange();
           } else {
             this.distanceTraveled = 0;

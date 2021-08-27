@@ -175,6 +175,7 @@ class ChallengeHandler {
       mapHandler.percentFoodReturned,
       mapHandler.foodOnMap,
       mapHandler.foodInTransit,
+      JSON.stringify(mapHandler.homeFoodCounts),
     ]);
   }
 
