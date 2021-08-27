@@ -350,8 +350,14 @@ export default class AntGame extends React.Component {
     this.blockDrawing = blockDrawing;
   };
 
-  loadSampleMap = () => {
-    this.mapHandler.loadSampleMap().then(_ => this.reset());
+  loadMap = type => {
+    if (type === "sample") {
+      this.mapHandler.loadSampleMap().then(_ => this.reset());
+    } else if (type === "generated") {
+      this.mapHandler.fetchAndLoadMap("/api/map");
+    } else {
+      return;
+    }
     if (this.state.emptyMap) this.setState({ emptyMap: false });
     GTMEmitter.LoadSampleHandler();
   };
@@ -391,7 +397,7 @@ export default class AntGame extends React.Component {
               brushTypeHandler={this.updateBrushType}
               blockDrawHandler={this.setBlockDraw}
               saveImageHandler={this.saveImageHandler}
-              loadSampleMapHandler={this.loadSampleMap}
+              loadMapHandler={this.loadMap}
               setMapNameHandler={this.setMapName}
               getMapName={() => this.mapHandler.mapName}
               foodReturned={this.state.foodReturned}
