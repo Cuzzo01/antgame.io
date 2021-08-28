@@ -66,43 +66,44 @@ const generateMap = (width, height) => {
     }
   }
 
-  RemoveGroupsSmallerThan('f', 35, toReturn)
+  RemoveGroupsSmallerThan("f", 35, toReturn);
 
   return toReturn;
 };
 
 const RemoveGroupsSmallerThan = (charToRemove, minGroupSize, mapArr) => {
-  let seenList = []
+  let seenList = [];
   for (let x = 0; x < mapArr.length; x++) {
     for (let y = 0; y < mapArr[0].length; y++) {
-      const cellValue = mapArr[x][y]
+      const cellValue = mapArr[x][y];
       if (cellValue === charToRemove && !seenList.includes(`${x}, ${y}`)) {
-        let newlySeen = []
-        CountGroupSize(x, y, charToRemove, mapArr, newlySeen)
+        let newlySeen = [];
+        CountGroupSize(x, y, charToRemove, mapArr, newlySeen);
         if (newlySeen.length < minGroupSize) {
           newlySeen.forEach(location => {
-            const xyPos = location.split(',').map(coord => parseInt(coord))
-            mapArr[xyPos[0]][xyPos[1]] = " "
-          })
+            const xyPos = location.split(",").map(coord => parseInt(coord));
+            mapArr[xyPos[0]][xyPos[1]] = " ";
+          });
         } else {
-          seenList = [...seenList, ...newlySeen]
+          seenList = [...seenList, ...newlySeen];
         }
       }
     }
   }
-}
+};
 
 const CountGroupSize = (x, y, charToCount, mapArr, seenList) => {
-  seenList.push(`${x}, ${y}`)
+  seenList.push(`${x}, ${y}`);
   for (let i = x - 1; i <= x + 1; i++) {
     for (let j = y - 1; j <= y + 1; j++) {
       if (mapArr[i] && mapArr[i][j]) {
-        const cellValue = mapArr[i][j]
-        if (cellValue === charToCount && !seenList.includes(`${i}, ${j}`)) CountGroupSize(i, j, charToCount, mapArr, seenList)
+        const cellValue = mapArr[i][j];
+        if (cellValue === charToCount && !seenList.includes(`${i}, ${j}`))
+          CountGroupSize(i, j, charToCount, mapArr, seenList);
       }
     }
   }
-}
+};
 
 const AreSurroundingCellsClear = (x, y, radius, clearOf, mapArr) => {
   for (let i = x - radius; i <= x + radius; i++) {

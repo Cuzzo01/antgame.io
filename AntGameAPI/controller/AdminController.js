@@ -12,6 +12,8 @@ const {
   getRecentlyLoggedInUsers,
   getRunCount,
 } = require("../dao/AdminDao");
+const { getActiveChallenges } = require("../dao/ChallengeDao");
+const { getLeaderboardRankByScore } = require("../dao/UserDao");
 const UserIdToUsernameHandler = require("../handler/UserIdToUsernameHandler");
 
 async function getStats(req, res) {
@@ -202,6 +204,34 @@ async function getUserDetails(req, res) {
   try {
     const id = req.params.id;
     let result = await getUserDetailsByID(id);
+    const activeChallenges = await getActiveChallenges(id);
+
+    let rankPromises = [];
+    result.activeChallengeDetails = {};
+    const userChallengeDetails = result.challengeDetails;
+    if (userChallengeDetails) {
+      activeChallenges.forEach(challenge => {
+        const userDetails = userChallengeDetails.find(details => details.ID.equals(challenge.id));
+        if (userDetails) {
+          rankPromises.push(
+            getLeaderboardRankByScore(challenge.id, userDetails.pb).then(rank => {
+              return { id: challenge.id, rank: rank };
+            })
+          );
+          result.activeChallengeDetails[challenge.id] = {
+            score: userDetails.pb,
+            runID: userDetails.pbRunID,
+            name: challenge.name,
+            runTime: challenge.id.getTimestamp()
+          };
+        }
+      });
+
+      await Promise.all(rankPromises).then(ranks => {
+        ranks.forEach(rank => (result.activeChallengeDetails[rank.id].rank = rank.rank));
+      });
+    }
+    delete result.challengeDetails;
 
     res.send(result);
   } catch (e) {
