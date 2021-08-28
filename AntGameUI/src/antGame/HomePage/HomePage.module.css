@@ -9,10 +9,18 @@
   background-color: black;
   padding: 1em;
   border-radius: 1.5em;
+  padding-top: 50.42%;
+  position: relative;
+}
+
+.titleInner {
+  position: absolute;
+  top: 1em;
+  left: 1em;
 }
 
 img {
-  max-width: 100%;
+  width: 98.5%;
 }
 
 .links {
