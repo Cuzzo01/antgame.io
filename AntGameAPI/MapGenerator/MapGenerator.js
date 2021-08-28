@@ -14,7 +14,7 @@ class Noise {
 }
 
 const BorderSize = 2;
-const WallNoiseFloor = 0.5;
+const WallNoiseFloor = 0.55;
 const FoodNoiseFloor = 0.7;
 const WallBaseFreq = 4.5;
 const FoodFreq = 5;
@@ -55,7 +55,6 @@ const generateMap = (width, height) => {
       if (toReturn[x][y] === " ") {
         const nx = x / width - 0.5;
         const ny = y / height - 0.5;
-
         const value = noise3.getNoise(nx, ny);
 
         if (
@@ -67,8 +66,43 @@ const generateMap = (width, height) => {
     }
   }
 
+  RemoveGroupsSmallerThan('f', 35, toReturn)
+
   return toReturn;
 };
+
+const RemoveGroupsSmallerThan = (charToRemove, minGroupSize, mapArr) => {
+  let seenList = []
+  for (let x = 0; x < mapArr.length; x++) {
+    for (let y = 0; y < mapArr[0].length; y++) {
+      const cellValue = mapArr[x][y]
+      if (cellValue === charToRemove && !seenList.includes(`${x}, ${y}`)) {
+        let newlySeen = []
+        CountGroupSize(x, y, charToRemove, mapArr, newlySeen)
+        if (newlySeen.length < minGroupSize) {
+          newlySeen.forEach(location => {
+            const xyPos = location.split(',').map(coord => parseInt(coord))
+            mapArr[xyPos[0]][xyPos[1]] = " "
+          })
+        } else {
+          seenList = [...seenList, ...newlySeen]
+        }
+      }
+    }
+  }
+}
+
+const CountGroupSize = (x, y, charToCount, mapArr, seenList) => {
+  seenList.push(`${x}, ${y}`)
+  for (let i = x - 1; i <= x + 1; i++) {
+    for (let j = y - 1; j <= y + 1; j++) {
+      if (mapArr[i] && mapArr[i][j]) {
+        const cellValue = mapArr[i][j]
+        if (cellValue === charToCount && !seenList.includes(`${i}, ${j}`)) CountGroupSize(i, j, charToCount, mapArr, seenList)
+      }
+    }
+  }
+}
 
 const AreSurroundingCellsClear = (x, y, radius, clearOf, mapArr) => {
   for (let i = x - radius; i <= x + radius; i++) {
