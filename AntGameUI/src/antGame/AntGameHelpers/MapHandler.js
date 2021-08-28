@@ -179,7 +179,7 @@ export class MapHandler {
         .create()
         .get(path)
         .then(res => {
-          this.loadMap(res.data, true);
+          this.loadMap(res.data, false);
         });
     else
       return axios.get(path).then(res => {
