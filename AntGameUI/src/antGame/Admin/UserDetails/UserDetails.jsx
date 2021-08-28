@@ -99,10 +99,10 @@ const getDetailsList = challengeRecords => {
   for (const [challengeID, challengeDetails] of Object.entries(challengeRecords)) {
     listToReturn.push(
       <div className={styles.challengeListItem}>
-        <span className={styles.alignRight} title={GetTimeString(challengeDetails.runTime)}>
+        <span className={styles.alignCenter} title={GetTimeString(challengeDetails.runTime)}>
           ({GetGeneralTimeString(challengeDetails.runTime)} ago)
         </span>
-        <span className={styles.alignRight}>#{challengeDetails.rank}</span>
+        <span className={styles.alignCenter}>#{challengeDetails.rank}</span>
         <span className={styles.alignCenter}>
           <Link to={""}>{challengeDetails.score}</Link>
         </span>

@@ -5,7 +5,7 @@
 
 .challengeListItem {
   display: grid;
-  grid-template-columns: 5em 3em 6em auto;
+  grid-template-columns: 7em 5em 6em auto;
 }
 
 .alignRight {
