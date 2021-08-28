@@ -109,7 +109,6 @@ const ListItem = props => {
 };
 
 const LeaderboardLink = props => {
-  const history = useHistory();
   return (
     <Link
       className={`${styles.leaderboardLink} ${styles.bold}`}
