@@ -102,10 +102,13 @@ const AnalyzeSnapshots = snapshots => {
     for (const [homePos, foodCount] of Object.entries(homeFoodCounts)) {
       currentFoodReturned += foodCount;
     }
-    const calculatedPercent = (currentFoodReturned / totalFood).toFixed(4);
-    const roundedPercent = percent.toFixed(4);
-    if (calculatedPercent !== roundedPercent)
-      return `calculated percent doesn't match reported (${calculatedPercent}, ${roundedPercent}, ${i})`;
+    if (percent !== 0) {
+      const calculatedPercentHigher = ((currentFoodReturned + 1) / totalFood).toFixed(4);
+      const calculatedPercentLower = ((currentFoodReturned - 1) / totalFood).toFixed(4);
+      const roundedPercent = percent.toFixed(4);
+      if (roundedPercent > calculatedPercentHigher || roundedPercent < calculatedPercentLower)
+        return `calculated percent doesn't match reported (${calculatedPercentLower}, ${roundedPercent}, ${calculatedPercentHigher},  ${i})`;
+    }
 
     const percentGuess = (totalFood - (foodOnMap + foodInTransit)) / totalFood;
     const guessDelta = Math.round(Math.abs(percent - percentGuess) * 10000);
