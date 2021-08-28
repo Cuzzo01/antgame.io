@@ -175,9 +175,12 @@ export class MapHandler {
 
   fetchAndLoadMap(path) {
     if (path.includes("digitaloceanspaces.com"))
-      return axios.create().get(path).then(res => {
-        this.loadMap(res.data, true);
-      });
+      return axios
+        .create()
+        .get(path)
+        .then(res => {
+          this.loadMap(res.data, true);
+        });
     else
       return axios.get(path).then(res => {
         this.loadMap(res.data, true);

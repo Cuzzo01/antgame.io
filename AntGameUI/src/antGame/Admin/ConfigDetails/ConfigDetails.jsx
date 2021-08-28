@@ -62,7 +62,6 @@ const ConfigDetails = props => {
             <OrderSection
               currentOrder={details.order}
               handleSave={newOrder => {
-                console.log("here");
                 setOrder(newOrder);
               }}
             />

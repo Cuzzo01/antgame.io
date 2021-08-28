@@ -3,8 +3,17 @@
   grid-template-columns: auto auto 23em;
 }
 
+.challengeListItem {
+  display: grid;
+  grid-template-columns: 5em 3em 6em auto;
+}
+
 .alignRight {
   text-align: right;
+}
+
+.alignCenter {
+  text-align: center;
 }
 
 .divSection {

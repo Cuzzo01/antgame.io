@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { getUserDetails, patchUserDetails } from "../AdminService";
 import ExpandList from "../Helpers/ExpandList";
-import { GetTimeString } from "../Helpers/FunctionHelpers";
+import { GetGeneralTimeString, GetTimeString } from "../Helpers/FunctionHelpers";
 import styles from "./UserDetails.module.css";
 import { Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const UserDetails = props => {
   const [details, setDetails] = useState(false);
@@ -14,14 +15,12 @@ const UserDetails = props => {
 
   const populateDetails = id => {
     getUserDetails(id).then(result => {
-      console.log(result);
       setDetails(result);
     });
   };
 
   const setBanned = newBanned => {
     patchUserDetails(props.id, { banned: newBanned }).then(result => {
-      console.log(result);
       setDetails(result);
     });
   };
@@ -37,6 +36,16 @@ const UserDetails = props => {
             <p>Admin: {boolToString(details.admin)}</p>
             <p>Banned: {boolToString(details.banned)}</p>
           </div>
+          <ExpandList
+            title={"Challenge Details"}
+            itemsToList={getDetailsList(details.activeChallengeDetails)}
+            emptyMessage={"No runs on active challenges"}
+          />
+          <ExpandList
+            title={"Logins"}
+            itemsToList={getLoginsList(details.loginRecords)}
+            emptyMessage={"No Recorded Logins"}
+          />
           <div className={styles.divSection}>
             <h5>Registration Data</h5>
             {details.registrationData ? (
@@ -55,13 +64,6 @@ const UserDetails = props => {
             <Button onClick={() => setBanned(!details.banned)}>
               {details.banned ? "Unban User" : "Ban User"}
             </Button>
-          </div>
-          <div>
-            <ExpandList
-              title={"Logins"}
-              itemsToList={getLoginsList(details.loginRecords)}
-              emptyMessage={"No Recorded Logins"}
-            />
           </div>
         </div>
       ) : null}
@@ -85,6 +87,28 @@ const getLoginsList = loginRecords => {
         <span title={"Local Time"}>({GetTimeString(record.time)})</span>
         <span className={styles.alignRight}>{getFormattedIpString(record.IP)}</span>
         <span className={styles.alignRight}>{record.clientID}</span>
+      </div>
+    );
+  }
+  return listToReturn;
+};
+
+const getDetailsList = challengeRecords => {
+  let listToReturn = [];
+  if (!challengeRecords) return listToReturn;
+  for (const [challengeID, challengeDetails] of Object.entries(challengeRecords)) {
+    listToReturn.push(
+      <div className={styles.challengeListItem}>
+        <span className={styles.alignRight} title={GetTimeString(challengeDetails.runTime)}>
+          ({GetGeneralTimeString(challengeDetails.runTime)} ago)
+        </span>
+        <span className={styles.alignRight}>#{challengeDetails.rank}</span>
+        <span className={styles.alignCenter}>
+          <Link to={""}>{challengeDetails.score}</Link>
+        </span>
+        <span>
+          <Link to={`/admin/config/${challengeID}`}>{challengeDetails.name}</Link>
+        </span>
       </div>
     );
   }

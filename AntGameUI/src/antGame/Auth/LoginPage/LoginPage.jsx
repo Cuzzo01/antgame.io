@@ -50,7 +50,6 @@ const LoginPage = props => {
     event.preventDefault();
     if (formState === "loading") return;
     AuthHandler.login(username, password).then(result => {
-      console.log(result);
       if (result === true) redirectOut();
       else if (result === false) setFormState("error");
       else if (result === "banned") setFormState("banned");
