@@ -14,6 +14,7 @@ const _mapController = require("./controller/MapController");
 const TokenHandler = require("./auth/WebTokenHandler");
 const TokenRevokedHandler = require("./handler/TokenRevokedHandler");
 const { RejectNotAdmin } = require("./auth/AuthHelpers");
+const responseTime = require("response-time");
 
 const UnauthenticatedRoutes = [
   "/auth/login",
@@ -29,6 +30,13 @@ const send400 = (res, message) => {
 };
 
 app.use(bodyParser.json({ extended: true }));
+
+app.use(
+  responseTime((req, res, time) => {
+    console.log(`${req.method} ${req.url} ${time}`);
+  })
+);
+
 app.use(
   jwt({ secret: TokenHandler.secret, algorithms: ["HS256"] }).unless({
     path: UnauthenticatedRoutes,
