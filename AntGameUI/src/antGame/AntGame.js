@@ -104,6 +104,8 @@ export default class AntGame extends React.Component {
 
   componentWillUnmount() {
     clearInterval(this.mapUiUpdateInterval);
+    clearInterval(this.challengeSnapshotInterval);
+    clearInterval(this.gameLoopInterval);
 
     let bodyElement = document.querySelector("body");
     this.challengeHandler?.clearConfig();
