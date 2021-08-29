@@ -34,7 +34,7 @@ app.use(bodyParser.json({ extended: true }));
 
 app.use(
   responseTime((req, res, time) => {
-    if (req.url !== "/health") console.log(`${req.method} ${req.url} ${GetIpAddress(req)} ${time}`);
+    if (req.url !== "/health") console.log(`${req.method} ${req.url} ${GetIpAddress(req)} ${time} ${res.statusCode}`);
   })
 );
 
