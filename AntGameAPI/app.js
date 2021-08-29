@@ -15,6 +15,7 @@ const TokenHandler = require("./auth/WebTokenHandler");
 const TokenRevokedHandler = require("./handler/TokenRevokedHandler");
 const { RejectNotAdmin } = require("./auth/AuthHelpers");
 const responseTime = require("response-time");
+const { GetIpAddress } = require("./helpers/IpHelper");
 
 const UnauthenticatedRoutes = [
   "/auth/login",
@@ -33,7 +34,7 @@ app.use(bodyParser.json({ extended: true }));
 
 app.use(
   responseTime((req, res, time) => {
-    console.log(`${req.method} ${req.url} ${time}`);
+    if (req.url !== "/health") console.log(`${req.method} ${req.url} ${GetIpAddress(req)} ${time}`);
   })
 );
 

@@ -6,6 +6,7 @@ const {
   RegistrationDataSatisfiesCriteria,
   IsAllowedUsername,
 } = require("../helpers/RegistrationHelper");
+const { GetIpAddress } = require("../helpers/IpHelper");
 
 async function verifyLogin(req, res) {
   try {
@@ -180,14 +181,4 @@ async function createUser(req, res) {
     res.send("Could not create user");
   }
 }
-
-const GetIpAddress = req => {
-  const cfIP = req.headers["do-connecting-ip"];
-  if (cfIP) return cfIP;
-  const forwardIP = req.headers["x-forwarded-for"];
-  if (forwardIP) return forwardIP;
-  const sourceIP = req.connection.remoteAddress;
-  return sourceIP;
-};
-
 module.exports = { verifyLogin, createUser, getAnonymousToken, registerUser };
