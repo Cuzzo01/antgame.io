@@ -109,6 +109,7 @@ const getDetailsList = challengeRecords => {
         <span>
           <Link to={`/admin/config/${challengeID}`}>{challengeDetails.name}</Link>
         </span>
+        <span className={styles.alignRight}>{challengeDetails.runs} runs</span>
       </div>
     );
   }

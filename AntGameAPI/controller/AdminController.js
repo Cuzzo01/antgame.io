@@ -222,6 +222,7 @@ async function getUserDetails(req, res) {
             score: userDetails.pb,
             runID: userDetails.pbRunID,
             name: challenge.name,
+            runs: userDetails.runs,
             runTime: userDetails.pbRunID.getTimestamp(),
           };
         }
