@@ -284,7 +284,8 @@ async function getRuns(req, res) {
 
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
-        results[i].username = await UserIdToUsernameHandler.getUsername(result.userID);
+        if (result.userID)
+          results[i].username = await UserIdToUsernameHandler.getUsername(result.userID);
       }
 
       res.send(results);
