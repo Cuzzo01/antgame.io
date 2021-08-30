@@ -242,7 +242,6 @@ export class MapHandler {
           else {
             const maxPerCell = cell[0] === FoodValue ? FoodPerCell : DirtPerCell;
             strength = Math.ceil(BlockDecaySteps * (cellAmount / maxPerCell));
-            this.eraseCell(cellPos);
           }
           const index = cell[0] + strength;
           this.setFillColor(this.brushColors[index]);
@@ -250,6 +249,7 @@ export class MapHandler {
           this.setFillColor(this.brushColors[cell]);
         }
       }
+      this.eraseCell(cellPos);
       this.drawCellColor(cellPos);
     });
     this.cellsToDraw = [];
