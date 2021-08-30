@@ -12,7 +12,7 @@ class TokenHandler {
   }
 
   generateAccessToken(user) {
-    return jwt.sign(user, this.secret, { expiresIn: "4h" });
+    return jwt.sign(user, this.secret, { expiresIn: "6h" });
   }
 
   verifyToken(token) {
