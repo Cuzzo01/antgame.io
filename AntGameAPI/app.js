@@ -25,8 +25,8 @@ const UnauthenticatedRoutes = [
   "/health",
 ];
 
-const send400 = (res, message) => {
-  res.status(400);
+const send401 = (res, message) => {
+  res.status(401);
   res.send(message);
 };
 
@@ -34,7 +34,8 @@ app.use(bodyParser.json({ extended: true }));
 
 app.use(
   responseTime((req, res, time) => {
-    if (req.url !== "/health") console.log(`${req.method} ${req.url} ${GetIpAddress(req)} ${time} ${res.statusCode}`);
+    if (req.url !== "/health")
+      console.log(`${req.method} ${req.url} ${GetIpAddress(req)} ${time} ${res.statusCode}`);
   })
 );
 
@@ -46,10 +47,10 @@ app.use(
     if (!err) {
       next();
     } else if (err.code === "credentials_required") {
-      send400(res, "JWT required");
+      send401(res, "JWT required");
       return;
     } else if (err.code === "invalid_token") {
-      send400(res, "Invalid JWT");
+      send401(res, "Invalid JWT");
       return;
     }
     console.log("Unknown AuthError:", err);
