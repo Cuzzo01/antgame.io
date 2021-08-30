@@ -106,7 +106,8 @@ class AuthHandler {
           localStorage.removeItem("artifactToSend");
         })
         .catch(e => {
-          if (e.response.status === 418) localStorage.removeItem("artifactToSend");
+          if (e.response.status === 418 || e.response.status === 400)
+            localStorage.removeItem("artifactToSend");
         });
     }
   }
