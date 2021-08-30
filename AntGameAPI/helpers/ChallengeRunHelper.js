@@ -96,7 +96,13 @@ const AnalyzeSnapshots = snapshots => {
     const percent = snapshot[2];
     const foodOnMap = snapshot[3];
     const foodInTransit = snapshot[4];
-    const homeFoodCounts = JSON.parse(snapshot[5]);
+    let homeFoodCounts;
+    try {
+      homeFoodCounts = JSON.parse(snapshot[5]);
+    } catch (e) {
+      console.error(`Threw parsing home food counts in snapshot. \n${snapshot[5]}\n${snapshot}`);
+      throw "Unparsable snapshot";
+    }
 
     let currentFoodReturned = 0;
     for (const [homePos, foodCount] of Object.entries(homeFoodCounts)) {

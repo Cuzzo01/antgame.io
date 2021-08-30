@@ -15,7 +15,14 @@ async function postRun(req, res) {
     let saveRun = false;
 
     const RejectUnverifiedRuns = await FlagHandler.getFlagValue("reject-anticheat-fail-runs");
-    let verificationResult = await VerifyArtifact(runData, user.clientID);
+    let verificationResult;
+    try {
+      verificationResult = await VerifyArtifact(runData, user.clientID);
+    } catch (e) {
+      if (e === "Unparsable snapshot") {
+        res.sendStatus(400);
+      }
+    }
     if (verificationResult !== "verified") {
       if (RejectUnverifiedRuns === false) verificationResult += " *IGNORED*";
       runTags.push({ type: "failed verification", metadata: { reason: verificationResult } });
