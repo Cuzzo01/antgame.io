@@ -33,7 +33,8 @@ const ChallengeModal = props => {
                     <br />
                     <strong>Score not saved</strong>
                     <br />
-                    Login to get on the leaderboard<br />track personal records.
+                    Login to get on the leaderboard and <br />
+                    track personal records.
                   </h6>
                 ) : null}
                 {isWrRun ? <h4 className={styles.newWR}>New World Record!</h4> : null}
