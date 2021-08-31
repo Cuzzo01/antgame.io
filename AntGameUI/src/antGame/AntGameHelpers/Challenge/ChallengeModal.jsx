@@ -31,9 +31,9 @@ const ChallengeModal = props => {
                 {AuthHandler.isAnon ? (
                   <h6>
                     <br />
-                    Score not saved
+                    <strong>Score not saved</strong>
                     <br />
-                    Login to get on the leaderboard
+                    Login to get on the leaderboard<br />track personal records.
                   </h6>
                 ) : null}
                 {isWrRun ? <h4 className={styles.newWR}>New World Record!</h4> : null}
