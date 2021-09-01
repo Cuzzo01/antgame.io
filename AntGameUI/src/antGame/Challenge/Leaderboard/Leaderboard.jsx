@@ -63,7 +63,10 @@ const Leaderboard = props => {
       </div>
       {runTable}
       {playerCount ? (
-        <div className={styles.playerCount}>&nbsp;{playerCount} ranked players</div>
+        <div>
+          <div className={styles.hr} />
+          <div className={styles.playerCount}>&nbsp;{playerCount} ranked players</div>
+        </div>
       ) : null}
     </div>
   );
