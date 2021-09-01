@@ -17,12 +17,13 @@ const ChallengeModal = props => {
     };
   }, []);
 
+  const scoreIsNice = props.challengeHandler?.score.toString().includes("69");
   return (
     <div>
       {props.show ? (
         <GenericModal
           alwaysShow
-          closeMessage={props.challengeHandler?.score.toString().includes("69") ? "Nice" : "Close"}
+          closeMessage={scoreIsNice ? "Nice" : "Close"}
           title={`Results: ${props.challengeHandler?.config.name}`}
           onHide={() => props.closeModal()}
           body={
@@ -41,7 +42,12 @@ const ChallengeModal = props => {
                 {props.challengeHandler?.isPB ? (
                   <div>
                     <h5 className={styles.newPB}>New Personal Record</h5>
-                    <h6>Leaderboard Rank: {records?.rank}</h6>
+                    <h6 className={styles.leaderboardRank}>
+                      Leaderboard Rank: <strong>{records?.rank}</strong>
+                      <span className={styles.playerCount}>
+                        {records.playerCount ? `/${records.playerCount}` : null}
+                      </span>
+                    </h6>
                   </div>
                 ) : null}
               </div>

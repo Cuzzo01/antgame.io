@@ -10,6 +10,7 @@ const Leaderboard = props => {
   const [loading, setLoading] = useState(true);
   const [runTable, setRunData] = useState([]);
   const [title, setTitle] = useState();
+  const [playerCount, setPlayerCount] = useState(false);
 
   useEffect(() => {
     getLeaderboard(challengeID).then(res => {
@@ -41,6 +42,7 @@ const Leaderboard = props => {
       });
       setRunData(table);
       setTitle(res.name);
+      if (res.playerCount) setPlayerCount(res.playerCount);
       document.title = `${res.name} - Leaderboard`;
       setLoading(false);
     });
@@ -60,6 +62,12 @@ const Leaderboard = props => {
         </div>
       </div>
       {runTable}
+      {playerCount ? (
+        <div>
+          <div className={styles.hr} />
+          <div className={styles.playerCount}>&nbsp;{playerCount} ranked players</div>
+        </div>
+      ) : null}
     </div>
   );
 };

@@ -67,3 +67,8 @@
   border-top: 0.2em dashed;
   border-color: black;
 }
+
+.playerCount {
+  margin: 0.5em 1em;
+  padding: 0 1em;
+}
