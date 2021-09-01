@@ -22,6 +22,7 @@ async function postRun(req, res) {
     } catch (e) {
       if (e === "Unparsable snapshot") {
         res.sendStatus(400);
+        return;
       }
     }
     if (verificationResult !== "verified") {
@@ -342,7 +343,7 @@ async function getLeaderboard(req, res) {
         });
       }
     }
-    
+
     const response = {
       name: challenge.name,
       leaderboard: leaderboardData,
