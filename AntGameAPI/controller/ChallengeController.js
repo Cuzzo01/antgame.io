@@ -5,6 +5,7 @@ const { VerifyArtifact } = require("../helpers/ChallengeRunHelper");
 const { getGeneralizedTimeStringFromObjectID } = require("../helpers/TimeHelper");
 const FlagHandler = require("../handler/FlagHandler");
 const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
+const { GetIpAddress } = require("../helpers/IpHelper");
 
 async function postRun(req, res) {
   try {
@@ -105,6 +106,7 @@ async function postRun(req, res) {
         runRecord.userID = user.id;
       } else {
         runRecord.userID = false;
+        runRecord.IP = GetIpAddress(res);
       }
       runID = await ChallengeDao.submitRun(runRecord);
 
