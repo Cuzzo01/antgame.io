@@ -348,7 +348,7 @@ async function getLeaderboard(req, res) {
       leaderboard: leaderboardData,
     };
 
-    if (FlagHandler.getFlagValue("show-player-count-on-leaderboard"))
+    if (await FlagHandler.getFlagValue("show-player-count-on-leaderboard"))
       response.playerCount = await ChallengePlayerCountHandler.getPlayerCount(challengeID);
 
     res.send(response);
