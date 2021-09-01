@@ -220,9 +220,9 @@ class ChallengeHandler {
         }
       }
 
-      if (response.rank) {
-        this.records.rank = response.rank;
-      }
+      if (response.rank) this.records.rank = response.rank;
+      if (response.playerCount) this.records.playerCount = response.playerCount;
+
       this.notifyRecordsListeners();
     } catch (e) {
       localStorage.setItem("artifactToSend", JSON.stringify(this.artifact));

@@ -4,6 +4,7 @@ const UserDao = require("../dao/UserDao");
 const { VerifyArtifact } = require("../helpers/ChallengeRunHelper");
 const { getGeneralizedTimeStringFromObjectID } = require("../helpers/TimeHelper");
 const FlagHandler = require("../handler/FlagHandler");
+const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
 
 async function postRun(req, res) {
   try {
@@ -114,6 +115,7 @@ async function postRun(req, res) {
       if (!user.anon) {
         if (isPB && currentDetails === null) {
           UserDao.addNewChallengeDetails(user.id, runData.challengeID, runData.Score, runID);
+          ChallengePlayerCountHandler.unsetPlayerCount(runData.challengeID);
         } else if (isPB && currentDetails.pb) {
           UserDao.updateChallengePBAndRunCount(user.id, runData.challengeID, runData.Score, runID);
         } else {
@@ -127,6 +129,11 @@ async function postRun(req, res) {
             runData.Score
           );
           response.rank = newRank;
+        }
+
+        if (await FlagHandler.getFlagValue("show-player-count-in-challenge")) {
+          const playerCount = await ChallengePlayerCountHandler.getPlayerCount(runData.challengeID);
+          response.playerCount = playerCount;
         }
 
         let isWorldRecord = false;
@@ -265,6 +272,11 @@ async function getRecords(req, res) {
       }
     }
 
+    if (await FlagHandler.getFlagValue("show-player-count-in-challenge")) {
+      const playerCount = await ChallengePlayerCountHandler.getPlayerCount(challengeID);
+      response.playerCount = playerCount;
+    }
+
     res.send(response);
   } catch (e) {
     console.log(e);
@@ -330,11 +342,15 @@ async function getLeaderboard(req, res) {
         });
       }
     }
-
+    
     const response = {
       name: challenge.name,
       leaderboard: leaderboardData,
     };
+
+    if (FlagHandler.getFlagValue("show-player-count-on-leaderboard"))
+      response.playerCount = await ChallengePlayerCountHandler.getPlayerCount(challengeID);
+
     res.send(response);
   } catch (e) {
     console.log(e);

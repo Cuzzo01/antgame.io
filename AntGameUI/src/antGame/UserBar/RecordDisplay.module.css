@@ -1,3 +1,7 @@
 .bold {
   font-family: "Courier Prime Bold";
 }
+
+.playerCount {
+  font-size: 0.75em;
+}

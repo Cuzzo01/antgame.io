@@ -22,5 +22,9 @@ class ResultCache {
     if (eResult) return eResult.isActive();
     return false;
   }
+
+  expireValue(name) {
+    this.cache[name] = null;
+  }
 }
 module.exports = { ResultCache };

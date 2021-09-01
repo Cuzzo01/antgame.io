@@ -15,6 +15,7 @@ const {
 const { getActiveChallenges } = require("../dao/ChallengeDao");
 const { getLeaderboardRankByScore } = require("../dao/UserDao");
 const UserIdToUsernameHandler = require("../handler/UserIdToUsernameHandler");
+const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
 
 async function getStats(req, res) {
   let response = {
@@ -78,6 +79,10 @@ async function getConfigDetails(req, res) {
   try {
     const id = req.params.id;
     let result = await getConfigDetailsByID(id);
+
+    // FIXME: Uncomment me and put this data somewhere on the page
+    // (prob with the leaderboard)
+    // result["playerCount"] = await ChallengePlayerCountHandler.getPlayerCount(id);
 
     if (result.records) {
       let modifiedRecords = result.records;

@@ -226,6 +226,17 @@ const getUsernameByID = async id => {
   return result.username;
 };
 
+const getPlayerCountByChallengeID = async id => {
+  const challengeObjectID = TryParseObjectID(id, "ChallengeID");
+
+  const collection = await getCollection("users");
+  const result = await collection
+    .find({ "challengeDetails.ID": challengeObjectID, showOnLeaderboard: true })
+    .count();
+
+  return result;
+};
+
 const TryParseObjectID = (stringID, name) => {
   try {
     return new ObjectID(stringID);
@@ -246,4 +257,5 @@ module.exports = {
   getPRByLeaderboardRank,
   isUserBanned,
   getUsernameByID,
+  getPlayerCountByChallengeID,
 };

@@ -20,3 +20,11 @@
 .runInfo {
   margin-bottom: 2em;
 }
+
+.playerCount {
+  font-size: 0.75em;
+}
+
+.leaderboardRank {
+  font-size: 1.1em;
+}
