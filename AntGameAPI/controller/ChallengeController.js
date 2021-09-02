@@ -106,7 +106,7 @@ async function postRun(req, res) {
         runRecord.userID = user.id;
       } else {
         runRecord.userID = false;
-        runRecord.IP = GetIpAddress(res);
+        runRecord.IP = GetIpAddress(req);
       }
       runID = await ChallengeDao.submitRun(runRecord);
 
