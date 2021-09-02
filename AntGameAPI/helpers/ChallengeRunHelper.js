@@ -127,6 +127,11 @@ const AnalyzeSnapshots = snapshots => {
       // const gameTimeDelta = lastSnapshot[1] - snapshot[1];
       // if (gameTimeDelta > 6) return `game time delta out of bounds (${gameTimeDelta}, ${i})`;
 
+      const time = snapshot[0];
+      const lastTime = lastSnapshot[0];
+      const timeDelta = time - lastTime;
+      if (timeDelta < 0) return `negative snapshot time delta : (${timeDelta}, ${i})`;
+
       const score = snapshot[2];
       const lastScore = lastSnapshot[2];
       if (lastScore > 0.1) {
