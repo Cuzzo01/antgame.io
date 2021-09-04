@@ -28,12 +28,12 @@ class AuthHandler {
     localStorage.setItem("jwt", this.jwt);
   }
 
-  get loggedIn() {
-    return this._loggedIn;
-  }
-
   get token() {
     return this.jwt;
+  }
+
+  get loggedIn() {
+    return this._loggedIn;
   }
 
   get isAnon() {
@@ -71,10 +71,16 @@ class AuthHandler {
 
     axios.interceptors.request.use(config => {
       if (this.token) {
+        this.checkForUpdatedToken();
         config.headers.Authorization = `Bearer ${this.token}`;
       }
       return config;
     });
+  }
+
+  checkForUpdatedToken() {
+    const savedToken = localStorage.getItem("jwt");
+    if (savedToken !== this.jwt) this.token = savedToken;
   }
 
   login(username, password) {
