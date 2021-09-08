@@ -54,6 +54,7 @@ const logLogin = async (userID, IPAddress, clientID) => {
   const result = await collection.updateOne(
     { _id: userObjectID },
     {
+      $inc: {loginCount: 1},
       $push: {
         loginRecords: {
           $each: [
@@ -66,7 +67,7 @@ const logLogin = async (userID, IPAddress, clientID) => {
           $sort: {
             time: -1,
           },
-          $slice: 10,
+          $slice: 20,
         },
       },
     }
