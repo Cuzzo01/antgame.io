@@ -21,19 +21,18 @@ const runScript = async () => {
     }
 
     console.log(updateList.length)
-    // for (let i = 0; i < updateList.length; i++) {
-    //     const updateRecord = updateList[i]
-    //     console.log(updateRecord)
-    //     const updateObject = {
-    //         loginCount: updateRecord.count
-    //     }
-    //     if (updateRecord.count === 10) updateObject.loginOverflow = true
-    //     console.log(updateObject)
-    //     const result = await collection.updateOne({_id: updateRecord.id}, {$set: updateObject})
-    //     if (result.result.ok === 1) console.log(`Updated successfully`)
-    //     else console.log(result)
-    //     // break
-    // }
+    for (let i = 0; i < updateList.length; i++) {
+        const updateRecord = updateList[i]
+        console.log(updateRecord)
+        const updateObject = {
+            loginCount: updateRecord.count
+        }
+        if (updateRecord.count === 10) updateObject.loginOverflow = true
+        console.log(updateObject)
+        const result = await collection.updateOne({_id: updateRecord.id}, {$set: updateObject})
+        if (result.result.ok === 1) console.log(`Updated successfully`)
+        else console.log(result)
+    }
 }
 
 runScript()
