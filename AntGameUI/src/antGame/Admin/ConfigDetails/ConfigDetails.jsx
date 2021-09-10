@@ -52,7 +52,10 @@ const ConfigDetails = props => {
           </div>
           <div className={styles.divSection}>
             <h5>Details</h5>
-            PlayerCount: {details.playerCount}
+            PlayerCount: {details.playerCount}&nbsp;
+            <Link to={`/challenge/leaderboard/${props.id}`} target="_blank">
+              (Leaderboard)
+            </Link>
             <br />
             Homes: {details.homeLimit}
             <br />
@@ -67,11 +70,6 @@ const ConfigDetails = props => {
                 setOrder(newOrder);
               }}
             />
-          </div>
-          <div className={styles.divSection}>
-            <Link to={`/challenge/leaderboard/${props.id}`} target="_blank">
-              Leaderboard
-            </Link>
           </div>
           <div className={styles.recordsSection}>
             <ExpandList
