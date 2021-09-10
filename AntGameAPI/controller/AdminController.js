@@ -80,9 +80,7 @@ async function getConfigDetails(req, res) {
     const id = req.params.id;
     let result = await getConfigDetailsByID(id);
 
-    // FIXME: Uncomment me and put this data somewhere on the page
-    // (prob with the leaderboard)
-    // result["playerCount"] = await ChallengePlayerCountHandler.getPlayerCount(id);
+    result["playerCount"] = await ChallengePlayerCountHandler.getPlayerCount(id);
 
     if (result.records) {
       let modifiedRecords = result.records;
