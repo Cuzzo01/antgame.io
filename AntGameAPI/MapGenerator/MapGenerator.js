@@ -94,20 +94,20 @@ const RemoveGroupsSmallerThan = (charToRemove, minGroupSize, mapArr) => {
 
 const CountGroupSize = (x, y, charToCount, mapArr, seenList) => {
   seenList.push(`${x}, ${y}`);
-  let pointsToCheck = []
-  pointsToCheck.push([x - 1, y])
-  pointsToCheck.push([x + 1, y])
-  pointsToCheck.push([x, y - 1])
-  pointsToCheck.push([x, y + 1])
+  let pointsToCheck = [];
+  pointsToCheck.push([x - 1, y]);
+  pointsToCheck.push([x + 1, y]);
+  pointsToCheck.push([x, y - 1]);
+  pointsToCheck.push([x, y + 1]);
   pointsToCheck.forEach(point => {
-    const x = point[0]
-    const y = point[1]
+    const x = point[0];
+    const y = point[1];
     if (mapArr[x] && mapArr[x][y]) {
       const cellValue = mapArr[x][y];
       if (cellValue === charToCount && !seenList.includes(`${x}, ${y}`))
         CountGroupSize(x, y, charToCount, mapArr, seenList);
     }
-  })
+  });
 };
 
 const AreSurroundingCellsClear = (x, y, radius, clearOf, mapArr) => {
