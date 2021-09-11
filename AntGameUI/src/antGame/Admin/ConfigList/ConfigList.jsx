@@ -28,7 +28,7 @@ const ConfigList = props => {
       </Link>
       <h4>Ordered Configs</h4>
       {orderConfigList ? orderConfigList : null}
-      <h4 style={{ "margin-top": "1em" }}>Unordered Configs</h4>
+      <h4 style={{ marginTop: "1em" }}>Unordered Configs</h4>
       {noOrderConfigList ? noOrderConfigList : null}
       {}
     </div>

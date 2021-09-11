@@ -2,30 +2,31 @@ import { useState } from "react";
 import styles from "./ConfigDetails.module.css";
 import adminStyles from "../AdminStyles.module.css";
 
-const OrderSection = props => {
+const ThumbnailSection = props => {
   const [editable, setEditable] = useState(false);
-  const [orderInputValue, setOrderInputValue] = useState(props.currentOrder);
+  const [URLInputValue, setURLInputValue] = useState(props.currentURL);
 
   const saveEdit = () => {
-    props.handleSave(parseFloat(orderInputValue));
+    props.handleSave(URLInputValue);
     setEditable(false);
   };
 
   return (
-    <div className={styles.orderSection}>
-      <div className={styles.orderEdit}>
-        <span>Order:</span>
+    <div className={styles.thumbnailSection}>
+      <div className={styles.thumbnailEdit}>
+        <span>Thumbnail Url:</span>
         {editable ? (
           <form onSubmit={() => saveEdit()}>
             <input
-              type="number"
-              step="0.1"
-              onChange={e => setOrderInputValue(e.target.value)}
-              value={orderInputValue}
+              type="text"
+              onChange={e => setURLInputValue(e.target.value)}
+              value={URLInputValue}
             />
           </form>
+        ) : props.currentURL ? (
+          <span>{getDisplayURL(props.currentURL)}</span>
         ) : (
-          <span>{props.currentOrder}</span>
+          "No URL"
         )}
       </div>
       <div className={adminStyles.rightAlign}>
@@ -35,7 +36,7 @@ const OrderSection = props => {
               className={styles.orderEditButton}
               onClick={() => {
                 setEditable(false);
-                setOrderInputValue(props.currentOrder);
+                setURLInputValue(props.currentURL);
               }}
             >
               Cancel
@@ -53,4 +54,10 @@ const OrderSection = props => {
     </div>
   );
 };
-export default OrderSection;
+export default ThumbnailSection;
+
+const getDisplayURL = url => {
+  // if (url.length < 60) return url
+  const urlArr = url.split("/");
+  return urlArr.slice(urlArr.length - 2).join("/");
+};

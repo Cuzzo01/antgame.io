@@ -54,3 +54,16 @@
   grid-template-columns: 10% auto;
   align-items: center;
 }
+
+/* Thumbnail Section */
+
+.thumbnailSection {
+  display: grid;
+  grid-template-columns: 75% auto;
+}
+
+.thumbnailEdit {
+  display: grid;
+  grid-template-columns: 22% auto;
+  align-items: center;
+}

@@ -6,6 +6,7 @@ import { GetTimeString } from "../Helpers/FunctionHelpers";
 import styles from "./ConfigDetails.module.css";
 import adminStyles from "../AdminStyles.module.css";
 import OrderSection from "./OrderSection";
+import ThumbnailSection from "./ThumbnailEditor";
 
 const ConfigDetails = props => {
   const [details, setDetails] = useState(false);
@@ -28,6 +29,12 @@ const ConfigDetails = props => {
 
   const setOrder = newOrder => {
     patchConfigDetails(props.id, { order: newOrder }).then(result => {
+      populateDetails(props.id);
+    });
+  };
+
+  const setThumbnailURL = newURL => {
+    patchConfigDetails(props.id, { thumbnailURL: newURL }).then(result => {
       populateDetails(props.id);
     });
   };
@@ -69,6 +76,14 @@ const ConfigDetails = props => {
               currentOrder={details.order}
               handleSave={newOrder => {
                 setOrder(newOrder);
+              }}
+            />
+          </div>
+          <div className={adminStyles.divSection}>
+            <ThumbnailSection
+              currentURL={details.thumbnailURL}
+              handleSave={newURL => {
+                setThumbnailURL(newURL);
               }}
             />
           </div>

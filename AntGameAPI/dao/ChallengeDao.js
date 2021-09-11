@@ -118,6 +118,9 @@ const getActiveChallenges = async () => {
     challengeList.push({
       name: config.name,
       id: config._id,
+      thumbnailURL: config.thumbnailURL,
+      time: config.seconds,
+      homes: config.homeLimit,
     });
   });
   return challengeList;

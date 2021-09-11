@@ -139,6 +139,7 @@ async function patchConfig(req, res) {
 
     const newOrder = request.order;
     const newActive = request.active;
+    const newThumbnailURL = request.thumbnailURL;
 
     const patchRequest = {};
     if (newOrder !== undefined) {
@@ -156,6 +157,15 @@ async function patchConfig(req, res) {
         return;
       } else {
         patchRequest.active = newActive;
+      }
+    }
+
+    if (newThumbnailURL !== undefined) {
+      if (typeof newThumbnailURL !== "string") {
+        res.sendStatus(400);
+        return;
+      } else {
+        patchRequest.thumbnailURL = newThumbnailURL;
       }
     }
 

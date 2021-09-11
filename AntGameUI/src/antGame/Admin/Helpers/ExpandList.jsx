@@ -14,7 +14,7 @@ const ExpandList = props => {
     let list = [];
     if (props.itemsToList && props.itemsToList.length !== 0) {
       for (let i = 0; i < props.itemsToList.length; i++) {
-        list.push(ExpandListElement(props.itemsToList[i]));
+        list.push(ExpandListElement(props.itemsToList[i], i));
       }
     } else {
       list = ExpandListElement(props.emptyMessage);
@@ -33,6 +33,10 @@ const ExpandList = props => {
 };
 export default ExpandList;
 
-const ExpandListElement = listItem => {
-  return <div className={styles.listElement}>{listItem}</div>;
+const ExpandListElement = (listItem, key) => {
+  return (
+    <div key={key} className={styles.listElement}>
+      {listItem}
+    </div>
+  );
 };
