@@ -77,16 +77,17 @@ body {
   background-color: grey;
 }
 
+.thumbnail {
+  margin: auto;
+}
+
 .thumbnail img {
   border-radius: 0.5em;
   width: 100%;
   background-color: #909497;
 }
 
-.thumbnailLoader {
-  margin: auto auto;
-}
-
 .thumbnailLoader img {
   width: 32px;
+  background-color: transparent;
 }

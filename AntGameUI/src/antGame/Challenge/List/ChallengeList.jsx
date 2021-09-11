@@ -5,6 +5,7 @@ import AuthHandler from "../../Auth/AuthHandler";
 import { Link, useHistory } from "react-router-dom";
 import { HomeIcon, TimeIcon } from "../../AntGameHelpers/Icons";
 import loaderGif from "../../../assets/thumbnailLoader.gif";
+import { getFlag } from "../../Helpers/FlagService";
 
 const ChallengeList = () => {
   const [loading, setLoading] = useState(true);
@@ -17,24 +18,27 @@ const ChallengeList = () => {
       history.replace({ pathname: "/login", search: "?redirect=/challenge" });
       return;
     }
-    getActiveChallenges().then(challengeResponse => {
-      const records = challengeResponse.records;
-      let list = [];
-      challengeResponse.challenges.forEach(challenge => {
-        list.push(
-          <ListItem
-            key={challenge.id}
-            name={challenge.name}
-            records={records[challenge.id]}
-            id={challenge.id}
-            time={challenge.time}
-            homes={challenge.homes}
-            thumbnailURL={challenge.thumbnailURL}
-          />
-        );
-      });
-      setMenuList(list);
-      setLoading(false);
+    getFlag("show-challenge-list-thumbnails").then(shouldShowThumbnails => {
+      getActiveChallenges().then(challengeResponse => {
+        const records = challengeResponse.records;
+        let list = [];
+        challengeResponse.challenges.forEach(challenge => {
+          list.push(
+            <ListItem
+              key={challenge.id}
+              name={challenge.name}
+              records={records[challenge.id]}
+              id={challenge.id}
+              time={challenge.time}
+              homes={challenge.homes}
+              showThumbnails={shouldShowThumbnails}
+              thumbnailURL={challenge.thumbnailURL}
+            />
+          );
+        });
+        setMenuList(list);
+        setLoading(false);
+      })
     });
   }, [history]);
 
@@ -50,7 +54,6 @@ const ChallengeList = () => {
 export default ChallengeList;
 
 const ListItem = props => {
-  // const history = useHistory();
   const [thumbnailLoading, setThumbnailLoading] = useState(true);
 
   return (
@@ -92,8 +95,8 @@ const ListItem = props => {
               PR:
               {props.records.pb ? (
                 <span>
-                  {props.records.pb}&nbsp;
-                  ({props.records.rank ? (
+                  {props.records.pb}
+                  &nbsp;({props.records.rank ? (
                     <span>
                       #<strong>{props.records.rank}</strong>,&nbsp;
                     </span>
@@ -111,23 +114,27 @@ const ListItem = props => {
           <LeaderboardLink id={props.id} />
         </div>
       </div>
-      <div className={styles.thumbnail} style={thumbnailLoading ? { display: "none" } : null}>
-        <img
-          src={props.thumbnailURL}
-          alt="Map thumbnail"
-          onLoad={() => setThumbnailLoading(false)}
-          onError={() => setThumbnailLoading("error")}
-        />
-      </div>
-      {thumbnailLoading ? (
-        <div className={styles.thumbnailLoader}>
-          {props.thumbnailURL && thumbnailLoading !== "error" ? (
-            <img src={loaderGif} alt="Loader" />
-          ) : (
-            "No Thumbnail"
-          )}
+      {props.showThumbnails ?
+        <div className={styles.thumbnail}>
+          <div style={thumbnailLoading ? { display: "none" } : null}>
+            <img
+              src={props.thumbnailURL}
+              alt="Map thumbnail"
+              onLoad={() => setThumbnailLoading(false)}
+              onError={() => setThumbnailLoading("error")}
+            />
+          </div>
+          {thumbnailLoading ? (
+            <span className={styles.thumbnailLoader}>
+              {props.thumbnailURL && thumbnailLoading !== "error" ? (
+                <img src={loaderGif} alt="Loader" />
+              ) : (
+                "No Thumbnail"
+              )}
+            </span>
+          ) : null}
         </div>
-      ) : null}
+        : null}
     </div>
   );
 };
