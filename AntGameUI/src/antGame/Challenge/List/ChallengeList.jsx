@@ -18,27 +18,27 @@ const ChallengeList = () => {
       history.replace({ pathname: "/login", search: "?redirect=/challenge" });
       return;
     }
-    getFlag("show-challenge-list-thumbnails").then(shouldShowThumbnails => {
-      getActiveChallenges().then(challengeResponse => {
-        const records = challengeResponse.records;
-        let list = [];
-        challengeResponse.challenges.forEach(challenge => {
-          list.push(
-            <ListItem
-              key={challenge.id}
-              name={challenge.name}
-              records={records[challenge.id]}
-              id={challenge.id}
-              time={challenge.time}
-              homes={challenge.homes}
-              showThumbnails={shouldShowThumbnails}
-              thumbnailURL={challenge.thumbnailURL}
-            />
-          );
-        });
-        setMenuList(list);
-        setLoading(false);
-      })
+    const flagPromise = getFlag("show-challenge-list-thumbnails");
+    getActiveChallenges().then(async challengeResponse => {
+      const shouldShowThumbnails = await flagPromise;
+      const records = challengeResponse.records;
+      let list = [];
+      challengeResponse.challenges.forEach(challenge => {
+        list.push(
+          <ListItem
+            key={challenge.id}
+            name={challenge.name}
+            records={records[challenge.id]}
+            id={challenge.id}
+            time={challenge.time}
+            homes={challenge.homes}
+            showThumbnails={shouldShowThumbnails}
+            thumbnailURL={challenge.thumbnailURL}
+          />
+        );
+      });
+      setMenuList(list);
+      setLoading(false);
     });
   }, [history]);
 
@@ -55,6 +55,8 @@ export default ChallengeList;
 
 const ListItem = props => {
   const [thumbnailLoading, setThumbnailLoading] = useState(true);
+
+  const wrUsernameLength = props.records.wr?.username.length;
 
   return (
     <div className={styles.challengeGridElement}>
@@ -82,8 +84,11 @@ const ListItem = props => {
                 {props.records.wr ? (
                   <span>
                     {props.records.wr.score}-{props.records.wr.username}
-                    {props.records.wr.username.length < 10 ? (
+                    {wrUsernameLength < 10 ? (
                       <span className={styles.smallText}>&nbsp;({props.records.wr.age} ago)</span>
+                    ) : null}
+                    {wrUsernameLength > 9 && wrUsernameLength < 13 ? (
+                      <span className={styles.smallText}>&nbsp;({props.records.wr.age})</span>
                     ) : null}
                   </span>
                 ) : (
@@ -96,7 +101,8 @@ const ListItem = props => {
               {props.records.pb ? (
                 <span>
                   {props.records.pb}
-                  &nbsp;({props.records.rank ? (
+                  &nbsp;(
+                  {props.records.rank ? (
                     <span>
                       #<strong>{props.records.rank}</strong>,&nbsp;
                     </span>
@@ -114,7 +120,7 @@ const ListItem = props => {
           <LeaderboardLink id={props.id} />
         </div>
       </div>
-      {props.showThumbnails ?
+      {props.showThumbnails ? (
         <div className={styles.thumbnail}>
           <div style={thumbnailLoading ? { display: "none" } : null}>
             <img
@@ -134,7 +140,7 @@ const ListItem = props => {
             </span>
           ) : null}
         </div>
-        : null}
+      ) : null}
     </div>
   );
 };
