@@ -52,7 +52,6 @@ export default ChallengeList;
 const ListItem = props => {
   // const history = useHistory();
   const [thumbnailLoading, setThumbnailLoading] = useState(true);
-  console.log(props.records.wr ? "true" : "false");
 
   return (
     <div className={styles.challengeGridElement}>
