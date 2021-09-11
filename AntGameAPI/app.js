@@ -85,6 +85,7 @@ app.get("/admin/users", RejectNotAdmin, _adminController.getUsers);
 app.get("/admin/user/:id", RejectNotAdmin, _adminController.getUserDetails);
 app.patch("/admin/user/:id", RejectNotAdmin, _adminController.patchUser);
 app.get("/admin/runs", RejectNotAdmin, _adminController.getRuns);
+app.get("/admin/run/:id", RejectNotAdmin, _adminController.getRunDetails);
 app.post("/admin/config", RejectNotAdmin, _adminController.postConfig);
 
 app.get("/flag/:name", _flagController.getFlag);

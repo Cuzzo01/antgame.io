@@ -11,14 +11,6 @@
   border-radius: 1em;
 }
 
-.even {
-  background-color: #ccd1d1;
-}
-
-.odd {
-  background-color: #b2babb;
-}
-
 .banned {
   background-color: #f1948a;
 }

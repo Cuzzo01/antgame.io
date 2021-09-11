@@ -1,0 +1,65 @@
+.divButton {
+  background-color: #b2babb;
+  padding: 0.5em 1.5em;
+  border-radius: 0.5em;
+}
+
+.divButton:hover {
+  cursor: pointer;
+  background-color: grey;
+}
+
+.divSection {
+  background-color: #b2babb;
+  margin: 1em;
+  padding: 1em;
+  border-radius: 0.25em;
+}
+
+.divSection h5 {
+  border-bottom: 2px black solid;
+}
+
+.rightAlign {
+  text-align: right;
+}
+
+.leftAlign {
+  text-align: left;
+}
+
+.bold {
+  font-family: "Courier Prime Bold";
+}
+
+.smallText {
+  font-size: 0.9em;
+}
+
+.purpleText {
+  color: white;
+  background-color: #884ea0;
+  padding: 0.1em;
+}
+
+.greenText {
+  color: white;
+  background-color: #1e8449;
+  padding: 0.1em;
+}
+
+.even {
+  background-color: #ccd1d1;
+}
+
+.odd {
+  background-color: #b2babb;
+}
+
+.redBackground {
+  background-color: #f1948a;
+}
+
+.yellowBackground {
+  background-color: #f7dc6f;
+}

@@ -170,6 +170,15 @@ const getRecentRuns = async count => {
     .toArray();
   return result;
 };
+
+const getRunDetailsByID = async id => {
+  const runObjectID = TryParseObjectID(id, "RunID");
+
+  const collection = await getCollection("runs");
+  const result = await collection.findOne({ _id: runObjectID });
+
+  return result;
+};
 //#endregion Runs
 
 module.exports = {
@@ -185,6 +194,7 @@ module.exports = {
   getUserDetailsByID,
   updateUserByID,
   getRecentRuns,
+  getRunDetailsByID,
 };
 
 const TryParseObjectID = (stringID, name) => {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getConfigList } from "../AdminService";
 import styles from "./ConfigList.module.css";
+import adminStyles from "../AdminStyles.module.css";
 import { Link } from "react-router-dom";
 
 const ConfigList = props => {
@@ -22,7 +23,7 @@ const ConfigList = props => {
 
   return (
     <div>
-      <Link to="/admin/newConfig" className={`${styles.newConfigButton} ${styles.bold}`}>
+      <Link to="/admin/newConfig" className={`${styles.newConfigButton} ${adminStyles.bold}`}>
         New Config
       </Link>
       <h4>Ordered Configs</h4>
@@ -40,7 +41,7 @@ const generateConfigList = configs => {
     const config = configs[i];
     list.push(
       <ConfigListElement
-        theme={i % 2 === 0 ? styles.even : styles.odd}
+        theme={i % 2 === 0 ? adminStyles.even : adminStyles.odd}
         key={config._id}
         config={config}
       />
@@ -56,12 +57,12 @@ const ConfigListElement = props => {
       <div>
         <Link to={`/admin/config/${config._id}`}>
           {config.order ? `(${config.order})` : "(-)"}{" "}
-          <span className={styles.bold}>{config.name}</span>
+          <span className={adminStyles.bold}>{config.name}</span>
         </Link>
       </div>
       {config.record ? (
-        <div className={styles.rightAlign}>
-          {config.record.score} -{" "}
+        <div className={adminStyles.rightAlign}>
+          <Link to={`/admin/run/${config.record.runID}`}>{config.record.score}</Link> -{" "}
           <Link to={`/admin/user/${config.record.userID}`}>{config.record.username}</Link>
         </div>
       ) : (
@@ -70,7 +71,7 @@ const ConfigListElement = props => {
       <div>
         {config.seconds ? config.seconds : "--"}s / {config.homeLimit}H
       </div>
-      <div className={`${styles.rightAlign} ${styles.activeBadge}`}>
+      <div className={`${adminStyles.rightAlign} ${styles.activeBadge}`}>
         {config.active ? (
           <span className={styles.active}>Active</span>
         ) : (

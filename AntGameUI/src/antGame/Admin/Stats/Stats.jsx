@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getStats } from "../AdminService";
 import styles from "./Stats.module.css";
+import adminStyles from "../AdminStyles.module.css";
 
 const Stats = props => {
   const [stats, setStats] = useState(false);
@@ -12,7 +13,7 @@ const Stats = props => {
   }, []);
 
   return (
-    <div className={styles.container}>
+    <div className={adminStyles.divSection}>
       <h4>Stats</h4>
       {stats !== false ? <StatsDisplay data={stats} /> : null}
     </div>
@@ -25,8 +26,8 @@ const StatsDisplay = props => {
   let uniqueUserStats = [];
   for (const [label, count] of Object.entries(stats.uniqueUserStats)) {
     uniqueUserStats.push(
-      <div key={label} className={styles.rightJustify}>
-        {label}:<span className={styles.bold}>{count}</span>
+      <div key={label} className={adminStyles.rightAlign}>
+        {label}:<span className={adminStyles.bold}>{count}</span>
       </div>
     );
   }
@@ -34,8 +35,8 @@ const StatsDisplay = props => {
   let newAccountStats = [];
   for (const [label, count] of Object.entries(stats.newAccountStats)) {
     newAccountStats.push(
-      <div key={label} className={styles.rightJustify}>
-        {label}:<span className={styles.bold}>{count}</span>
+      <div key={label} className={adminStyles.rightAlign}>
+        {label}:<span className={adminStyles.bold}>{count}</span>
       </div>
     );
   }
@@ -43,8 +44,8 @@ const StatsDisplay = props => {
   let runCountStats = [];
   for (const [label, count] of Object.entries(stats.runCountStats)) {
     runCountStats.push(
-      <div key={label} className={styles.rightJustify}>
-        {label}:<span className={styles.bold}>{count}</span>
+      <div key={label} className={adminStyles.rightAlign}>
+        {label}:<span className={adminStyles.bold}>{count}</span>
       </div>
     );
   }

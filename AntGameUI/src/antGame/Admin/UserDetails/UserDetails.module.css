@@ -16,17 +16,6 @@
   text-align: center;
 }
 
-.divSection {
-  background-color: #b2babb;
-  margin: 1em;
-  padding: 1em;
-  border-radius: 0.25em;
-}
-
-.divSection h5 {
-  border-bottom: 2px black solid;
-}
-
 .username {
   font-family: "Courier Prime Bold";
 }

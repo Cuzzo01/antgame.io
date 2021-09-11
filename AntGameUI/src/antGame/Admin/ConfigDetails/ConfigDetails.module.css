@@ -33,32 +33,11 @@
   background-color: grey;
 }
 
-.divButton {
-  background-color: #b2babb;
-  padding-left: 1.5em;
-  border-radius: 0.5em;
-}
-
-.divButton:hover {
-  cursor: pointer;
-  background-color: grey;
-}
-
-.divSection {
-  background-color: #b2babb;
-  margin: 1em;
-  padding: 1em;
-  border-radius: 0.25em;
-}
-
 /* Order Section */
+
 .orderSection {
   display: grid;
   grid-template-columns: 75% auto;
-}
-
-.rightAlign {
-  text-align: right;
 }
 
 .orderEditButton {

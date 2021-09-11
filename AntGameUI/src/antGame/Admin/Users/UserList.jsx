@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getRecentlyCreatedUsers } from "../AdminService";
 import { GetTimeString } from "../Helpers/FunctionHelpers";
 import styles from "./UserList.module.css";
+import adminStyles from "../AdminStyles.module.css";
 
 const UserList = () => {
   const [usersToDisplay, setUsersToDisplay] = useState(false);
@@ -14,7 +15,7 @@ const UserList = () => {
         const user = users[i];
         list.push(
           <UsersListElement
-            theme={i % 2 === 0 ? styles.even : styles.odd}
+            theme={i % 2 === 0 ? adminStyles.even : adminStyles.odd}
             user={user}
             key={user._id}
           />

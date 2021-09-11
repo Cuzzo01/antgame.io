@@ -11,6 +11,7 @@ const {
   getRecentlyCreatedUsers,
   getRecentlyLoggedInUsers,
   getRunCount,
+  getRunDetailsByID,
 } = require("../dao/AdminDao");
 const { getActiveChallenges } = require("../dao/ChallengeDao");
 const { getLeaderboardRankByScore } = require("../dao/UserDao");
@@ -303,6 +304,21 @@ async function getRuns(req, res) {
   }
 }
 
+async function getRunDetails(req, res) {
+  try {
+    const id = req.params.id;
+
+    const details = await getRunDetailsByID(id);
+    details.username = await UserIdToUsernameHandler.getUsername(details.userID);
+
+    res.send(details);
+  } catch (e) {
+    console.log("Error in getRunDetails");
+    console.log(e);
+    res.sendStatus(500);
+  }
+}
+
 const send400 = (res, message) => {
   res.status(400);
   res.send(message);
@@ -328,4 +344,5 @@ module.exports = {
   getUserDetails,
   patchUser,
   getRuns,
+  getRunDetails,
 };
