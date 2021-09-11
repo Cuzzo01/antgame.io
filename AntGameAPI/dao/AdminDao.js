@@ -74,6 +74,7 @@ const getConfigDetailsByID = async id => {
         seconds: 1,
         records: 1,
         active: 1,
+        thumbnailURL: 1,
       },
     }
   );

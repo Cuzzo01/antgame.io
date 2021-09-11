@@ -29,7 +29,7 @@ const CreateConfig = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className={styles.inputGroup}>
           <label htmlFor="Name">Name</label>
-          <input {...register("name", { required: true, maxLength: 17 })} />
+          <input {...register("name", { required: true, maxLength: 15 })} />
           {errors.name?.type === "required" && <ErrorMessage>Required</ErrorMessage>}
           {errors.name?.type === "maxLength" && (
             <ErrorMessage>Cannot be over 17 characters</ErrorMessage>

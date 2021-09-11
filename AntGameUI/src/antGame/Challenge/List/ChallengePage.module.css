@@ -3,7 +3,8 @@ body {
 }
 
 .container {
-  max-width: 50em;
+  width: 85em;
+  max-width: 80%;
   margin: 5em auto;
 }
 
@@ -12,77 +13,80 @@ body {
   margin-bottom: 2em;
 }
 
-.listItem {
-  display: grid;
-  grid-template-columns: 80% 20%;
+.recordAge {
+  font-size: 0.75em;
 }
 
-.challengeCard {
-  display: grid;
-  grid-template-columns: 30% 70%;
-  margin: 0.5em;
-  padding: 1em;
-  border: 3px black solid;
-  border-radius: 1em;
-  background-color: lightgray;
-  line-height: 1.15em;
-}
-
-.challengeCard:hover {
-  background-color: grey;
-  cursor: pointer;
-}
-
-.title {
+.challengeGrid {
   display: flex;
-  align-items: center;
-}
-
-.challengeData {
-  display: grid;
-  grid-template-columns: 45% 55%;
-}
-
-.pr {
-  font-size: 0.8em;
-  text-align: right;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding-right: 0.5em;
-  line-height: 1.1em;
-}
-
-.wr {
-  border-left: 2px black solid;
-  padding-left: 0.5em;
-  font-size: 0.95em;
-}
-
-.leaderboardLink {
-  background-color: lightgray;
-  margin: 0.5em;
-  padding: 1em;
-  border: 3px black solid;
-  border-radius: 1em;
-  font-size: 0.85em;
-  color: black;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   justify-content: center;
 }
 
-.leaderboardLink:hover {
-  background-color: grey;
-  color: black;
+.challengeGridElement {
+  border-radius: 1em;
+  border: 3px black solid;
+  padding: 1em;
+  margin: 1em;
+  display: inline-grid;
+  grid-template-rows: 6.5em auto;
+  background-color: lightgray;
+  max-width: 26em;
 }
 
-.bold {
+.topBar {
+  display: grid;
+  grid-template-columns: 15em auto;
+}
+
+.challengeButtons {
+  display: grid;
+  grid-template-rows: 55% 40%;
+}
+
+.challengeName {
+  font-family: "Courier Prime Bold";
+  display: flex;
+  align-items: center;
+}
+
+.challengeInfo {
+  display: grid;
+  grid-template-columns: 10em auto;
+}
+
+.challengeLink {
+  color: black;
+  font-family: "Courier Prime Bold";
+  margin: 0.2em;
+  padding: 0.5em;
+  border: 2px solid black;
+  border-radius: 0.5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+}
+
+.challengeWR {
   font-family: "Courier Prime Bold";
 }
 
-.recordAge {
-  float: right;
-  font-size: 0.75em;
+.challengeLink:hover {
+  color: black;
+  background-color: grey;
+}
+
+.thumbnail img {
+  border-radius: 0.5em;
+  width: 100%;
+  background-color: #909497;
+}
+
+.thumbnailLoader {
+  margin: auto auto;
+}
+
+.thumbnailLoader img {
+  width: 32px;
 }

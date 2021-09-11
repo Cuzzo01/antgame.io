@@ -3,6 +3,8 @@ import styles from "./ChallengePage.module.css";
 import { getActiveChallenges } from "../../Challenge/ChallengeService";
 import AuthHandler from "../../Auth/AuthHandler";
 import { Link, useHistory } from "react-router-dom";
+import { HomeIcon, TimeIcon } from "../../AntGameHelpers/Icons";
+import loaderGif from "../../../assets/thumbnailLoader.gif";
 
 const ChallengeList = () => {
   const [loading, setLoading] = useState(true);
@@ -25,6 +27,9 @@ const ChallengeList = () => {
             name={challenge.name}
             records={records[challenge.id]}
             id={challenge.id}
+            time={challenge.time}
+            homes={challenge.homes}
+            thumbnailURL={challenge.thumbnailURL}
           />
         );
       });
@@ -38,7 +43,7 @@ const ChallengeList = () => {
       <div className={styles.header}>
         <h2>Challenges</h2>
       </div>
-      {loading ? null : menuList}
+      {loading ? null : <div className={styles.challengeGrid}>{menuList}</div>}
     </div>
   );
 };
@@ -46,64 +51,79 @@ export default ChallengeList;
 
 const ListItem = props => {
   // const history = useHistory();
+  const [thumbnailLoading, setThumbnailLoading] = useState(true);
 
   return (
-    <div className={styles.listItem}>
-      <div
-        className={styles.challengeCard}
-        onClick={e => {
-          e.preventDefault();
-          // This still breaks aspect ratio of game
-          // history.push(`/challenge/${props.id}`);
-          window.location = `/challenge/${props.id}`;
-        }}
-      >
-        <div className={styles.title}>
-          <div>
-            <span className={styles.bold}>{props.name}</span>
+    <div className={styles.challengeGridElement}>
+      <div className={styles.topBar}>
+        <div className={styles.infoBlock}>
+          <div className={styles.challengeInfo}>
+            <div className={styles.challengeName}>
+              <span>{props.name}</span>
+            </div>
+            <div className={styles.challengeDetails}>
+              <div>
+                <TimeIcon />
+                &nbsp;{getDisplayTime(props.time)}
+              </div>
+              <div>
+                <HomeIcon />
+                &nbsp;{props.homes}
+              </div>
+            </div>
           </div>
-        </div>
-        <div className={styles.challengeData}>
-          {AuthHandler.isAnon ? (
-            <div />
-          ) : (
-            <div className={styles.pr}>
+          <div className={styles.records}>
+            <div className={styles.challengeWR}>
+              <span>
+                WR:
+                {props.records.wr
+                  ? `${props.records.wr.score}-${props.records.wr.username}`
+                  : "No record"}
+              </span>
+              {props.records.wr.username.length < 12 ? (
+                <span className={styles.recordAge}>&nbsp;({props.records.wr.age})</span>
+              ) : null}
+            </div>
+            <div className={styles.challengePR}>
+              PR:
               {props.records.pb ? (
                 <span>
-                  Personal Record
-                  <br />
-                  {props.records.runs ? (
+                  {props.records.pb} (
+                  {props.records.rank ? (
                     <span>
-                      Runs:<span className={styles.bold}>{props.records.runs}</span>&nbsp;
+                      #<strong>{props.records.rank}</strong>,&nbsp;
                     </span>
                   ) : null}
-                  {props.records.pb}
-                  {props.records.rank ? (
-                    <span className={styles.bold}>&nbsp;(#{props.records.rank})</span>
-                  ) : null}
+                  {props.records.runs} runs)
                 </span>
               ) : (
-                "No PR"
+                "No record"
               )}
             </div>
-          )}
-          <div className={`${styles.wr} ${styles.bold}`}>
-            World Record
-            {props.records.wr ? (
-              <span className={styles.recordAge}>{props.records.wr.age} ago</span>
-            ) : null}
-            <br />
-            {!props.records.wr || Object.keys(props.records.wr).length === 0 ? (
-              "No record"
-            ) : (
-              <div className={styles.worldRecord}>
-                {props.records.wr.score}-{props.records.wr.username}&nbsp;
-              </div>
-            )}
           </div>
         </div>
+        <div className={styles.challengeButtons}>
+          <ChallengeLink id={props.id} />
+          <LeaderboardLink id={props.id} />
+        </div>
       </div>
-      <LeaderboardLink id={props.id} />
+      <div className={styles.thumbnail} style={thumbnailLoading ? { display: "none" } : null}>
+        <img
+          src={props.thumbnailURL}
+          alt="Map thumbnail"
+          onLoad={() => setThumbnailLoading(false)}
+          onError={() => setThumbnailLoading("error")}
+        />
+      </div>
+      {thumbnailLoading ? (
+        <div className={styles.thumbnailLoader}>
+          {props.thumbnailURL && thumbnailLoading !== "error" ? (
+            <img src={loaderGif} alt="Loader" />
+          ) : (
+            "No Thumbnail"
+          )}
+        </div>
+      ) : null}
     </div>
   );
 };
@@ -111,10 +131,26 @@ const ListItem = props => {
 const LeaderboardLink = props => {
   return (
     <Link
-      className={`${styles.leaderboardLink} ${styles.bold}`}
+      className={styles.challengeLink}
       to={`/challenge/leaderboard/${props.id}`}
     >
       Leaderboard
     </Link>
   );
+};
+
+const ChallengeLink = props => {
+  return (
+    <a href={`/challenge/${props.id}`} className={styles.challengeLink}>
+      Play
+    </a>
+  );
+};
+
+const getDisplayTime = seconds => {
+  // debugger
+  const min = Math.floor(seconds / 60);
+  let sec = seconds % 60;
+  if (sec < 10) sec = "0" + sec;
+  return `${min}:${sec}`;
 };
