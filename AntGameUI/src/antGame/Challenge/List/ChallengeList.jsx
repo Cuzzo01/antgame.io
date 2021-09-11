@@ -97,7 +97,7 @@ const ListItem = props => {
               "No record"
             ) : (
               <div className={styles.worldRecord}>
-                {props.records.wr.score}-{props.records.wr.username}{" "}
+                {props.records.wr.score}-{props.records.wr.username}&nbsp;
               </div>
             )}
           </div>
