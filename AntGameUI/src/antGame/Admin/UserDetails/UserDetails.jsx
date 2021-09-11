@@ -105,7 +105,7 @@ const getDetailsList = challengeRecords => {
         </span>
         <span className={styles.alignCenter}>#{challengeDetails.rank}</span>
         <span className={styles.alignCenter}>
-          <Link to={""}>{challengeDetails.score}</Link>
+          <Link to={`/admin/run/${challengeDetails.runID}`}>{challengeDetails.score}</Link>
         </span>
         <span>
           <Link to={`/admin/config/${challengeID}`}>{challengeDetails.name}</Link>
