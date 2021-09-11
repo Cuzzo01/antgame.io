@@ -18,28 +18,28 @@ const ChallengeList = () => {
       history.replace({ pathname: "/login", search: "?redirect=/challenge" });
       return;
     }
-    getFlag("show-challenge-list-thumbnails").then(shouldShowThumbnails => {
-      getActiveChallenges().then(challengeResponse => {
-        const records = challengeResponse.records;
-        let list = [];
-        challengeResponse.challenges.forEach(challenge => {
-          list.push(
-            <ListItem
-              key={challenge.id}
-              name={challenge.name}
-              records={records[challenge.id]}
-              id={challenge.id}
-              time={challenge.time}
-              homes={challenge.homes}
-              showThumbnails={shouldShowThumbnails}
-              thumbnailURL={challenge.thumbnailURL}
-            />
-          );
-        });
-        setMenuList(list);
-        setLoading(false);
-      })
-    });
+    const flagPromise = getFlag("show-challenge-list-thumbnails")
+    getActiveChallenges().then(async challengeResponse => {
+      const shouldShowThumbnails = await flagPromise
+      const records = challengeResponse.records;
+      let list = [];
+      challengeResponse.challenges.forEach(challenge => {
+        list.push(
+          <ListItem
+            key={challenge.id}
+            name={challenge.name}
+            records={records[challenge.id]}
+            id={challenge.id}
+            time={challenge.time}
+            homes={challenge.homes}
+            showThumbnails={shouldShowThumbnails}
+            thumbnailURL={challenge.thumbnailURL}
+          />
+        );
+      });
+      setMenuList(list);
+      setLoading(false);
+    })
   }, [history]);
 
   return (
