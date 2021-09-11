@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./ExpandList.module.css";
+import adminStyles from "../AdminStyles.module.css";
 
 // Inputs
 // props.title
@@ -23,7 +24,7 @@ const ExpandList = props => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.divButton} onClick={() => setExpanded(!expanded)}>
+      <div className={adminStyles.divButton} onClick={() => setExpanded(!expanded)}>
         {props.title}
       </div>
       {expanded ? <div className={styles.list}>{list}</div> : null}

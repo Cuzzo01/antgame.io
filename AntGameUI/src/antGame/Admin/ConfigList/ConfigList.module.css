@@ -8,18 +8,6 @@
   grid-template-rows: 50% 50%;
 }
 
-.rightAlign {
-  text-align: right;
-}
-
-.even {
-  background-color: #ccd1d1;
-}
-
-.odd {
-  background-color: #b2babb;
-}
-
 .active {
   background-color: darkgreen;
 }
@@ -32,10 +20,6 @@
   padding: 0.2em 0.4em;
   color: white;
   border-radius: 0.5em;
-}
-
-.bold {
-  font-family: "Courier Prime Bold";
 }
 
 .newConfigButton {

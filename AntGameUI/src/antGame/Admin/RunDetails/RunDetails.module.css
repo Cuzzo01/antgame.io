@@ -1,0 +1,13 @@
+.timeRow {
+  display: grid;
+  grid-template-columns: 25% auto;
+}
+
+.tagRow {
+  margin: 0.5em 0.1em;
+}
+
+.tagRow div {
+  border-radius: 0.5em;
+  padding-left: 1em;
+}

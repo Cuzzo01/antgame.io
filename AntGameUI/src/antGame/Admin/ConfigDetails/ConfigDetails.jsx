@@ -4,6 +4,7 @@ import { getConfigDetails, patchConfigDetails } from "../AdminService";
 import ExpandList from "../Helpers/ExpandList";
 import { GetTimeString } from "../Helpers/FunctionHelpers";
 import styles from "./ConfigDetails.module.css";
+import adminStyles from "../AdminStyles.module.css";
 import OrderSection from "./OrderSection";
 
 const ConfigDetails = props => {
@@ -50,7 +51,7 @@ const ConfigDetails = props => {
               </div>
             </div>
           </div>
-          <div className={styles.divSection}>
+          <div className={adminStyles.divSection}>
             <h5>Details</h5>
             PlayerCount: {details.playerCount}&nbsp;
             <Link to={`/challenge/leaderboard/${props.id}`} target="_blank">
@@ -63,7 +64,7 @@ const ConfigDetails = props => {
             <br />
             Time: {details.seconds} sec
           </div>
-          <div className={styles.divSection}>
+          <div className={adminStyles.divSection}>
             <OrderSection
               currentOrder={details.order}
               handleSave={newOrder => {

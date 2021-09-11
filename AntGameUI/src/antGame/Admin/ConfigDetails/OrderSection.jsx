@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "./ConfigDetails.module.css";
+import adminStyles from "../AdminStyles.module.css";
 
 const OrderSection = props => {
   const [editable, setEditable] = useState(false);
@@ -28,7 +29,7 @@ const OrderSection = props => {
           <span>{props.currentOrder}</span>
         )}
       </div>
-      <div className={styles.rightAlign}>
+      <div className={adminStyles.rightAlign}>
         {editable ? (
           <div>
             <div

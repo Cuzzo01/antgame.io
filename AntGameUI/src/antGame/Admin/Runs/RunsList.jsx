@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getRecentRuns } from "../AdminService";
 import styles from "./RunsList.module.css";
+import adminStyles from "../AdminStyles.module.css";
 import { Link } from "react-router-dom";
 
 const RunsList = props => {
@@ -12,7 +13,11 @@ const RunsList = props => {
       for (let i = 0; i < runs.length; i++) {
         const run = runs[i];
         list.push(
-          <RunsListElement theme={i % 2 === 0 ? styles.even : styles.odd} run={run} key={run._id} />
+          <RunsListElement
+            theme={i % 2 === 0 ? adminStyles.even : adminStyles.odd}
+            run={run}
+            key={run._id}
+          />
         );
       }
       setRunsList(list);
@@ -35,15 +40,15 @@ const RunsListElement = props => {
 
   useEffect(() => {
     const tags = props.run.tags;
-    if (tags.find(tag => tag.type === "failed verification" || tag.type === "falsely claimed pb"))
-      setBodyTagStyles(styles.redBackground);
     if (tags.find(tag => tag.type === "wr"))
-      setScoreTagStyles(`${styles.purpleText} ${styles.bold}`);
+      setScoreTagStyles(`${adminStyles.purpleText} ${adminStyles.bold}`);
     else if (tags.find(tag => tag.type === "pr"))
-      setScoreTagStyles(`${styles.greenText} ${styles.bold}`);
+      setScoreTagStyles(`${adminStyles.greenText} ${adminStyles.bold}`);
 
-    if (tags.find(tag => tag.type === "random snapshot save"))
-      setBodyTagStyles(styles.yellowBackground);
+    if (tags.find(tag => tag.type === "failed verification" || tag.type === "falsely claimed pb"))
+      setBodyTagStyles(adminStyles.redBackground);
+    else if (tags.find(tag => tag.type === "random snapshot save"))
+      setBodyTagStyles(adminStyles.yellowBackground);
   }, [props.run.tags]);
 
   return (
@@ -51,7 +56,7 @@ const RunsListElement = props => {
       <span className={styles.time}>
         {submissionDateTime.toLocaleDateString()} {submissionDateTime.toLocaleTimeString()}
       </span>
-      <span className={styles.userID}>
+      <span className={adminStyles.leftAlign}>
         {props.run.userID ? (
           <Link to={`/admin/user/${props.run.userID}`}>{props.run.username}</Link>
         ) : (
@@ -59,12 +64,12 @@ const RunsListElement = props => {
         )}
       </span>
       <span>{props.run.tags ? props.run.tags.length : 0}</span>
-      <span className={`${styles.score}`}>
+      <span className={adminStyles.rightAlign}>
         <Link className={scoreTagStyles} to={`/admin/run/${props.run._id}`}>
           {props.run.score}
         </Link>
       </span>
-      <span className={styles.challengeName}>
+      <span className={adminStyles.rightAlign}>
         <Link to={`/admin/config/${props.run.challengeID}`}>{props.run.name}</Link>
       </span>
     </div>

@@ -1,14 +1,3 @@
-.divButton {
-  background-color: #b2babb;
-  padding: 0.5em 1.5em;
-  border-radius: 0.5em;
-}
-
-.divButton:hover {
-  cursor: pointer;
-  background-color: grey;
-}
-
 .list {
   padding-bottom: 0.5em;
 }

@@ -3,6 +3,7 @@ import { getUserDetails, patchUserDetails } from "../AdminService";
 import ExpandList from "../Helpers/ExpandList";
 import { GetGeneralTimeString, GetTimeString } from "../Helpers/FunctionHelpers";
 import styles from "./UserDetails.module.css";
+import adminStyles from "../AdminStyles.module.css";
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
@@ -30,7 +31,7 @@ const UserDetails = props => {
       {details ? (
         <div>
           <h4 className={styles.username}>{details.username}</h4>
-          <div className={styles.divSection}>
+          <div className={adminStyles.divSection}>
             <h5>Details</h5>
             <p>ShowOnLeaderboard: {boolToString(details.showOnLeaderboard)}</p>
             <p>Admin: {boolToString(details.admin)}</p>
@@ -46,7 +47,7 @@ const UserDetails = props => {
             itemsToList={getLoginsList(details.loginRecords)}
             emptyMessage={"No Recorded Logins"}
           />
-          <div className={styles.divSection}>
+          <div className={adminStyles.divSection}>
             <h5>Registration Data</h5>
             {details.registrationData ? (
               <div>
@@ -59,7 +60,7 @@ const UserDetails = props => {
               "No Details"
             )}
           </div>
-          <div className={styles.divSection}>
+          <div className={adminStyles.divSection}>
             <h5>Actions</h5>
             <Button onClick={() => setBanned(!details.banned)}>
               {details.banned ? "Unban User" : "Ban User"}

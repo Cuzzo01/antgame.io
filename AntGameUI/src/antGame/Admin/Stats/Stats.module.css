@@ -1,15 +1,4 @@
-.container {
-}
-
 .uniqueUserStats {
   display: grid;
   grid-template-columns: auto 20% 20% 20%;
-}
-
-.rightJustify {
-  text-align: right;
-}
-
-.bold {
-  font-family: "Courier Prime Bold";
 }

@@ -70,3 +70,9 @@ export const getRecentRuns = async count => {
     return res.data;
   });
 };
+
+export const getRunDetails = async id => {
+  return axios.get(`/api/admin/run/${id}`).then(res => {
+    return res.data;
+  });
+};
