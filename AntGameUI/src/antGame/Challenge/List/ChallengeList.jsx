@@ -52,6 +52,7 @@ export default ChallengeList;
 const ListItem = props => {
   // const history = useHistory();
   const [thumbnailLoading, setThumbnailLoading] = useState(true);
+  console.log(props.records.wr ? "true" : "false");
 
   return (
     <div className={styles.challengeGridElement}>
@@ -76,13 +77,17 @@ const ListItem = props => {
             <div className={styles.challengeWR}>
               <span>
                 WR:
-                {props.records.wr
-                  ? `${props.records.wr.score}-${props.records.wr.username}`
-                  : "No record"}
+                {props.records.wr ? (
+                  <span>
+                    {props.records.wr.score}-{props.records.wr.username}
+                    {props.records.wr.username.length < 12 ? (
+                      <span className={styles.recordAge}>&nbsp;({props.records.wr.age})</span>
+                    ) : null}
+                  </span>
+                ) : (
+                  "No record"
+                )}
               </span>
-              {props.records.wr.username.length < 12 ? (
-                <span className={styles.recordAge}>&nbsp;({props.records.wr.age})</span>
-              ) : null}
             </div>
             <div className={styles.challengePR}>
               PR:
@@ -130,10 +135,7 @@ const ListItem = props => {
 
 const LeaderboardLink = props => {
   return (
-    <Link
-      className={styles.challengeLink}
-      to={`/challenge/leaderboard/${props.id}`}
-    >
+    <Link className={styles.challengeLink} to={`/challenge/leaderboard/${props.id}`}>
       Leaderboard
     </Link>
   );
