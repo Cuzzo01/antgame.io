@@ -59,7 +59,7 @@ export class TrailHandler {
     const strength = Math.round(110 * (1 - transparency) + 25);
 
     const intTrailXY = MapXYToInt(trailXY);
-    const maxValue = 4500 * (1 - transparency) + 100;
+    const maxValue = 4500 * (1 - transparency) + 100; // FIXME: Make 250 much smaller, like 1500
     for (let xOffset = -TrailMapOverSampleRate; xOffset <= TrailMapOverSampleRate; xOffset++) {
       for (let yOffset = -TrailMapOverSampleRate; yOffset <= TrailMapOverSampleRate; yOffset++) {
         const point = [intTrailXY[0] + xOffset, intTrailXY[1] + yOffset];

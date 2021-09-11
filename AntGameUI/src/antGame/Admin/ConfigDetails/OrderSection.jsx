@@ -14,7 +14,7 @@ const OrderSection = props => {
   return (
     <div className={styles.orderSection}>
       <div className={styles.orderEdit}>
-        <span>Order:</span>{" "}
+        <span>Order:</span>&nbsp;
         {editable ? (
           <form onSubmit={() => saveEdit()}>
             <input

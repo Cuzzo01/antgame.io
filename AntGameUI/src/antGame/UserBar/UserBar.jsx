@@ -16,7 +16,7 @@ const UserBar = props => {
       <div className={styles.username}>
         {!AuthHandler.loggedIn || AuthHandler.isAnon ? (
           <div>
-            Not logged in.{" "}
+            Not logged in.&nbsp;
             <Link
               className={styles.loginLink}
               to={`/login?redirect=${window.location.pathname}`}

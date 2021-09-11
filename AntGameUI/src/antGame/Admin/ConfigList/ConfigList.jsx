@@ -56,13 +56,13 @@ const ConfigListElement = props => {
     <div className={`${styles.listElement} ${props.theme}`}>
       <div>
         <Link to={`/admin/config/${config._id}`}>
-          {config.order ? `(${config.order})` : "(-)"}{" "}
+          {config.order ? `(${config.order})` : "(-)"}&nbsp;
           <span className={adminStyles.bold}>{config.name}</span>
         </Link>
       </div>
       {config.record ? (
         <div className={adminStyles.rightAlign}>
-          <Link to={`/admin/run/${config.record.runID}`}>{config.record.score}</Link> -{" "}
+          <Link to={`/admin/run/${config.record.runID}`}>{config.record.score}</Link> -&nbsp;
           <Link to={`/admin/user/${config.record.userID}`}>{config.record.username}</Link>
         </div>
       ) : (

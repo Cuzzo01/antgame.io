@@ -97,7 +97,7 @@ const getRecordsList = records => {
         <div>
           <span title="Local time">({GetTimeString(record.time)})</span>
           &nbsp;
-          <Link to={`/admin/run/${record.runID}`}>{record.score}</Link> -{" "}
+          <Link to={`/admin/run/${record.runID}`}>{record.score}</Link> -&nbsp;
           <Link to={`/admin/user/${record.userID}`}>{record.username}</Link>
         </div>
       );

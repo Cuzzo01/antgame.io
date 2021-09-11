@@ -33,7 +33,7 @@ export const Config = {
   StayOnCourseWanderAmount: 25,
   FrameRate: 30,
   PercentFoodReturnedToStopTime: 0.99,
-  TrailDecayRange: 300,
+  TrailDecayRange: 300, // FIXME: lower this?
   TrailTransparencyFloor: 0.005,
   PreloadMap: true,
   BlockDecaySteps: 10,
