@@ -79,8 +79,8 @@ const ListItem = props => {
                 {props.records.wr ? (
                   <span>
                     {props.records.wr.score}-{props.records.wr.username}
-                    {props.records.wr.username.length < 12 ? (
-                      <span className={styles.recordAge}>&nbsp;({props.records.wr.age})</span>
+                    {props.records.wr.username.length < 10 ? (
+                      <span className={styles.smallText}>&nbsp;({props.records.wr.age} ago)</span>
                     ) : null}
                   </span>
                 ) : (
@@ -92,8 +92,8 @@ const ListItem = props => {
               PR:
               {props.records.pb ? (
                 <span>
-                  {props.records.pb} (
-                  {props.records.rank ? (
+                  {props.records.pb}&nbsp;
+                  ({props.records.rank ? (
                     <span>
                       #<strong>{props.records.rank}</strong>,&nbsp;
                     </span>
