@@ -33,12 +33,14 @@ const AutoRefreshButton = props => {
         className={`${adminStyles.divButton} ${styles.refreshButton} ${
           enabled ? styles.enabled : null
         }`}
-        onClick={() => setEnabled(!enabled)}
+        onClick={() => {
+          resetRefreshTime();
+          setEnabled(!enabled);
+        }}
       >
         {enabled ? (
           <Countdown
             ref={countdownRef}
-            autoStart={false}
             date={nextRefreshTime}
             onComplete={() => handleTimeout()}
             renderer={renderer}
