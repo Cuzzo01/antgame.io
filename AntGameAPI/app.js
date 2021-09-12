@@ -30,7 +30,7 @@ const send401 = (res, message) => {
   res.send(message);
 };
 
-app.use(bodyParser.json({ extended: true }));
+app.use(bodyParser.json({ extended: true, limit: '50mb' }));
 
 app.use(
   responseTime((req, res, time) => {

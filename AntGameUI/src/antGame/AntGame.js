@@ -245,21 +245,16 @@ export default class AntGame extends React.Component {
       this.setMapUiUpdate(500);
       this.toggleTimer(true);
       if (IsChallenge)
-        this.challengeSnapshotInterval = setInterval(() => {
-          this.challengeHandler.generateSnapshot();
-        }, 5000);
-
-      if (!this.antHandler.antsSpawned) {
-        this.antHandler.spawnAnts(this.homeTrailHandler, this.foodTrailHandler);
-        this.mapHandler.prepareForStart(IsChallenge);
-        if (IsChallenge) {
-          this.challengeHandler.handleStart(this.mapHandler.homeLocations);
-          this.challengeHandler.generateSnapshot();
+        if (!this.antHandler.antsSpawned) {
+          this.antHandler.spawnAnts(this.homeTrailHandler, this.foodTrailHandler);
+          this.mapHandler.prepareForStart(IsChallenge);
+          if (IsChallenge) {
+            this.challengeHandler.handleStart(this.mapHandler.homeLocations);
+          }
+        } else {
+          this.mapHandler.findNewDecayableBlocks();
+          this.mapHandler.calculateFoodToStopTime();
         }
-      } else {
-        this.mapHandler.findNewDecayableBlocks();
-        this.mapHandler.calculateFoodToStopTime();
-      }
 
       const ticksPerSecond = FrameRate * 1.5;
       const updateRate = 1000 / ticksPerSecond;
