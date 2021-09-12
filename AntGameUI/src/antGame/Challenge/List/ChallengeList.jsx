@@ -85,7 +85,7 @@ const ListItem = props => {
                   <span>
                     {props.records.wr.score}-{props.records.wr.username}
                     {wrUsernameLength < 10 ? (
-                      <span className={styles.smallText}>&nbsp;({props.records.wr.age} ago)</span>
+                      <span className={`${styles.smallText} ${styles.age}`}>({props.records.wr.age} ago)</span>
                     ) : null}
                     {wrUsernameLength > 9 && wrUsernameLength < 13 ? (
                       <span className={styles.smallText}>&nbsp;({props.records.wr.age})</span>
