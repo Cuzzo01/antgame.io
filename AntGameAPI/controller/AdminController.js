@@ -67,7 +67,26 @@ async function getStats(req, res) {
 
 async function getConfigList(req, res) {
   try {
-    res.send(await getConfigListFromDB());
+    const configs = await getConfigListFromDB();
+
+    let playerCountPromises = [];
+    for (const [index, config] of Object.entries(configs)) {
+      if (config.active) {
+        playerCountPromises.push(
+          ChallengePlayerCountHandler.getPlayerCount(config._id).then(count => {
+            return { index: index, count: count };
+          })
+        );
+      }
+    }
+
+    await Promise.all(playerCountPromises).then(results => {
+      results.forEach(result => {
+        configs[result.index]["playerCount"] = result.count;
+      });
+    });
+
+    res.send(configs);
     return;
   } catch (e) {
     console.log(e);

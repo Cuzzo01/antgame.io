@@ -73,7 +73,7 @@ const ConfigListElement = props => {
       </div>
       <div className={`${adminStyles.rightAlign} ${styles.activeBadge}`}>
         {config.active ? (
-          <span className={styles.active}>Active</span>
+          <span className={styles.active}>{config.playerCount} - Active</span>
         ) : (
           <span className={styles.inactive}>Not Active</span>
         )}
