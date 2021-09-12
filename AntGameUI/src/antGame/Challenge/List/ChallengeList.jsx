@@ -122,7 +122,10 @@ const ListItem = props => {
       </div>
       {props.showThumbnails ? (
         <div className={styles.thumbnail}>
-          <div style={thumbnailLoading ? { display: "none" } : null}>
+          <div
+            className={styles.thumbnailContainer}
+            style={thumbnailLoading ? { display: "none" } : null}
+          >
             <img
               src={props.thumbnailURL}
               alt="Map thumbnail"
@@ -131,13 +134,13 @@ const ListItem = props => {
             />
           </div>
           {thumbnailLoading ? (
-            <span className={styles.thumbnailLoader}>
+            <div className={styles.thumbnailLoader}>
               {props.thumbnailURL && thumbnailLoading !== "error" ? (
                 <img src={loaderGif} alt="Loader" />
               ) : (
-                "No Thumbnail"
+                <div>No Thumbnail</div>
               )}
-            </span>
+            </div>
           ) : null}
         </div>
       ) : null}
