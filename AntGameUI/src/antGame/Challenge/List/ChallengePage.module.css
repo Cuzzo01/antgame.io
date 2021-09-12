@@ -42,7 +42,6 @@ body {
 .challengeButtons {
   display: grid;
   grid-template-rows: 55% 40%;
-  /* justify-items: flex-end; */
 }
 
 .challengeButtons a {
