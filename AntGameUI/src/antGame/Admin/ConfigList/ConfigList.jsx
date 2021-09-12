@@ -3,7 +3,7 @@ import { getConfigList } from "../AdminService";
 import styles from "./ConfigList.module.css";
 import adminStyles from "../AdminStyles.module.css";
 import { Link } from "react-router-dom";
-import { GetGeneralTimeString, GetTimeString } from "../Helpers/FunctionHelpers";
+import { GetGeneralTimeString } from "../Helpers/FunctionHelpers";
 
 const ConfigList = props => {
   const [orderConfigList, setOrderConfigList] = useState(false);

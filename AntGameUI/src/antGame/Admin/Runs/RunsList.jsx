@@ -3,11 +3,16 @@ import { getRecentRuns } from "../AdminService";
 import styles from "./RunsList.module.css";
 import adminStyles from "../AdminStyles.module.css";
 import { Link } from "react-router-dom";
+import AutoRefreshButton from "./AutoRefreshButton";
 
 const RunsList = props => {
   const [runsList, setRunsList] = useState(false);
 
   useEffect(() => {
+    getRuns();
+  }, []);
+
+  const getRuns = () => {
     getRecentRuns(15).then(runs => {
       let list = [];
       for (let i = 0; i < runs.length; i++) {
@@ -22,11 +27,14 @@ const RunsList = props => {
       }
       setRunsList(list);
     });
-  }, []);
+  };
 
   return (
     <div className={styles.container}>
-      <h3>Runs</h3>
+      <div className={styles.titleBar}>
+        <h3>Runs</h3>
+        <AutoRefreshButton onRefresh={getRuns} />
+      </div>
       {runsList ? runsList : null}
     </div>
   );
