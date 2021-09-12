@@ -10,3 +10,29 @@
   border: 2px solid black;
   border-radius: 1em;
 }
+
+.titleBar {
+  display: grid;
+  grid-template-columns: 75% 25%;
+}
+
+.refreshButtonContainer {
+  text-align: right;
+  height: 100%;
+}
+
+.refreshButton {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+}
+
+.enabled {
+  animation: blinker 2s ease-in-out 0;
+  animation-iteration-count: infinite;
+}
+
+@keyframes blinker {
+  50% {
+    background-color: #e74c3c;
+  }
+}
