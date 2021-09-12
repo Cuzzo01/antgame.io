@@ -122,7 +122,7 @@ const getPRRunIDByChallengeID = async (userID, challengeID) => {
   return result.challengeDetails[0].pbRunID;
 };
 
-const getLeaderboardByChallengeId = async id => {
+const getLeaderboardByChallengeId = async (id, recordCount) => {
   const challengeObjectID = TryParseObjectID(id, "challengeID");
 
   const collection = await getCollection("users");
@@ -146,7 +146,7 @@ const getLeaderboardByChallengeId = async id => {
         },
       },
       { $sort: { pb: -1, runID: 1 } },
-      { $limit: 5 },
+      { $limit: recordCount },
     ])
     .toArray();
 

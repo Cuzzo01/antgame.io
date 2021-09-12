@@ -164,6 +164,12 @@ class ChallengeHandler {
       SystemStartTime: new Date().getTime(),
     };
     this.artifact.Snapshots = [];
+
+    this.generateSnapshot();
+    if (this.snapshotInterval) clearInterval(this.snapshotInterval);
+    this.snapshotInterval = setInterval(() => {
+      this.generateSnapshot();
+    }, 5000);
   }
 
   generateSnapshot() {
@@ -191,6 +197,7 @@ class ChallengeHandler {
       this.prHomeLocations = this.artifact.HomeLocations;
     }
 
+    clearInterval(this.snapshotInterval);
     this.generateSnapshot(mapHandler);
     this.artifact.GameConfig = {
       MapPath: this.config.mapPath,

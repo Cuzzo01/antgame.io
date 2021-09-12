@@ -292,7 +292,9 @@ async function getLeaderboard(req, res) {
   try {
     const user = req.user;
     const challengeID = req.params.id;
-    const leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID);
+    let leaderBoardEntries;
+    if (user.admin) leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 15);
+    else leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 5);
     const challenge = await ChallengeDao.getChallengeByChallengeId(challengeID);
 
     if (leaderBoardEntries.length === 0) {
