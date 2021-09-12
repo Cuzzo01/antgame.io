@@ -116,3 +116,7 @@ body {
   height: 32px;
   background-color: transparent;
 }
+
+.age {
+  margin-left: 0.2rem;
+}
