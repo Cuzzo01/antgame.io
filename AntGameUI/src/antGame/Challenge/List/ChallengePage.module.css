@@ -3,18 +3,18 @@ body {
 }
 
 .container {
-  width: 85em;
+  width: 85rem;
   max-width: 80%;
   margin: 5em auto;
 }
 
 .header {
   text-align: center;
-  margin-bottom: 2em;
+  margin-bottom: 2rem;
 }
 
 .smallText {
-  font-size: 0.75em;
+  font-size: 0.75rem;
 }
 
 .challengeGrid {
@@ -24,24 +24,28 @@ body {
 }
 
 .challengeGridElement {
-  border-radius: 1em;
-  border: 3px black solid;
-  padding: 1em;
-  margin: 1em;
+  border-radius: 1rem;
+  border: 0.2rem black solid;
+  padding: 1rem;
+  margin: 1rem;
   display: inline-grid;
   grid-template-rows: 6.5em auto;
   background-color: lightgray;
-  max-width: 26em;
+  width: 26rem;
 }
 
 .topBar {
   display: grid;
-  grid-template-columns: 15em auto;
+  grid-template-columns: 15rem 8.3rem;
 }
 
 .challengeButtons {
   display: grid;
   grid-template-rows: 55% 40%;
+}
+
+.challengeButtons a {
+  width: 100%;
 }
 
 .challengeName {
@@ -58,14 +62,15 @@ body {
 .challengeLink {
   color: black;
   font-family: "Courier Prime Bold";
-  margin: 0.2em;
-  padding: 0.5em;
+  margin: 0.2rem;
+  padding: 0.5rem;
   border: 2px solid black;
-  border-radius: 0.5em;
+  border-radius: 0.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
   text-decoration: none;
+  width: 7.5rem;
 }
 
 .challengeWR {
@@ -78,16 +83,36 @@ body {
 }
 
 .thumbnail {
-  margin: auto;
+  width: 23.6rem;
+  height: 14.13rem;
 }
 
 .thumbnail img {
-  border-radius: 0.5em;
-  width: 100%;
+  width: 23.6rem;
+  height: 14.13rem;
+}
+
+.thumbnailContainer {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.thumbnailContainer img {
+  border-radius: 0.5rem;
   background-color: #909497;
+}
+
+.thumbnailLoader {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .thumbnailLoader img {
   width: 32px;
+  height: 32px;
   background-color: transparent;
 }
