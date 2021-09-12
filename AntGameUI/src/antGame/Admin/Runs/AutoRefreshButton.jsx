@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Countdown from "react-countdown";
 
 const AutoRefreshButton = props => {
-  const [enabled, setEnabled] = useState(true);
+  const [enabled, setEnabled] = useState(false);
   const [nextRefreshTime, setNextRefreshTime] = useState(Date.now);
   const countdownRef = useRef();
 
