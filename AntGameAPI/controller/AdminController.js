@@ -71,6 +71,9 @@ async function getConfigList(req, res) {
 
     let playerCountPromises = [];
     for (const [index, config] of Object.entries(configs)) {
+      if (config.record) {
+        config.record["time"] = config.record.runID.getTimestamp();
+      }
       if (config.active) {
         playerCountPromises.push(
           ChallengePlayerCountHandler.getPlayerCount(config._id).then(count => {
