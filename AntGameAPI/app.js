@@ -34,10 +34,12 @@ app.use(bodyParser.json({ extended: true, limit: "50mb" }));
 
 app.use(
   responseTime((req, res, time) => {
-    if (req.url !== "/health")
+    if (req.url !== "/health") {
       console.log(
         `${req.method} ${req.url} ${GetIpAddress(req)} ${time.toFixed(3)} ${res.statusCode}`
       );
+      if (time > 1000) console.log("Response time over a second");
+    }
   })
 );
 
