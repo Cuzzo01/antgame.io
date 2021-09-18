@@ -4,6 +4,7 @@ const UserDao = require("../dao/UserDao");
 const { VerifyArtifact } = require("../helpers/ChallengeRunHelper");
 const { getGeneralizedTimeStringFromObjectID } = require("../helpers/TimeHelper");
 const FlagHandler = require("../handler/FlagHandler");
+const ChallengeNameHandler = require("../handler/ChallengeIdToChallengeNameHandler");
 const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
 const { GetIpAddress } = require("../helpers/IpHelper");
 
@@ -18,8 +19,15 @@ async function postRun(req, res) {
 
     const RejectUnverifiedRuns = await FlagHandler.getFlagValue("reject-anticheat-fail-runs");
     let verificationResult;
+
+    const challengeConfig = await ChallengeDao.getChallengeByChallengeId(runData.challengeID);
+    if (challengeConfig.active === false && req.user.admin !== true) {
+      res.sendStatus(409);
+      return;
+    }
+
     try {
-      verificationResult = await VerifyArtifact(runData, user.clientID);
+      verificationResult = VerifyArtifact(runData, user.clientID, challengeConfig);
     } catch (e) {
       if (e === "Unparsable snapshot") {
         res.sendStatus(400);
@@ -295,7 +303,6 @@ async function getLeaderboard(req, res) {
     let leaderBoardEntries;
     if (user.admin) leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 15);
     else leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 5);
-    const challenge = await ChallengeDao.getChallengeByChallengeId(challengeID);
 
     if (leaderBoardEntries.length === 0) {
       res.status(404);
@@ -349,7 +356,7 @@ async function getLeaderboard(req, res) {
     }
 
     const response = {
-      name: challenge.name,
+      name: await ChallengeNameHandler.getChallengeName(challengeID),
       leaderboard: leaderboardData,
     };
 

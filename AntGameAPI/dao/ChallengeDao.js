@@ -141,6 +141,7 @@ const getChallengeByChallengeId = async id => {
     seconds: result.seconds,
     homeLimit: result.homeLimit,
     name: result.name,
+    active: result.active,
   };
 };
 

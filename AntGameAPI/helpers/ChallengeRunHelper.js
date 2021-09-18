@@ -1,11 +1,9 @@
-const { getChallengeByChallengeId } = require("../dao/ChallengeDao");
-
 // Hard-coded game config values
 const AntsToSpawn = 1000;
 const FoodPerCell = 20;
 const DirtPerCell = 50;
 
-const VerifyArtifact = async (runData, clientID) => {
+const VerifyArtifact = (runData, clientID, challengeConfig) => {
   if (runData.ClientID !== clientID)
     return `non-matching clientID : (${clientID}, ${runData.ClientID})`;
 
@@ -25,8 +23,7 @@ const VerifyArtifact = async (runData, clientID) => {
   if (systemElapsedTimeResult !== true)
     return `system elapsed time shorter than config time : ${systemElapsedTimeResult}`;
 
-  const expectedConfig = await getChallengeByChallengeId(runData.challengeID);
-  const ConfigMatchResult = ReportedConfigMatchesExpectedConfig(runData, expectedConfig);
+  const ConfigMatchResult = ReportedConfigMatchesExpectedConfig(runData, challengeConfig);
   if (ConfigMatchResult !== true)
     return `reported config did not match expected : ${ConfigMatchResult}`;
 
