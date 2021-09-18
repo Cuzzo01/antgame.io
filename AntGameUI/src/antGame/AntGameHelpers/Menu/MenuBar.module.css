@@ -32,7 +32,7 @@
   grid-template-columns: 19em auto 19em;
   align-items: center;
   /* This should not be needed, iPad breaks without it */
-  height: 3.5vw;
+  /* height: 3.5vw; */
 }
 
 .alignRight {
