@@ -239,7 +239,6 @@ export default class AntGame extends React.Component {
   updatePlayState = state => {
     const IsChallenge = this.gamemode === "challenge";
     if (state) {
-      debugger;
       if (this.state.emptyMap) return;
       if (this.mapHandler.homeCellCount === 0) return;
       if (IsChallenge && this.timerHandler.noTime) return "reset";
