@@ -53,6 +53,17 @@ class ChallengeHandler {
     this.getRecords();
   }
 
+  set config(config) {
+    if (config.active === false && AuthHandler.isAdmin !== true) {
+      window.location = "/challenge";
+    }
+    this._config = config;
+    this._mapHandler.homeCellsAllowed = config.homeLimit;
+    this._mapHandler.fetchAndLoadMap(config.mapPath);
+    this._timerHandler.defaultTime = config.seconds;
+    this._timerHandler.resetTime();
+  }
+
   get config() {
     if (this._config) return this._config;
     else return false;
@@ -100,11 +111,7 @@ class ChallengeHandler {
     else {
       if (Config.Challenge.overrideServerConfig) {
         const config = Config.Challenge.config;
-        this._config = config;
-        this._mapHandler.homeCellsAllowed = config.homeLimit;
-        this._mapHandler.fetchAndLoadMap(config.mapPath);
-        this._timerHandler.defaultTime = config.seconds;
-        this._timerHandler.resetTime();
+        this.config = config;
         return config;
       } else if (Config.Challenge.overrideChallengeID) {
         this.challengeID = Config.ChallengeID;
@@ -113,11 +120,7 @@ class ChallengeHandler {
       this.configPromise = getChallengeConfig(this._challengeID)
         .then(config => {
           this.loadingConfig = false;
-          this._config = config;
-          this._mapHandler.homeCellsAllowed = config.homeLimit;
-          this._mapHandler.fetchAndLoadMap(config.mapPath);
-          this._timerHandler.defaultTime = config.seconds;
-          this._timerHandler.resetTime();
+          this.config = config;
           return config;
         })
         .catch(() => {
