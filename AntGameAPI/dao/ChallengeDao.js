@@ -86,7 +86,7 @@ const updateChallengeRecord = async (challengeID, score, username, userID, runID
   const userObjectID = TryParseObjectID(userID, "userID");
   const runObjectID = TryParseObjectID(runID, "runID");
 
-  collection = await getCollection("configs");
+  const collection = await getCollection("configs");
   const result = await collection.updateOne(
     { _id: challengeObjectID },
     {
@@ -142,6 +142,8 @@ const getChallengeByChallengeId = async id => {
     homeLimit: result.homeLimit,
     name: result.name,
     active: result.active,
+    tournamentID: result.tournamentID,
+    pointsAwarded: result.pointsAwarded,
   };
 };
 

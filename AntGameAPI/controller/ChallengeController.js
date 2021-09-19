@@ -199,7 +199,13 @@ async function getChallenge(req, res) {
       res.send("Invalid challenge ID");
       return;
     }
-    res.send(config);
+    res.send({
+      id: config.id,
+      mapPath: config.mapPath,
+      seconds: config.seconds,
+      homeLimit: config.homeLimit,
+      name: config.name,
+    });
   } catch (e) {
     console.log(e);
     res.status(500);

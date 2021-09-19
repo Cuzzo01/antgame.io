@@ -62,7 +62,7 @@ class AuthHandler {
           this.logout();
           const pathBack = window.location.pathname;
           window.location = `/login?redirect=${pathBack}`;
-        } else if (Math.round(error.response.status / 10) === 50) {
+        } else if (Math.floor(error.response.status / 10) === 50) {
           window.location = "/error";
         }
         return Promise.reject(error);
