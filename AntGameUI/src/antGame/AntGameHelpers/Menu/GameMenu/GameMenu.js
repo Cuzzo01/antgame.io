@@ -9,7 +9,7 @@ import { getFlag } from "../../../Helpers/FlagService";
 
 export default function GameMenu(props) {
   const [flashReset, setFlashReset] = useState(false);
-  const [disablePlay, setDisablePlay] = useState(false);
+  const [disablePlay, setDisablePlay] = useState(true);
   const gameMode = useContext(GameModeContext);
   let sandBoxButtons = [];
 
@@ -17,8 +17,10 @@ export default function GameMenu(props) {
     if (flashReset === true) setTimeout(() => setFlashReset(false), 900);
     if (gameMode.mode === "challenge") {
       getFlag("allow-challenge-runs").then(value => {
-        if (value === false) setDisablePlay(true);
+        if (value === true) setDisablePlay(false);
       });
+    } else {
+      setDisablePlay(false);
     }
   }, [flashReset, gameMode]);
 
