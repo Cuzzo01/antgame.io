@@ -39,7 +39,6 @@ export default class AntGame extends React.Component {
     this.windowSize = [];
     this.blockDrawing = false;
     this.imageToSave = "";
-    this.lastMousePos = [-1, -1];
 
     this.timerHandler = new TimerHandler(this.handleChallengeTimeout, this.setTime);
 
@@ -97,6 +96,10 @@ export default class AntGame extends React.Component {
     this.mapHandler.gameMode = this.gamemode;
     this.timerHandler.gameMode = this.gamemode;
     this.timerHandler.updateTimeDisplay(this.setTime);
+
+    for (let element of document.getElementsByClassName("react-p5")) {
+      element.addEventListener("contextmenu", e => e.preventDefault());
+    }
 
     let bodyElement = document.querySelector("body");
     disableBodyScroll(bodyElement);
@@ -219,16 +222,13 @@ export default class AntGame extends React.Component {
 
     let mousePos = this.mapHandler.canvasXYToMapXY([p5.mouseX, p5.mouseY]);
 
-    if (mousePos[0] !== this.lastMousePos[0] || mousePos[1] !== this.lastMousePos[1]) {
-      this.lastMousePos = mousePos;
-      if (this.mapHandler.mapXYInBounds(mousePos)) {
-        if (p5.mouseButton === "right") {
-          this.mapHandler.paintOnMap(mousePos, this.brushSize, " ");
-          return;
-        }
-        this.mapHandler.paintOnMap(mousePos, this.brushSize, this.brushType);
-        if (this.state.emptyMap) this.setState({ emptyMap: false });
+    if (this.mapHandler.mapXYInBounds(mousePos)) {
+      if (p5.mouseButton === "right") {
+        this.mapHandler.paintOnMap(mousePos, this.brushSize, " ");
+        return;
       }
+      this.mapHandler.paintOnMap(mousePos, this.brushSize, this.brushType);
+      if (this.state.emptyMap) this.setState({ emptyMap: false });
     }
   };
 
