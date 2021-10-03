@@ -15,10 +15,12 @@ export default function GameMenu(props) {
 
   useEffect(() => {
     if (flashReset === true) setTimeout(() => setFlashReset(false), 900);
-    if (gameMode === "challenge") {
+    if (gameMode.mode === "challenge") {
       getFlag("allow-challenge-runs").then(value => {
         if (value === true) setDisablePlay(false);
       });
+    } else {
+      setDisablePlay(false);
     }
   }, [flashReset, gameMode]);
 
