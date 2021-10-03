@@ -148,6 +148,7 @@ class AuthHandler {
       this._loggedIn = true;
       this.jwt = result;
       this.decodedToken = jwt_decode(this.jwt);
+      this.configureLogRocket();
       localStorage.setItem("jwt", this.jwt);
       return true;
     });
