@@ -15,10 +15,12 @@ export default function GameMenu(props) {
 
   useEffect(() => {
     if (flashReset === true) setTimeout(() => setFlashReset(false), 900);
-    getFlag("allow-challenge-runs").then(value => {
-      if (value === true) setDisablePlay(false);
-    });
-  }, [flashReset]);
+    if (gameMode === "challenge") {
+      getFlag("allow-challenge-runs").then(value => {
+        if (value === true) setDisablePlay(false);
+      });
+    }
+  }, [flashReset, gameMode]);
 
   if (props.mapClear)
     sandBoxButtons.push(

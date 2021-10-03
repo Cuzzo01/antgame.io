@@ -38,10 +38,10 @@ const ConfigDetails = props => {
     }
   };
 
-  const bindTournament = (event) => {
-    event.preventDefault()
+  const bindTournament = event => {
+    event.preventDefault();
     // patch config with tournamentID
-  }
+  };
 
   const setActive = state => {
     patchConfigDetails(props.id, { active: state }).then(result => {
@@ -136,7 +136,12 @@ const ConfigDetails = props => {
               <div>
                 Select Tournament to bind:{" "}
                 <form className={styles.tournamentSelect} onSubmit={bindTournament}>
-                  <input value={tournamentPickerValue} onChange={e => setTournamentPickerValue(e.target.value)} list="tournaments" onFocus={() => populateTournamentList()} />
+                  <input
+                    value={tournamentPickerValue}
+                    onChange={e => setTournamentPickerValue(e.target.value)}
+                    list="tournaments"
+                    onFocus={() => populateTournamentList()}
+                  />
                   <input type="submit" />
                 </form>
                 {tournamentOptionsList === false || tournamentOptionsList === false ? null : (

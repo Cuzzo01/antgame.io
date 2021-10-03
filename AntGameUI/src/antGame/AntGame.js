@@ -17,7 +17,6 @@ import ChallengeHandler from "./Challenge/ChallengeHandler";
 import ChallengeModal from "./AntGameHelpers/Challenge/ChallengeModal";
 
 let canvasW, canvasH;
-let lastMousePos = [-1, -1];
 
 const TrailDecayRate = Config.TrailDecayInterval;
 const Brushes = Config.brushes;
@@ -40,6 +39,7 @@ export default class AntGame extends React.Component {
     this.windowSize = [];
     this.blockDrawing = false;
     this.imageToSave = "";
+    this.lastMousePos = [-1, -1];
 
     this.timerHandler = new TimerHandler(this.handleChallengeTimeout, this.setTime);
 
@@ -214,14 +214,18 @@ export default class AntGame extends React.Component {
   };
 
   handleMousePressed = p5 => {
-    if (this.state.playState || p5.mouseButton === "right") return;
+    if (this.state.playState) return;
+    if (this.blockDrawing) return;
 
     let mousePos = this.mapHandler.canvasXYToMapXY([p5.mouseX, p5.mouseY]);
 
-    if (this.blockDrawing) return;
-    if (mousePos[0] !== lastMousePos[0] || mousePos[1] !== lastMousePos[1]) {
-      lastMousePos = mousePos;
+    if (mousePos[0] !== this.lastMousePos[0] || mousePos[1] !== this.lastMousePos[1]) {
+      this.lastMousePos = mousePos;
       if (this.mapHandler.mapXYInBounds(mousePos)) {
+        if (p5.mouseButton === "right") {
+          this.mapHandler.paintOnMap(mousePos, this.brushSize, " ");
+          return;
+        }
         this.mapHandler.paintOnMap(mousePos, this.brushSize, this.brushType);
         if (this.state.emptyMap) this.setState({ emptyMap: false });
       }
