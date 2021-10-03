@@ -15,6 +15,7 @@
     "express": "^4.17.1",
     "express-jwt": "^6.0.0",
     "jsonwebtoken": "^8.5.1",
+    "logzio-nodejs": "^2.0.3",
     "mongodb": "^3.6.9",
     "prettier": "^2.3.2",
     "response-time": "^2.3.2",
