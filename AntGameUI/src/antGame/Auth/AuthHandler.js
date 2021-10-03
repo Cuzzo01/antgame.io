@@ -15,15 +15,7 @@ class AuthHandler {
       if (decodedToken.exp * 1000 > new Date().getTime()) {
         this._loggedIn = true;
         this.decodedToken = decodedToken;
-        if (this.isAnon) {
-          LogRocket.identify(this.decodedToken.clientID, {
-            name: "Anon User",
-          });
-        } else {
-          LogRocket.identify(this.decodedToken.id, {
-            name: this.decodedToken.username,
-          });
-        }
+        this.configureLogRocket();
       } else {
         this.jwt = "";
         localStorage.removeItem("jwt");
@@ -59,6 +51,22 @@ class AuthHandler {
   get username() {
     if (this.loggedIn) return this.decodedToken.username;
     else return null;
+  }
+
+  configureLogRocket() {
+    if (window.location.host === "antgame.io") {
+      LogRocket.init("epzwap/antgame");
+
+      if (this.isAnon) {
+        LogRocket.identify(this.decodedToken.clientID, {
+          name: "Anon User",
+        });
+      } else {
+        LogRocket.identify(this.decodedToken.id, {
+          name: this.decodedToken.username,
+        });
+      }
+    } else console.log("Not initializing logrocket");
   }
 
   configureInterceptors() {
@@ -99,9 +107,7 @@ class AuthHandler {
         this._loggedIn = true;
         this.jwt = result;
         this.decodedToken = jwt_decode(this.jwt);
-        LogRocket.identify(this.decodedToken.id, {
-          name: this.decodedToken.username,
-        });
+        this.configureLogRocket();
         localStorage.setItem("jwt", this.jwt);
         localStorage.setItem("checkForMOTD", true);
 
