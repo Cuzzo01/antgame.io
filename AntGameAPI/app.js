@@ -45,7 +45,7 @@ app.use(
         method: req.method,
         url: req.url,
         ip: GetIpAddress(req),
-        time: time.toFixed(3),
+        time: parseFloat(time.toFixed(3)),
         status: res.statusCode,
       });
       if (time > 1000) console.log("Response time over a second");
