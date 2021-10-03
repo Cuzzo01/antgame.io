@@ -54,7 +54,7 @@ class AuthHandler {
   }
 
   configureLogRocket() {
-    if (window.location.host === "antgame.io") {
+    if (window.location.host === "antgame.io" && !this.isAdmin) {
       LogRocket.init("epzwap/antgame");
 
       if (this.isAnon) {
