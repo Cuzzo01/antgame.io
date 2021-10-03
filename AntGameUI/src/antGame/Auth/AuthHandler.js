@@ -15,9 +15,15 @@ class AuthHandler {
       if (decodedToken.exp * 1000 > new Date().getTime()) {
         this._loggedIn = true;
         this.decodedToken = decodedToken;
-        LogRocket.identify(this.decodedToken.id, {
-          name: this.decodedToken.username,
-        });
+        if (this.isAnon) {
+          LogRocket.identify(this.decodedToken.clientID, {
+            name: "Anon User",
+          });
+        } else {
+          LogRocket.identify(this.decodedToken.id, {
+            name: this.decodedToken.username,
+          });
+        }
       } else {
         this.jwt = "";
         localStorage.removeItem("jwt");
