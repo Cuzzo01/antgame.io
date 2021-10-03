@@ -20,6 +20,10 @@
   border-bottom: 2px black solid;
 }
 
+.divSection Button {
+  margin: 0 0.5em;
+}
+
 .rightAlign {
   text-align: right;
 }

@@ -26,6 +26,12 @@ const UserDetails = props => {
     });
   };
 
+  const setShowOnLeaderboard = newShowOnLeaderboard => {
+    patchUserDetails(props.id, { showOnLeaderboard: newShowOnLeaderboard }).then(result => {
+      setDetails(result);
+    });
+  };
+
   return (
     <div>
       {details ? (
@@ -64,6 +70,9 @@ const UserDetails = props => {
             <h5>Actions</h5>
             <Button onClick={() => setBanned(!details.banned)}>
               {details.banned ? "Unban User" : "Ban User"}
+            </Button>
+            <Button onClick={() => setShowOnLeaderboard(!details.showOnLeaderboard)}>
+              {details.showOnLeaderboard ? "Hide on Leaderboard" : "Show on Leaderboard"}
             </Button>
           </div>
         </div>

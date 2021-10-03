@@ -292,6 +292,7 @@ async function patchUser(req, res) {
     const id = req.params.id;
 
     const newBanned = request.banned;
+    const newShowOnLeaderboard = request.showOnLeaderboard;
 
     let patchRequest = {};
     if (newBanned !== undefined) {
@@ -300,6 +301,15 @@ async function patchUser(req, res) {
         return;
       } else {
         patchRequest.banned = newBanned;
+      }
+    }
+
+    if (newShowOnLeaderboard !== undefined) {
+      if (typeof newShowOnLeaderboard !== "boolean") {
+        res.sendStatus(400);
+        return;
+      } else {
+        patchRequest.showOnLeaderboard = newShowOnLeaderboard;
       }
     }
 
