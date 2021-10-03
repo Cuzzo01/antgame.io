@@ -20,6 +20,10 @@
   border-bottom: 2px black solid;
 }
 
+.divSection Button {
+  margin: 0 0.5em;
+}
+
 .rightAlign {
   text-align: right;
 }
@@ -62,4 +66,11 @@
 
 .yellowBackground {
   background-color: #f7dc6f;
+}
+
+.listElement {
+  margin: 0.5em 0em;
+  padding: 1em;
+  border: 2px solid black;
+  border-radius: 1em;
 }

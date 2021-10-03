@@ -54,7 +54,7 @@ const generateConfigList = configs => {
 const ConfigListElement = props => {
   const config = props.config;
   return (
-    <div className={`${styles.listElement} ${props.theme}`}>
+    <div className={`${adminStyles.listElement} ${styles.listElement} ${props.theme}`}>
       <div>
         <Link to={`/admin/config/${config._id}`}>
           {config.order ? `(${config.order})` : "(-)"}&nbsp;

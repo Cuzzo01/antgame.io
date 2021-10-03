@@ -33,6 +33,12 @@
   background-color: grey;
 }
 
+.tournamentSelect {
+  display: grid;
+  grid-template-columns: auto 5em;
+  grid-gap: 1em;
+}
+
 /* Order Section */
 
 .orderSection {

@@ -5,8 +5,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import GTMInitialize from "./GTMInitialize";
 import AntGameRouter from "./antGame/AntGameRouter";
 import "./index.css";
+import LogRocket from "logrocket";
 
 GTMInitialize();
+if (window.location.host === "antgame.io") LogRocket.init("epzwap/antgame");
+else console.log("Not initializing logrocket");
 
 ReactDOM.render(
   <React.StrictMode>

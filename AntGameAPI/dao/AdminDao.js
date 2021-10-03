@@ -62,22 +62,7 @@ const getConfigDetailsByID = async id => {
   const configObjectID = TryParseObjectID(id, "ChallengeID");
 
   const collection = await getCollection("configs");
-  const result = await collection.findOne(
-    { _id: configObjectID },
-    {
-      projection: {
-        mapPath: 1,
-        seconds: 1,
-        homeLimit: 1,
-        name: 1,
-        order: 1,
-        seconds: 1,
-        records: 1,
-        active: 1,
-        thumbnailURL: 1,
-      },
-    }
-  );
+  const result = await collection.findOne({ _id: configObjectID });
   return result;
 };
 
@@ -182,6 +167,15 @@ const getRunDetailsByID = async id => {
 };
 //#endregion Runs
 
+//#region Tournaments
+const getTournamentListFromDB = async () => {
+  const collection = await getCollection("tournaments");
+  const result = await collection.find({}, { projection: { name: 1 } }).toArray();
+
+  return result;
+};
+//#endregion
+
 module.exports = {
   getUserLoginCount,
   getNewAccountCount,
@@ -196,6 +190,7 @@ module.exports = {
   updateUserByID,
   getRecentRuns,
   getRunDetailsByID,
+  getTournamentListFromDB,
 };
 
 const TryParseObjectID = (stringID, name) => {

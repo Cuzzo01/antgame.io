@@ -2,6 +2,7 @@ import jwt_decode from "jwt-decode";
 import axios from "axios";
 import { getToken, getAnonToken } from "./AuthService";
 import { sendRunArtifact } from "../Challenge/ChallengeService";
+import LogRocket from "logrocket";
 
 class AuthHandler {
   constructor() {
@@ -14,6 +15,9 @@ class AuthHandler {
       if (decodedToken.exp * 1000 > new Date().getTime()) {
         this._loggedIn = true;
         this.decodedToken = decodedToken;
+        LogRocket.identify(this.decodedToken.id, {
+          name: this.decodedToken.username,
+        });
       } else {
         this.jwt = "";
         localStorage.removeItem("jwt");
@@ -62,7 +66,7 @@ class AuthHandler {
           this.logout();
           const pathBack = window.location.pathname;
           window.location = `/login?redirect=${pathBack}`;
-        } else if (Math.round(error.response.status / 10) === 50) {
+        } else if (Math.floor(error.response.status / 10) === 50) {
           window.location = "/error";
         }
         return Promise.reject(error);
@@ -89,6 +93,9 @@ class AuthHandler {
         this._loggedIn = true;
         this.jwt = result;
         this.decodedToken = jwt_decode(this.jwt);
+        LogRocket.identify(this.decodedToken.id, {
+          name: this.decodedToken.username,
+        });
         localStorage.setItem("jwt", this.jwt);
         localStorage.setItem("checkForMOTD", true);
 

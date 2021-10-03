@@ -1,9 +1,14 @@
 import axios from "axios";
 
 export async function sendRunArtifact(artifact) {
-  return axios.post("/api/challenge/artifact", { data: artifact }).then(res => {
-    return res.data;
-  });
+  return axios
+    .post("/api/challenge/artifact", { data: artifact })
+    .then(res => {
+      return res.data;
+    })
+    .catch(err => {
+      if (err.response.status === 409) window.location = "/challenge";
+    });
 }
 
 export async function getChallengeConfig(id) {

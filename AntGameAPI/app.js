@@ -11,6 +11,7 @@ const _userController = require("./controller/UserController");
 const _adminController = require("./controller/AdminController");
 const _flagController = require("./controller/FlagController");
 const _mapController = require("./controller/MapController");
+const _tournamentController = require("./controller/TournamentController");
 const TokenHandler = require("./auth/WebTokenHandler");
 const TokenRevokedHandler = require("./handler/TokenRevokedHandler");
 const { RejectNotAdmin } = require("./auth/AuthHelpers");
@@ -80,15 +81,22 @@ app.use(
 );
 
 app.get("/admin/stats", RejectNotAdmin, _adminController.getStats);
-app.get("/admin/configList", RejectNotAdmin, _adminController.getConfigList);
-app.get("/admin/config/:id", RejectNotAdmin, _adminController.getConfigDetails);
-app.patch("/admin/config/:id", RejectNotAdmin, _adminController.patchConfig);
+
 app.get("/admin/users", RejectNotAdmin, _adminController.getUsers);
 app.get("/admin/user/:id", RejectNotAdmin, _adminController.getUserDetails);
 app.patch("/admin/user/:id", RejectNotAdmin, _adminController.patchUser);
+
 app.get("/admin/runs", RejectNotAdmin, _adminController.getRuns);
 app.get("/admin/run/:id", RejectNotAdmin, _adminController.getRunDetails);
+
+app.get("/admin/configList", RejectNotAdmin, _adminController.getConfigList);
+app.get("/admin/config/:id", RejectNotAdmin, _adminController.getConfigDetails);
+app.patch("/admin/config/:id", RejectNotAdmin, _adminController.patchConfig);
 app.post("/admin/config", RejectNotAdmin, _adminController.postConfig);
+
+app.get("/admin/tournamentList", RejectNotAdmin, _adminController.getTournamentList);
+app.get("/admin/tournament/:id", RejectNotAdmin, _adminController.getTournamentDetails);
+app.post("/admin/tournament/:id/awardPoints", RejectNotAdmin, _tournamentController.awardPoints);
 
 app.get("/flag/:name", _flagController.getFlag);
 

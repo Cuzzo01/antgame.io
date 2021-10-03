@@ -12,12 +12,16 @@ const {
   getRecentlyLoggedInUsers,
   getRunCount,
   getRunDetailsByID,
+  getTournamentListFromDB,
 } = require("../dao/AdminDao");
 const { getActiveChallenges } = require("../dao/ChallengeDao");
 const { getLeaderboardRankByScore } = require("../dao/UserDao");
+const { getTournamentDetailsFromDB } = require("../dao/TournamentDao");
 const UserIdToUsernameHandler = require("../handler/UserIdToUsernameHandler");
 const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
+const ChallengeNameHandler = require("../handler/ChallengeIdToChallengeNameHandler");
 
+//#region stats
 async function getStats(req, res) {
   let response = {
     uniqueUserStats: {},
@@ -64,7 +68,9 @@ async function getStats(req, res) {
   res.send(response);
   return;
 }
+//#endregion stats
 
+//#region configs
 async function getConfigList(req, res) {
   try {
     const configs = await getConfigListFromDB();
@@ -199,7 +205,9 @@ async function patchConfig(req, res) {
     return;
   }
 }
+//#endregion configs
 
+//#region users
 async function getUsers(req, res) {
   try {
     const query = req.query;
@@ -284,6 +292,7 @@ async function patchUser(req, res) {
     const id = req.params.id;
 
     const newBanned = request.banned;
+    const newShowOnLeaderboard = request.showOnLeaderboard;
 
     let patchRequest = {};
     if (newBanned !== undefined) {
@@ -295,6 +304,15 @@ async function patchUser(req, res) {
       }
     }
 
+    if (newShowOnLeaderboard !== undefined) {
+      if (typeof newShowOnLeaderboard !== "boolean") {
+        res.sendStatus(400);
+        return;
+      } else {
+        patchRequest.showOnLeaderboard = newShowOnLeaderboard;
+      }
+    }
+
     const newDetails = await updateUserByID(id, patchRequest);
     res.send(newDetails);
   } catch (e) {
@@ -303,7 +321,9 @@ async function patchUser(req, res) {
     return;
   }
 }
+//#endregion users
 
+//#region runs
 async function getRuns(req, res) {
   try {
     const query = req.query;
@@ -350,6 +370,47 @@ async function getRunDetails(req, res) {
     res.sendStatus(500);
   }
 }
+//#endregion runs
+
+//#region tournaments
+async function getTournamentList(req, res) {
+  try {
+    const list = await getTournamentListFromDB();
+
+    res.send(list);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+    return;
+  }
+}
+
+async function getTournamentDetails(req, res) {
+  try {
+    const id = req.params.id;
+    const details = await getTournamentDetailsFromDB(id);
+
+    for (let i = 0; i < details.userPoints.length; i++) {
+      const entry = details.userPoints[i];
+      details.userPoints[i]["username"] = await UserIdToUsernameHandler.getUsername(entry.userID);
+    }
+
+    for (let i = 0; i < details.configs.length; i++) {
+      const configID = details.configs[i];
+      const configName = await ChallengeNameHandler.getChallengeName(configID);
+      details.configs[i] = {
+        id: configID,
+        name: configName,
+      };
+    }
+
+    res.send(details);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+}
+//#endregion tournaments
 
 const send400 = (res, message) => {
   res.status(400);
@@ -377,4 +438,6 @@ module.exports = {
   patchUser,
   getRuns,
   getRunDetails,
+  getTournamentList,
+  getTournamentDetails,
 };

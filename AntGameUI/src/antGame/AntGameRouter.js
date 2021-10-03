@@ -69,7 +69,7 @@ const AntGameRouter = () => {
 };
 
 const AdminPath = () => {
-  if (!AuthHandler.loggedIn) return <Redirect to={"/login?redirect=/admin"} />;
+  if (!AuthHandler.loggedIn) return <Redirect to={`/login?redirect=${window.location.pathname}`} />;
   if (!AuthHandler.isAdmin) return <Redirect to={"/"} />;
 
   return (
