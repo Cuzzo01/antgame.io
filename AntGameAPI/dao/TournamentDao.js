@@ -6,7 +6,7 @@ const getCollection = async collection => {
   return await connection.db("challenges").collection(collection);
 };
 
-const getTournamentDetails = async id => {
+const getTournamentDetailsFromDB = async id => {
   const tournamentObjectId = TryParseObjectID(id, "TournamentID");
   const collection = await getCollection("tournaments");
   const result = collection.findOne({ _id: tournamentObjectId });
@@ -43,7 +43,7 @@ const addUserToUserPoints = async (tournamentID, userID, points) => {
   );
 };
 
-module.exports = { getTournamentDetails, updateUserPointsTotal, addUserToUserPoints };
+module.exports = { getTournamentDetailsFromDB, updateUserPointsTotal, addUserToUserPoints };
 
 const TryParseObjectID = (stringID, name) => {
   try {

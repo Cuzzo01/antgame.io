@@ -94,13 +94,9 @@ app.get("/admin/config/:id", RejectNotAdmin, _adminController.getConfigDetails);
 app.patch("/admin/config/:id", RejectNotAdmin, _adminController.patchConfig);
 app.post("/admin/config", RejectNotAdmin, _adminController.postConfig);
 
-app.get("/admin/tournamentList", RejectNotAdmin);
-app.get("/admin/tournament/:id", RejectNotAdmin, _tournamentController.getTournament);
-app.post(
-  "/admin/tournament/:id/awardPoints",
-  RejectNotAdmin,
-  _tournamentController.givePointsForChallenge
-);
+app.get("/admin/tournamentList", RejectNotAdmin, _adminController.getTournamentList);
+app.get("/admin/tournament/:id", RejectNotAdmin, _adminController.getTournamentDetails);
+app.post("/admin/tournament/:id/awardPoints", RejectNotAdmin, _tournamentController.awardPoints);
 
 app.get("/flag/:name", _flagController.getFlag);
 

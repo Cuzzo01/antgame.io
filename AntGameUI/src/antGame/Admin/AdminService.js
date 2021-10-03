@@ -76,3 +76,15 @@ export const getRunDetails = async id => {
     return res.data;
   });
 };
+
+export const getTournamentList = async () => {
+  return axios.get("/api/admin/tournamentList").then(res => {
+    return res.data;
+  });
+};
+
+export const getTournamentDetails = async id => {
+  return axios.get(`/api/admin/tournament/${id}`).then(res => {
+    return res.data;
+  });
+};

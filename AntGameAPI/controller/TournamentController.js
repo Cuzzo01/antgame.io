@@ -22,18 +22,7 @@ const pointsMap = [
   { type: "percent", value: 0.1, points: 0.5 },
 ];
 
-async function getTournament(req, res) {
-  try {
-    const id = req.params.id;
-    const result = await getTournamentDetails(id);
-    res.send(result);
-  } catch (e) {
-    console.log(e);
-    res.sendStatus(500);
-  }
-}
-
-async function givePointsForChallenge(req, res) {
+async function awardPoints(req, res) {
   try {
     const tournamentID = req.params.id;
     const challengeID = req.body.challengeID;
@@ -69,10 +58,8 @@ async function givePointsForChallenge(req, res) {
     const percentCount = Math.round(userCount * largestPercent);
     const usersToGet = percentCount > largestRank ? percentCount : largestRank;
 
-    // get leaderboard
     const leaderboardEntries = await getLeaderboardByChallengeId(challengeID, usersToGet);
 
-    // create points array from leaderboard
     const percentCutoffs = [];
     pointsMap.forEach(pointObj => {
       if (pointObj.type === "percent") percentCutoffs.push(Math.round(pointObj.value * userCount));
@@ -116,7 +103,7 @@ async function givePointsForChallenge(req, res) {
   }
 }
 
-module.exports = { getTournament, givePointsForChallenge };
+module.exports = { awardPoints };
 
 const send400 = (res, message) => {
   res.status(400);

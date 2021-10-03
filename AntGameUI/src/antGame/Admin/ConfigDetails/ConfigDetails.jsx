@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getConfigDetails, patchConfigDetails } from "../AdminService";
+import { getConfigDetails, getTournamentList, patchConfigDetails } from "../AdminService";
 import ExpandList from "../Helpers/ExpandList";
 import { GetTimeString } from "../Helpers/FunctionHelpers";
 import styles from "./ConfigDetails.module.css";
 import adminStyles from "../AdminStyles.module.css";
 import OrderSection from "./OrderSection";
-import ThumbnailSection from "./ThumbnailEditor";
+import ThumbnailSection from "./ThumbnailSection";
 
 const ConfigDetails = props => {
   const [details, setDetails] = useState(false);
+  const [tournamentOptionsList, setTournamentOptionsList] = useState(false);
+  const [tournamentPickerValue, setTournamentPickerValue] = useState("");
 
   useEffect(() => {
     populateDetails(props.id);
@@ -20,6 +22,26 @@ const ConfigDetails = props => {
       setDetails(details);
     });
   };
+
+  const populateTournamentList = () => {
+    if (tournamentOptionsList === false) {
+      getTournamentList().then(list => {
+        const optionList = [];
+        list.forEach(tournament => {
+          optionList.push(
+            <option key={tournament._id} value={tournament._id} label={tournament.name} />
+          );
+        });
+        setTournamentOptionsList(optionList);
+      });
+      setTournamentOptionsList("loading");
+    }
+  };
+
+  const bindTournament = (event) => {
+    event.preventDefault()
+    // patch config with tournamentID
+  }
 
   const setActive = state => {
     patchConfigDetails(props.id, { active: state }).then(result => {
@@ -93,6 +115,35 @@ const ConfigDetails = props => {
               itemsToList={getRecordsList(details.records)}
               emptyMessage={"No Records"}
             />
+          </div>
+          <div className={adminStyles.divSection}>
+            <h5>Tournaments</h5>
+            {details.tournamentID ? (
+              <div>
+                <h6>
+                  Enrolled in tournament (
+                  <Link to={`/admin/tournament/${details.tournamentID}`}>Link</Link>)
+                </h6>
+                {details.pointsAwarded ? (
+                  <div>
+                    <h6>Points have been awarded</h6>
+                  </div>
+                ) : (
+                  <div></div>
+                )}
+              </div>
+            ) : (
+              <div>
+                Select Tournament to bind:{" "}
+                <form className={styles.tournamentSelect} onSubmit={bindTournament}>
+                  <input value={tournamentPickerValue} onChange={e => setTournamentPickerValue(e.target.value)} list="tournaments" onFocus={() => populateTournamentList()} />
+                  <input type="submit" />
+                </form>
+                {tournamentOptionsList === false || tournamentOptionsList === false ? null : (
+                  <datalist id="tournaments">{tournamentOptionsList}</datalist>
+                )}
+              </div>
+            )}
           </div>
         </div>
       ) : null}

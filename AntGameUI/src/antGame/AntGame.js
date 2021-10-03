@@ -255,6 +255,7 @@ export default class AntGame extends React.Component {
         this.mapHandler.calculateFoodToStopTime();
       }
 
+      // TODO: Can ticksPerSecond be fractional? That prob isn't good
       const ticksPerSecond = FrameRate * 1.5;
       const updateRate = 1000 / ticksPerSecond;
       this.updateCount = 0;
