@@ -17,6 +17,7 @@ const TokenRevokedHandler = require("./handler/TokenRevokedHandler");
 const { RejectNotAdmin } = require("./auth/AuthHelpers");
 const responseTime = require("response-time");
 const { GetIpAddress } = require("./helpers/IpHelper");
+const Logger = require("./Logger");
 
 const UnauthenticatedRoutes = [
   "/auth/login",
@@ -39,6 +40,14 @@ app.use(
       console.log(
         `${req.method} ${req.url} ${GetIpAddress(req)} ${time.toFixed(3)} ${res.statusCode}`
       );
+      Logger.log({
+        message: "request response",
+        method: req.method,
+        url: req.url,
+        ip: GetIpAddress(req),
+        time: parseFloat(time.toFixed(3)),
+        status: res.statusCode,
+      });
       if (time > 1000) console.log("Response time over a second");
     }
   })
