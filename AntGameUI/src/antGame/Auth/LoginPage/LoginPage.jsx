@@ -49,13 +49,15 @@ const LoginPage = props => {
   function handleSubmit(event) {
     event.preventDefault();
     if (formState === "loading") return;
-    AuthHandler.login(username, password).then(result => {
-      if (result === true) redirectOut();
-      else if (result === false) setFormState("error");
-      else if (result === "banned") setFormState("banned");
-      else if (result === "disabled") setFormState("disabled");
-    });
-    setFormState("loading");
+    if (username && password) {
+      AuthHandler.login(username, password).then(result => {
+        if (result === true) redirectOut();
+        else if (result === false) setFormState("error");
+        else if (result === "banned") setFormState("banned");
+        else if (result === "disabled") setFormState("disabled");
+      });
+      setFormState("loading");
+    }
   }
 
   function continueWithoutLogin(event) {
@@ -69,6 +71,7 @@ const LoginPage = props => {
     redirectOut();
   }
 
+  // FIXME: Use the form library so empty submits show errors
   return (
     <div className={styles.container}>
       {allowLogins ? (
