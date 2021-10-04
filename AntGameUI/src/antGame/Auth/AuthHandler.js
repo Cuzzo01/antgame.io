@@ -150,6 +150,7 @@ class AuthHandler {
       this.decodedToken = jwt_decode(this.jwt);
       this.configureLogRocket();
       localStorage.setItem("jwt", this.jwt);
+      localStorage.setItem("checkForMOTD", true);
       return true;
     });
   }
