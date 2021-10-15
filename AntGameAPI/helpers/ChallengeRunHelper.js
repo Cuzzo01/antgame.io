@@ -43,6 +43,13 @@ const ReportedConfigMatchesExpectedConfig = (runData, expectedConfig) => {
   const CorrectNumberOfHomes = parseInt(expectedConfig.homeLimit) >= runData.HomeLocations.length;
   if (!CorrectNumberOfHomes) return "Too many homes";
 
+  const NumOfSnapshots = runData.Snapshots.length;
+  const lastSnapshotHomeCounts = JSON.parse(runData.Snapshots[NumOfSnapshots - 1][5]);
+  const HomesInLastSnapshot = Object.keys(lastSnapshotHomeCounts).length;
+  const StartedAndEndedWithSameNumberOfHomes = runData.HomeLocations.length === HomesInLastSnapshot;
+  if (!StartedAndEndedWithSameNumberOfHomes)
+    return `started and ended with different number of homes (${runData.HomeLocations.length}, ${HomesInLastSnapshot})`;
+
   const antsPerCell = Math.round(AntsToSpawn / runData.HomeLocations.length);
   const expectedAntsSpawned = antsPerCell * runData.HomeLocations.length;
   const AntsToSpawnMatches = expectedAntsSpawned === runData.GameConfig.spawnedAnts;

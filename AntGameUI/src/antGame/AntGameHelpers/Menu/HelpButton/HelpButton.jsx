@@ -40,8 +40,8 @@ const HelpButton = props => {
               <div>
                 <h6 className={styles.bold}>Extra Details</h6>
                 <p>
-                  &#8226;&nbsp;Home tiles can be removed by right clicking on them or selecting the eraser brush ('E' in
-                  the top right). The 'Clear' button will remove all homes.
+                  &#8226;&nbsp;Home tiles can be removed by right clicking on them or selecting the
+                  eraser brush ('E' in the top right). The 'Clear' button will remove all homes.
                   <br />
                   &#8226;&nbsp;Click on your leaderboard rank (next to PR in the top left) to see
                   the challenge leaderboard.

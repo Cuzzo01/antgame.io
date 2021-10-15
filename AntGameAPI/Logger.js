@@ -5,7 +5,7 @@ class Logger {
       protocol: "https",
       host: "listener.logz.io",
       port: "8071",
-      type: "YourLogType",
+      type: "AntGameAPI",
     });
 
     this.env = process.env.environment;
