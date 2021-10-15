@@ -39,6 +39,7 @@ export default class AntGame extends React.Component {
     this.windowSize = [];
     this.blockDrawing = false;
     this.imageToSave = "";
+    this.updateCount = 0;
 
     this.timerHandler = new TimerHandler(this.handleChallengeTimeout, this.setTime);
 
@@ -219,6 +220,7 @@ export default class AntGame extends React.Component {
   handleMousePressed = p5 => {
     if (this.state.playState) return;
     if (this.blockDrawing) return;
+    if (this.gamemode === "challenge" && this.updateCount !== 0) return;
 
     let mousePos = this.mapHandler.canvasXYToMapXY([p5.mouseX, p5.mouseY]);
 
@@ -331,6 +333,7 @@ export default class AntGame extends React.Component {
     this.homeTrailHandler.clearTrails();
     this.timerHandler.resetTime();
     this.mapHandler.handleReset();
+    this.updateCount = 0;
     this.setState({
       foodReturned: 0,
     });
