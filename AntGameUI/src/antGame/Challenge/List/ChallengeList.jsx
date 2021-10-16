@@ -90,7 +90,7 @@ const ListItem = props => {
                       </span>
                     ) : null}
                     {wrUsernameLength >= 9 && wrUsernameLength < 13 ? (
-                      <span className={styles.smallText}>&nbsp;({props.records.wr.age})</span>
+                      <span className={`${styles.smallText} ${styles.age}`}>({props.records.wr.age})</span>
                     ) : null}
                   </span>
                 ) : (
