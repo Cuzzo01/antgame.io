@@ -23,32 +23,9 @@ const Stats = props => {
 const StatsDisplay = props => {
   const stats = props.data;
 
-  let uniqueUserStats = [];
-  for (const [label, count] of Object.entries(stats.uniqueUserStats)) {
-    uniqueUserStats.push(
-      <div key={label} className={adminStyles.rightAlign}>
-        {label}:<span className={adminStyles.bold}>{count}</span>
-      </div>
-    );
-  }
-
-  let newAccountStats = [];
-  for (const [label, count] of Object.entries(stats.newAccountStats)) {
-    newAccountStats.push(
-      <div key={label} className={adminStyles.rightAlign}>
-        {label}:<span className={adminStyles.bold}>{count}</span>
-      </div>
-    );
-  }
-
-  let runCountStats = [];
-  for (const [label, count] of Object.entries(stats.runCountStats)) {
-    runCountStats.push(
-      <div key={label} className={adminStyles.rightAlign}>
-        {label}:<span className={adminStyles.bold}>{count}</span>
-      </div>
-    );
-  }
+  const uniqueUserStats = getStatsRow(stats.uniqueUserStats);
+  const newAccountStats = getStatsRow(stats.newAccountStats);
+  const runCountStats = getStatsRow(stats.runCountStats);
 
   return (
     <div>
@@ -69,3 +46,37 @@ const StatsDisplay = props => {
 };
 
 export default Stats;
+
+const getStatsRow = stats => {
+  let statsRow = [];
+  for (const [label, value] of Object.entries(stats)) {
+    statsRow.push(<StatCell key={label} label={label} value={value.value} delta={value.delta} />);
+  }
+
+  return statsRow;
+};
+
+const StatCell = props => {
+  const [value, setValue] = useState(props.value);
+  const [delta, setDelta] = useState(props.delta);
+
+  useEffect(() => {
+    setValue(props.value);
+    setDelta(props.delta);
+  }, [props.value, props.delta]);
+
+  return (
+    <div className={adminStyles.rightAlign}>
+      {delta ? <span className={getDeltaLabelClassString(delta)}>{delta}%&nbsp;</span> : null}
+      {props.label}:<span className={adminStyles.bold}>{value}</span>
+    </div>
+  );
+};
+
+const getDeltaLabelClassString = delta => {
+  let labelClassString = styles.deltaLabel;
+  if (delta !== undefined)
+    labelClassString += " " + (delta > 0 ? adminStyles.green : adminStyles.red);
+
+  return labelClassString;
+};

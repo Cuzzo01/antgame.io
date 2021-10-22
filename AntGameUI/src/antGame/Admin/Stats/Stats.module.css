@@ -2,3 +2,9 @@
   display: grid;
   grid-template-columns: auto 20% 20% 20%;
 }
+
+.deltaLabel {
+  font-size: 0.8em;
+  font-weight: bold;
+  text-align: center;
+}

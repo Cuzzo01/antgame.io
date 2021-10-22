@@ -14,7 +14,7 @@ const getUserLoginCount = async hoursBack => {
       "loginRecords.time": { $gt: new Date(Date.now() - hoursBack * 60 * 60 * 1000) },
     })
     .count();
-  return { hours: hoursBack, users: result };
+  return { hours: hoursBack, value: result };
 };
 
 const getNewAccountCount = async hoursBack => {
@@ -24,7 +24,7 @@ const getNewAccountCount = async hoursBack => {
       "registrationData.date": { $gt: new Date(Date.now() - hoursBack * 60 * 60 * 1000) },
     })
     .count();
-  return { hours: hoursBack, newAccounts: result };
+  return { hours: hoursBack, value: result };
 };
 
 const getRunCount = async hoursBack => {
@@ -32,7 +32,7 @@ const getRunCount = async hoursBack => {
   const result = await collection
     .find({ submissionTime: { $gt: new Date(Date.now() - hoursBack * 60 * 60 * 1000) } })
     .count();
-  return { hours: hoursBack, runCount: result };
+  return { hours: hoursBack, value: result };
 };
 //#endregion Stats
 
