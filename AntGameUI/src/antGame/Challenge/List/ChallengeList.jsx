@@ -90,7 +90,9 @@ const ListItem = props => {
                       </span>
                     ) : null}
                     {wrUsernameLength >= 9 && wrUsernameLength < 13 ? (
-                      <span className={`${styles.smallText} ${styles.age}`}>({props.records.wr.age})</span>
+                      <span className={`${styles.smallText} ${styles.age}`}>
+                        ({props.records.wr.age})
+                      </span>
                     ) : null}
                   </span>
                 ) : (
@@ -167,7 +169,6 @@ const ChallengeLink = props => {
 };
 
 const getDisplayTime = seconds => {
-  // debugger
   const min = Math.floor(seconds / 60);
   let sec = seconds % 60;
   if (sec < 10) sec = "0" + sec;

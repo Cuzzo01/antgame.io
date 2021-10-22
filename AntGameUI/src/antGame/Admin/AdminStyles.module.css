@@ -52,6 +52,14 @@
   padding: 0.1em;
 }
 
+.green {
+  color: #1e8449;
+}
+
+.red {
+  color: #d9534f;
+}
+
 .even {
   background-color: #ccd1d1;
 }

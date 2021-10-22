@@ -20,6 +20,7 @@ const { getTournamentDetailsFromDB } = require("../dao/TournamentDao");
 const UserIdToUsernameHandler = require("../handler/UserIdToUsernameHandler");
 const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
 const ChallengeNameHandler = require("../handler/ChallengeIdToChallengeNameHandler");
+const { addStatToResponse } = require("../helpers/AuthStatHelpers");
 
 //#region stats
 async function getStats(req, res) {
@@ -45,24 +46,15 @@ async function getStats(req, res) {
   runCountStatPromises.push(getRunCount(168));
 
   await Promise.all(loginStatPromises).then(values => {
-    values.forEach(result => {
-      const label = getLabelFromResult(result);
-      response.uniqueUserStats[label] = result.users;
-    });
+    addStatToResponse(response, "uniqueUserStats", values);
   });
 
   await Promise.all(newAccountStatPromises).then(values => {
-    values.forEach(result => {
-      const label = getLabelFromResult(result);
-      response.newAccountStats[label] = result.newAccounts;
-    });
+    addStatToResponse(response, "newAccountStats", values);
   });
 
   await Promise.all(runCountStatPromises).then(values => {
-    values.forEach(result => {
-      const label = getLabelFromResult(result);
-      response.runCountStats[label] = result.runCount;
-    });
+    addStatToResponse(response, "runCountStats", values);
   });
 
   res.send(response);
@@ -415,16 +407,6 @@ async function getTournamentDetails(req, res) {
 const send400 = (res, message) => {
   res.status(400);
   res.send(message);
-};
-
-const getLabelFromResult = result => {
-  let label = "";
-  if (result.hours === 12) label = "12Hs";
-  else if (result.hours === 24) label = "24Hs";
-  else if (result.hours === 72) label = "3Ds";
-  else if (result.hours === 168) label = "7Ds";
-  else if (result.hours === 720) label = "30Ds";
-  return label;
 };
 
 module.exports = {
