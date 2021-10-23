@@ -14,3 +14,21 @@
 .banned {
   background-color: #f1948a;
 }
+
+.header {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+.selectContainer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+.titleRow {
+  font-weight: bold;
+  display: grid;
+  grid-template-columns: 30% auto 15% 17%;
+}
