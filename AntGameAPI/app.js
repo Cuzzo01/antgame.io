@@ -12,6 +12,7 @@ const _adminController = require("./controller/AdminController");
 const _flagController = require("./controller/FlagController");
 const _mapController = require("./controller/MapController");
 const _tournamentController = require("./controller/TournamentController");
+const _reportController = require("./controller/ReportController");
 const TokenHandler = require("./auth/WebTokenHandler");
 const TokenRevokedHandler = require("./handler/TokenRevokedHandler");
 const { RejectNotAdmin } = require("./auth/AuthHelpers");
@@ -122,6 +123,8 @@ app.get("/challenge/:id", _challengeController.getChallenge);
 app.get("/challenge/:id/pr", _challengeController.getPRHomeLocations);
 app.get("/challenges/active", _challengeController.getActiveChallenges);
 app.get("/challenge/:id/leaderboard", _challengeController.getLeaderboard);
+
+app.post("/report/spaces", _reportController.reportSpacesData);
 
 app.get("/health", (req, res) => res.sendStatus(200));
 

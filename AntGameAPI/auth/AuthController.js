@@ -61,6 +61,7 @@ async function verifyLogin(req, res) {
     res.status(401);
     res.send("Invalid login");
   } catch (e) {
+    Logger.logError("AuthController.verifyLogin", e);
     console.log(e);
     res.status(500);
     res.send("Login failed");
@@ -84,6 +85,7 @@ async function getAnonymousToken(req, res) {
     res.send(token);
     return;
   } catch (e) {
+    Logger.logError("AuthController.getAnonymousToken", e);
     console.log(e);
     res.status(500);
     res.send("Login failed");
@@ -146,6 +148,7 @@ async function registerUser(req, res) {
     const token = TokenHandler.generateAccessToken(tokenObject);
     res.send(token);
   } catch (e) {
+    Logger.logError("AuthController.registerUser", e);
     console.log(e);
     res.status(500);
     res.send("Could not create user");
@@ -176,6 +179,7 @@ async function createUser(req, res) {
     });
     res.send("OK");
   } catch (e) {
+    Logger.logError("AuthController.createUser", e);
     console.log(e);
     res.status(500);
     res.send("Could not create user");
