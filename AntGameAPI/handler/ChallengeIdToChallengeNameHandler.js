@@ -1,5 +1,6 @@
 const { getChallengeByChallengeId } = require("../dao/ChallengeDao");
 const { ResultCache } = require("../helpers/ResultCache");
+const Logger = require("../Logger");
 
 class ChallengeIdToChallengeNameHandler {
   constructor() {
