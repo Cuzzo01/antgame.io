@@ -27,7 +27,7 @@ class Logger {
     this.log({ message: "API Error", location: location, error: err });
   }
 
-  async logCacheResult(cacheName, cacheMiss, key, value) {
+  async logCacheResult(cacheName, cacheMiss, key, value, time) {
     const shouldLogCacheResult = await FlagHandler.getFlagValue("should-log-cache-results");
     if (shouldLogCacheResult)
       this.log({
@@ -36,6 +36,7 @@ class Logger {
         resultType: cacheMiss ? "miss" : "hit",
         key: key,
         value: value,
+        time: time,
       });
   }
 }

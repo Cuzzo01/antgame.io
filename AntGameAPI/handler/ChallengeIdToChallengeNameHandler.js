@@ -8,15 +8,16 @@ class ChallengeIdToChallengeNameHandler {
   }
 
   async getChallengeName(id) {
+    const startTime = new Date();
     if (this.resultCache.isSetAndActive(id)) {
       const result = this.resultCache.getValue(id);
-      Logger.logCacheResult("ChallengeIdToChallengeNameHandler", false, id, result);
+      Logger.logCacheResult("ChallengeIdToChallengeNameHandler", false, id, result, new Date() - startTime);
       if (result !== null) return result;
       return null;
     } else {
       try {
         const config = await getChallengeByChallengeId(id);
-        this.resultCache.setItem(id, config.name, this.timeToCache);
+        this.resultCache.setItem(id, config.name, this.timeToCache, new Date() - startTime);
         Logger.logCacheResult("ChallengeIdToChallengeNameHandler", true, id, config.name);
         return config.name;
       } catch (e) {
