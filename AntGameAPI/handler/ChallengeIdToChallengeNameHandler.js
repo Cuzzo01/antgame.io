@@ -10,12 +10,14 @@ class ChallengeIdToChallengeNameHandler {
   async getChallengeName(id) {
     if (this.resultCache.isSetAndActive(id)) {
       const result = this.resultCache.getValue(id);
+      Logger.logCacheResult("ChallengeIdToChallengeNameHandler", false, id, result);
       if (result !== null) return result;
       return null;
     } else {
       try {
         const config = await getChallengeByChallengeId(id);
         this.resultCache.setItem(id, config.name, this.timeToCache);
+        Logger.logCacheResult("ChallengeIdToChallengeNameHandler", true, id, config.name);
         return config.name;
       } catch (e) {
         console.error(`getChallengeName called with non-existent ID : ${id}`);

@@ -3,6 +3,7 @@ const { isUserBanned } = require("../dao/UserDao");
 const { ExpiringResult } = require("../helpers/ExpiringResult");
 const { ResultCache } = require("../helpers/ResultCache");
 const FlagHandler = require("../handler/FlagHandler");
+const Logger = require("../Logger");
 
 class TokenRevokedHandler {
   constructor() {
@@ -16,6 +17,7 @@ class TokenRevokedHandler {
 
     if (this.resultCache.isSetAndActive(userID)) {
       const IsValid = this.resultCache.getValue(userID);
+      Logger.logCacheResult("TokenRevokedHandler", false, userID, IsValid);
       return IsValid;
     } else {
       if (!this.timeToCache || !this.timeToCache.isActive()) await this.refreshTimeToCache();
@@ -29,6 +31,7 @@ class TokenRevokedHandler {
         console.error(`Threw error getting token status in TokenRevokedHandler (${userID})`, e);
         return null;
       }
+      Logger.logCacheResult("TokenRevokedHandler", true, userID, IsValid);
       return IsValid;
     }
   }

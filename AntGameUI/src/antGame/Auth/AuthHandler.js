@@ -1,6 +1,6 @@
 import jwt_decode from "jwt-decode";
 import axios from "axios";
-import { getToken, getAnonToken } from "./AuthService";
+import { getToken, getAnonToken, reportSpacesLoadTime } from "./AuthService";
 import { sendRunArtifact } from "../Challenge/ChallengeService";
 import LogRocket from "logrocket";
 
@@ -72,6 +72,10 @@ class AuthHandler {
   configureInterceptors() {
     axios.interceptors.response.use(
       response => {
+        if (response.config.url.includes("digitaloceanspaces.com")) {
+          const loadTime = new Date() - response.config.metadata.startTime;
+          reportSpacesLoadTime(loadTime, response.config.url);
+        }
         return response;
       },
       error => {
@@ -88,6 +92,10 @@ class AuthHandler {
     );
 
     axios.interceptors.request.use(config => {
+      if (config.url.includes("digitaloceanspaces.com")) {
+        config.metadata = { startTime: new Date() };
+        return config;
+      }
       if (this.token) {
         this.checkForUpdatedToken();
         config.headers.Authorization = `Bearer ${this.token}`;

@@ -170,21 +170,14 @@ export class MapHandler {
 
   setTitle(mapName) {
     if (mapName) document.title = `${mapName} - AntGame`;
-    // else document.title = "AntGame";
   }
 
   fetchAndLoadMap(path) {
-    if (path.includes("digitaloceanspaces.com"))
-      return axios
-        .create()
-        .get(path)
-        .then(res => {
-          this.loadMap(res.data, false);
-        });
-    else
-      return axios.get(path).then(res => {
-        this.loadMap(res.data, true);
-      });
+    let setTitle = true;
+    if (this._gameMode === "challenge") setTitle = false;
+    return axios.get(path).then(res => {
+      this.loadMap(res.data, setTitle);
+    });
   }
 
   preloadMap(mapToLoad) {

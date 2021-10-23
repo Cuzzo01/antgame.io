@@ -33,3 +33,7 @@ export async function registerAccount(username, password, email, clientID) {
       }
     });
 }
+
+export async function reportSpacesLoadTime(time, path) {
+  return axios.post(`/api/report/spaces`, { time: time, path: path });
+}
