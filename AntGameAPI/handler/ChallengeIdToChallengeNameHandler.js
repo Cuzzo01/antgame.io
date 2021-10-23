@@ -11,7 +11,13 @@ class ChallengeIdToChallengeNameHandler {
     const startTime = new Date();
     if (this.resultCache.isSetAndActive(id)) {
       const result = this.resultCache.getValue(id);
-      Logger.logCacheResult("ChallengeIdToChallengeNameHandler", false, id, result, new Date() - startTime);
+      Logger.logCacheResult(
+        "ChallengeIdToChallengeNameHandler",
+        false,
+        id,
+        result,
+        new Date() - startTime
+      );
       if (result !== null) return result;
       return null;
     } else {

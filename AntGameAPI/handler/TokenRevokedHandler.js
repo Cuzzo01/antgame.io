@@ -14,7 +14,7 @@ class TokenRevokedHandler {
   async isTokenValid(userID) {
     const loginsEnabled = await FlagHandler.getFlagValue("allow-logins");
     if (loginsEnabled !== true) return false;
-    
+
     const startTime = new Date();
     if (this.resultCache.isSetAndActive(userID)) {
       const IsValid = this.resultCache.getValue(userID);

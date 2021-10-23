@@ -12,7 +12,13 @@ class ChallengePlayerCountHandler {
     const startTime = new Date();
     if (this.resultCache.isSetAndActive(challengeID)) {
       const result = this.resultCache.getValue(challengeID);
-      Logger.logCacheResult("ChallengePlayerCountHandler", false, challengeID, result, new Date() - startTime);
+      Logger.logCacheResult(
+        "ChallengePlayerCountHandler",
+        false,
+        challengeID,
+        result,
+        new Date() - startTime
+      );
       if (result !== null) return result;
       return null;
     } else {
@@ -20,7 +26,13 @@ class ChallengePlayerCountHandler {
         const value = await getPlayerCountByChallengeID(challengeID);
         const timeToCache = await FlagHandler.getFlagValue("player-count-cache-time");
         this.resultCache.setItem(challengeID, value, timeToCache);
-        Logger.logCacheResult("ChallengePlayerCountHandler", true, challengeID, value, new Date() - startTime);
+        Logger.logCacheResult(
+          "ChallengePlayerCountHandler",
+          true,
+          challengeID,
+          value,
+          new Date() - startTime
+        );
         return value;
       } catch (e) {
         console.error(`getPlayerCount called with non-existent ID : ${challengeID}`);
