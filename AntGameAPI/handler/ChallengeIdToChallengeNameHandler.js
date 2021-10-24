@@ -25,7 +25,13 @@ class ChallengeIdToChallengeNameHandler {
       try {
         const config = await getChallengeByChallengeId(id);
         this.resultCache.setItem(id, config.name, this.timeToCache, new Date() - startTime);
-        Logger.logCacheResult("ChallengeIdToChallengeNameHandler", true, id, config.name);
+        Logger.logCacheResult(
+          "ChallengeIdToChallengeNameHandler",
+          true,
+          id,
+          config.name,
+          new Date() - startTime
+        );
         return config.name;
       } catch (e) {
         console.error(`getChallengeName called with non-existent ID : ${id}`);

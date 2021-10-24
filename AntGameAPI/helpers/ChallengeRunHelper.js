@@ -15,6 +15,7 @@ const VerifyArtifact = (runData, clientID, challengeConfig) => {
   if (!isFinite(runData.Score)) return "score is infinity";
 
   if (!ScoreMatchesFinalSnapshot(runData)) return "non matching reported and final snapshot score";
+
   const snapshotLengthResult = SnapshotLengthMatchesConfigTime(runData);
   if (!snapshotLengthResult)
     return `not enough snapshots for config time : ${snapshotLengthResult}`;
