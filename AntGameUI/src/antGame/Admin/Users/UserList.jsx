@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { getRecentlyCreatedUsers, getRecentlyLoggedInUsers } from "../AdminService";
 import { GetTimeString } from "../Helpers/FunctionHelpers";
@@ -73,7 +73,6 @@ const UserList = () => {
 export default UserList;
 
 const UsersListElement = props => {
-  // debugger
   return (
     <div className={`${styles.userRow} ${props.theme} ${props.user.banned ? styles.banned : null}`}>
       <span className={""}>
