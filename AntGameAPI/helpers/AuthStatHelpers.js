@@ -25,13 +25,14 @@ function getStatDeltas(valuesArr) {
 const getStatDeltasFromHours = valuesArr => {
   let lastHours = 0;
   let lastValue = 0;
-  for (const statResult of valuesArr) {
+  for (let i = 0; i < valuesArr.length; i++) {
+    const statResult = valuesArr[i];
     const statResultHours = statResult.hours;
     const statResultValue = statResult.value;
     if (lastHours !== 0) {
-      const lastValueExtrapolated = lastValue * (statResultHours / lastHours);
-      const valueDeltaPercent = getPercentDifference(statResultValue, lastValueExtrapolated);
-      statResult.delta = Math.round(valueDeltaPercent * 100);
+      const valueExtrapolated = statResultValue * (lastHours / statResultHours);
+      const valueDeltaPercent = getPercentDifference(lastValue, valueExtrapolated);
+      valuesArr[i - 1].delta = Math.round(valueDeltaPercent * 100);
     }
     lastHours = statResultHours;
     lastValue = statResultValue;
