@@ -47,9 +47,9 @@ const ReportedConfigMatchesExpectedConfig = (runData, expectedConfig) => {
   const NumOfSnapshots = runData.Snapshots.length;
   const lastSnapshotHomeCounts = JSON.parse(runData.Snapshots[NumOfSnapshots - 1][5]);
   const HomesInLastSnapshot = Object.keys(lastSnapshotHomeCounts).length;
-  const StartedAndEndedWithSameNumberOfHomes = runData.HomeLocations.length === HomesInLastSnapshot;
-  if (!StartedAndEndedWithSameNumberOfHomes)
-    return `started and ended with different number of homes (${runData.HomeLocations.length}, ${HomesInLastSnapshot})`;
+  const EndedWithMoreHomesThanStartedWith = runData.HomeLocations.length < HomesInLastSnapshot;
+  if (EndedWithMoreHomesThanStartedWith)
+    return `ended with more homes than started with (${runData.HomeLocations.length}, ${HomesInLastSnapshot})`;
 
   const antsPerCell = Math.round(AntsToSpawn / runData.HomeLocations.length);
   const expectedAntsSpawned = antsPerCell * runData.HomeLocations.length;
