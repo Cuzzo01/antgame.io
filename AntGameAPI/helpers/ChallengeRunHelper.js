@@ -47,7 +47,7 @@ const ReportedConfigMatchesExpectedConfig = (runData, expectedConfig) => {
   const NumOfSnapshots = runData.Snapshots.length;
   const lastSnapshotHomeCounts = JSON.parse(runData.Snapshots[NumOfSnapshots - 1][5]);
   const HomesInLastSnapshot = Object.keys(lastSnapshotHomeCounts).length;
-  const EndedWithMoreHomesThanStartedWith = runData.HomeLocations.length <= HomesInLastSnapshot;
+  const EndedWithMoreHomesThanStartedWith = runData.HomeLocations.length < HomesInLastSnapshot;
   if (EndedWithMoreHomesThanStartedWith)
     return `ended with more homes than started with (${runData.HomeLocations.length}, ${HomesInLastSnapshot})`;
 
