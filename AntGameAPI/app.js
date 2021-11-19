@@ -24,7 +24,7 @@ const UnauthenticatedRoutes = [
   "/auth/login",
   "/auth/anonToken",
   "/auth/register",
-  /\/flag*/,
+  /\/flag\//,
   "/health",
 ];
 
@@ -90,6 +90,7 @@ app.use(
   }
 );
 
+//#region Admin
 app.get("/admin/stats", RejectNotAdmin, _adminController.getStats);
 
 app.get("/admin/users", RejectNotAdmin, _adminController.getUsers);
@@ -107,6 +108,9 @@ app.post("/admin/config", RejectNotAdmin, _adminController.postConfig);
 app.get("/admin/tournamentList", RejectNotAdmin, _adminController.getTournamentList);
 app.get("/admin/tournament/:id", RejectNotAdmin, _adminController.getTournamentDetails);
 app.post("/admin/tournament/:id/awardPoints", RejectNotAdmin, _tournamentController.awardPoints);
+
+app.get("/admin/flags", RejectNotAdmin, _adminController.getFlagList);
+//#endregion Admin
 
 app.get("/flag/:name", _flagController.getFlag);
 

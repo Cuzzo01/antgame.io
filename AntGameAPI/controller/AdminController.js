@@ -13,6 +13,7 @@ const {
   getRunCount,
   getRunDetailsByID,
   getTournamentListFromDB,
+  getFlagListFromDB,
 } = require("../dao/AdminDao");
 const { getActiveChallenges } = require("../dao/ChallengeDao");
 const { getLeaderboardRankByScore } = require("../dao/UserDao");
@@ -404,6 +405,18 @@ async function getTournamentDetails(req, res) {
 }
 //#endregion tournaments
 
+//#region Flags
+async function getFlagList(req, res) {
+  try {
+    const list = await getFlagListFromDB();
+    res.send(list);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+}
+//#endregion Flags
+
 const send400 = (res, message) => {
   res.status(400);
   res.send(message);
@@ -422,4 +435,5 @@ module.exports = {
   getRunDetails,
   getTournamentList,
   getTournamentDetails,
+  getFlagList,
 };
