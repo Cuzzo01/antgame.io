@@ -237,6 +237,16 @@ const getPlayerCountByChallengeID = async id => {
   return result;
 };
 
+const shouldShowUserOnLeaderboard = async id => {
+  const userObjectID = TryParseObjectID(id, "UserID");
+
+  const collection = await getCollection("users");
+  const result = await collection.findOne({ _id: userObjectID }, { projection: { showOnLeaderboard: 1 } });
+
+  if (result.showOnLeaderboard === true) return true;
+  return false;
+};
+
 const TryParseObjectID = (stringID, name) => {
   try {
     return new ObjectID(stringID);
@@ -258,4 +268,5 @@ module.exports = {
   isUserBanned,
   getUsernameByID,
   getPlayerCountByChallengeID,
+  shouldShowUserOnLeaderboard,
 };
