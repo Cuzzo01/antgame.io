@@ -140,7 +140,6 @@ const UserDetailsProjection = {
   email: 1,
   challengeDetails: 1,
 };
-
 //#endregion Users
 
 //#region Runs
@@ -176,6 +175,15 @@ const getTournamentListFromDB = async () => {
 };
 //#endregion
 
+//#region Flags
+async function getFlagListFromDB() {
+  const collection = await getCollection("flags");
+
+  const result = await collection.find({}, {name: 1, value: 1}).toArray();
+  return result;
+} 
+//#endregion Flags
+
 module.exports = {
   getUserLoginCount,
   getNewAccountCount,
@@ -191,6 +199,7 @@ module.exports = {
   getRecentRuns,
   getRunDetailsByID,
   getTournamentListFromDB,
+  getFlagListFromDB,
 };
 
 const TryParseObjectID = (stringID, name) => {

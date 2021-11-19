@@ -149,19 +149,22 @@ async function postRun(req, res) {
 
         let isWorldRecord = false;
         let challengeRecord = await ChallengeDao.getRecordByChallenge(runData.challengeID);
-        if (user.showOnLeaderboard !== false && runData.PB) {
+        if (runData.PB) {
           const recordEmpty = challengeRecord && Object.keys(challengeRecord).length === 0;
           if (recordEmpty || challengeRecord.score < runData.Score) {
-            isWorldRecord = true;
-            ChallengeDao.updateChallengeRecord(
-              runData.challengeID,
-              runData.Score,
-              user.username,
-              user.id,
-              runID
-            );
-
-            ChallengeDao.addTagToRun(runID, { type: "wr" });
+            const shouldShowUserOnLeaderboard = await UserDao.shouldShowUserOnLeaderboard(user.id);
+            if (shouldShowUserOnLeaderboard) {
+              isWorldRecord = true;
+              ChallengeDao.updateChallengeRecord(
+                runData.challengeID,
+                runData.Score,
+                user.username,
+                user.id,
+                runID
+              );
+  
+              ChallengeDao.addTagToRun(runID, { type: "wr" });
+            }
           }
         }
 

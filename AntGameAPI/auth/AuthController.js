@@ -51,9 +51,6 @@ async function verifyLogin(req, res) {
         admin: authDetails.admin,
         clientID: clientID,
       };
-      if (authDetails.showOnLeaderboard === false) {
-        tokenObject.showOnLeaderboard = false;
-      }
       const token = TokenHandler.generateAccessToken(tokenObject);
       res.send(token);
       return;
