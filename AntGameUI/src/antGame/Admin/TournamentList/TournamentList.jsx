@@ -8,6 +8,7 @@ const TournamentList = props => {
   const [tournamentsList, setTournamentsList] = useState(false);
 
   useEffect(() => {
+    document.title = "Tournaments List";
     getTournamentList().then(tournaments => {
       console.log(tournaments);
       const list = generateTournamentsList(tournaments);

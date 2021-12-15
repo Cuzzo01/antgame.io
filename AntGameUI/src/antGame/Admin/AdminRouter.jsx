@@ -2,6 +2,8 @@ import { Route, Switch, useParams } from "react-router-dom";
 import ConfigDetails from "./ConfigDetails/ConfigDetails";
 import ConfigList from "./ConfigList/ConfigList";
 import CreateConfig from "./CreateConfig/CreateConfig";
+import FlagDetails from "./FlagDetails/FlagDetails";
+import FlagList from "./FlagList/FlagList";
 import RunDetails from "./RunDetails/RunDetails";
 import RunsList from "./Runs/RunsList";
 import Stats from "./Stats/Stats";
@@ -37,6 +39,12 @@ const AdminRouter = () => {
       <Route path="/admin/config/:id">
         <ConfigDetailsPage />
       </Route>
+      <Route path="/admin/flags">
+        <FlagList />
+      </Route>
+      <Route path="/admin/flag/:id">
+        <FlagDetailsPage />
+      </Route>
       <Route path="/admin/tournaments">
         <TournamentList />
       </Route>
@@ -61,6 +69,11 @@ const UserDetailsPage = () => {
 const RunDetailsPage = () => {
   let { id } = useParams();
   return <RunDetails id={id} />;
+};
+
+const FlagDetailsPage = () => {
+  let { id } = useParams();
+  return <FlagDetails id={id} />;
 };
 
 const TournamentDetailsPage = () => {

@@ -10,6 +10,8 @@ const UserList = () => {
   const [usersToDisplay, setUsersToDisplay] = useState(false);
   const [tableHeader, setTableHeader] = useState();
 
+  document.title = "User List";
+
   const getUserList = getBy => {
     if (getBy === "recentCreate") {
       getAndSetRecentlyCreated();

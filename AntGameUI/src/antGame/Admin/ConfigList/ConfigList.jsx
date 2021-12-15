@@ -10,6 +10,7 @@ const ConfigList = props => {
   const [noOrderConfigList, setNoOrderConfigList] = useState(false);
 
   useEffect(() => {
+    document.title = "Config List";
     getConfigList().then(configs => {
       const orderConfigs = configs.filter(config => config.order);
       const noOrderConfigs = configs.filter(config => !config.order);
@@ -27,14 +28,15 @@ const ConfigList = props => {
       <Link to="/admin/newConfig" className={`${styles.newConfigButton} ${adminStyles.bold}`}>
         New Config
       </Link>
-      <h4>Ordered Configs</h4>
+      <h3>Ordered Configs</h3>
       {orderConfigList ? orderConfigList : null}
-      <h4 style={{ marginTop: "1em" }}>Unordered Configs</h4>
+      <h3 style={{ marginTop: "1em" }}>Unordered Configs</h3>
       {noOrderConfigList ? noOrderConfigList : null}
       {}
     </div>
   );
 };
+export default ConfigList;
 
 const generateConfigList = configs => {
   let list = [];
@@ -52,7 +54,7 @@ const generateConfigList = configs => {
 };
 
 const ConfigListElement = props => {
-  const config = props.config;
+  const { config } = props;
   return (
     <div className={`${adminStyles.listElement} ${styles.listElement} ${props.theme}`}>
       <div>
@@ -83,4 +85,3 @@ const ConfigListElement = props => {
     </div>
   );
 };
-export default ConfigList;

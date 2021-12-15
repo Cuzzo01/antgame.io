@@ -10,6 +10,7 @@ const RunDetails = props => {
   const [tagList, setTagList] = useState(false);
 
   useEffect(() => {
+    document.title = "Run Details";
     getRunDetails(props.id).then(details => {
       console.log(details);
       setDetails(details);

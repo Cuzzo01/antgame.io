@@ -23,6 +23,8 @@ const CreateConfig = () => {
     });
   };
 
+  document.title = "Create Config";
+
   return (
     <div>
       <h4>New Config</h4>

@@ -110,6 +110,7 @@ app.get("/admin/tournament/:id", RejectNotAdmin, _adminController.getTournamentD
 app.post("/admin/tournament/:id/awardPoints", RejectNotAdmin, _tournamentController.awardPoints);
 
 app.get("/admin/flags", RejectNotAdmin, _adminController.getFlagList);
+app.get("/admin/flagData/:id", RejectNotAdmin, _adminController.getFlagDetails);
 //#endregion Admin
 
 app.get("/flag/:name", _flagController.getFlag);

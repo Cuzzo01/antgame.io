@@ -17,6 +17,7 @@ const AdminHome = props => {
           <Link to="/admin/runs">Runs</Link>
           <Link to="/admin/users">Users</Link>
           <Link to="/admin/configs">Configs</Link>
+          <Link to="/admin/flags">Flags</Link>
           <Link to="/admin/tournaments">Tournaments</Link>
         </div>
       </div>
