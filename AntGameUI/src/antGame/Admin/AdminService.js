@@ -96,3 +96,21 @@ export const getTournamentDetails = async id => {
     return res.data;
   });
 };
+
+export const getFlagList = async () => {
+  return axios.get("/api/admin/flags").then(res => {
+    return res.data;
+  });
+};
+
+export const getFlagDetails = async id => {
+  return axios.get(`/api/admin/flagData/${id}`).then(res => {
+    return res.data;
+  });
+};
+
+export const updateFlagDetails = async (id, fields) => {
+  return axios.patch("/api/admin/flagData/" + id, fields).then(res => {
+    return res.data;
+  });
+};

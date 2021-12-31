@@ -7,15 +7,18 @@ const Stats = props => {
   const [stats, setStats] = useState(false);
 
   useEffect(() => {
+    document.title = "Stats";
     getStats().then(stats => {
       setStats(stats);
     });
   }, []);
 
   return (
-    <div className={adminStyles.divSection}>
-      <h4>Stats</h4>
-      {stats !== false ? <StatsDisplay data={stats} /> : null}
+    <div>
+      <h3>Stats</h3>
+      <div className={adminStyles.divSection}>
+        {stats !== false ? <StatsDisplay data={stats} /> : null}
+      </div>
     </div>
   );
 };

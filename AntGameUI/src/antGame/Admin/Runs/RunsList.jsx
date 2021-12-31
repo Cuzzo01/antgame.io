@@ -9,6 +9,7 @@ const RunsList = props => {
   const [runsList, setRunsList] = useState(false);
 
   useEffect(() => {
+    document.title = "Runs List";
     getRuns();
   }, []);
 

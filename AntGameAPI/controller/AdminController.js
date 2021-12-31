@@ -14,6 +14,8 @@ const {
   getRunDetailsByID,
   getTournamentListFromDB,
   getFlagListFromDB,
+  getFlagDetailsByID,
+  updateFlagByID,
 } = require("../dao/AdminDao");
 const { getActiveChallenges } = require("../dao/ChallengeDao");
 const { getLeaderboardRankByScore } = require("../dao/UserDao");
@@ -22,6 +24,7 @@ const UserIdToUsernameHandler = require("../handler/UserIdToUsernameHandler");
 const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
 const ChallengeNameHandler = require("../handler/ChallengeIdToChallengeNameHandler");
 const { addStatToResponse } = require("../helpers/AuthStatHelpers");
+const Logger = require("../Logger");
 
 //#region stats
 async function getStats(req, res) {
@@ -91,7 +94,7 @@ async function getConfigList(req, res) {
     res.send(configs);
     return;
   } catch (e) {
-    console.log(e);
+    Logger.logError("AdminController.getConfigList", e);
     res.sendStatus(500);
     return;
   }
@@ -115,7 +118,7 @@ async function getConfigDetails(req, res) {
     }
     res.send(result);
   } catch (e) {
-    console.log(e);
+    Logger.logError("AdminController.getConfigDetails", e);
     res.sendStatus(500);
     return;
   }
@@ -146,7 +149,7 @@ async function postConfig(req, res) {
     const result = await addNewConfig(newConfig);
     res.send(result._id);
   } catch (e) {
-    console.log(e);
+    Logger.logError("AdminController.postConfig", e);
     res.sendStatus(500);
     return;
   }
@@ -193,7 +196,7 @@ async function patchConfig(req, res) {
     await updateConfigByID(id, patchRequest);
     res.sendStatus(200);
   } catch (e) {
-    console.log(e);
+    Logger.logError("AdminController.patchConfig", e);
     res.sendStatus(500);
     return;
   }
@@ -231,7 +234,7 @@ async function getUsers(req, res) {
       return;
     }
   } catch (e) {
-    console.error(e);
+    Logger.logError("AdminController.getUsers", e);
     res.sendStatus(500);
     return;
   }
@@ -273,7 +276,7 @@ async function getUserDetails(req, res) {
 
     res.send(result);
   } catch (e) {
-    console.log(e);
+    Logger.logError("AdminController.getUserDetails", e);
     res.sendStatus(500);
   }
 }
@@ -309,7 +312,7 @@ async function patchUser(req, res) {
     const newDetails = await updateUserByID(id, patchRequest);
     res.send(newDetails);
   } catch (e) {
-    console.log(e);
+    Logger.logError("AdminController.patchUser", e);
     res.sendStatus(500);
     return;
   }
@@ -343,7 +346,7 @@ async function getRuns(req, res) {
       return;
     }
   } catch (e) {
-    console.log(e);
+    Logger.logError("AdminController.getRuns", e);
     res.sendStatus(500);
     return;
   }
@@ -358,8 +361,7 @@ async function getRunDetails(req, res) {
 
     res.send(details);
   } catch (e) {
-    console.log("Error in getRunDetails");
-    console.log(e);
+    Logger.logError("AdminController.getRunDetails", e);
     res.sendStatus(500);
   }
 }
@@ -372,7 +374,7 @@ async function getTournamentList(req, res) {
 
     res.send(list);
   } catch (e) {
-    console.log(e);
+    Logger.logError("AdminController.getTournamentList", e);
     res.sendStatus(500);
     return;
   }
@@ -399,7 +401,7 @@ async function getTournamentDetails(req, res) {
 
     res.send(details);
   } catch (e) {
-    console.log(e);
+    Logger.logError("AdminController.getTournamentDetails", e);
     res.sendStatus(500);
   }
 }
@@ -411,7 +413,56 @@ async function getFlagList(req, res) {
     const list = await getFlagListFromDB();
     res.send(list);
   } catch (e) {
-    console.log(e);
+    Logger.logError("AdminController.getFlagList", e);
+    res.sendStatus(500);
+  }
+}
+
+async function getFlagDetails(req, res) {
+  try {
+    const id = req.params.id;
+    const details = await getFlagDetailsByID(id);
+    res.send(details);
+  } catch (e) {
+    Logger.logError("AdminController.getFlagDetails", e);
+    res.sendStatus(500);
+  }
+}
+
+async function patchFlagDetails(req, res) {
+  try {
+    const id = req.params.id;
+    const request = req.body;
+
+    const flagDetails = await getFlagDetailsByID(id);
+
+    let patchRequest = {};
+    switch (flagDetails.type) {
+      case "bool":
+        if (typeof request.value === "boolean") {
+          patchRequest.value = request.value;
+        } else {
+          send400(res, "Value doesn't match flag type");
+          return;
+        }
+        break;
+      case "int":
+        if (typeof request.value === "number") {
+          patchRequest.value = request.value;
+        } else {
+          send400(res, "Value doesn't match flag type");
+          return;
+        }
+        break;
+      default:
+        send400(res, "Flag type not supported");
+        return;
+    }
+
+    const result = await updateFlagByID(id, patchRequest);
+    res.send(result);
+  } catch (e) {
+    Logger.logError("AdminController.patchFlagDetails", e);
     res.sendStatus(500);
   }
 }
@@ -436,4 +487,6 @@ module.exports = {
   getTournamentList,
   getTournamentDetails,
   getFlagList,
+  getFlagDetails,
+  patchFlagDetails,
 };

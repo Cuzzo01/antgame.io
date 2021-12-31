@@ -16,6 +16,7 @@ const UserDetails = props => {
 
   const populateDetails = id => {
     getUserDetails(id).then(result => {
+      document.title = `${result.username} - User Details`;
       setDetails(result);
     });
   };

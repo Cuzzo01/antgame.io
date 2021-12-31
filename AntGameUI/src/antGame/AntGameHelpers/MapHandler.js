@@ -184,7 +184,6 @@ export class MapHandler {
     if (!this.mapSetup) {
       this.fetchAndLoadMap(mapToLoad);
       this.lastLoadedSamplePath = mapToLoad;
-      this.mapSetup = true;
     }
   }
 
@@ -283,6 +282,8 @@ export class MapHandler {
   }
 
   paintOnMap(mapPos, brushSize, type) {
+    if (!this.mapSetup) return;
+
     let rangeOffset = Math.floor(brushSize / 2);
     let foodRemoved = 0;
 

@@ -19,6 +19,7 @@ const ConfigDetails = props => {
 
   const populateDetails = id => {
     getConfigDetails(id).then(details => {
+      document.title = `${details.name} - Details`;
       setDetails(details);
     });
   };

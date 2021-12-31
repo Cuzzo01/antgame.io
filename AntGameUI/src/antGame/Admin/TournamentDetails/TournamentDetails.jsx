@@ -7,6 +7,7 @@ const TournamentDetails = props => {
   const [details, setDetails] = useState(false);
 
   useEffect(() => {
+    document.title = "Tournament Details";
     getTournamentDetails(props.id).then(tourneyDetails => {
       setDetails(tourneyDetails);
     });

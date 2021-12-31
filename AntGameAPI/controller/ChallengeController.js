@@ -162,7 +162,7 @@ async function postRun(req, res) {
                 user.id,
                 runID
               );
-  
+
               ChallengeDao.addTagToRun(runID, { type: "wr" });
             }
           }
