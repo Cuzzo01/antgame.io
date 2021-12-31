@@ -107,4 +107,10 @@ export const getFlagDetails = async id => {
   return axios.get(`/api/admin/flagData/${id}`).then(res => {
     return res.data;
   });
-}
+};
+
+export const updateFlagDetails = async (id, fields) => {
+  return axios.patch("/api/admin/flagData/" + id, fields).then(res => {
+    return res.data;
+  });
+};

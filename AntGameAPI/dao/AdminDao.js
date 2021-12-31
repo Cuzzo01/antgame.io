@@ -179,7 +179,9 @@ const getTournamentListFromDB = async () => {
 async function getFlagListFromDB() {
   const collection = await getCollection("flags");
 
-  const result = await collection.find({}, { projection: { name: 1, value: 1, type: 1 } }).toArray();
+  const result = await collection
+    .find({}, { projection: { name: 1, value: 1, type: 1 } })
+    .toArray();
   return result;
 }
 
@@ -190,6 +192,19 @@ async function getFlagDetailsByID(id) {
   const result = await collection.findOne({ _id: flagObjectID });
 
   return result;
+}
+
+async function updateFlagByID(id, updateObject) {
+  const flagObjectID = TryParseObjectID(id, "FlagID");
+
+  const collection = await getCollection("flags");
+  const result = await collection.findOneAndUpdate(
+    { _id: flagObjectID },
+    { $set: updateObject },
+    { projection: { name: 1, value: 1, type: 1 }, returnDocument: "after" }
+  );
+
+  return result.value;
 }
 //#endregion Flags
 
@@ -210,6 +225,7 @@ module.exports = {
   getTournamentListFromDB,
   getFlagListFromDB,
   getFlagDetailsByID,
+  updateFlagByID,
 };
 
 const TryParseObjectID = (stringID, name) => {

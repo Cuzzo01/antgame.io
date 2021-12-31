@@ -76,6 +76,10 @@
   background-color: #f7dc6f;
 }
 
+.greenBackground {
+  background-color: #1e8449;
+}
+
 .listElement {
   margin: 0.5em 0em;
   padding: 1em;

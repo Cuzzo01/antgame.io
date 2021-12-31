@@ -24,7 +24,11 @@ class Logger {
   }
 
   logError(location, err) {
-    this.log({ message: "API Error", location: location, error: err });
+    if (this.env !== "NO ENV SET") {
+      this.log({ message: "API Error", location: location, error: err });
+    } else {
+      console.log(location, err);
+    }
   }
 
   async logCacheResult(cacheName, cacheMiss, key, value, time) {
