@@ -30,10 +30,10 @@ const generateMap = (width, height) => {
   for (let x = 0; x < width; x++) {
     toReturn[x] = [];
     for (let y = 0; y < height; y++) {
-      if (y < BorderSize || height - y < BorderSize) {
+      if (y < BorderSize || height - y <= BorderSize) {
         toReturn[x][y] = "w";
         continue;
-      } else if (x < BorderSize || width - x < BorderSize) {
+      } else if (x < BorderSize || width - x <= BorderSize) {
         toReturn[x][y] = "w";
         continue;
       }
