@@ -26,6 +26,7 @@ yarn-error.log*
 
 .vscode
 .idea
+.env
 
 *secret.js
 *test.json
