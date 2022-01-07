@@ -1,19 +1,31 @@
-const AWS = require("aws-sdk")
+const AWS = require("aws-sdk");
 
 class spacesService {
-    initializeConnection() {
-        if (!this.s3) {
-            this.spacesEndpoint = new AWS.Endpoint(process.env.DO_SPACES_ENDPOINT);
-            this.s3 = new AWS.S3({ endpoint: this.spacesEndpoint, accessKeyId: process.env.DO_SPACES_KEY, secretAccessKey: process.env.DO_SPACES_SECRET });
-        }
+  initializeConnection() {
+    if (!this.s3) {
+      this.spacesEndpoint = new AWS.Endpoint(process.env.DO_SPACES_ENDPOINT);
+      this.s3 = new AWS.S3({
+        endpoint: this.spacesEndpoint,
+        accessKeyId: process.env.DO_SPACES_KEY,
+        secretAccessKey: process.env.DO_SPACES_SECRET,
+      });
     }
+  }
 
-    uploadFile(fileName, fileToUpload) {
-        this.s3.putObject({Bucket: process.env.DO_SPACES_NAME, Key: fileName, Body: JSON.stringify(fileToUpload), ACL: "public-read" }, (err, data) => {
-            if (err) return console.log(err)
-        })
-    }
+  uploadFile(fileName, fileToUpload) {
+    this.s3.putObject(
+      {
+        Bucket: process.env.DO_SPACES_NAME,
+        Key: fileName,
+        Body: JSON.stringify(fileToUpload),
+        ACL: "public-read",
+      },
+      (err, data) => {
+        if (err) return console.log(err);
+      }
+    );
+  }
 }
 
 const SpacesService = new spacesService();
-module.exports = SpacesService
+module.exports = SpacesService;
