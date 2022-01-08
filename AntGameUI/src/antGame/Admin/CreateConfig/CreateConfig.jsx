@@ -34,7 +34,7 @@ const CreateConfig = () => {
           <input {...register("name", { required: true, maxLength: 15 })} />
           {errors.name?.type === "required" && <ErrorMessage>Required</ErrorMessage>}
           {errors.name?.type === "maxLength" && (
-            <ErrorMessage>Cannot be over 17 characters</ErrorMessage>
+            <ErrorMessage>Cannot be over 15 characters</ErrorMessage>
           )}
         </div>
         <div className={styles.inputGroup}>

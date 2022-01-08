@@ -1,7 +1,7 @@
 // prettier-ignore
 export const PlayIcon = () => {
     return (
-        <svg width="11px" height="14px" viewBox="0 0 11 14" version="1.1" xmlns="http://www.w3.org/2000/svg" style={styles.icon}>
+        <svg width="11px" height="14px" viewBox="0 0 11 14" version="1.1" xmlns="http://www.w3.org/2000/svg">
             <g id="Icons" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                 <g id="Rounded" transform="translate(-753.000000, -955.000000)">
                     <g id="AV" transform="translate(100.000000, 852.000000)">
@@ -21,7 +21,7 @@ export const PlayIcon = () => {
 // prettier-ignore
 export const PauseIcon = () => {
     return (
-        <svg width="11px" height="14px" viewBox="0 0 6 8" version="1.1" xmlns="http://www.w3.org/2000/svg" style={styles.icon}>
+        <svg width="11px" height="14px" viewBox="0 0 6 8" version="1.1" xmlns="http://www.w3.org/2000/svg">
             <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                 <g id="Dribbble-Light-Preview" transform="translate(-227.000000, -3765.000000)" fill="#000000">
                     <g id="icons" transform="translate(56.000000, 160.000000)">
@@ -91,6 +91,18 @@ export const HomeIcon = () => {
         </svg>
     )
 }
+
+export const BackIcon = () => {
+  return (
+    <svg version="1.1" width="15px" height="15px" x="0px" y="0px" viewBox="0 0 574.705 574.705">
+      <g>
+        <g>
+          <polygon points="32.354,287.353 319.706,574.705 319.706,383.137 542.352,383.137 542.352,191.568 319.706,191.568 319.706,0" />
+        </g>
+      </g>
+    </svg>
+  );
+};
 
 const styles = {
   icon: {

@@ -7,3 +7,11 @@
     background-color: #e74c3c;
   }
 }
+
+.disabled svg {
+  fill: grey;
+}
+
+.playButton svg {
+  width: 1.3em;
+}
