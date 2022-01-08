@@ -20,15 +20,15 @@ class Logger {
   }
 
   log(obj) {
-    this.logger.log({ ...obj, env: this.env });
+    if (this.env !== "NO ENV SET") {
+      this.logger.log({ ...obj, env: this.env });
+    } else {
+      console.log(obj);
+    }
   }
 
   logError(location, err) {
-    if (this.env !== "NO ENV SET") {
-      this.log({ message: "API Error", location: location, error: err });
-    } else {
-      console.log(location, err);
-    }
+    this.log({ message: "API Error", location: location, error: err });
   }
 
   async logCacheResult(cacheName, cacheMiss, key, value, time) {

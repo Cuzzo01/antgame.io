@@ -25,6 +25,12 @@ class spacesService {
       }
     );
   }
+
+  uploadDailyMap(mapName, mapFile) {
+    const fileName = `dailyMaps/${mapName}.json`;
+    this.uploadFile(fileName, mapFile);
+    return `https://${process.env.DO_SPACES_NAME}.${process.env.DO_SPACES_ENDPOINT}${fileName}`;
+  }
 }
 
 const SpacesService = new spacesService();
