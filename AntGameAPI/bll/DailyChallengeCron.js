@@ -21,7 +21,7 @@ const handleDailyChallengeChange = async () => {
 };
 
 const initializeScheduledTask = () => {
-  const job = scheduleJob({hour: 12, minute: 0, tz: "US/Central"}, handleDailyChallengeChange);
+  const job = scheduleJob({hour: 12, minute: 0}, handleDailyChallengeChange);
   Logger.log({
     message: "Daily cron status",
     status: `cron initialized, next run at ${job.nextInvocation()}`,
