@@ -30,6 +30,9 @@ const ChallengeList = () => {
           const record = records[challenge.id];
           setDailyChallenge(
             <div className={styles.dailyChallengeBox}>
+              <div className={styles.dailyTitle}>
+                <span><strong>Daily Challenge - Ends in <DailyCountdown /></strong></span>
+              </div>
               <div className={styles.infoBlock}>
                 <div className={styles.challengeInfo}>
                   <div className={styles.challengeName}>
@@ -49,9 +52,6 @@ const ChallengeList = () => {
                 </div>
               </div>
               <div className={styles.dailyLinks}>
-                <div className={styles.dailyCountdown}>
-                  <DailyCountdown />
-                </div>
                 <ChallengeLink id={challenge.id} />
                 <LeaderboardLink id={challenge.id} />
               </div>

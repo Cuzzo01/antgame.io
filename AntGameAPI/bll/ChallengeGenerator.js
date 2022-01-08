@@ -13,7 +13,7 @@ class ChallengeGenerator {
 
   async generateDailyChallenge() {
     try {
-      const mapName = `${getChallengeName().replace(/ /g, "_")}_${new Date().getFullYear()}`;
+      const mapName = getChallengeName().replace(/ /g, "_");
 
       const mapData = generateMap(mapWidth, mapHeight);
       const mapObject = {
@@ -47,7 +47,7 @@ const getChallengeName = () => {
   const date = new Date();
   const day = date.getDate();
   const month = getShortMonthName(date);
-  return `Daily ${month} ${day}`;
+  return `${month} ${day} ${date.getFullYear()}`;
 };
 
 const getShortMonthName = date => {

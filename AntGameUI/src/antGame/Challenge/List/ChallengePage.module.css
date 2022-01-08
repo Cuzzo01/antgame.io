@@ -18,7 +18,7 @@ body {
 }
 
 .dailyChallengeBox {
-  max-width: 40rem;
+  max-width: 35rem;
   border-radius: 1rem;
   border: 0.2rem black solid;
   padding: 1rem;
@@ -26,17 +26,19 @@ body {
   background-color: lightgray;
   display: grid;
   grid-template-columns: auto 17em;
+  grid-template-rows: 1.75em auto;
 }
 
 .dailyLinks {
   display: grid;
-  grid-template-rows: 30% auto;
   grid-template-columns: 50% auto;
 }
 
-.dailyCountdown {
+.dailyTitle {
   grid-column: span 2;
   margin: 0 auto;
+  display: flex;
+  align-items: center;
 }
 
 .challengeGrid {
