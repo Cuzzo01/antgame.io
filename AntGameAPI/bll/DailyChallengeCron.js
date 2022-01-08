@@ -21,12 +21,7 @@ const handleDailyChallengeChange = async () => {
 };
 
 const initializeScheduledTask = () => {
-  const rule = new RecurrenceRule();
-  rule.minute = 0;
-  rule.hour = 12;
-  rule.tz = "US/Central";
-
-  const job = scheduleJob(rule, handleDailyChallengeChange);
+  const job = scheduleJob({hour: 12, minute: 0, tz: "US/Central"}, handleDailyChallengeChange);
   Logger.log({
     message: "Daily cron status",
     status: `cron initialized, next run at ${job.nextInvocation()}`,
