@@ -46,8 +46,7 @@ const HelpButton = props => {
                   &#8226;&nbsp;Click on your leaderboard rank (next to PR in the top left) to see
                   the challenge leaderboard.
                   <br />
-                  &#8226;&nbsp;Click on the timer to go back to the challenge list (only when the
-                  ants are paused).
+                  &#8226;&nbsp;Click on the back arrow (left side) to go back to the challenge list.
                 </p>
               </div>
             </div>
