@@ -93,19 +93,19 @@ export const HomeIcon = () => {
 }
 
 export const BackIcon = () => {
-    return (
-        <svg version="1.1" width="15px" height="15px" x="0px" y="0px" viewBox="0 0 574.705 574.705">
-            <g>
-                <g>
-                    <polygon points="32.354,287.353 319.706,574.705 319.706,383.137 542.352,383.137 542.352,191.568 319.706,191.568 319.706,0"/>
-                </g>
-            </g>
-        </svg>
-    )
-}
+  return (
+    <svg version="1.1" width="15px" height="15px" x="0px" y="0px" viewBox="0 0 574.705 574.705">
+      <g>
+        <g>
+          <polygon points="32.354,287.353 319.706,574.705 319.706,383.137 542.352,383.137 542.352,191.568 319.706,191.568 319.706,0" />
+        </g>
+      </g>
+    </svg>
+  );
+};
 
 const styles = {
-    icon: {
-        width: "2em",
-    },
+  icon: {
+    width: "2em",
+  },
 };

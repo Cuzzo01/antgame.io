@@ -42,16 +42,16 @@ export default function GameMenu(props) {
 
   return (
     <div style={styles.container}>
-      {gameMode.mode === "challenge" ?
+      {gameMode.mode === "challenge" ? (
         <SettingButton
           className={props.playState ? cssStyles.disabled : null}
           disabled={props.playState}
           text={<BackIcon />}
           handler={() => {
-            history.push({ pathname: "/challenge" })
+            history.push({ pathname: "/challenge" });
           }}
         />
-        : null}
+      ) : null}
       <SettingButton
         key="clear"
         text="Clear"
@@ -82,7 +82,6 @@ export default function GameMenu(props) {
           if (result === "reset") setFlashReset(true);
         }}
       />
-
     </div>
   );
 }
