@@ -13,12 +13,7 @@ class ChallengeGenerator {
 
   async generateDailyChallenge() {
     try {
-      const dateObject = new Date();
-      const month = (dateObject.getMonth() + 1).toString();
-      const monthDisplay = month.length == 1 ? "0" + month : month;
-      const date = dateObject.getDate().toString();
-      const dateDisplay = date.length === 1 ? "0" + date : date;
-      const mapName = `Daily_${dateObject.getFullYear()}-${monthDisplay}-${dateDisplay}`;
+      const mapName = `${getChallengeName().replace(/ /g, "_")}_${new Date().getFullYear()}`;
 
       const mapData = generateMap(mapWidth, mapHeight);
       const mapObject = {
@@ -37,8 +32,11 @@ class ChallengeGenerator {
         seconds: time,
         homeLimit: homeLimit,
         active: false,
+        order: -1,
+        dailyChallenge: true,
       };
-      await addNewConfig(newChallenge);
+      const newConfig = await addNewConfig(newChallenge);
+      return newConfig._id;
     } catch (err) {
       Logger.log({ message: "Challenge generator error", error: err });
     }
@@ -46,38 +44,51 @@ class ChallengeGenerator {
 }
 
 const getChallengeName = () => {
-  const month = getShortMonthName();
-  const day = new Date().getDate();
+  const date = new Date();
+  const day = date.getDate();
+  const month = getShortMonthName(date);
   return `Daily ${month} ${day}`;
 };
 
-const getShortMonthName = () => {
+const getShortMonthName = date => {
   let month;
-  switch (new Date().getMonth()) {
+  switch (date.getMonth()) {
     case 0:
       month = "Jan";
+      break;
     case 1:
       month = "Feb";
+      break;
     case 2:
       month = "Mar";
+      break;
     case 3:
       month = "Apr";
+      break;
     case 4:
       month = "May";
+      break;
     case 5:
       month = "Jun";
+      break;
     case 6:
       month = "Jul";
+      break;
     case 7:
       month = "Aug";
+      break;
     case 8:
       month = "Sep";
+      break;
     case 9:
       month = "Oct";
+      break;
     case 10:
       month = "Nov";
+      break;
     case 11:
       month = "Dec";
+      break;
   }
   return month;
 };

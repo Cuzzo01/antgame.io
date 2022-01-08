@@ -19,6 +19,7 @@ const { RejectNotAdmin } = require("./auth/AuthHelpers");
 const responseTime = require("response-time");
 const { GetIpAddress } = require("./helpers/IpHelper");
 const Logger = require("./Logger");
+const { initializeScheduledTask } = require("./bll/DailyChallengeCron");
 
 const UnauthenticatedRoutes = [
   "/auth/login",
@@ -32,6 +33,8 @@ const send401 = (res, message) => {
   res.status(401);
   res.send(message);
 };
+
+initializeScheduledTask();
 
 app.use(bodyParser.json({ extended: true, limit: "50mb" }));
 

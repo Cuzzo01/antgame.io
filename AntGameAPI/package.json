@@ -18,6 +18,7 @@
     "jsonwebtoken": "^8.5.1",
     "logzio-nodejs": "^2.0.3",
     "mongodb": "^3.6.9",
+    "node-schedule": "^2.1.0",
     "prettier": "^2.3.2",
     "response-time": "^2.3.2",
     "simplex-noise": "^3.0.0",
