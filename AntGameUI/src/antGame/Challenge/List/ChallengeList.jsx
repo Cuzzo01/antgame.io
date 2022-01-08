@@ -31,7 +31,11 @@ const ChallengeList = () => {
           setDailyChallenge(
             <div className={styles.dailyChallengeBox}>
               <div className={styles.dailyTitle}>
-                <span><strong>Daily Challenge - Ends in <DailyCountdown /></strong></span>
+                <span>
+                  <strong>
+                    Daily Challenge - Ends in <DailyCountdown />
+                  </strong>
+                </span>
               </div>
               <div className={styles.infoBlock}>
                 <div className={styles.challengeInfo}>
