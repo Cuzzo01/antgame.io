@@ -23,9 +23,20 @@ body {
   border: 0.2rem black solid;
   padding: 1rem;
   margin: 1rem auto;
-  background-color: #d5f5e3;
+  background-color: lightgray;
   display: grid;
-  grid-template-columns: auto 8.5rem 8.5rem;
+  grid-template-columns: auto 17em;
+}
+
+.dailyLinks {
+  display: grid;
+  grid-template-rows: 30% auto;
+  grid-template-columns: 50% auto;
+}
+
+.dailyCountdown {
+  grid-column: span 2;
+  margin: 0 auto;
 }
 
 .challengeGrid {

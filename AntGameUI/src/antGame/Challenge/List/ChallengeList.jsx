@@ -6,6 +6,7 @@ import { Link, useHistory } from "react-router-dom";
 import { HomeIcon, TimeIcon } from "../../AntGameHelpers/Icons";
 import loaderGif from "../../../assets/thumbnailLoader.gif";
 import { getFlag } from "../../Helpers/FlagService";
+import Countdown from "react-countdown";
 
 const ChallengeList = () => {
   const [loading, setLoading] = useState(true);
@@ -47,8 +48,13 @@ const ChallengeList = () => {
                   </div>
                 </div>
               </div>
-              <ChallengeLink id={challenge.id} />
-              <LeaderboardLink id={challenge.id} />
+              <div className={styles.dailyLinks}>
+                <div className={styles.dailyCountdown}>
+                  <DailyCountdown />
+                </div>
+                <ChallengeLink id={challenge.id} />
+                <LeaderboardLink id={challenge.id} />
+              </div>
             </div>
           );
         } else
@@ -141,6 +147,22 @@ const ListItem = props => {
       ) : null}
     </div>
   );
+};
+
+const DailyCountdown = () => {
+  const nextNoon = new Date();
+  if (nextNoon.getUTCHours() >= 12) nextNoon.setUTCDate(nextNoon.getUTCDate() + 1);
+  nextNoon.setUTCHours(12);
+  nextNoon.setUTCMinutes(0);
+  nextNoon.setUTCSeconds(0);
+
+  const renderer = ({ hours, minutes, seconds, completed }) => {
+    return `${hours}:${minutes < 10 ? `0${minutes}` : minutes}:${
+      seconds < 10 ? `0${seconds}` : seconds
+    }`;
+  };
+
+  return <Countdown date={nextNoon} renderer={renderer} />;
 };
 
 const WRDisplay = ({ wr }) => {
