@@ -3,6 +3,7 @@ const { getRandomInRange } = require("../MapGenerator/Helpers");
 const { generateMap } = require("../MapGenerator/MapGenerator");
 const SpacesService = require("../services/SpacesService");
 const Logger = require("../Logger");
+const { GenerateFoodTooltips } = require("../MapGenerator/FoodTooltipGenerator");
 
 const mapWidth = 200;
 const mapHeight = 112;
@@ -17,9 +18,10 @@ class ChallengeGenerator {
 
       const mapData = generateMap(mapWidth, mapHeight);
       const mapObject = {
-        MapVersion: 1,
+        MapVersion: 2,
         MapName: mapName,
         Map: mapData,
+        Tooltips: GenerateFoodTooltips(mapData),
       };
 
       const mapURL = SpacesService.uploadDailyMap(mapName, mapObject);

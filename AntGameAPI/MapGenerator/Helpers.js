@@ -23,9 +23,9 @@ const RemoveGroupsSmallerThan = (charToRemove, minGroupSize, mapArr, replaceWith
   }
 };
 
-const CountGroupSize = (x, y, charToCount, mapArr, seenList, abortAt) => {
+const CountGroupSize = (x, y, charToCount, mapArr, seenList, abortAt = 0) => {
   seenList.push(`${x}, ${y}`);
-  if (seenList.length >= abortAt) return;
+  if (abortAt && seenList.length >= abortAt) return;
   let pointsToCheck = [];
   pointsToCheck.push([x - 1, y]);
   pointsToCheck.push([x + 1, y]);

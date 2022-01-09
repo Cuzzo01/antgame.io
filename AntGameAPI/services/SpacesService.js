@@ -28,7 +28,8 @@ class spacesService {
   }
 
   uploadDailyMap(mapName, mapFile) {
-    const fileName = `dailyMaps/${mapName}.json`;
+    let fileName = `dailyMaps/${mapName}.json`;
+    if (process.env.environment === "DEV") fileName = "dev/" + fileName;
     this.uploadFile(fileName, mapFile);
     return `https://${process.env.DO_SPACES_NAME}.${process.env.DO_SPACES_ENDPOINT}${fileName}`;
   }
