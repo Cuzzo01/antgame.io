@@ -25,6 +25,7 @@ const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHand
 const ChallengeNameHandler = require("../handler/ChallengeIdToChallengeNameHandler");
 const { addStatToResponse } = require("../helpers/AuthStatHelpers");
 const Logger = require("../Logger");
+const { ChallengeGenerator } = require("../bll/ChallengeGenerator");
 
 //#region stats
 async function getStats(req, res) {
@@ -197,6 +198,17 @@ async function patchConfig(req, res) {
     res.sendStatus(200);
   } catch (e) {
     Logger.logError("AdminController.patchConfig", e);
+    res.sendStatus(500);
+    return;
+  }
+}
+
+async function generateDailyChallenge(req, res) {
+  try {
+    new ChallengeGenerator().generateDailyChallenge();
+    res.sendStatus(200);
+  } catch (e) {
+    Logger.logError("AdminController.generateDailyChallenge", e);
     res.sendStatus(500);
     return;
   }
@@ -479,6 +491,7 @@ module.exports = {
   getConfigDetails,
   postConfig,
   patchConfig,
+  generateDailyChallenge,
   getUsers,
   getUserDetails,
   patchUser,

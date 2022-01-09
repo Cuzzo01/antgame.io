@@ -3,6 +3,7 @@ const AWS = require("aws-sdk");
 class spacesService {
   initializeConnection() {
     if (!this.s3) {
+      if (!process.env.DO_SPACES_ENDPOINT) require("dotenv").config();
       this.spacesEndpoint = new AWS.Endpoint(process.env.DO_SPACES_ENDPOINT);
       this.s3 = new AWS.S3({
         endpoint: this.spacesEndpoint,

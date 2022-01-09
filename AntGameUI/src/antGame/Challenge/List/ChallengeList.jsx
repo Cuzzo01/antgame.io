@@ -6,10 +6,12 @@ import { Link, useHistory } from "react-router-dom";
 import { HomeIcon, TimeIcon } from "../../AntGameHelpers/Icons";
 import loaderGif from "../../../assets/thumbnailLoader.gif";
 import { getFlag } from "../../Helpers/FlagService";
+import Countdown from "react-countdown";
 
 const ChallengeList = () => {
   const [loading, setLoading] = useState(true);
   const [menuList, setMenuList] = useState([]);
+  const [dailyChallenge, setDailyChallenge] = useState(false);
   const history = useHistory();
 
   useEffect(() => {
@@ -24,18 +26,23 @@ const ChallengeList = () => {
       const records = challengeResponse.records;
       let list = [];
       challengeResponse.challenges.forEach(challenge => {
-        list.push(
-          <ListItem
-            key={challenge.id}
-            name={challenge.name}
-            records={records[challenge.id]}
-            id={challenge.id}
-            time={challenge.time}
-            homes={challenge.homes}
-            showThumbnails={shouldShowThumbnails}
-            thumbnailURL={challenge.thumbnailURL}
-          />
-        );
+        if (challenge.dailyChallenge) {
+          setDailyChallenge(
+            <DailyChallengeCard challenge={challenge} record={records[challenge.id]} />
+          );
+        } else
+          list.push(
+            <ChallengeCard
+              key={challenge.id}
+              name={challenge.name}
+              records={records[challenge.id]}
+              id={challenge.id}
+              time={challenge.time}
+              homes={challenge.homes}
+              showThumbnails={shouldShowThumbnails}
+              thumbnailURL={challenge.thumbnailURL}
+            />
+          );
       });
       setMenuList(list);
       setLoading(false);
@@ -47,16 +54,15 @@ const ChallengeList = () => {
       <div className={styles.header}>
         <h2>Challenges</h2>
       </div>
+      {!loading && dailyChallenge ? dailyChallenge : null}
       {loading ? null : <div className={styles.challengeGrid}>{menuList}</div>}
     </div>
   );
 };
 export default ChallengeList;
 
-const ListItem = props => {
+const ChallengeCard = props => {
   const [thumbnailLoading, setThumbnailLoading] = useState(true);
-
-  const wrUsernameLength = props.records.wr?.username.length;
 
   return (
     <div className={styles.challengeGridElement}>
@@ -66,56 +72,20 @@ const ListItem = props => {
             <div className={styles.challengeName}>
               <span>{props.name}</span>
             </div>
-            <div className={styles.challengeDetails}>
-              <div>
-                <TimeIcon />
-                &nbsp;{getDisplayTime(props.time)}
-              </div>
-              <div>
-                <HomeIcon />
-                &nbsp;{props.homes}
-              </div>
-            </div>
+            <ChallengeDetails time={props.time} homes={props.homes} />
           </div>
           <div className={styles.records}>
             <div className={styles.challengeWR}>
-              <span>
-                WR:
-                {props.records.wr ? (
-                  <span>
-                    {props.records.wr.score}-{props.records.wr.username}
-                    {wrUsernameLength < 9 ? (
-                      <span className={`${styles.smallText} ${styles.age}`}>
-                        ({props.records.wr.age} ago)
-                      </span>
-                    ) : null}
-                    {wrUsernameLength >= 9 && wrUsernameLength < 13 ? (
-                      <span className={`${styles.smallText} ${styles.age}`}>
-                        ({props.records.wr.age})
-                      </span>
-                    ) : null}
-                  </span>
-                ) : (
-                  "No record"
-                )}
-              </span>
+              WR:
+              <WRDisplay wr={props.records?.wr} />
             </div>
             <div className={styles.challengePR}>
               PR:
-              {props.records.pb ? (
-                <span>
-                  {props.records.pb}
-                  &nbsp;(
-                  {props.records.rank ? (
-                    <span>
-                      #<strong>{props.records.rank}</strong>,&nbsp;
-                    </span>
-                  ) : null}
-                  {props.records.runs} runs)
-                </span>
-              ) : (
-                "No record"
-              )}
+              <PBDisplay
+                pb={props.records?.pb}
+                rank={props.records?.rank}
+                runs={props.records?.runs}
+              />
             </div>
           </div>
         </div>
@@ -148,6 +118,109 @@ const ListItem = props => {
           ) : null}
         </div>
       ) : null}
+    </div>
+  );
+};
+
+const DailyChallengeCard = ({ challenge, record }) => {
+  return (
+    <div className={styles.dailyChallengeBox}>
+      <div className={styles.dailyTitle}>
+        <span>
+          <strong>
+            Daily Challenge - Ends in <DailyCountdown />
+          </strong>
+        </span>
+      </div>
+      <div className={styles.infoBlock}>
+        <div className={styles.challengeInfo}>
+          <div className={styles.challengeName}>
+            <span>{challenge.name}</span>
+          </div>
+          <ChallengeDetails time={challenge.time} homes={challenge.homes} />
+        </div>
+        <div className={styles.records}>
+          <div className={styles.challengeWR}>
+            WR:
+            <WRDisplay wr={record?.wr} />
+          </div>
+          <div className={styles.challengePR}>
+            PR:
+            <PBDisplay pb={record?.pb} rank={record?.rank} runs={record?.runs} />
+          </div>
+        </div>
+      </div>
+      <div className={styles.dailyLinks}>
+        <ChallengeLink id={challenge.id} />
+        <LeaderboardLink id={challenge.id} />
+      </div>
+    </div>
+  );
+};
+
+const DailyCountdown = () => {
+  const nextNoon = new Date();
+  if (nextNoon.getUTCHours() >= 12) nextNoon.setUTCDate(nextNoon.getUTCDate() + 1);
+  nextNoon.setUTCHours(12);
+  nextNoon.setUTCMinutes(0);
+  nextNoon.setUTCSeconds(0);
+
+  const renderer = ({ hours, minutes, seconds, completed }) => {
+    return `${hours}:${minutes < 10 ? `0${minutes}` : minutes}:${
+      seconds < 10 ? `0${seconds}` : seconds
+    }`;
+  };
+
+  return <Countdown date={nextNoon} renderer={renderer} />;
+};
+
+const WRDisplay = ({ wr }) => {
+  if (wr?.score) {
+    const wrUsernameLength = wr.username.length;
+    return (
+      <span>
+        {wr.score}-{wr.username}
+        {wrUsernameLength < 9 ? (
+          <span className={`${styles.smallText} ${styles.age}`}>({wr.age} ago)</span>
+        ) : null}
+        {wrUsernameLength >= 9 && wrUsernameLength < 13 ? (
+          <span className={`${styles.smallText} ${styles.age}`}>({wr.age})</span>
+        ) : null}
+      </span>
+    );
+  }
+  return "No record";
+};
+
+const PBDisplay = ({ pb, rank, runs }) => {
+  if (pb) {
+    return (
+      <span>
+        {pb}
+        &nbsp;(
+        {rank ? (
+          <span>
+            #<strong>{rank}</strong>,&nbsp;
+          </span>
+        ) : null}
+        {runs} runs)
+      </span>
+    );
+  }
+  return "No record";
+};
+
+const ChallengeDetails = ({ time, homes }) => {
+  return (
+    <div className={styles.challengeDetails}>
+      <div>
+        <TimeIcon />
+        &nbsp;{getDisplayTime(time)}
+      </div>
+      <div>
+        <HomeIcon />
+        &nbsp;{homes}
+      </div>
     </div>
   );
 };

@@ -121,6 +121,7 @@ const getActiveChallenges = async () => {
       thumbnailURL: config.thumbnailURL,
       time: config.seconds,
       homes: config.homeLimit,
+      dailyChallenge: config.dailyChallenge,
     });
   });
   return challengeList;
@@ -163,6 +164,21 @@ const getRunHomePositionsByRunId = async id => {
   return result.details.homeLocations;
 };
 
+const getMostRecentDailyChallenge = async () => {
+  const collection = await getCollection("configs");
+  const result = await collection
+    .find(
+      {
+        dailyChallenge: true,
+      },
+      { projection: { _id: 1 } }
+    )
+    .sort({ _id: -1 })
+    .limit(1)
+    .toArray();
+  return result[0];
+};
+
 const TryParseObjectID = (stringID, name) => {
   try {
     return new Mongo.ObjectID(stringID);
@@ -181,4 +197,5 @@ module.exports = {
   updateChallengeRecord,
   getRecordsByChallengeList,
   getRunHomePositionsByRunId,
+  getMostRecentDailyChallenge,
 };

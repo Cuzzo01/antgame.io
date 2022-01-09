@@ -17,6 +17,30 @@ body {
   font-size: 0.75rem;
 }
 
+.dailyChallengeBox {
+  max-width: 35rem;
+  border-radius: 1rem;
+  border: 0.2rem black solid;
+  padding: 1rem;
+  margin: 1rem auto;
+  background-color: lightgray;
+  display: grid;
+  grid-template-columns: auto 17em;
+  grid-template-rows: 1.75em auto;
+}
+
+.dailyLinks {
+  display: grid;
+  grid-template-columns: 50% auto;
+}
+
+.dailyTitle {
+  grid-column: span 2;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+
 .challengeGrid {
   display: flex;
   flex-wrap: wrap;
@@ -60,6 +84,7 @@ body {
 }
 
 .challengeLink {
+  background-color: lightgray;
   color: black;
   font-family: "Courier Prime Bold";
   margin: 0.2rem;
