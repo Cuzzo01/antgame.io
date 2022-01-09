@@ -41,6 +41,8 @@ export class MapHandler {
     this.lastLoadedSamplePath = "";
     this._gameMode = "";
     this.foodReturnedLocations = {};
+    this.tooltips = false;
+    this._drawToolTips = true;
   }
 
   set gameMode(mode) {
@@ -50,6 +52,10 @@ export class MapHandler {
   set name(name) {
     this.setTitle(name);
     this.mapName = name;
+  }
+
+  set shouldDrawTooltips(value) {
+    this._drawToolTips = value;
   }
 
   get map() {
@@ -127,6 +133,7 @@ export class MapHandler {
   generateMap() {
     this._graphics.clear();
     this._map = [];
+    this.tooltips = false;
     this.foodToRespawn = [];
     this.dirtToRespawn = [];
     this.foodToStopTime = 0;
@@ -160,6 +167,7 @@ export class MapHandler {
     if (setTitle && loadResult.name) this.setTitle(this.mapName);
 
     this._map = loadResult.map;
+    if (loadResult.tooltips) this.tooltips = loadResult.tooltips;
     this.countHomeOnMap();
     this.foodToRespawn = [];
     this.dirtToRespawn = [];
@@ -271,8 +279,28 @@ export class MapHandler {
         }
       }
     }
+    this.drawTooltips();
     this.lastCell = "";
     this.redrawFullMap = false;
+  }
+
+  drawTooltips() {
+    if (!this.graphicsSet) return;
+    if (this.tooltips && this._drawToolTips)
+      this.tooltips.forEach(tooltip => {
+        const intMapXY = MapXYToInt([tooltip.x, tooltip.y]);
+        this._graphics.textAlign(this._graphics.CENTER, this._graphics.CENTER);
+        this._graphics.textFont("Courier New", 16);
+        this._graphics.fill(255);
+        this._graphics.stroke(0);
+        this._graphics.strokeWeight(3);
+        this._graphics.text(
+          tooltip.value,
+          Math.floor(BorderWeight + intMapXY[0] * this.pixelDensity[0]),
+          Math.floor(BorderWeight + intMapXY[1] * this.pixelDensity[1])
+        );
+        this._graphics.strokeWeight(0);
+      });
   }
 
   mapXYInBounds(mapXY) {
@@ -320,6 +348,7 @@ export class MapHandler {
     this.calculateFoodToStopTime();
     this.foodReturned = 0;
     this.foodReturnedLocations = {};
+    this.redrawFullMap = true;
   };
 
   calculateFoodToStopTime = () => {

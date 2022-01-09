@@ -250,6 +250,7 @@ export default class AntGame extends React.Component {
       if (IsChallenge && this.timerHandler.noTime) return "reset";
       this.setMapUiUpdate(500);
       this.toggleTimer(true);
+      this.mapHandler.shouldDrawTooltips = false;
       if (!this.antHandler.antsSpawned) {
         this.antHandler.spawnAnts(this.homeTrailHandler, this.foodTrailHandler);
         this.mapHandler.prepareForStart(IsChallenge);
@@ -338,6 +339,7 @@ export default class AntGame extends React.Component {
       foodReturned: 0,
     });
     this.timerHandler.updateTimeDisplay(this.setTime);
+    this.mapHandler.shouldDrawTooltips = true;
   };
 
   resetHandler = () => {

@@ -47,6 +47,9 @@ const HelpButton = props => {
                   the challenge leaderboard.
                   <br />
                   &#8226;&nbsp;Click on the back arrow (left side) to go back to the challenge list.
+                  <br />
+                  &#8226;&nbsp;The numbers over groups of food are the amount of food in each group
+                  (unit is same as score, all numbers add to 100,000).
                 </p>
               </div>
             </div>

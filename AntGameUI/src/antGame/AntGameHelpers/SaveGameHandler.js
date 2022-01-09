@@ -16,6 +16,8 @@ export class SaveGameHandler {
     switch (data.MapVersion) {
       case 1:
         return SaveGameHandler.LoadVersion1Map(data);
+      case 2:
+        return SaveGameHandler.LoadVersion2Map(data);
       default:
         return false;
     }
@@ -35,6 +37,16 @@ export class SaveGameHandler {
     return {
       map: map,
       name: data.MapName,
+    };
+  }
+
+  static LoadVersion2Map(data) {
+    const map = data.Map;
+    if (!CheckMapBounds(map)) return false;
+    return {
+      map: map,
+      name: data.MapName,
+      tooltips: data.Tooltips,
     };
   }
 
