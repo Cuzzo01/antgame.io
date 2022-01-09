@@ -25,7 +25,7 @@ class ChallengeGenerator {
       const mapURL = SpacesService.uploadDailyMap(mapName, mapObject);
 
       const time = Math.round(getRandomInRange(60, 180) / 5) * 5;
-      const homeLimit = Math.round(getRandomInRange(2, 10));
+      const homeLimit = Math.round(getRandomInRange(2, 8));
       const newChallenge = {
         name: getChallengeName(),
         mapPath: mapURL,

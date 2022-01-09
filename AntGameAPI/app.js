@@ -115,6 +115,8 @@ app.post("/admin/tournament/:id/awardPoints", RejectNotAdmin, _tournamentControl
 app.get("/admin/flags", RejectNotAdmin, _adminController.getFlagList);
 app.get("/admin/flagData/:id", RejectNotAdmin, _adminController.getFlagDetails);
 app.patch("/admin/flagData/:id", RejectNotAdmin, _adminController.patchFlagDetails);
+
+app.post("/admin/dailyChallenge", RejectNotAdmin, _adminController.generateDailyChallenge);
 //#endregion Admin
 
 app.get("/flag/:name", _flagController.getFlag);
