@@ -49,7 +49,7 @@ const ChallengeList = () => {
       setMenuList(list);
       setLoading(false);
     });
-  }, [history, dailyChallenge]);
+  }, [history]);
 
   return (
     <div className={styles.container}>
