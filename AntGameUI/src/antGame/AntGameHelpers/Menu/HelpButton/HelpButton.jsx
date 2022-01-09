@@ -48,8 +48,8 @@ const HelpButton = props => {
                   <br />
                   &#8226;&nbsp;Click on the back arrow (left side) to go back to the challenge list.
                   <br />
-                  &#8226;&nbsp;The numbers over groups of food are the amount of food in each group
-                  (unit is same as score, all numbers add to 100,000).
+                  &#8226;&nbsp;The number on each group of food is the score for eating that group
+                  (all numbers add to 100,000). Not on all maps.
                 </p>
               </div>
             </div>
