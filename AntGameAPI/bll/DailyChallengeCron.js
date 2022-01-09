@@ -42,7 +42,7 @@ const initializeScheduledTask = () => {
   if (process.env.environment) {
     const job = scheduleJob({ hour: 12, minute: 0 }, handleDailyChallengeChange);
     Logger.log({
-      message: "Daily cron",
+      message: "Daily challenge cron",
       cronMessage: `cron initialized, next run at ${job.nextInvocation()}`,
     });
   } else {

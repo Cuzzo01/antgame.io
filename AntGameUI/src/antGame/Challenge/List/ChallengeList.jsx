@@ -22,14 +22,16 @@ const ChallengeList = () => {
     }
     const flagPromise = getFlag("show-challenge-list-thumbnails");
     getActiveChallenges().then(async challengeResponse => {
+      let seenDaily = false;
       const shouldShowThumbnails = await flagPromise;
       const records = challengeResponse.records;
       let list = [];
       challengeResponse.challenges.forEach(challenge => {
-        if (challenge.dailyChallenge) {
+        if (challenge.dailyChallenge && seenDaily === false) {
           setDailyChallenge(
             <DailyChallengeCard challenge={challenge} record={records[challenge.id]} />
           );
+          seenDaily = true;
         } else
           list.push(
             <ChallengeCard
@@ -47,7 +49,7 @@ const ChallengeList = () => {
       setMenuList(list);
       setLoading(false);
     });
-  }, [history]);
+  }, [history, dailyChallenge]);
 
   return (
     <div className={styles.container}>
