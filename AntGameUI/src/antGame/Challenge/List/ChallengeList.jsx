@@ -27,43 +27,12 @@ const ChallengeList = () => {
       let list = [];
       challengeResponse.challenges.forEach(challenge => {
         if (challenge.dailyChallenge) {
-          const record = records[challenge.id];
           setDailyChallenge(
-            <div className={styles.dailyChallengeBox}>
-              <div className={styles.dailyTitle}>
-                <span>
-                  <strong>
-                    Daily Challenge - Ends in <DailyCountdown />
-                  </strong>
-                </span>
-              </div>
-              <div className={styles.infoBlock}>
-                <div className={styles.challengeInfo}>
-                  <div className={styles.challengeName}>
-                    <span>{challenge.name}</span>
-                  </div>
-                  <ChallengeDetails time={challenge.time} homes={challenge.homes} />
-                </div>
-                <div className={styles.records}>
-                  <div className={styles.challengeWR}>
-                    WR:
-                    <WRDisplay wr={record?.wr} />
-                  </div>
-                  <div className={styles.challengePR}>
-                    PR:
-                    <PBDisplay pb={record?.pb} rank={record?.rank} runs={record?.runs} />
-                  </div>
-                </div>
-              </div>
-              <div className={styles.dailyLinks}>
-                <ChallengeLink id={challenge.id} />
-                <LeaderboardLink id={challenge.id} />
-              </div>
-            </div>
+            <DailyChallengeCard challenge={challenge} record={records[challenge.id]} />
           );
         } else
           list.push(
-            <ListItem
+            <ChallengeCard
               key={challenge.id}
               name={challenge.name}
               records={records[challenge.id]}
@@ -92,7 +61,7 @@ const ChallengeList = () => {
 };
 export default ChallengeList;
 
-const ListItem = props => {
+const ChallengeCard = props => {
   const [thumbnailLoading, setThumbnailLoading] = useState(true);
 
   return (
@@ -149,6 +118,42 @@ const ListItem = props => {
           ) : null}
         </div>
       ) : null}
+    </div>
+  );
+};
+
+const DailyChallengeCard = ({ challenge, record }) => {
+  return (
+    <div className={styles.dailyChallengeBox}>
+      <div className={styles.dailyTitle}>
+        <span>
+          <strong>
+            Daily Challenge - Ends in <DailyCountdown />
+          </strong>
+        </span>
+      </div>
+      <div className={styles.infoBlock}>
+        <div className={styles.challengeInfo}>
+          <div className={styles.challengeName}>
+            <span>{challenge.name}</span>
+          </div>
+          <ChallengeDetails time={challenge.time} homes={challenge.homes} />
+        </div>
+        <div className={styles.records}>
+          <div className={styles.challengeWR}>
+            WR:
+            <WRDisplay wr={record?.wr} />
+          </div>
+          <div className={styles.challengePR}>
+            PR:
+            <PBDisplay pb={record?.pb} rank={record?.rank} runs={record?.runs} />
+          </div>
+        </div>
+      </div>
+      <div className={styles.dailyLinks}>
+        <ChallengeLink id={challenge.id} />
+        <LeaderboardLink id={challenge.id} />
+      </div>
     </div>
   );
 };
