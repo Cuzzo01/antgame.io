@@ -138,7 +138,14 @@ export default class AntGame extends React.Component {
     this.antImage = p5.loadImage(AntSmol);
     this.antFoodImage = p5.loadImage(AntFoodSmol);
 
-    this.setupAndInitialize(p5);
+    this.setCanvasBounds(p5);
+
+    this.antGraphic = p5.createGraphics(canvasW, canvasH);
+    this.mapGraphic = p5.createGraphics(canvasW, canvasH);
+    this.homeTrailGraphic = p5.createGraphics(canvasW, canvasH);
+    this.foodTrailGraphic = p5.createGraphics(canvasW, canvasH);
+
+    this.setupAndInitialize();
 
     p5.createCanvas(canvasW, canvasH).parent(parentRef);
 
@@ -147,18 +154,15 @@ export default class AntGame extends React.Component {
     p5.frameRate(FrameRate);
   };
 
-  setupAndInitialize = p5 => {
+  setCanvasBounds = p5 => {
     this.windowSize = [p5.windowWidth, p5.windowHeight];
     canvasW = p5.windowWidth - this.parentRef.offsetLeft * 2;
     canvasH = p5.windowHeight - this.parentRef.offsetTop - 20;
+  };
 
+  setupAndInitialize = () => {
     this.mapHandler.setupMap(canvasW, canvasH);
     this.mapHandler.redrawMap = true;
-
-    this.antGraphic = p5.createGraphics(canvasW, canvasH);
-    this.mapGraphic = p5.createGraphics(canvasW, canvasH);
-    this.homeTrailGraphic = p5.createGraphics(canvasW, canvasH);
-    this.foodTrailGraphic = p5.createGraphics(canvasW, canvasH);
 
     this.homeTrailHandler.graphic = this.homeTrailGraphic;
     this.foodTrailHandler.graphic = this.foodTrailGraphic;
@@ -212,8 +216,13 @@ export default class AntGame extends React.Component {
   };
 
   resizeCanvas = p5 => {
-    this.setupAndInitialize(p5);
+    this.setCanvasBounds(p5);
+    this.setupAndInitialize();
     p5.resizeCanvas(canvasW, canvasH);
+    this.antGraphic.resizeCanvas(canvasW, canvasH);
+    this.mapGraphic.resizeCanvas(canvasW, canvasH);
+    this.foodTrailGraphic.resizeCanvas(canvasW, canvasH);
+    this.homeTrailGraphic.resizeCanvas(canvasW, canvasH);
     this.setState({ shouldResizeCanvas: false });
   };
 
