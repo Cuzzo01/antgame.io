@@ -177,8 +177,8 @@ export default class AntGame extends React.Component {
       this.resizeCanvas(p5);
       this.containerRef.current.style.height = this.windowSize[1];
       this.mapHandler.drawFullMap();
-      this.homeTrailGraphic.clear();
-      this.foodTrailGraphic.clear();
+      this.homeTrailHandler.refreshSize();
+      this.foodTrailHandler.refreshSize();
     }
 
     if (p5.mouseIsPressed) this.handleMousePressed(p5);

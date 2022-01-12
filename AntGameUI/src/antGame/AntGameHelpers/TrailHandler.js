@@ -29,10 +29,14 @@ export class TrailHandler {
     this.color = this._graphics.color(this.color);
     this._graphics.fill(this.color);
 
-    this.width = this._graphics.width;
     this.graphicsSet = true;
 
     this.buildTrailMap();
+  }
+
+  refreshSize() {
+    this.canvasBounds = [this._graphics.width, this._graphics.height];
+    this.clearTrails();
   }
 
   buildTrailMap() {
