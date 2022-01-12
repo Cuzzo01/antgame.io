@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createRef } from "react";
 import Sketch from "react-p5";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 
@@ -15,6 +15,7 @@ import { GTMEmitter } from "./AntGameHelpers/GTMEmitter";
 import { GameModeContext } from "./GameModeContext";
 import ChallengeHandler from "./Challenge/ChallengeHandler";
 import ChallengeModal from "./AntGameHelpers/Challenge/ChallengeModal";
+import cssStyles from "./Antgame.module.css";
 
 let canvasW, canvasH;
 
@@ -40,6 +41,7 @@ export default class AntGame extends React.Component {
     this.blockDrawing = false;
     this.imageToSave = "";
     this.updateCount = 0;
+    this.containerRef = createRef();
 
     this.timerHandler = new TimerHandler(this.handleChallengeTimeout, this.setTime);
 
@@ -54,7 +56,6 @@ export default class AntGame extends React.Component {
 
     this.state = {
       emptyMap: emptyMap,
-      shouldResizeCanvas: false,
       playState: false,
       time: {
         min: "00",
@@ -172,8 +173,9 @@ export default class AntGame extends React.Component {
   draw = p5 => {
     if (this.imageToSave !== "") this.handleImageSave(p5);
 
-    if (this.state.shouldResizeCanvas) {
+    if (p5.windowWidth !== this.windowSize[0] || p5.windowHeight !== this.windowSize[1]) {
       this.resizeCanvas(p5);
+      this.containerRef.current.style.height = this.windowSize[1];
       this.mapHandler.drawFullMap();
       this.homeTrailGraphic.clear();
       this.foodTrailGraphic.clear();
@@ -223,7 +225,6 @@ export default class AntGame extends React.Component {
     this.mapGraphic.resizeCanvas(canvasW, canvasH);
     this.foodTrailGraphic.resizeCanvas(canvasW, canvasH);
     this.homeTrailGraphic.resizeCanvas(canvasW, canvasH);
-    this.setState({ shouldResizeCanvas: false });
   };
 
   handleMousePressed = p5 => {
@@ -331,12 +332,6 @@ export default class AntGame extends React.Component {
     GTMEmitter.LoadHandler();
   };
 
-  resizeHandler = event => {
-    if (event.windowWidth === this.windowSize[0] && event.windowHeight === this.windowSize[1]) {
-      this.setState({ shouldResizeCanvas: false });
-    } else this.setState({ shouldResizeCanvas: true });
-  };
-
   reset = () => {
     this.antHandler.clearAnts();
     this.foodTrailHandler.clearTrails();
@@ -390,7 +385,7 @@ export default class AntGame extends React.Component {
 
   render() {
     return (
-      <div style={styles.container}>
+      <div className={cssStyles.container} ref={this.containerRef}>
         <ChallengeModal
           challengeHandler={this.challengeHandler}
           show={this.state.showChallengeModal}
@@ -419,7 +414,7 @@ export default class AntGame extends React.Component {
               loadPRHandler={this.loadPRHomeLocations}
             />
           </div>
-          <Sketch setup={this.setup} draw={this.draw} windowResized={this.resizeHandler} />
+          <Sketch setup={this.setup} draw={this.draw} />
         </div>
       </div>
     );
@@ -436,11 +431,6 @@ const styles = {
   TimeCounter: {
     justifySelf: "right",
     paddingRight: "1em",
-  },
-  container: {
-    padding: "2em 1em",
-    backgroundColor: "#EBF5FB",
-    height: "100vh",
   },
   centered: {
     textAlign: "center",
