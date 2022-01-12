@@ -1,0 +1,8 @@
+.container {
+  padding: 2em 1em 0.5em 1em;
+  background-color: #ebf5fb;
+}
+
+html {
+  height: -webkit-fill-available;
+}

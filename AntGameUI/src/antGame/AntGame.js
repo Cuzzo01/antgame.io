@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createRef } from "react";
 import Sketch from "react-p5";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
 
@@ -15,6 +15,7 @@ import { GTMEmitter } from "./AntGameHelpers/GTMEmitter";
 import { GameModeContext } from "./GameModeContext";
 import ChallengeHandler from "./Challenge/ChallengeHandler";
 import ChallengeModal from "./AntGameHelpers/Challenge/ChallengeModal";
+import cssStyles from "./Antgame.module.css";
 
 let canvasW, canvasH;
 
@@ -40,6 +41,7 @@ export default class AntGame extends React.Component {
     this.blockDrawing = false;
     this.imageToSave = "";
     this.updateCount = 0;
+    this.containerRef = createRef();
 
     this.timerHandler = new TimerHandler(this.handleChallengeTimeout, this.setTime);
 
@@ -54,7 +56,6 @@ export default class AntGame extends React.Component {
 
     this.state = {
       emptyMap: emptyMap,
-      shouldResizeCanvas: false,
       playState: false,
       time: {
         min: "00",
@@ -138,7 +139,14 @@ export default class AntGame extends React.Component {
     this.antImage = p5.loadImage(AntSmol);
     this.antFoodImage = p5.loadImage(AntFoodSmol);
 
-    this.setupAndInitialize(p5);
+    this.setCanvasBounds(p5);
+
+    this.antGraphic = p5.createGraphics(canvasW, canvasH);
+    this.mapGraphic = p5.createGraphics(canvasW, canvasH);
+    this.homeTrailGraphic = p5.createGraphics(canvasW, canvasH);
+    this.foodTrailGraphic = p5.createGraphics(canvasW, canvasH);
+
+    this.setupAndInitialize();
 
     p5.createCanvas(canvasW, canvasH).parent(parentRef);
 
@@ -147,18 +155,15 @@ export default class AntGame extends React.Component {
     p5.frameRate(FrameRate);
   };
 
-  setupAndInitialize = p5 => {
+  setCanvasBounds = p5 => {
     this.windowSize = [p5.windowWidth, p5.windowHeight];
     canvasW = p5.windowWidth - this.parentRef.offsetLeft * 2;
     canvasH = p5.windowHeight - this.parentRef.offsetTop - 20;
+  };
 
+  setupAndInitialize = () => {
     this.mapHandler.setupMap(canvasW, canvasH);
     this.mapHandler.redrawMap = true;
-
-    this.antGraphic = p5.createGraphics(canvasW, canvasH);
-    this.mapGraphic = p5.createGraphics(canvasW, canvasH);
-    this.homeTrailGraphic = p5.createGraphics(canvasW, canvasH);
-    this.foodTrailGraphic = p5.createGraphics(canvasW, canvasH);
 
     this.homeTrailHandler.graphic = this.homeTrailGraphic;
     this.foodTrailHandler.graphic = this.foodTrailGraphic;
@@ -168,8 +173,9 @@ export default class AntGame extends React.Component {
   draw = p5 => {
     if (this.imageToSave !== "") this.handleImageSave(p5);
 
-    if (this.state.shouldResizeCanvas) {
+    if (p5.windowWidth !== this.windowSize[0] || p5.windowHeight !== this.windowSize[1]) {
       this.resizeCanvas(p5);
+      this.containerRef.current.style.height = this.windowSize[1];
       this.mapHandler.drawFullMap();
       this.homeTrailGraphic.clear();
       this.foodTrailGraphic.clear();
@@ -212,9 +218,13 @@ export default class AntGame extends React.Component {
   };
 
   resizeCanvas = p5 => {
-    this.setupAndInitialize(p5);
+    this.setCanvasBounds(p5);
+    this.setupAndInitialize();
     p5.resizeCanvas(canvasW, canvasH);
-    this.setState({ shouldResizeCanvas: false });
+    this.antGraphic.resizeCanvas(canvasW, canvasH);
+    this.mapGraphic.resizeCanvas(canvasW, canvasH);
+    this.foodTrailGraphic.resizeCanvas(canvasW, canvasH);
+    this.homeTrailGraphic.resizeCanvas(canvasW, canvasH);
   };
 
   handleMousePressed = p5 => {
@@ -322,12 +332,6 @@ export default class AntGame extends React.Component {
     GTMEmitter.LoadHandler();
   };
 
-  resizeHandler = event => {
-    if (event.windowWidth === this.windowSize[0] && event.windowHeight === this.windowSize[1]) {
-      this.setState({ shouldResizeCanvas: false });
-    } else this.setState({ shouldResizeCanvas: true });
-  };
-
   reset = () => {
     this.antHandler.clearAnts();
     this.foodTrailHandler.clearTrails();
@@ -381,7 +385,7 @@ export default class AntGame extends React.Component {
 
   render() {
     return (
-      <div style={styles.container}>
+      <div className={cssStyles.container} ref={this.containerRef}>
         <ChallengeModal
           challengeHandler={this.challengeHandler}
           show={this.state.showChallengeModal}
@@ -410,7 +414,7 @@ export default class AntGame extends React.Component {
               loadPRHandler={this.loadPRHomeLocations}
             />
           </div>
-          <Sketch setup={this.setup} draw={this.draw} windowResized={this.resizeHandler} />
+          <Sketch setup={this.setup} draw={this.draw} />
         </div>
       </div>
     );
@@ -427,11 +431,6 @@ const styles = {
   TimeCounter: {
     justifySelf: "right",
     paddingRight: "1em",
-  },
-  container: {
-    padding: "2em 1em",
-    backgroundColor: "#EBF5FB",
-    height: "100vh",
   },
   centered: {
     textAlign: "center",
