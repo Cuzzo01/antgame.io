@@ -72,7 +72,7 @@ class AuthHandler {
   configureInterceptors() {
     axios.interceptors.response.use(
       response => {
-        if (response.config.url.includes("digitaloceanspaces.com")) {
+        if (response.config.metadata?.startTime) {
           const loadTime = new Date() - response.config.metadata.startTime;
           reportSpacesLoadTime(loadTime, response.config.url);
         }
@@ -80,11 +80,11 @@ class AuthHandler {
       },
       error => {
         const onLogin = window.location.pathname.includes("/login");
-        if (error.response.status === 401 && !onLogin) {
+        if (error.response?.status === 401 && !onLogin) {
           this.logout();
           const pathBack = window.location.pathname;
           window.location = `/login?redirect=${pathBack}`;
-        } else if (Math.floor(error.response.status / 10) === 50) {
+        } else if (Math.floor(error.response?.status / 10) === 50) {
           window.location = "/error";
         }
         return Promise.reject(error);
@@ -94,6 +94,10 @@ class AuthHandler {
     axios.interceptors.request.use(config => {
       if (config.url.includes("digitaloceanspaces.com")) {
         config.metadata = { startTime: new Date() };
+        const url = config.url.split("/");
+        const pathStart = 1 + url.findIndex(a => a.includes("digitaloceanspaces.com"));
+        const path = `https://antgame.io/map/${url.slice(pathStart).join("/")}`;
+        config.url = path;
         return config;
       }
       if (this.token) {
