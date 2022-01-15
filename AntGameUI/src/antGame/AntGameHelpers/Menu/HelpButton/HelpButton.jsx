@@ -48,8 +48,11 @@ const HelpButton = props => {
                   <br />
                   &#8226;&nbsp;Click on the back arrow (left side) to go back to the challenge list.
                   <br />
-                  &#8226;&nbsp;The number on each group of food is the score for eating that group
-                  (all numbers add to 100,000). Not on all maps.
+                  &#8226;&nbsp;The green number on each group of food is the score earned for eating
+                  that group (all numbers add to 100,000). Not on all maps.
+                  <br />
+                  &#8226;&nbsp;The red number on a home tile is the score earned by that tile. This
+                  is shown at the end of each run and when a PR is loaded.
                 </p>
               </div>
             </div>
