@@ -75,7 +75,7 @@ class AuthHandler {
       response => {
         if (response.config.metadata?.startTime) {
           const loadTime = new Date() - response.config.metadata.startTime;
-          reportSpacesLoadTime(loadTime, response.config.url);
+          reportSpacesLoadTime(loadTime, response.config.url, response.status);
         }
         return response;
       },
