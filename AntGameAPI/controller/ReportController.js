@@ -7,6 +7,7 @@ async function reportSpacesData(req, res) {
       message: "spaces load data",
       time: req.body.time,
       path: req.body.path,
+      status: req.body.status,
       ip: GetIpAddress(req),
     });
     res.sendStatus(200);

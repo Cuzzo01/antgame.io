@@ -183,8 +183,8 @@ export default class AntGame extends React.Component {
 
     if (p5.mouseIsPressed) this.handleMousePressed(p5);
 
-    if (this.mapHandler.redrawMap) this.mapHandler.drawMap();
-    else if (this.mapHandler.redrawFullMap) this.mapHandler.drawFullMap();
+    if (this.mapHandler.redrawFullMap) this.mapHandler.drawFullMap();
+    else if (this.mapHandler.redrawMap) this.mapHandler.drawMap();
 
     if (this.antHandler.redrawAnts)
       this.antHandler.drawAnts(this.antGraphic, this.antImage, this.antFoodImage);
@@ -192,8 +192,8 @@ export default class AntGame extends React.Component {
     StaticElements.background(p5);
     p5.image(this.homeTrailGraphic, 0, 0);
     p5.image(this.foodTrailGraphic, 0, 0);
-    p5.image(this.mapGraphic, 0, 0);
     p5.image(this.antGraphic, 0, 0);
+    p5.image(this.mapGraphic, 0, 0);
     StaticElements.border(p5, BorderWeight, 0);
   };
 
@@ -260,7 +260,7 @@ export default class AntGame extends React.Component {
       if (IsChallenge && this.timerHandler.noTime) return "reset";
       this.setMapUiUpdate(500);
       this.toggleTimer(true);
-      this.mapHandler.shouldDrawTooltips = false;
+      this.mapHandler.shouldDrawFoodAmounts = false;
       if (!this.antHandler.antsSpawned) {
         this.antHandler.spawnAnts(this.homeTrailHandler, this.foodTrailHandler);
         this.mapHandler.prepareForStart(IsChallenge);
@@ -343,7 +343,7 @@ export default class AntGame extends React.Component {
       foodReturned: 0,
     });
     this.timerHandler.updateTimeDisplay(this.setTime);
-    this.mapHandler.shouldDrawTooltips = true;
+    this.mapHandler.shouldDrawFoodAmounts = true;
   };
 
   resetHandler = () => {

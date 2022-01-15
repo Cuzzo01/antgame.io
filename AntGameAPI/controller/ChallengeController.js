@@ -389,14 +389,14 @@ async function getPRHomeLocations(req, res) {
 
     // FIXME: Make a mongo aggregate function to do this lookup in just one call
     const runID = await UserDao.getPRRunIDByChallengeID(user.id, challengeID);
-    const homePositions = await ChallengeDao.getRunHomePositionsByRunId(runID);
+    const result = await ChallengeDao.getRunHomePositionsByRunId(runID);
 
-    if (!homePositions) {
+    if (!result) {
       res.status(404);
       res.send("No PR found");
       return;
     }
-    res.send({ home: homePositions });
+    res.send({ locations: result.locations, amounts: result.amounts });
   } catch (e) {
     console.log(e);
     res.status(500);

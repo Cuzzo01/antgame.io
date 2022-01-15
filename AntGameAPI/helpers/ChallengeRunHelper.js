@@ -114,10 +114,8 @@ const AnalyzeSnapshots = snapshots => {
       currentFoodReturned += foodCount;
     }
     if (percent !== 0) {
-      const calculatedPercentHigher = ((currentFoodReturned + 1) / totalFood).toFixed(4);
-      const calculatedPercentLower = ((currentFoodReturned - 1) / totalFood).toFixed(4);
-      const roundedPercent = percent.toFixed(4);
-      if (roundedPercent > calculatedPercentHigher || roundedPercent < calculatedPercentLower)
+      const calculatedPercent = currentFoodReturned / totalFood;
+      if (calculatedPercent !== percent)
         return `calculated percent doesn't match reported (${calculatedPercentLower}, ${roundedPercent}, ${calculatedPercentHigher},  ${i})`;
     }
 

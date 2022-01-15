@@ -156,12 +156,17 @@ const getRunHomePositionsByRunId = async id => {
     { _id: runObjectID },
     {
       projection: {
-        "details.homeLocations": 1,
+        details: {
+          homeLocations: 1,
+          food: {
+            $arrayElemAt: ["$details.snapshots", -1],
+          },
+        },
       },
     }
   );
   if (!result) return null;
-  return result.details.homeLocations;
+  return { locations: result.details.homeLocations, amounts: result.details.food[5] };
 };
 
 const getMostRecentDailyChallenge = async () => {

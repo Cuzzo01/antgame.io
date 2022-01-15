@@ -3,6 +3,7 @@ import axios from "axios";
 import { getToken, getAnonToken, reportSpacesLoadTime } from "./AuthService";
 import { sendRunArtifact } from "../Challenge/ChallengeService";
 import LogRocket from "logrocket";
+import { getFlag } from "../Helpers/FlagService";
 
 class AuthHandler {
   constructor() {
@@ -72,28 +73,34 @@ class AuthHandler {
   configureInterceptors() {
     axios.interceptors.response.use(
       response => {
-        if (response.config.url.includes("digitaloceanspaces.com")) {
+        if (response.config.metadata?.startTime) {
           const loadTime = new Date() - response.config.metadata.startTime;
-          reportSpacesLoadTime(loadTime, response.config.url);
+          reportSpacesLoadTime(loadTime, response.config.url, response.status);
         }
         return response;
       },
       error => {
         const onLogin = window.location.pathname.includes("/login");
-        if (error.response.status === 401 && !onLogin) {
+        if (error.response?.status === 401 && !onLogin) {
           this.logout();
           const pathBack = window.location.pathname;
           window.location = `/login?redirect=${pathBack}`;
-        } else if (Math.floor(error.response.status / 10) === 50) {
+        } else if (Math.floor(error.response?.status / 10) === 50) {
           window.location = "/error";
         }
         return Promise.reject(error);
       }
     );
 
-    axios.interceptors.request.use(config => {
+    axios.interceptors.request.use(async config => {
       if (config.url.includes("digitaloceanspaces.com")) {
         config.metadata = { startTime: new Date() };
+        if (await getFlag("use-new-map-loading")) {
+          const url = config.url.split("/");
+          const pathStart = 1 + url.findIndex(a => a.includes("digitaloceanspaces.com"));
+          const path = `https://antgame.io/map/${url.slice(pathStart).join("/")}`;
+          config.url = path;
+        }
         return config;
       }
       if (this.token) {
