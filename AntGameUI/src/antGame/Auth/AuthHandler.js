@@ -3,6 +3,7 @@ import axios from "axios";
 import { getToken, getAnonToken, reportSpacesLoadTime } from "./AuthService";
 import { sendRunArtifact } from "../Challenge/ChallengeService";
 import LogRocket from "logrocket";
+import { getFlag } from "../Helpers/FlagService";
 
 class AuthHandler {
   constructor() {
@@ -91,13 +92,15 @@ class AuthHandler {
       }
     );
 
-    axios.interceptors.request.use(config => {
+    axios.interceptors.request.use(async config => {
       if (config.url.includes("digitaloceanspaces.com")) {
         config.metadata = { startTime: new Date() };
-        const url = config.url.split("/");
-        const pathStart = 1 + url.findIndex(a => a.includes("digitaloceanspaces.com"));
-        const path = `https://antgame.io/map/${url.slice(pathStart).join("/")}`;
-        config.url = path;
+        if (await getFlag("use-new-map-loading")) {
+          const url = config.url.split("/");
+          const pathStart = 1 + url.findIndex(a => a.includes("digitaloceanspaces.com"));
+          const path = `https://antgame.io/map/${url.slice(pathStart).join("/")}`;
+          config.url = path;
+        }
         return config;
       }
       if (this.token) {
