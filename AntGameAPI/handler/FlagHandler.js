@@ -1,6 +1,7 @@
 const { getFlag } = require("../dao/FlagDao");
 const { ExpiringResult } = require("../helpers/ExpiringResult");
 const { ResultCache } = require("../helpers/ResultCache");
+const Logger = require("../Logger");
 
 class FlagHandler {
   constructor() {
@@ -9,13 +10,12 @@ class FlagHandler {
   }
 
   async getFlagValue(name) {
+    const startTime = new Date();
     if (this.resultCache.isSetAndActive(name)) {
       const result = this.resultCache.getValue(name);
+      Logger.logCacheResult("FlagHandler", false, name, result, new Date() - startTime);
       if (result !== null) return result;
-      else {
-        console.error(`getFlagValue called for non-existent flag : ${name}`);
-        return null;
-      }
+      return null;
     } else {
       if (!this.timeToCache || !this.timeToCache.isActive()) await this.refreshTimeToCache();
 
@@ -24,10 +24,10 @@ class FlagHandler {
         value = await getFlag(name);
         this.resultCache.setItem(name, value, this.timeToCache.getValue());
       } catch (e) {
-        console.error(`getFlagValue called for non-existent flag : ${name}`);
+        value = null;
         this.resultCache.setItem(name, null, this.timeToCache.getValue());
-        return null;
       }
+      Logger.logCacheResult("FlagHandler", true, name, value, new Date() - startTime);
       return value;
     }
   }
