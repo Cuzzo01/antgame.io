@@ -225,6 +225,8 @@ export class MapHandler {
       }
       if (brush.color) this.brushColors[brush.value] = this._graphics.color(brush.color);
     });
+    this.brushColors["homeText"] = this._graphics.color("#F1948A");
+    this.brushColors["foodText"] = this._graphics.color("#7DCEA0");
   }
 
   drawMap() {
@@ -293,7 +295,7 @@ export class MapHandler {
     if (!this.graphicsSet) return;
     if (this.foodAmounts && this._shouldDrawFoodAmounts)
       this.foodAmounts.forEach(amount => {
-        this.drawText([amount.x, amount.y], amount.value);
+        this.drawText([amount.x, amount.y], amount.value, this.brushColors.foodText);
       });
   }
 
@@ -304,7 +306,7 @@ export class MapHandler {
       for (const [key, value] of Object.entries(this.homeAmounts)) {
         const location = key.split(",").map(point => parseInt(point));
         const score = Math.round((value / totalFood) * 100000);
-        this.drawText([location[0], location[1]], score);
+        this.drawText([location[0], location[1]], score, this.brushColors.homeText);
       }
       this.homeAmountsDrawn = true;
       this._shouldDrawHomeAmounts = false;
@@ -313,13 +315,13 @@ export class MapHandler {
     }
   }
 
-  drawText([x, y], textValue) {
+  drawText([x, y], textValue, color) {
     const intMapXY = MapXYToInt([x, y]);
     this._graphics.textAlign(this._graphics.CENTER, this._graphics.CENTER);
     this._graphics.textFont("Courier New", 16);
-    this._graphics.fill(255);
+    this._graphics.fill(color);
     this._graphics.stroke(0);
-    this._graphics.strokeWeight(3);
+    this._graphics.strokeWeight(4);
     this._graphics.text(
       textValue,
       Math.floor(BorderWeight + intMapXY[0] * this.pixelDensity[0] + this.pixelDensity[0] / 2),
