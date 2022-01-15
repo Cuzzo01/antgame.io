@@ -50,11 +50,11 @@ export async function getLeaderboard(challengeID) {
     });
 }
 
-export async function getPRHomeLocations(challengeID) {
+export async function getPRInfo(challengeID) {
   return axios
     .get(`/api/challenge/${challengeID}/pr`)
     .then(res => {
-      return res.data.home;
+      return { locations: res.data.locations, amounts: res.data.amounts };
     })
     .catch(error => {
       return null;

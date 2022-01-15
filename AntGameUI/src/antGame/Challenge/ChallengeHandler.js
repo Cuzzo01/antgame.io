@@ -1,10 +1,5 @@
 import { Config } from "../config";
-import {
-  getChallengeConfig,
-  getPRHomeLocations,
-  getRecords,
-  sendRunArtifact,
-} from "./ChallengeService";
+import { getChallengeConfig, getPRInfo, getRecords, sendRunArtifact } from "./ChallengeService";
 import { v4 as uuidV4 } from "uuid";
 import AuthHandler from "../Auth/AuthHandler";
 
@@ -22,7 +17,7 @@ class ChallengeHandler {
     this.WrRun = false;
     this.recordListeners = [];
     this.wrListeners = [];
-    this.prHomeLocations = false;
+    this.prInfo = false;
   }
 
   set mapHandler(mapHandler) {
@@ -48,7 +43,7 @@ class ChallengeHandler {
 
   set challengeID(id) {
     this._challengeID = id;
-    this.prHomeLocations = false;
+    this.prInfo = false;
     this.getConfig();
     this.getRecords();
   }
@@ -71,12 +66,12 @@ class ChallengeHandler {
 
   async loadPRRun() {
     this._mapHandler.clearMap();
-    if (this.prHomeLocations === false) {
-      const locations = await getPRHomeLocations(this.config.id);
-      if (this.prHomeLocations === null) return;
-      this.prHomeLocations = locations;
+    if (this.prInfo === false) {
+      const info = await getPRInfo(this.config.id);
+      if (this.prInfo === null) return;
+      this.prInfo = info;
     }
-    this._mapHandler.setHomeLocations(this.prHomeLocations);
+    this._mapHandler.setPRInfo(this.prInfo);
   }
 
   clearConfig() {
@@ -192,16 +187,19 @@ class ChallengeHandler {
     const mapHandler = this._mapHandler;
     this.score = Math.round(mapHandler.percentFoodReturned * 100000);
 
+    this.generateSnapshot(mapHandler);
     if (!AuthHandler.isAnon && (!this.records?.pr || this.score > this.records.pr)) {
       this.artifact.PB = true;
       if (!this.records) this.records = {};
       this.records.pr = this.score;
       this.notifyRecordsListeners();
-      this.prHomeLocations = this.artifact.HomeLocations;
+      this.prInfo = {
+        locations: this.artifact.HomeLocations,
+        amounts: mapHandler.homeFoodCounts,
+      };
     }
 
     clearInterval(this.snapshotInterval);
-    this.generateSnapshot(mapHandler);
     this.artifact.GameConfig = {
       MapPath: this.config.mapPath,
       Time: this.config.seconds,
@@ -216,6 +214,7 @@ class ChallengeHandler {
     this.artifact.ClientID = this.clientID;
 
     this.sendArtifact();
+    mapHandler.setHomeAmounts(mapHandler.homeFoodCounts);
   }
 
   async sendArtifact() {

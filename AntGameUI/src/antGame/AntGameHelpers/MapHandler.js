@@ -41,8 +41,10 @@ export class MapHandler {
     this.lastLoadedSamplePath = "";
     this._gameMode = "";
     this.foodReturnedLocations = {};
-    this.tooltips = false;
-    this._drawToolTips = true;
+    this.foodAmounts = false;
+    this._shouldDrawFoodAmounts = true;
+    this._shouldDrawHomeAmounts = false;
+    this.homeAmountsDrawn = false;
   }
 
   set gameMode(mode) {
@@ -54,8 +56,8 @@ export class MapHandler {
     this.mapName = name;
   }
 
-  set shouldDrawTooltips(value) {
-    this._drawToolTips = value;
+  set shouldDrawFoodAmounts(value) {
+    this._shouldDrawFoodAmounts = value;
   }
 
   get map() {
@@ -133,7 +135,7 @@ export class MapHandler {
   generateMap() {
     this._graphics.clear();
     this._map = [];
-    this.tooltips = false;
+    this.foodAmounts = false;
     this.foodToRespawn = [];
     this.dirtToRespawn = [];
     this.foodToStopTime = 0;
@@ -167,7 +169,7 @@ export class MapHandler {
     if (setTitle && loadResult.name) this.setTitle(this.mapName);
 
     this._map = loadResult.map;
-    if (loadResult.tooltips) this.tooltips = loadResult.tooltips;
+    if (loadResult.tooltips) this.foodAmounts = loadResult.tooltips;
     this.countHomeOnMap();
     this.foodToRespawn = [];
     this.dirtToRespawn = [];
@@ -252,6 +254,7 @@ export class MapHandler {
       this.eraseCell(cellPos);
       this.drawCellColor(cellPos);
     });
+    if (this.cellsToDraw.length || this._shouldDrawHomeAmounts) this.drawHomeAmounts();
     this.cellsToDraw = [];
     this.redrawMap = false;
   }
@@ -279,28 +282,51 @@ export class MapHandler {
         }
       }
     }
-    this.drawTooltips();
+    this.drawFoodAmounts();
+    this.drawHomeAmounts();
     this.lastCell = "";
     this.redrawFullMap = false;
+    this.redrawMap = false;
   }
 
-  drawTooltips() {
+  drawFoodAmounts() {
     if (!this.graphicsSet) return;
-    if (this.tooltips && this._drawToolTips)
-      this.tooltips.forEach(tooltip => {
-        const intMapXY = MapXYToInt([tooltip.x, tooltip.y]);
-        this._graphics.textAlign(this._graphics.CENTER, this._graphics.CENTER);
-        this._graphics.textFont("Courier New", 16);
-        this._graphics.fill(255);
-        this._graphics.stroke(0);
-        this._graphics.strokeWeight(3);
-        this._graphics.text(
-          tooltip.value,
-          Math.floor(BorderWeight + intMapXY[0] * this.pixelDensity[0]),
-          Math.floor(BorderWeight + intMapXY[1] * this.pixelDensity[1])
-        );
-        this._graphics.strokeWeight(0);
+    if (this.foodAmounts && this._shouldDrawFoodAmounts)
+      this.foodAmounts.forEach(amount => {
+        this.drawText([amount.x, amount.y], amount.value);
       });
+  }
+
+  drawHomeAmounts() {
+    if (!this.graphicsSet) return;
+    if (this.homeAmounts && this._shouldDrawHomeAmounts) {
+      const totalFood = this.foodOnMap + this.foodInTransit + this.foodReturned;
+      for (const [key, value] of Object.entries(this.homeAmounts)) {
+        const location = key.split(",").map(point => parseInt(point));
+        const score = Math.round((value / totalFood) * 100000);
+        this.drawText([location[0], location[1]], score);
+      }
+      this.homeAmountsDrawn = true;
+      this._shouldDrawHomeAmounts = false;
+    } else {
+      this.homeAmountsDrawn = false;
+    }
+  }
+
+  drawText([x, y], textValue) {
+    const intMapXY = MapXYToInt([x, y]);
+    this._graphics.textAlign(this._graphics.CENTER, this._graphics.CENTER);
+    this._graphics.textFont("Courier New", 16);
+    this._graphics.fill(255);
+    this._graphics.stroke(0);
+    this._graphics.strokeWeight(3);
+    this._graphics.text(
+      textValue,
+      Math.floor(BorderWeight + intMapXY[0] * this.pixelDensity[0] + this.pixelDensity[0] / 2),
+      Math.floor(BorderWeight + intMapXY[1] * this.pixelDensity[1] + this.pixelDensity[1] / 2)
+    );
+    this.lastCell = false;
+    this._graphics.strokeWeight(0);
   }
 
   mapXYInBounds(mapXY) {
@@ -335,6 +361,10 @@ export class MapHandler {
         if (cellText === HomeValue) this.homeOnMap++;
         if (currentValue === HomeValue) this.homeOnMap--;
         this.setCellTo([x, y], cellText);
+        if (this.homeAmountsDrawn) {
+          this.homeAmountsDrawn = false;
+          this.redrawFullMap = true;
+        }
       }
     }
     if (foodRemoved) this.foodOnMap -= foodRemoved;
@@ -379,11 +409,18 @@ export class MapHandler {
     this.placeAndCountDecayableBlocks();
   };
 
-  setHomeLocations = locations => {
+  setPRInfo = ({ locations, amounts }) => {
     locations.forEach(location => {
       this.setCellTo([location[0], location[1]], "h");
     });
     this.homeOnMap = locations.length;
+    this.setHomeAmounts(amounts);
+  };
+
+  setHomeAmounts = amounts => {
+    this.homeAmounts = amounts;
+    this._shouldDrawHomeAmounts = true;
+    this.redrawMap = true;
   };
 
   findNewDecayableBlocks = () => {
@@ -419,7 +456,7 @@ export class MapHandler {
 
   calculateFoodRatio = () => {
     if (this.foodToStopTime === 0) return 0;
-    const totalFood = this.foodToStopTime / PercentFoodReturnedToStopTime;
+    const totalFood = this.foodOnMap + this.foodInTransit + this.foodReturned;
     this.foodRatio = this.foodReturned / totalFood;
   };
 
