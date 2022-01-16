@@ -31,6 +31,10 @@ class Logger {
     this.log({ message: "API Error", location: location, error: err });
   }
 
+  logAuthEvent(event, data) {
+    this.log({ message: "Auth Event", event: event, ...data });
+  }
+
   async logCacheResult(cacheName, cacheMiss, key, value, time) {
     this.log({
       message: "Cache Result",

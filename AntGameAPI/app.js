@@ -41,18 +41,14 @@ app.use(bodyParser.json({ extended: true, limit: "50mb" }));
 app.use(
   responseTime((req, res, time) => {
     if (req.url !== "/health") {
-      console.log(
-        `${req.method} ${req.url} ${GetIpAddress(req)} ${time.toFixed(3)} ${res.statusCode}`
-      );
       Logger.log({
         message: "request response",
         method: req.method,
         url: req.url,
         ip: GetIpAddress(req),
-        time: parseFloat(time.toFixed(3)),
+        time: Math.round(time),
         status: res.statusCode,
       });
-      if (time > 1000) console.log("Response time over a second");
     }
   })
 );
@@ -66,9 +62,11 @@ app.use(
       next();
     } else if (err.code === "credentials_required") {
       send401(res, "JWT required");
+      Logger.logAuthEvent("api hit without JWT", { ip: GetIpAddress(req) });
       return;
     } else if (err.code === "invalid_token") {
       send401(res, "Invalid JWT");
+      Logger.logAuthEvent("api hit with invalid JWT", { ip: GetIpAddress(req) });
       return;
     }
     console.log("Unknown AuthError:", err);
@@ -81,10 +79,24 @@ app.use(
       return;
     }
 
-    if (!req.user.admin && !req.user.anon) {
+    if (req.user.anon !== true) {
       const userID = req.user.id;
-      const IsTokenValid = await TokenRevokedHandler.isTokenValid(userID);
-      if (IsTokenValid === false) {
+      const adminToken = req.user.admin === true;
+      const TokenIsValid = await TokenRevokedHandler.isTokenValid(userID, adminToken);
+      if (TokenIsValid === false) {
+        Logger.logAuthEvent("invalid token received", {
+          userID,
+          adminToken,
+          username: req.user.username,
+        });
+        res.sendStatus(401);
+        return;
+      }
+    }
+
+    if (req.user.admin !== true) {
+      const LoginsEnabled = await TokenRevokedHandler.AreLoginsEnabled();
+      if (LoginsEnabled !== true) {
         res.sendStatus(401);
         return;
       }
