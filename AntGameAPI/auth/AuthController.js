@@ -7,6 +7,7 @@ const {
   IsAllowedUsername,
 } = require("../helpers/RegistrationHelper");
 const { GetIpAddress } = require("../helpers/IpHelper");
+const Logger = require("../Logger");
 
 async function verifyLogin(req, res) {
   try {
@@ -22,6 +23,7 @@ async function verifyLogin(req, res) {
 
     const authDetails = await AuthDao.getAuthDetailsByUsername(username);
     if (authDetails === false) {
+      Logger.logAuthEvent("login failed - no matching username", { username, username });
       res.status(401);
       res.send("Invalid login");
       return;
@@ -29,6 +31,10 @@ async function verifyLogin(req, res) {
 
     if (await PasswordHandler.checkPassword(password, authDetails.passHash)) {
       if (authDetails.banned === true) {
+        Logger.logAuthEvent("login failed - account banned", {
+          username: authDetails.username,
+          userID: authDetails.id,
+        });
         res.status(403);
         res.send("Account banned");
         return;
@@ -53,8 +59,13 @@ async function verifyLogin(req, res) {
       };
       const token = TokenHandler.generateAccessToken(tokenObject);
       res.send(token);
+      Logger.logAuthEvent("successful login", { username, userID: authDetails.id, clientIP });
       return;
     }
+    Logger.logAuthEvent("login failed - bad password", {
+      username: authDetails.username,
+      userID: authDetails.id,
+    });
     res.status(401);
     res.send("Invalid login");
   } catch (e) {
@@ -109,6 +120,7 @@ async function registerUser(req, res) {
     }
 
     if (!IsAllowedUsername(username)) {
+      Logger.logAuthEvent("register attempt with non-allowed username", { username: username });
       res.status(409);
       res.send("Username taken");
       return;

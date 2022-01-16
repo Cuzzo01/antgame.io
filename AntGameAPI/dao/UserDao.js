@@ -218,6 +218,16 @@ const isUserBanned = async id => {
   return false;
 };
 
+const isUserAdmin = async id => {
+  const userObjectID = TryParseObjectID(id, "UserID");
+
+  const collection = await getCollection("users");
+  const result = await collection.findOne({ _id: userObjectID }, { projection: { admin: 1 } });
+
+  if (result.admin === true) return true;
+  return false;
+};
+
 const getUsernameByID = async id => {
   const userObjectID = TryParseObjectID(id, "UserID");
 
@@ -269,6 +279,7 @@ module.exports = {
   getLeaderboardRankByScore,
   getPRByLeaderboardRank,
   isUserBanned,
+  isUserAdmin,
   getUsernameByID,
   getPlayerCountByChallengeID,
   shouldShowUserOnLeaderboard,

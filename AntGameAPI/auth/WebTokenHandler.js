@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const Logger = require("../Logger");
 
 class TokenHandler {
   constructor() {
@@ -12,6 +13,7 @@ class TokenHandler {
   }
 
   generateAccessToken(user) {
+    if (user.admin) Logger.logAuthEvent(`Issued admin token for ${user.username}/${user.id}`);
     return jwt.sign(user, this.secret, { expiresIn: "6h" });
   }
 
