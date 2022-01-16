@@ -62,9 +62,11 @@ app.use(
       next();
     } else if (err.code === "credentials_required") {
       send401(res, "JWT required");
+      Logger.logAuthEvent("api hit without JWT", { ip: GetIpAddress(req) });
       return;
     } else if (err.code === "invalid_token") {
       send401(res, "Invalid JWT");
+      Logger.logAuthEvent("api hit with invalid JWT", { ip: GetIpAddress(req) });
       return;
     }
     console.log("Unknown AuthError:", err);
@@ -82,6 +84,11 @@ app.use(
       const adminToken = req.user.admin === true;
       const TokenIsValid = await TokenRevokedHandler.isTokenValid(userID, adminToken);
       if (TokenIsValid === false) {
+        Logger.logAuthEvent("invalid token received", {
+          userID,
+          adminToken,
+          username: req.user.username,
+        });
         res.sendStatus(401);
         return;
       }

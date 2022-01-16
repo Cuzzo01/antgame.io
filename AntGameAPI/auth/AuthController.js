@@ -23,7 +23,11 @@ async function verifyLogin(req, res) {
 
     const authDetails = await AuthDao.getAuthDetailsByUsername(username);
     if (authDetails === false) {
-      Logger.logAuthEvent("login failed - no matching username", { username, username });
+      Logger.logAuthEvent("login failed - no matching username", {
+        username,
+        username,
+        ip: GetIpAddress(req),
+      });
       res.status(401);
       res.send("Invalid login");
       return;
@@ -65,6 +69,7 @@ async function verifyLogin(req, res) {
     Logger.logAuthEvent("login failed - bad password", {
       username: authDetails.username,
       userID: authDetails.id,
+      ip: GetIpAddress(req),
     });
     res.status(401);
     res.send("Invalid login");
