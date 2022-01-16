@@ -25,7 +25,6 @@ async function verifyLogin(req, res) {
     if (authDetails === false) {
       Logger.logAuthEvent("login failed - no matching username", {
         username,
-        username,
         ip: GetIpAddress(req),
       });
       res.status(401);
