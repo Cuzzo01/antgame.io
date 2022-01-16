@@ -32,16 +32,14 @@ class Logger {
   }
 
   async logCacheResult(cacheName, cacheMiss, key, value, time) {
-    const shouldLogCacheResult = await FlagHandler.getFlagValue("should-log-cache-results");
-    if (shouldLogCacheResult)
-      this.log({
-        message: "Cache Result",
-        cacheName: cacheName,
-        resultType: cacheMiss ? "miss" : "hit",
-        key: key,
-        value: value,
-        time: time,
-      });
+    this.log({
+      message: "Cache Result",
+      cacheName: cacheName,
+      resultType: cacheMiss ? "miss" : "hit",
+      key: key,
+      value: value,
+      time: time,
+    });
   }
 }
 const SingletonInstance = new Logger();

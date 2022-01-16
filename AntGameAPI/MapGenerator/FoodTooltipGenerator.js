@@ -2,7 +2,6 @@ const { CountGroupSize, CountOnMap } = require("./Helpers");
 
 const GenerateFoodTooltips = mapData => {
   const foodCount = CountOnMap("f", mapData);
-  console.log(foodCount);
   const tooltips = [];
   const seenList = [];
   for (let x = 0; x < mapData.length; x++) {
@@ -28,7 +27,6 @@ const GenerateFoodTooltips = mapData => {
       }
     }
   }
-  console.log(tooltips.reduce((prev, current) => prev + current.value, 0));
   return tooltips;
 };
 
