@@ -195,7 +195,11 @@ async function postRun(req, res) {
 
 async function getChallenge(req, res) {
   try {
-    const id = req.params.id;
+    let id = req.params.id;
+    if (id.toLowerCase() === "daily") {
+      id = (await ChallengeDao.getMostRecentDailyChallenge())._id;
+    }
+
     const config = await ChallengeDao.getChallengeByChallengeId(id);
     if (config === false) {
       res.status(400);

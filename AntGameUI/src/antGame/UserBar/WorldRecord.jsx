@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import ChallengeHandler from "../Challenge/ChallengeHandler";
+import DailyCountdown from "../Challenge/DailyCountdown/DailyCountdown";
 import styles from "./RecordDisplay.module.css";
 
 const WorldRecord = props => {
@@ -18,6 +19,20 @@ const WorldRecord = props => {
     };
   }, [loading]);
 
-  return <div>{loading ? null : <span className={styles.bold}>{record}</span>}</div>;
+  return (
+    <div className={styles.bold}>
+      {loading ? null : (
+        <span>
+          {window.location.pathname === "/challenge/daily" ? (
+            <span>
+              Ends in <DailyCountdown />
+              &nbsp;|&nbsp;
+            </span>
+          ) : null}
+          {record}
+        </span>
+      )}
+    </div>
+  );
 };
 export default WorldRecord;

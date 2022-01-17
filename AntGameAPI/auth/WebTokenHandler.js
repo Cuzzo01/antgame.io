@@ -13,7 +13,8 @@ class TokenHandler {
   }
 
   generateAccessToken(user) {
-    if (user.admin) Logger.logAuthEvent(`Issued admin token`, {username: user.username, userID: user.id});
+    if (user.admin)
+      Logger.logAuthEvent(`Issued admin token`, { username: user.username, userID: user.id });
     return jwt.sign(user, this.secret, { expiresIn: "6h" });
   }
 

@@ -1,0 +1,15 @@
+.blinking {
+  animation: blinker 2s ease-in-out 0;
+  animation-iteration-count: infinite;
+}
+
+.fastBlinking {
+  animation: blinker 1s ease-in 0;
+  animation-iteration-count: infinite;
+}
+
+@keyframes blinker {
+  50% {
+    color: #e74c3c;
+  }
+}
