@@ -6,22 +6,23 @@ import styles from "./RecordDisplay.module.css";
 
 const PersonalRecord = props => {
   const [content, setContent] = useState();
+  const [linkPath, setLinkPath] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let listenerID = 0;
-    const challengeID = window.location.pathname.substr(-24);
     if (AuthHandler.isAnon) {
       setContent("Login to track PRs");
       setLoading(false);
     } else {
       listenerID = ChallengeHandler.addRecordListener(records => {
         if (!records.pr) setContent("No Personal Record");
-        else
+        else {
+          buildAndSetLink();
           setContent(
             <div>
               Personal Record: {records.pr}&nbsp;
-              <Link to={`/challenge/leaderboard/${challengeID}`}>
+              <Link to={linkPath}>
                 <span className={styles.bold} title="Leaderboard">
                   #{records.rank}
                 </span>
@@ -31,6 +32,7 @@ const PersonalRecord = props => {
               ) : null}
             </div>
           );
+        }
         if (loading) setLoading(false);
       });
     }
@@ -38,7 +40,12 @@ const PersonalRecord = props => {
     return () => {
       ChallengeHandler.removeRecordListener(listenerID);
     };
-  }, [loading]);
+  }, [loading, linkPath]);
+
+  const buildAndSetLink = async () => {
+    const challengeID = (await ChallengeHandler.getConfig()).id;
+    setLinkPath(`/challenge/leaderboard/${challengeID}`);
+  };
 
   return <div>{loading ? null : content}</div>;
 };
