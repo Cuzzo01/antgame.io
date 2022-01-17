@@ -27,6 +27,7 @@ const UnauthenticatedRoutes = [
   "/auth/register",
   /\/flag\//,
   "/health",
+  "/time",
 ];
 
 const send401 = (res, message) => {
@@ -132,6 +133,7 @@ app.post("/admin/dailyChallenge", RejectNotAdmin, _adminController.generateDaily
 //#endregion Admin
 
 app.get("/flag/:name", _flagController.getFlag);
+app.get("/time", (req, res) => res.send({ now: Date.now() }));
 
 app.get("/map", RejectNotAdmin, _mapController.getRandomMap);
 

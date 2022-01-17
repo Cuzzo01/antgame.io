@@ -45,7 +45,6 @@ class ChallengeHandler {
     this._challengeID = id;
     this.prInfo = false;
     this.getConfig();
-    this.getRecords();
   }
 
   set config(config) {
@@ -116,6 +115,7 @@ class ChallengeHandler {
         .then(config => {
           this.loadingConfig = false;
           this.config = config;
+          this.getRecords();
           return config;
         })
         .catch(() => {
@@ -130,7 +130,7 @@ class ChallengeHandler {
     else if (this.loadingRecords) return this.recordsPromise;
     else {
       this.loadingRecords = true;
-      this.recordsPromise = getRecords(this._challengeID).then(records => {
+      this.recordsPromise = getRecords(this.config.id).then(records => {
         this.loadingRecords = false;
         this.records = records;
         this.notifyRecordsListeners();
@@ -157,7 +157,7 @@ class ChallengeHandler {
     this.artifact.HomeLocations = homeLocations;
     this.artifact.Name = config.name;
     this.artifact.Env = this.env;
-    this.artifact.challengeID = this._challengeID;
+    this.artifact.challengeID = this.config.id;
     this.artifact.Timing = {
       SystemStartTime: new Date().getTime(),
     };
