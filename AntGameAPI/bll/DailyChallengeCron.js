@@ -2,7 +2,8 @@ const { updateConfigByID } = require("../dao/AdminDao");
 const { getMostRecentDailyChallenge } = require("../dao/ChallengeDao");
 const { ChallengeGenerator } = require("./ChallengeGenerator");
 const Logger = require("../Logger");
-const { RecurrenceRule, scheduleJob } = require("node-schedule");
+const { scheduleJob } = require("node-schedule");
+const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 
 const handleDailyChallengeChange = async () => {
   LogMessage("starting daily challenge swap");
@@ -20,6 +21,7 @@ const handleDailyChallengeChange = async () => {
   }
   if (newDailyChallengeID) {
     await updateConfigByID(newDailyChallengeID, { active: true });
+    DailyChallengeHandler.clearCache();
     LogMessage("set new map active");
   } else {
     LogMessage("could not set new map active due to no ID");

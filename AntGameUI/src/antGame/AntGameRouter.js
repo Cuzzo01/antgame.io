@@ -48,7 +48,7 @@ const AntGameRouter = () => {
             <ChallengeList />
             <UserBar showLinkHome />
           </Route>
-          <Route path="/challenge/leaderboard/:id">
+          <Route path="/challenge/:id/leaderboard">
             <Leaderboard />
             <UserBar />
           </Route>
