@@ -318,7 +318,7 @@ async function getLeaderboard(req, res) {
       challengeID = await DailyChallengeHandler.getActiveDailyChallenge();
     let leaderBoardEntries;
     if (user.admin) leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 15);
-    else leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 5);
+    else leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 10);
 
     if (leaderBoardEntries.length === 0) {
       res.status(404);
