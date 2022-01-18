@@ -13,8 +13,7 @@ class UserIdToUsernameHandler {
     if (this.resultCache.isSetAndActive(id)) {
       const result = this.resultCache.getValue(id);
       Logger.logCacheResult("UserIdToUsernameHandler", false, id, result, new Date() - startTime);
-      if (result !== null) return result;
-      return null;
+      return result;
     } else {
       try {
         const value = await getUsernameByID(id);

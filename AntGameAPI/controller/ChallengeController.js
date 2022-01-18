@@ -6,6 +6,7 @@ const { getGeneralizedTimeStringFromObjectID } = require("../helpers/TimeHelper"
 const FlagHandler = require("../handler/FlagHandler");
 const ChallengeNameHandler = require("../handler/ChallengeIdToChallengeNameHandler");
 const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
+const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const { GetIpAddress } = require("../helpers/IpHelper");
 
 async function postRun(req, res) {
@@ -197,7 +198,7 @@ async function getChallenge(req, res) {
   try {
     let id = req.params.id;
     if (id.toLowerCase() === "daily") {
-      id = (await ChallengeDao.getMostRecentDailyChallenge())._id;
+      id = await DailyChallengeHandler.getActiveDailyChallenge();
     }
 
     const config = await ChallengeDao.getChallengeByChallengeId(id);
@@ -312,7 +313,9 @@ async function getRecords(req, res) {
 async function getLeaderboard(req, res) {
   try {
     const user = req.user;
-    const challengeID = req.params.id;
+    let challengeID = req.params.id;
+    if (challengeID.toLowerCase() === "daily")
+      challengeID = await DailyChallengeHandler.getActiveDailyChallenge();
     let leaderBoardEntries;
     if (user.admin) leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 15);
     else leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 5);

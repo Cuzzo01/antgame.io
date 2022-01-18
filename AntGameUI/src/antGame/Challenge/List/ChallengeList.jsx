@@ -154,7 +154,7 @@ const DailyChallengeCard = ({ challenge, record }) => {
       </div>
       <div className={styles.dailyLinks}>
         <ChallengeLink id={"daily"} />
-        <LeaderboardLink id={challenge.id} />
+        <LeaderboardLink id={"daily"} />
       </div>
     </div>
   );
@@ -213,7 +213,7 @@ const ChallengeDetails = ({ time, homes }) => {
 
 const LeaderboardLink = props => {
   return (
-    <Link className={styles.challengeLink} to={`/challenge/leaderboard/${props.id}`}>
+    <Link className={styles.challengeLink} to={`/challenge/${props.id}/leaderboard`}>
       Leaderboard
     </Link>
   );
