@@ -94,6 +94,7 @@ async function awardPoints(req, res) {
         );
     });
 
+    // TODO: add points awarded to this
     await updateConfigByID(challengeID, { pointsAwarded: true });
 
     res.sendStatus(200);

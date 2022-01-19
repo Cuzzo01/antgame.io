@@ -109,13 +109,14 @@ const LoginPage = props => {
             {formState === "disabled" ? <div className={styles.error}>Login disabled</div> : null}
             <input type="submit" style={{ display: "none" }} />
             <div className={styles.buttonBar}>
-              <div className={`${styles.divButton} ${styles.right}`} onClick={handleSubmit}>
+              <div className={`${styles.divButton} ${styles.submitButton}`} onClick={handleSubmit}>
                 Submit
               </div>
-              <div className={`${styles.divButton} ${styles.left}`} onClick={continueWithoutLogin}>
+              <div
+                className={`${styles.divButton} ${styles.skipButton}`}
+                onClick={continueWithoutLogin}
+              >
                 Skip
-                <br />
-                <span className={styles.subtext}>(scores won't save)</span>
               </div>
             </div>
           </form>
