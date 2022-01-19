@@ -109,18 +109,17 @@ const LoginPage = props => {
             {formState === "disabled" ? <div className={styles.error}>Login disabled</div> : null}
             <input type="submit" style={{ display: "none" }} />
             <div className={styles.buttonBar}>
-              <div className={`${styles.divButton} ${styles.submitButton}`} onClick={handleSubmit}>
-                Submit
-              </div>
               <div
                 className={`${styles.divButton} ${styles.skipButton}`}
                 onClick={continueWithoutLogin}
               >
                 Skip
               </div>
+              <div className={`${styles.divButton} ${styles.submitButton}`} onClick={handleSubmit}>
+                Submit
+              </div>
             </div>
           </form>
-          <br />
           {allowRegistration ? (
             <div className={styles.registerLink}>
               <Link to="/register">Create Account</Link>

@@ -31,22 +31,27 @@
 .submitButton {
   float: left;
   background-color: lightgreen;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .skipButton {
   float: right;
   background-color: lightgray;
+  margin: 0.25em 0.5em 0.25em 0;
 }
 
 .buttonBar {
   display: grid;
-  grid-template-columns: 60% auto;
-  column-gap: 1rem;
+  grid-template-columns: auto 60%;
+  column-gap: 2.5rem;
   width: 100%;
-  margin-top: 0.5em;
+  margin-top: 1em;
 }
 
 .registerLink {
+  padding-top: 1.5em;
   text-align: center;
 }
 
