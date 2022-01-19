@@ -24,6 +24,7 @@ const Leaderboard = props => {
       }
       let table = [];
       let lastRank = 0;
+      const isDaily = window.location.pathname.includes("daily");
       res.leaderboard.forEach(data => {
         if (data.rank !== lastRank + 1) {
           table.push(<div className={styles.hr} />);
@@ -37,6 +38,7 @@ const Leaderboard = props => {
             name={data.username}
             pb={data.pb}
             age={data.age}
+            isDaily={isDaily}
           />
         );
       });
@@ -72,9 +74,9 @@ const Leaderboard = props => {
   );
 };
 
-const LeaderboardRow = props => {
+const LeaderboardRow = ({ rank, ownRow, key, name, age, isDaily, pb }) => {
   let placeStyle = "";
-  switch (props.rank) {
+  switch (rank) {
     case 1:
       placeStyle += styles.first;
       break;
@@ -89,14 +91,14 @@ const LeaderboardRow = props => {
   }
 
   return (
-    <div
-      className={`${styles.row} ${placeStyle} ${props.ownRow ? styles.ownRow : ""}`}
-      key={props.key}
-    >
-      <span className={styles.rank}>#{props.rank}</span>
-      <span>{props.name}</span>
+    <div className={`${styles.row} ${placeStyle} ${ownRow ? styles.ownRow : ""}`} key={key}>
+      <span className={styles.rank}>#{rank}</span>
+      <span>{name}</span>
       <span className={styles.right}>
-        <span className={styles.age}>{props.age} ago</span> {props.pb}
+        <span className={styles.age}>
+          {age} {isDaily ? "left" : "ago"}
+        </span>
+        &nbsp;{pb}
       </span>
     </div>
   );

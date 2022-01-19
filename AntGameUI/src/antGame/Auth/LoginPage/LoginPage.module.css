@@ -18,7 +18,6 @@
 .divButton {
   border: 2px gray solid;
   border-radius: 0.5em;
-  display: inline;
   padding: 0.5em;
   text-align: center;
 }
@@ -29,32 +28,30 @@
   cursor: pointer;
 }
 
-.right {
-  float: right;
+.submitButton {
+  float: left;
   background-color: lightgreen;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.left {
-  float: left;
-  line-height: 75%;
+.skipButton {
+  float: right;
   background-color: lightgray;
+  margin: 0.25em 0.5em 0.25em 0;
 }
 
 .buttonBar {
-  display: inline-block;
+  display: grid;
+  grid-template-columns: auto 60%;
+  column-gap: 2.5rem;
   width: 100%;
-  margin-top: 0.5em;
-}
-
-.subtext {
-  font-size: 0.75em;
-}
-
-.registerLink a {
-  color: blue;
+  margin-top: 1em;
 }
 
 .registerLink {
+  padding-top: 1.5em;
   text-align: center;
 }
 

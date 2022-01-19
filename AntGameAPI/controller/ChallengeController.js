@@ -2,7 +2,10 @@ const { RejectIfAnon } = require("../auth/AuthHelpers");
 const ChallengeDao = require("../dao/ChallengeDao");
 const UserDao = require("../dao/UserDao");
 const { VerifyArtifact } = require("../helpers/ChallengeRunHelper");
-const { getGeneralizedTimeStringFromObjectID } = require("../helpers/TimeHelper");
+const {
+  getGeneralizedTimeStringFromObjectID,
+  getTimeStringForDailyChallenge,
+} = require("../helpers/TimeHelper");
 const FlagHandler = require("../handler/FlagHandler");
 const ChallengeNameHandler = require("../handler/ChallengeIdToChallengeNameHandler");
 const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
@@ -314,11 +317,11 @@ async function getLeaderboard(req, res) {
   try {
     const user = req.user;
     let challengeID = req.params.id;
-    if (challengeID.toLowerCase() === "daily")
-      challengeID = await DailyChallengeHandler.getActiveDailyChallenge();
+    let isDaily = challengeID.toLowerCase() === "daily";
+    if (isDaily) challengeID = await DailyChallengeHandler.getActiveDailyChallenge();
     let leaderBoardEntries;
     if (user.admin) leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 15);
-    else leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 5);
+    else leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 10);
 
     if (leaderBoardEntries.length === 0) {
       res.status(404);
@@ -330,7 +333,9 @@ async function getLeaderboard(req, res) {
     let onLeaderboard = false;
     for (let i = 0; i < leaderBoardEntries.length; i++) {
       const entry = leaderBoardEntries[i];
-      const timeString = getGeneralizedTimeStringFromObjectID(entry.runID);
+      const timeString = isDaily
+        ? getTimeStringForDailyChallenge(entry.runID)
+        : getGeneralizedTimeStringFromObjectID(entry.runID);
 
       if (entry._id == user.id) {
         onLeaderboard = true;
@@ -351,7 +356,9 @@ async function getLeaderboard(req, res) {
 
         if (currentUserRank > 6) {
           const entryAbove = await UserDao.getPRByLeaderboardRank(challengeID, currentUserRank - 1);
-          const timeString = getGeneralizedTimeStringFromObjectID(entryAbove.runID);
+          const timeString = isDaily
+            ? getTimeStringForDailyChallenge(entryAbove.runID)
+            : getGeneralizedTimeStringFromObjectID(entryAbove.runID);
           leaderboardData.push({
             rank: currentUserRank - 1,
             username: entryAbove.username,
@@ -360,7 +367,9 @@ async function getLeaderboard(req, res) {
           });
         }
 
-        const timeString = getGeneralizedTimeStringFromObjectID(pr.pbRunID);
+        const timeString = isDaily
+        ? getTimeStringForDailyChallenge(pr.pbRunID)
+        : getGeneralizedTimeStringFromObjectID(pr.pbRunID);
 
         leaderboardData.push({
           rank: currentUserRank,

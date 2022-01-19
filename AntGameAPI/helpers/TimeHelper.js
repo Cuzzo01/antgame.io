@@ -18,4 +18,21 @@ const getGeneralizedTimeStringFromObjectID = objectID => {
   return timeString;
 };
 
-module.exports = { getGeneralizedTimeString, getGeneralizedTimeStringFromObjectID };
+const getTimeStringForDailyChallenge = objectID => {
+  const recordTime = objectID.getTimestamp();
+  const hours = recordTime.getUTCHours();
+  const min = recordTime.getUTCMinutes();
+
+  let hoursLeft;
+  if (hours < 12) hoursLeft = 11 - hours;
+  else hoursLeft = 36 - hours;
+
+  const minLeft = 60 - min;
+  return `${hoursLeft}:${minLeft < 10 ? "0" + minLeft : minLeft}`;
+};
+
+module.exports = {
+  getGeneralizedTimeString,
+  getGeneralizedTimeStringFromObjectID,
+  getTimeStringForDailyChallenge,
+};

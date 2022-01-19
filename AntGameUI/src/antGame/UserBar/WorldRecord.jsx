@@ -25,7 +25,7 @@ const WorldRecord = props => {
         <span>
           {window.location.pathname === "/challenge/daily" ? (
             <span>
-              Ends in <DailyCountdown />
+              Ends in <DailyCountdown short />
               &nbsp;|&nbsp;
             </span>
           ) : null}

@@ -84,7 +84,7 @@ const ConfigDetails = props => {
           <div className={adminStyles.divSection}>
             <h5>Details</h5>
             PlayerCount: {details.playerCount}&nbsp;
-            <Link to={`/challenge/leaderboard/${props.id}`} target="_blank">
+            <Link to={`/challenge/${props.id}/leaderboard`} target="_blank">
               (Leaderboard)
             </Link>
             <br />
