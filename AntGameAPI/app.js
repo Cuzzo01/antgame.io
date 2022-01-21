@@ -1,3 +1,5 @@
+if (!process.env.environment) require("dotenv").config();
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const jwt = require("express-jwt");

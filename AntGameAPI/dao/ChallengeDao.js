@@ -145,6 +145,7 @@ const getChallengeByChallengeId = async id => {
     active: result.active,
     tournamentID: result.tournamentID,
     pointsAwarded: result.pointsAwarded,
+    dailyChallenge: result.dailyChallenge,
   };
 };
 

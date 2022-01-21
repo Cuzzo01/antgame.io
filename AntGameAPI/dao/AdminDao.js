@@ -181,6 +181,8 @@ async function getFlagListFromDB() {
 
   const result = await collection
     .find({}, { projection: { name: 1, value: 1, type: 1 } })
+    .sort({ name: 1 })
+    .collation({ locale: "en", caseLevel: true })
     .toArray();
   return result;
 }

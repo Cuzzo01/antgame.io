@@ -19,7 +19,7 @@ const FlagList = props => {
   }, []);
 
   return (
-    <div>
+    <div className={styles.container}>
       <h4>Flags</h4>
       {flagList ? flagList : null}
     </div>

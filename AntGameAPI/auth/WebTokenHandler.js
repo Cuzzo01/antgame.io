@@ -2,14 +2,14 @@ const jwt = require("jsonwebtoken");
 const Logger = require("../Logger");
 
 class TokenHandler {
-  constructor() {
-    try {
-      this.secret = require("./secret.js");
-    } catch (e) {
-      console.log("Loading secret from env");
-      this.secret = process.env.jwt_secret;
-    }
-    if (!this.secret || this.secret.length == 0) throw "Failed to load JWT secret";
+  get secret() {
+    if (!this._secret) this.init();
+    return this._secret;
+  }
+
+  init() {
+    this._secret = process.env.jwt_secret;
+    if (!this._secret || this._secret.length == 0) throw "Failed to load JWT secret";
   }
 
   generateAccessToken(user) {

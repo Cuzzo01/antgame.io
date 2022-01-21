@@ -162,7 +162,7 @@ const IntEdit = props => {
       >
         <input
           type="number"
-          step="0.1"
+          step="1"
           onChange={e => setInputValue(e.target.value)}
           value={inputValue}
         />
