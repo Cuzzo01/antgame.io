@@ -368,8 +368,8 @@ async function getLeaderboard(req, res) {
         }
 
         const timeString = isDaily
-        ? getTimeStringForDailyChallenge(pr.pbRunID)
-        : getGeneralizedTimeStringFromObjectID(pr.pbRunID);
+          ? getTimeStringForDailyChallenge(pr.pbRunID)
+          : getGeneralizedTimeStringFromObjectID(pr.pbRunID);
 
         leaderboardData.push({
           rank: currentUserRank,

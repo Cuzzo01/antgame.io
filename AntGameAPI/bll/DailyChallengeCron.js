@@ -6,6 +6,7 @@ const { scheduleJob } = require("node-schedule");
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 
 const handleDailyChallengeChange = async () => {
+  // TODO: check flag for if this should run or skip
   LogMessage("starting daily challenge swap");
   const currentDailyChallenge = await getMostRecentDailyChallenge();
   LogMessage(`current challenge is ${currentDailyChallenge._id}`);
@@ -29,7 +30,7 @@ const handleDailyChallengeChange = async () => {
 };
 
 const initializeScheduledTask = () => {
-  if (process.env.environment) {
+  if (process.env.environment !== "LOCAL") {
     const job = scheduleJob({ hour: 12, minute: 0 }, handleDailyChallengeChange);
     LogMessage(`cron initialized, next run at ${job.nextInvocation()}`);
   } else {

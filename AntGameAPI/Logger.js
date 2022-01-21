@@ -9,21 +9,21 @@ class Logger {
       port: "8071",
       type: "AntGameAPI",
     });
+  }
 
+  init() {
     this.env = process.env.environment;
     if (this.env === undefined) {
       this.env = "NO ENV SET";
     }
-
-    this.logError = this.logError.bind(this);
-    this.logCacheResult = this.logCacheResult.bind(this);
   }
 
   log(obj) {
-    if (this.env !== "NO ENV SET") {
+    if (!this.env) this.init();
+    if (this.env !== "LOCAL") {
       this.logger.log({ ...obj, env: this.env });
     } else {
-      console.log(obj);
+      console.log(JSON.stringify(obj));
     }
   }
 
