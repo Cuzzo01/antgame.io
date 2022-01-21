@@ -4,9 +4,13 @@ const { ChallengeGenerator } = require("./ChallengeGenerator");
 const Logger = require("../Logger");
 const { scheduleJob } = require("node-schedule");
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
+const FlagHandler = require("../handler/FlagHandler");
 
 const handleDailyChallengeChange = async () => {
-  // TODO: check flag for if this should run or skip
+  if ((await FlagHandler.getFlagValue("run-daily-challenge-cron")) === false) {
+    LogMessage("skipping daily challenge cron swap");
+    return;
+  }
   LogMessage("starting daily challenge swap");
   const currentDailyChallenge = await getMostRecentDailyChallenge();
   LogMessage(`current challenge is ${currentDailyChallenge._id}`);
