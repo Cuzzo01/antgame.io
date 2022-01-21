@@ -317,8 +317,10 @@ async function getLeaderboard(req, res) {
   try {
     const user = req.user;
     let challengeID = req.params.id;
-    let isDaily = challengeID.toLowerCase() === "daily";
-    if (isDaily) challengeID = await DailyChallengeHandler.getActiveDailyChallenge();
+
+    let getTodaysDaily = challengeID.toLowerCase() === "daily";
+    if (getTodaysDaily) challengeID = await DailyChallengeHandler.getActiveDailyChallenge();
+
     let leaderBoardEntries;
     if (user.admin) leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 15);
     else leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 10);
@@ -328,6 +330,9 @@ async function getLeaderboard(req, res) {
       res.send("Found no records for that challengeID");
       return;
     }
+
+    const details = await ChallengeDao.getChallengeByChallengeId(challengeID);
+    const isDaily = details.dailyChallenge === true;
 
     let leaderboardData = [];
     let onLeaderboard = false;
@@ -383,6 +388,7 @@ async function getLeaderboard(req, res) {
     const response = {
       name: await ChallengeNameHandler.getChallengeName(challengeID),
       leaderboard: leaderboardData,
+      daily: isDaily,
     };
 
     if (await FlagHandler.getFlagValue("show-player-count-on-leaderboard"))

@@ -20,15 +20,19 @@ const getGeneralizedTimeStringFromObjectID = objectID => {
 
 const getTimeStringForDailyChallenge = objectID => {
   const recordTime = objectID.getTimestamp();
-  const hours = recordTime.getUTCHours();
+  recordTime.setHours(recordTime.getHours() - 12);
+  let hours = recordTime.getUTCHours();
   const min = recordTime.getUTCMinutes();
+  let hoursDisplay;
+  if (hours === 0) {
+    hoursDisplay = 12;
+  } else if (hours > 12) {
+    hoursDisplay = hours - 12;
+  } else {
+    hoursDisplay = hours;
+  }
 
-  let hoursLeft;
-  if (hours < 12) hoursLeft = 11 - hours;
-  else hoursLeft = 36 - hours;
-
-  const minLeft = 60 - min;
-  return `${hoursLeft}:${minLeft < 10 ? "0" + minLeft : minLeft}`;
+  return `${hoursDisplay}:${min < 10 ? `0${min}` : min} ${hours > 11 ? "PM" : "AM"}`;
 };
 
 module.exports = {

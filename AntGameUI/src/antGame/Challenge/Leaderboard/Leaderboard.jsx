@@ -24,7 +24,7 @@ const Leaderboard = props => {
       }
       let table = [];
       let lastRank = 0;
-      const isDaily = window.location.pathname.includes("daily");
+      const isDaily = res.daily === true;
       res.leaderboard.forEach(data => {
         if (data.rank !== lastRank + 1) {
           table.push(<div className={styles.hr} />);
@@ -96,7 +96,8 @@ const LeaderboardRow = ({ rank, ownRow, key, name, age, isDaily, pb }) => {
       <span>{name}</span>
       <span className={styles.right}>
         <span className={styles.age}>
-          {age} {isDaily ? "left" : "ago"}
+          {age}
+          {isDaily ? "" : " ago"}
         </span>
         &nbsp;{pb}
       </span>
