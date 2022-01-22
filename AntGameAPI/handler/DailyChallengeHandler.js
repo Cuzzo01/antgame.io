@@ -1,4 +1,4 @@
-const { getMostRecentDailyChallenge } = require("../dao/ChallengeDao");
+const { getDailyChallengesInReverseOrder } = require("../dao/ChallengeDao");
 const { ExpiringResult } = require("../helpers/ExpiringResult");
 const Logger = require("../Logger");
 
@@ -14,7 +14,7 @@ class ActiveDailyChallengeHandler {
       return result;
     } else {
       try {
-        const value = (await getMostRecentDailyChallenge())._id;
+        const value = (await getDailyChallengesInReverseOrder({ limit: 1 }))[0]._id;
         const expireAt = new Date();
         expireAt.setSeconds(expireAt.getSeconds() + this.timeToCache);
         this.challengeId = new ExpiringResult(expireAt, value);

@@ -170,19 +170,19 @@ const getRunHomePositionsByRunId = async id => {
   return { locations: result.details.homeLocations, amounts: result.details.food[5] };
 };
 
-const getMostRecentDailyChallenge = async () => {
+const getDailyChallengesInReverseOrder = async ({ limit = 0 }) => {
   const collection = await getCollection("configs");
   const result = await collection
     .find(
       {
         dailyChallenge: true,
       },
-      { projection: { _id: 1 } }
+      { projection: { _id: 1, name: 1 } }
     )
     .sort({ _id: -1 })
-    .limit(1)
+    .limit(limit)
     .toArray();
-  return result[0];
+  return result;
 };
 
 const TryParseObjectID = (stringID, name) => {
@@ -203,5 +203,5 @@ module.exports = {
   updateChallengeRecord,
   getRecordsByChallengeList,
   getRunHomePositionsByRunId,
-  getMostRecentDailyChallenge,
+  getDailyChallengesInReverseOrder,
 };

@@ -13,7 +13,13 @@ class FlagHandler {
     const startTime = new Date();
     if (this.resultCache.isSetAndActive(name)) {
       const result = this.resultCache.getValue(name);
-      Logger.logCacheResult("FlagHandler", false, name, result, new Date() - startTime);
+      Logger.logCacheResult(
+        "FlagHandler",
+        false,
+        name,
+        JSON.stringify(result),
+        new Date() - startTime
+      );
       if (result !== null) return result;
       return null;
     } else {
@@ -27,7 +33,13 @@ class FlagHandler {
         value = null;
         this.resultCache.setItem(name, null, this.timeToCache.getValue());
       }
-      Logger.logCacheResult("FlagHandler", true, name, value, new Date() - startTime);
+      Logger.logCacheResult(
+        "FlagHandler",
+        true,
+        name,
+        JSON.stringify(value),
+        new Date() - startTime
+      );
       return value;
     }
   }

@@ -12,9 +12,15 @@ export async function sendRunArtifact(artifact) {
 }
 
 export async function getChallengeConfig(id) {
-  return axios.get(`/api/challenge/${id}`).then(res => {
-    return res.data;
-  });
+  return axios
+    .get(`/api/challenge/${id}`)
+    .then(res => {
+      return res.data;
+    })
+    .catch(error => {
+      console.error(error);
+      window.location = "/challenge";
+    });
 }
 
 export async function getActiveChallenges() {
@@ -24,6 +30,7 @@ export async function getActiveChallenges() {
       return res.data;
     })
     .catch(error => {
+      console.error(error);
       return [];
     });
 }
@@ -35,6 +42,7 @@ export async function getRecords(challengeID) {
       return res.data;
     })
     .catch(error => {
+      console.error(error);
       return null;
     });
 }
@@ -46,6 +54,7 @@ export async function getLeaderboard(challengeID) {
       return res.data;
     })
     .catch(error => {
+      console.error(error);
       return null;
     });
 }
@@ -57,6 +66,19 @@ export async function getPRInfo(challengeID) {
       return { locations: res.data.locations, amounts: res.data.amounts };
     })
     .catch(error => {
+      console.error(error);
       return null;
+    });
+}
+
+export async function getDailyChallengeList() {
+  return axios
+    .get(`/api/challenge/dailyList`)
+    .then(res => {
+      return res.data;
+    })
+    .catch(error => {
+      console.error(error);
+      return [];
     });
 }
