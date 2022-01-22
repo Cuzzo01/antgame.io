@@ -114,7 +114,6 @@ const LeaderboardRow = ({ rank, ownRow, name, age, isDaily, pb }) => {
       <span className={styles.right}>
         <span className={styles.age}>
           {age}
-          {isDaily ? "" : " ago"}
         </span>
         &nbsp;{pb}
       </span>

@@ -318,8 +318,9 @@ async function getLeaderboard(req, res) {
     const user = req.user;
     let challengeID = req.params.id;
 
-    let currentDaily = challengeID.toLowerCase() === "daily";
-    if (currentDaily) challengeID = await DailyChallengeHandler.getActiveDailyChallenge();
+    const currentDaily = await DailyChallengeHandler.getActiveDailyChallenge();
+    let getCurrentDaily = challengeID.toLowerCase() === "daily";
+    if (getCurrentDaily) challengeID = currentDaily;
 
     let leaderBoardEntries;
     if (user.admin) leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 15);
@@ -336,12 +337,13 @@ async function getLeaderboard(req, res) {
 
     let leaderboardData = [];
     let onLeaderboard = false;
+    let isCurrentDaily = getCurrentDaily || currentDaily.equals(challengeID);
     for (let i = 0; i < leaderBoardEntries.length; i++) {
       const entry = leaderBoardEntries[i];
       const timeString =
-        isDaily && !currentDaily
+        isDaily && !isCurrentDaily
           ? getTimeStringForDailyChallenge(entry.runID)
-          : getGeneralizedTimeStringFromObjectID(entry.runID);
+          : getGeneralizedTimeStringFromObjectID(entry.runID) + " ago";
 
       if (entry._id == user.id) {
         onLeaderboard = true;
@@ -363,9 +365,9 @@ async function getLeaderboard(req, res) {
         if (currentUserRank > 6) {
           const entryAbove = await UserDao.getPRByLeaderboardRank(challengeID, currentUserRank - 1);
           const timeString =
-            isDaily && !currentDaily
+            isDaily && !isCurrentDaily
               ? getTimeStringForDailyChallenge(entryAbove.runID)
-              : getGeneralizedTimeStringFromObjectID(entryAbove.runID);
+              : getGeneralizedTimeStringFromObjectID(entryAbove.runID) + " ago";
           leaderboardData.push({
             rank: currentUserRank - 1,
             username: entryAbove.username,
@@ -375,9 +377,9 @@ async function getLeaderboard(req, res) {
         }
 
         const timeString =
-          isDaily && !currentDaily
+          isDaily && !isCurrentDaily
             ? getTimeStringForDailyChallenge(pr.pbRunID)
-            : getGeneralizedTimeStringFromObjectID(pr.pbRunID);
+            : getGeneralizedTimeStringFromObjectID(pr.pbRunID) + " ago";
 
         leaderboardData.push({
           rank: currentUserRank,
