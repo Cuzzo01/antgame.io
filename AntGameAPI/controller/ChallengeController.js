@@ -318,8 +318,9 @@ async function getLeaderboard(req, res) {
     const user = req.user;
     let challengeID = req.params.id;
 
-    let getTodaysDaily = challengeID.toLowerCase() === "daily";
-    if (getTodaysDaily) challengeID = await DailyChallengeHandler.getActiveDailyChallenge();
+    const currentDaily = await DailyChallengeHandler.getActiveDailyChallenge();
+    let getCurrentDaily = challengeID.toLowerCase() === "daily";
+    if (getCurrentDaily) challengeID = currentDaily;
 
     let leaderBoardEntries;
     if (user.admin) leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 15);
@@ -336,11 +337,13 @@ async function getLeaderboard(req, res) {
 
     let leaderboardData = [];
     let onLeaderboard = false;
+    let isCurrentDaily = getCurrentDaily || currentDaily.equals(challengeID);
     for (let i = 0; i < leaderBoardEntries.length; i++) {
       const entry = leaderBoardEntries[i];
-      const timeString = isDaily
-        ? getTimeStringForDailyChallenge(entry.runID)
-        : getGeneralizedTimeStringFromObjectID(entry.runID);
+      const timeString =
+        isDaily && !isCurrentDaily
+          ? getTimeStringForDailyChallenge(entry.runID)
+          : getGeneralizedTimeStringFromObjectID(entry.runID) + " ago";
 
       if (entry._id == user.id) {
         onLeaderboard = true;
@@ -361,9 +364,10 @@ async function getLeaderboard(req, res) {
 
         if (currentUserRank > 6) {
           const entryAbove = await UserDao.getPRByLeaderboardRank(challengeID, currentUserRank - 1);
-          const timeString = isDaily
-            ? getTimeStringForDailyChallenge(entryAbove.runID)
-            : getGeneralizedTimeStringFromObjectID(entryAbove.runID);
+          const timeString =
+            isDaily && !isCurrentDaily
+              ? getTimeStringForDailyChallenge(entryAbove.runID)
+              : getGeneralizedTimeStringFromObjectID(entryAbove.runID) + " ago";
           leaderboardData.push({
             rank: currentUserRank - 1,
             username: entryAbove.username,
@@ -372,9 +376,10 @@ async function getLeaderboard(req, res) {
           });
         }
 
-        const timeString = isDaily
-          ? getTimeStringForDailyChallenge(pr.pbRunID)
-          : getGeneralizedTimeStringFromObjectID(pr.pbRunID);
+        const timeString =
+          isDaily && !isCurrentDaily
+            ? getTimeStringForDailyChallenge(pr.pbRunID)
+            : getGeneralizedTimeStringFromObjectID(pr.pbRunID) + " ago";
 
         leaderboardData.push({
           rank: currentUserRank,
@@ -426,6 +431,20 @@ async function getPRHomeLocations(req, res) {
   }
 }
 
+async function getDailyChallenges(req, res) {
+  try {
+    const result = await ChallengeDao.getDailyChallengesInReverseOrder({ limit: 40 });
+    const mappedResult = result.map(config => {
+      return { id: config._id, name: config.name };
+    });
+    res.send(mappedResult);
+  } catch (e) {
+    console.log(e);
+    res.status(500);
+    res.send("Get leader board failed");
+  }
+}
+
 module.exports = {
   postRun,
   getChallenge,
@@ -433,4 +452,5 @@ module.exports = {
   getRecords,
   getLeaderboard,
   getPRHomeLocations,
+  getDailyChallenges,
 };

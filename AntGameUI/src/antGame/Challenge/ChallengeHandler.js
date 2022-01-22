@@ -111,16 +111,12 @@ class ChallengeHandler {
         this.challengeID = Config.ChallengeID;
       }
       this.loadingConfig = true;
-      this.configPromise = getChallengeConfig(this._challengeID)
-        .then(config => {
-          this.loadingConfig = false;
-          this.config = config;
-          this.getRecords();
-          return config;
-        })
-        .catch(() => {
-          window.location = "/challenge";
-        });
+      this.configPromise = getChallengeConfig(this._challengeID).then(config => {
+        this.loadingConfig = false;
+        this.config = config;
+        this.getRecords();
+        return config;
+      });
       return this.configPromise;
     }
   }

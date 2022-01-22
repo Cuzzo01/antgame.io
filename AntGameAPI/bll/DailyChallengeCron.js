@@ -1,10 +1,10 @@
 const { updateConfigByID } = require("../dao/AdminDao");
-const { getMostRecentDailyChallenge } = require("../dao/ChallengeDao");
 const { ChallengeGenerator } = require("./ChallengeGenerator");
 const Logger = require("../Logger");
 const { scheduleJob } = require("node-schedule");
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const FlagHandler = require("../handler/FlagHandler");
+const { getDailyChallengesInReverseOrder } = require("../dao/ChallengeDao");
 
 const handleDailyChallengeChange = async () => {
   if ((await FlagHandler.getFlagValue("run-daily-challenge-cron")) === false) {
@@ -12,7 +12,7 @@ const handleDailyChallengeChange = async () => {
     return;
   }
   LogMessage("starting daily challenge swap");
-  const currentDailyChallenge = await getMostRecentDailyChallenge();
+  const currentDailyChallenge = (await getDailyChallengesInReverseOrder({ limit: 1 }))[0];
   LogMessage(`current challenge is ${currentDailyChallenge._id}`);
 
   const newDailyChallengeID = await new ChallengeGenerator().generateDailyChallenge();

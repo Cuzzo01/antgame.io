@@ -144,8 +144,9 @@ app.post("/auth/anonToken", _authController.getAnonymousToken);
 app.post("/auth/register", _authController.registerUser);
 app.post("/auth/createUser", RejectNotAdmin, _authController.createUser);
 
-app.get("/challenge/:id/records", _challengeController.getRecords);
 app.post("/challenge/artifact", _challengeController.postRun);
+app.get("/challenge/:id/records", _challengeController.getRecords);
+app.get("/challenge/dailyList", _challengeController.getDailyChallenges);
 app.get("/challenge/:id", _challengeController.getChallenge);
 app.get("/challenge/:id/pr", _challengeController.getPRHomeLocations);
 app.get("/challenges/active", _challengeController.getActiveChallenges);
