@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getConfigDetails, getTournamentList, patchConfigDetails } from "../AdminService";
+import { getConfigDetails, patchConfigDetails } from "../AdminService";
 import ExpandList from "../Helpers/ExpandList";
 import { GetTimeString } from "../Helpers/FunctionHelpers";
 import styles from "./ConfigDetails.module.css";
@@ -10,8 +10,8 @@ import ThumbnailSection from "./ThumbnailSection";
 
 const ConfigDetails = props => {
   const [details, setDetails] = useState(false);
-  const [tournamentOptionsList, setTournamentOptionsList] = useState(false);
-  const [tournamentPickerValue, setTournamentPickerValue] = useState("");
+  // const [tournamentOptionsList, setTournamentOptionsList] = useState(false);
+  // const [tournamentPickerValue, setTournamentPickerValue] = useState("");
 
   useEffect(() => {
     populateDetails(props.id);
@@ -24,25 +24,25 @@ const ConfigDetails = props => {
     });
   };
 
-  const populateTournamentList = () => {
-    if (tournamentOptionsList === false) {
-      getTournamentList().then(list => {
-        const optionList = [];
-        list.forEach(tournament => {
-          optionList.push(
-            <option key={tournament._id} value={tournament._id} label={tournament.name} />
-          );
-        });
-        setTournamentOptionsList(optionList);
-      });
-      setTournamentOptionsList("loading");
-    }
-  };
+  // const populateTournamentList = () => {
+  //   if (tournamentOptionsList === false) {
+  //     getTournamentList().then(list => {
+  //       const optionList = [];
+  //       list.forEach(tournament => {
+  //         optionList.push(
+  //           <option key={tournament._id} value={tournament._id} label={tournament.name} />
+  //         );
+  //       });
+  //       setTournamentOptionsList(optionList);
+  //     });
+  //     setTournamentOptionsList("loading");
+  //   }
+  // };
 
-  const bindTournament = event => {
-    event.preventDefault();
-    // patch config with tournamentID
-  };
+  // const bindTournament = event => {
+  //   event.preventDefault();
+  //   // patch config with tournamentID
+  // };
 
   const setActive = state => {
     patchConfigDetails(props.id, { active: state }).then(result => {
@@ -118,12 +118,12 @@ const ConfigDetails = props => {
             />
           </div>
           <div className={adminStyles.divSection}>
-            <h5>Tournaments</h5>
-            {details.tournamentID ? (
+            <h5>Championships</h5>
+            {details.championshipID ? (
               <div>
                 <h6>
-                  Enrolled in tournament (
-                  <Link to={`/admin/tournament/${details.tournamentID}`}>Link</Link>)
+                  Enrolled in championship (
+                  <Link to={`/admin/championship/${details.championshipID}`}>Link</Link>)
                 </h6>
                 {details.pointsAwarded ? (
                   <div>
@@ -135,7 +135,7 @@ const ConfigDetails = props => {
               </div>
             ) : (
               <div>
-                Select Tournament to bind:{" "}
+                {/* Select Tournament to bind:{" "}
                 <form className={styles.tournamentSelect} onSubmit={bindTournament}>
                   <input
                     value={tournamentPickerValue}
@@ -147,7 +147,7 @@ const ConfigDetails = props => {
                 </form>
                 {tournamentOptionsList === false || tournamentOptionsList === false ? null : (
                   <datalist id="tournaments">{tournamentOptionsList}</datalist>
-                )}
+                )} */}
               </div>
             )}
           </div>

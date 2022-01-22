@@ -12,20 +12,20 @@ const {
   getRecentlyLoggedInUsers,
   getRunCount,
   getRunDetailsByID,
-  getTournamentListFromDB,
   getFlagListFromDB,
   getFlagDetailsByID,
   updateFlagByID,
+  getChampionshipListFromDB,
 } = require("../dao/AdminDao");
 const { getActiveChallenges } = require("../dao/ChallengeDao");
 const { getLeaderboardRankByScore } = require("../dao/UserDao");
-const { getTournamentDetailsFromDB } = require("../dao/TournamentDao");
 const UserIdToUsernameHandler = require("../handler/UserIdToUsernameHandler");
 const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
 const ChallengeNameHandler = require("../handler/ChallengeIdToChallengeNameHandler");
 const { addStatToResponse } = require("../helpers/AuthStatHelpers");
 const Logger = require("../Logger");
-const { ChallengeGenerator } = require("../bll/ChallengeGenerator");
+const { getChampionshipDetailsFromDB } = require("../dao/ChampionshipDao");
+const { handleDailyChallengeChange } = require("../bll/DailyChallengeCron");
 
 //#region stats
 async function getStats(req, res) {
@@ -202,10 +202,12 @@ async function patchConfig(req, res) {
     return;
   }
 }
+//#endregion configs
 
-async function generateDailyChallenge(req, res) {
+//#region daily stuff
+async function dailyChallengeSwap(req, res) {
   try {
-    new ChallengeGenerator().generateDailyChallenge();
+    await handleDailyChallengeChange();
     res.sendStatus(200);
   } catch (e) {
     Logger.logError("AdminController.generateDailyChallenge", e);
@@ -213,7 +215,7 @@ async function generateDailyChallenge(req, res) {
     return;
   }
 }
-//#endregion configs
+//#endregion
 
 //#region users
 async function getUsers(req, res) {
@@ -379,23 +381,22 @@ async function getRunDetails(req, res) {
 }
 //#endregion runs
 
-//#region tournaments
-async function getTournamentList(req, res) {
+//#region championships
+async function getChampionshipList(req, res) {
   try {
-    const list = await getTournamentListFromDB();
-
+    const list = await getChampionshipListFromDB();
     res.send(list);
   } catch (e) {
-    Logger.logError("AdminController.getTournamentList", e);
+    Logger.logError("AdminController.getChampionshipList", e);
     res.sendStatus(500);
     return;
   }
 }
 
-async function getTournamentDetails(req, res) {
+async function getChampionshipDetails(req, res) {
   try {
     const id = req.params.id;
-    const details = await getTournamentDetailsFromDB(id);
+    const details = await getChampionshipDetailsFromDB(id);
 
     for (let i = 0; i < details.userPoints.length; i++) {
       const entry = details.userPoints[i];
@@ -413,11 +414,11 @@ async function getTournamentDetails(req, res) {
 
     res.send(details);
   } catch (e) {
-    Logger.logError("AdminController.getTournamentDetails", e);
+    Logger.logError("AdminController.getChampionshipDetails", e);
     res.sendStatus(500);
   }
 }
-//#endregion tournaments
+//#endregion championship
 
 //#region Flags
 async function getFlagList(req, res) {
@@ -491,14 +492,14 @@ module.exports = {
   getConfigDetails,
   postConfig,
   patchConfig,
-  generateDailyChallenge,
+  dailyChallengeSwap,
   getUsers,
   getUserDetails,
   patchUser,
   getRuns,
   getRunDetails,
-  getTournamentList,
-  getTournamentDetails,
+  getChampionshipList,
+  getChampionshipDetails,
   getFlagList,
   getFlagDetails,
   patchFlagDetails,

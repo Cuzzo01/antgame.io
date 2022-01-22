@@ -70,7 +70,7 @@ const updateConfigByID = async (id, updateObject) => {
   const configObjectID = TryParseObjectID(id, "ChallengeID");
 
   const collection = await getCollection("configs");
-  const result = await collection.updateOne({ _id: configObjectID }, { $set: updateObject });
+  await collection.updateOne({ _id: configObjectID }, { $set: updateObject });
 
   return true;
 };
@@ -166,14 +166,14 @@ const getRunDetailsByID = async id => {
 };
 //#endregion Runs
 
-//#region Tournaments
-const getTournamentListFromDB = async () => {
-  const collection = await getCollection("tournaments");
+//#region championships
+const getChampionshipListFromDB = async () => {
+  const collection = await getCollection("championships");
   const result = await collection.find({}, { projection: { name: 1 } }).toArray();
 
   return result;
 };
-//#endregion
+//#endregion championships
 
 //#region Flags
 async function getFlagListFromDB() {
@@ -224,7 +224,7 @@ module.exports = {
   updateUserByID,
   getRecentRuns,
   getRunDetailsByID,
-  getTournamentListFromDB,
+  getChampionshipListFromDB,
   getFlagListFromDB,
   getFlagDetailsByID,
   updateFlagByID,
