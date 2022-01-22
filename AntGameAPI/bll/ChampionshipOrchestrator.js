@@ -105,7 +105,8 @@ class ChampionshipOrchestrator {
 
     awardedPoints.forEach(async pointUpdateObject => {
       const alreadyHasPoints =
-        championshipDetails.userPoints?.find(
+        championshipDetails.userPoints &&
+        championshipDetails.userPoints.find(
           obj => obj.userID.toString() === pointUpdateObject.userID.toString()
         ) !== undefined;
       if (alreadyHasPoints)
