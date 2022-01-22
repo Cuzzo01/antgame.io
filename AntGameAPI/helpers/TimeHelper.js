@@ -32,7 +32,9 @@ const getTimeStringForDailyChallenge = objectID => {
     hoursDisplay = hours;
   }
 
-  return `${hoursDisplay}:${min < 10 ? `0${min}` : min} ${hours > 11 ? "PM" : "AM"}`;
+  return `${hoursDisplay < 10 ? `0${hoursDisplay}}` : hoursDisplay}:${min < 10 ? `0${min}` : min} ${
+    hours > 11 ? "PM" : "AM"
+  }`;
 };
 
 const getShortMonthName = date => {
