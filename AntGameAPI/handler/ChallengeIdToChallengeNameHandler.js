@@ -19,8 +19,7 @@ class ChallengeIdToChallengeNameHandler {
         result,
         new Date() - startTime
       );
-      if (result !== null) return result;
-      return null;
+      return result;
     } else {
       try {
         const config = await getChallengeByChallengeId(id);
