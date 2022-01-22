@@ -5,6 +5,7 @@ const { scheduleJob } = require("node-schedule");
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const FlagHandler = require("../handler/FlagHandler");
 const { getDailyChallengesInReverseOrder } = require("../dao/ChallengeDao");
+const { ChampionshipOrchestrator } = require("./ChampionshipOrchestrator");
 
 const handleDailyChallengeChange = async () => {
   if ((await FlagHandler.getFlagValue("run-daily-challenge-cron")) === false) {
@@ -21,10 +22,33 @@ const handleDailyChallengeChange = async () => {
   if (currentDailyChallenge) {
     await updateConfigByID(currentDailyChallenge._id, { active: false, order: 0 });
     LogMessage("set old map inactive");
+
+    if (currentDailyChallenge.championshipID) {
+      const championshipID = currentDailyChallenge.championshipID;
+      const challengeID = currentDailyChallenge._id;
+      try {
+        await ChampionshipOrchestrator.awardPointsForChallenge({ championshipID, challengeID });
+        LogMessage("awarded points for yesterdays challenge");
+      } catch (e) {
+        LogMessage(`Could not award points for challenge : ${e}`);
+      }
+    }
   } else {
     LogMessage("skipping setting old map inactive");
   }
   if (newDailyChallengeID) {
+    if (await FlagHandler.getFlagValue("should-bind-daily-to-championship")) {
+      let currentChampionship = await ChampionshipOrchestrator.getCurrentDailyChampionship();
+      if (currentChampionship === null) {
+        currentChampionship = await ChampionshipOrchestrator.generateDailyChampionship();
+      }
+      await ChampionshipOrchestrator.addConfigToChampionship(
+        currentChampionship,
+        newDailyChallengeID
+      );
+      LogMessage("bound new config to this current championship");
+    }
+
     await updateConfigByID(newDailyChallengeID, { active: true });
     DailyChallengeHandler.clearCache();
     LogMessage("set new map active");

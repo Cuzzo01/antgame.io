@@ -9,11 +9,11 @@ const port = 8080;
 
 const _challengeController = require("./controller/ChallengeController");
 const _authController = require("./auth/AuthController");
-const _userController = require("./controller/UserController");
+// const _userController = require("./controller/UserController");
 const _adminController = require("./controller/AdminController");
 const _flagController = require("./controller/FlagController");
 const _mapController = require("./controller/MapController");
-const _tournamentController = require("./controller/TournamentController");
+const _championshipController = require("./controller/ChampionshipController");
 const _reportController = require("./controller/ReportController");
 const TokenHandler = require("./auth/WebTokenHandler");
 const TokenRevokedHandler = require("./handler/TokenRevokedHandler");
@@ -123,15 +123,19 @@ app.get("/admin/config/:id", RejectNotAdmin, _adminController.getConfigDetails);
 app.patch("/admin/config/:id", RejectNotAdmin, _adminController.patchConfig);
 app.post("/admin/config", RejectNotAdmin, _adminController.postConfig);
 
-app.get("/admin/tournamentList", RejectNotAdmin, _adminController.getTournamentList);
-app.get("/admin/tournament/:id", RejectNotAdmin, _adminController.getTournamentDetails);
-app.post("/admin/tournament/:id/awardPoints", RejectNotAdmin, _tournamentController.awardPoints);
+app.get("/admin/championshipList", RejectNotAdmin, _adminController.getChampionshipList);
+app.get("/admin/championship/:id", RejectNotAdmin, _adminController.getChampionshipDetails);
+app.post(
+  "/admin/championship/:id/awardPoints",
+  RejectNotAdmin,
+  _championshipController.awardPoints
+);
 
 app.get("/admin/flags", RejectNotAdmin, _adminController.getFlagList);
 app.get("/admin/flagData/:id", RejectNotAdmin, _adminController.getFlagDetails);
 app.patch("/admin/flagData/:id", RejectNotAdmin, _adminController.patchFlagDetails);
 
-app.post("/admin/dailyChallenge", RejectNotAdmin, _adminController.generateDailyChallenge);
+app.post("/admin/dailyChallenge", RejectNotAdmin, _adminController.dailyChallengeSwap);
 //#endregion Admin
 
 app.get("/flag/:name", _flagController.getFlag);

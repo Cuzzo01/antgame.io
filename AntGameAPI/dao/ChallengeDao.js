@@ -28,11 +28,7 @@ const addTagToRun = async (id, tag) => {
   const runObjectID = TryParseObjectID(id, "RunID");
 
   const collection = await getCollection("runs");
-  const result = await collection.updateOne(
-    { _id: runObjectID },
-    { $push: { tags: { $each: [tag] } } }
-  );
-  return;
+  await collection.updateOne({ _id: runObjectID }, { $push: { tags: { $each: [tag] } } });
 };
 
 const getRecordByChallenge = async challengeID => {
@@ -87,7 +83,7 @@ const updateChallengeRecord = async (challengeID, score, username, userID, runID
   const runObjectID = TryParseObjectID(runID, "runID");
 
   const collection = await getCollection("configs");
-  const result = await collection.updateOne(
+  await collection.updateOne(
     { _id: challengeObjectID },
     {
       $push: {
@@ -143,7 +139,7 @@ const getChallengeByChallengeId = async id => {
     homeLimit: result.homeLimit,
     name: result.name,
     active: result.active,
-    tournamentID: result.tournamentID,
+    championshipID: result.championshipID,
     pointsAwarded: result.pointsAwarded,
     dailyChallenge: result.dailyChallenge,
   };
@@ -177,12 +173,27 @@ const getDailyChallengesInReverseOrder = async ({ limit = 0 }) => {
       {
         dailyChallenge: true,
       },
-      { projection: { _id: 1, name: 1 } }
+      { projection: { _id: 1, name: 1, championshipID: 1 } }
     )
     .sort({ _id: -1 })
     .limit(limit)
     .toArray();
   return result;
+};
+
+const addChampionshipIDToConfig = async (configID, championshipID) => {
+  const configObjectID = TryParseObjectID(configID, "ConfigID");
+  const championshipObjectId = TryParseObjectID(championshipID, "ChampionshipId");
+
+  const collection = await getCollection("configs");
+  await collection.updateOne(
+    { _id: configObjectID },
+    {
+      $set: {
+        championshipID: championshipObjectId,
+      },
+    }
+  );
 };
 
 const TryParseObjectID = (stringID, name) => {
@@ -204,4 +215,5 @@ module.exports = {
   getRecordsByChallengeList,
   getRunHomePositionsByRunId,
   getDailyChallengesInReverseOrder,
+  addChampionshipIDToConfig,
 };

@@ -1,4 +1,6 @@
 import { Route, Switch, useParams } from "react-router-dom";
+import ChampionshipDetails from "./ChampionshipDetails/ChampionshipDetails";
+import ChampionshipList from "./ChampionshipList/ChampionshipList";
 import ConfigDetails from "./ConfigDetails/ConfigDetails";
 import ConfigList from "./ConfigList/ConfigList";
 import CreateConfig from "./CreateConfig/CreateConfig";
@@ -7,8 +9,6 @@ import FlagList from "./FlagList/FlagList";
 import RunDetails from "./RunDetails/RunDetails";
 import RunsList from "./Runs/RunsList";
 import Stats from "./Stats/Stats";
-import TournamentDetails from "./TournamentDetails/TournamentDetails";
-import TournamentList from "./TournamentList/TournamentList";
 import UserDetails from "./UserDetails/UserDetails";
 import UserList from "./Users/UserList";
 
@@ -45,11 +45,11 @@ const AdminRouter = () => {
       <Route path="/admin/flag/:id">
         <FlagDetailsPage />
       </Route>
-      <Route path="/admin/tournaments">
-        <TournamentList />
+      <Route path="/admin/championships">
+        <ChampionshipList />
       </Route>
-      <Route path="/admin/tournament/:id">
-        <TournamentDetailsPage />
+      <Route path="/admin/championship/:id">
+        <ChampionshipDetailsPage />
       </Route>
     </Switch>
   );
@@ -76,7 +76,7 @@ const FlagDetailsPage = () => {
   return <FlagDetails id={id} />;
 };
 
-const TournamentDetailsPage = () => {
+const ChampionshipDetailsPage = () => {
   let { id } = useParams();
-  return <TournamentDetails id={id} />;
+  return <ChampionshipDetails id={id} />;
 };

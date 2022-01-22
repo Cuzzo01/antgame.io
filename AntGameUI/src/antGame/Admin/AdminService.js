@@ -85,14 +85,14 @@ export const getRunDetails = async id => {
   });
 };
 
-export const getTournamentList = async () => {
-  return axios.get("/api/admin/tournamentList").then(res => {
+export const getChampionshipList = async () => {
+  return axios.get("/api/admin/championshipList").then(res => {
     return res.data;
   });
 };
 
-export const getTournamentDetails = async id => {
-  return axios.get(`/api/admin/tournament/${id}`).then(res => {
+export const getChampionshipDetails = async id => {
+  return axios.get(`/api/admin/championship/${id}`).then(res => {
     return res.data;
   });
 };

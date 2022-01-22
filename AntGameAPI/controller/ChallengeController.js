@@ -10,6 +10,7 @@ const FlagHandler = require("../handler/FlagHandler");
 const ChallengeNameHandler = require("../handler/ChallengeIdToChallengeNameHandler");
 const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
+const LeaderboardHandler = require("../handler/LeaderboardHandler");
 const { GetIpAddress } = require("../helpers/IpHelper");
 
 async function postRun(req, res) {
@@ -131,8 +132,10 @@ async function postRun(req, res) {
         if (isPB && currentDetails === null) {
           UserDao.addNewChallengeDetails(user.id, runData.challengeID, runData.Score, runID);
           ChallengePlayerCountHandler.unsetPlayerCount(runData.challengeID);
+          LeaderboardHandler.unsetLeaderboard(runData.challengeID);
         } else if (isPB && currentDetails.pb) {
           UserDao.updateChallengePBAndRunCount(user.id, runData.challengeID, runData.Score, runID);
+          LeaderboardHandler.unsetLeaderboard(runData.challengeID);
         } else {
           UserDao.incrementChallengeRunCount(user.id, runData.challengeID);
         }
@@ -322,9 +325,7 @@ async function getLeaderboard(req, res) {
     let getCurrentDaily = challengeID.toLowerCase() === "daily";
     if (getCurrentDaily) challengeID = currentDaily;
 
-    let leaderBoardEntries;
-    if (user.admin) leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 15);
-    else leaderBoardEntries = await UserDao.getLeaderboardByChallengeId(challengeID, 10);
+    const leaderBoardEntries = await LeaderboardHandler.getChallengeLeaderboard(challengeID);
 
     if (leaderBoardEntries.length === 0) {
       res.status(404);

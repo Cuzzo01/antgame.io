@@ -18,7 +18,7 @@ const AdminHome = props => {
           <Link to="/admin/users">Users</Link>
           <Link to="/admin/configs">Configs</Link>
           <Link to="/admin/flags">Flags</Link>
-          <Link to="/admin/tournaments">Tournaments</Link>
+          <Link to="/admin/championships">Championships</Link>
         </div>
       </div>
       <div className={styles.activePage}>

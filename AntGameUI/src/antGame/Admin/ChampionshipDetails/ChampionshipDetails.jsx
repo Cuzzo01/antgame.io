@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getTournamentDetails } from "../AdminService";
+import { getChampionshipDetails } from "../AdminService";
 import adminStyles from "../AdminStyles.module.css";
 
-const TournamentDetails = props => {
+const ChampionshipDetails = props => {
   const [details, setDetails] = useState(false);
 
   useEffect(() => {
-    document.title = "Tournament Details";
-    getTournamentDetails(props.id).then(tourneyDetails => {
+    document.title = "Championship Details";
+    getChampionshipDetails(props.id).then(tourneyDetails => {
       setDetails(tourneyDetails);
     });
   }, [props.id]);
@@ -31,7 +31,7 @@ const TournamentDetails = props => {
     </div>
   );
 };
-export default TournamentDetails;
+export default ChampionshipDetails;
 
 const getPointsList = pointsArr => {
   pointsArr.sort((a, b) => {
