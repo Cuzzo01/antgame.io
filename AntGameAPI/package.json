@@ -12,8 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.1051.0",
-    "bad-words": "^3.0.4",
     "bcrypt": "^5.0.1",
+    "censor-sensor": "^1.0.6",
     "express": "^4.17.1",
     "express-jwt": "^6.0.0",
     "jsonwebtoken": "^8.5.1",

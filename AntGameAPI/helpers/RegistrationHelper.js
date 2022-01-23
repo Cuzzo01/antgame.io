@@ -1,8 +1,13 @@
-const Filter = require("bad-words");
-const filter = new Filter();
-
 const Blacklist = require("the-big-username-blacklist");
 const usernameRegex = /^[a-z0-9_]+$/i;
+const { CensorSensor, CensorTier } = require("censor-sensor");
+
+const StrictCensor = new CensorSensor();
+StrictCensor.disableTier(CensorTier.CommonProfanity);
+StrictCensor.disableTier(CensorTier.PossiblyOffensive);
+StrictCensor.disableTier(CensorTier.SexualTerms);
+
+const LaxCensor = new CensorSensor();
 
 const RegistrationDataSatisfiesCriteria = (username, password, clientID, email) => {
   if (username.length > 15 || username.length < 5) return false;
@@ -13,7 +18,8 @@ const RegistrationDataSatisfiesCriteria = (username, password, clientID, email) 
 
 const IsAllowedUsername = username => {
   if (!usernameRegex.test(username)) return false;
-  if (filter.isProfane(username)) return false;
+  if (StrictCensor.isProfaneIsh(username.replace("_", " "))) return false;
+  if (LaxCensor.isProfane(username.replace("_", " "))) return false;
   if (!Blacklist.validate(username)) return false;
   return true;
 };
