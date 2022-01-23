@@ -33,6 +33,7 @@ const addUserToUserPoints = async (championshipID, userID, points) => {
   await collection.updateOne(
     { _id: championshipObjectId },
     {
+      $inc: { userCount: 1 },
       $push: {
         userPoints: {
           userID: userObjectID,
@@ -60,7 +61,7 @@ const addConfigIDToChampionship = async (championshipID, configID) => {
 
 const createNewChampionship = async ({ name, pointsMap }) => {
   const collection = await getCollection("championships");
-  const result = await collection.insertOne({ name, pointsMap });
+  const result = await collection.insertOne({ name, pointsMap, userCount: 0 });
   return result.insertedId;
 };
 

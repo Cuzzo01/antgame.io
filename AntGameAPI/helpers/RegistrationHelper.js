@@ -9,7 +9,7 @@ StrictCensor.disableTier(CensorTier.SexualTerms);
 
 const LaxCensor = new CensorSensor();
 
-const RegistrationDataSatisfiesCriteria = (username, password, clientID, email) => {
+const RegistrationDataSatisfiesCriteria = (username, password, clientID) => {
   if (username.length > 15 || username.length < 5) return false;
   if (password.length > 100 || password.length < 8) return false;
   if (!clientID) return false;
