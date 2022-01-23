@@ -70,7 +70,7 @@ const RegistrationPage = props => {
               required: true,
               minLength: "5",
               maxLength: "15",
-              pattern: /^\S*$/,
+              pattern: /^[a-z0-9_]+$/i,
             })}
             autoComplete="username"
           />
@@ -85,7 +85,7 @@ const RegistrationPage = props => {
             <ErrorMessage>Cannot be over 15 characters</ErrorMessage>
           )}
           {errors.username?.type === "pattern" && (
-            <ErrorMessage>Username can't contain whitespace</ErrorMessage>
+            <ErrorMessage>Username can contain numbers, letters, and underscores.</ErrorMessage>
           )}
         </div>
         <div className={styles.inputField}>
@@ -128,7 +128,6 @@ const RegistrationPage = props => {
           </label>
           <br />
           <input {...register("email")} autoComplete="email" type="email" />
-          {errors.email ? <ErrorMessage>email is required</ErrorMessage> : null}
           <p className={styles.subtext}>Only used for account recovery</p>
         </div>
         <button className={styles.submitButton} type="submit">
