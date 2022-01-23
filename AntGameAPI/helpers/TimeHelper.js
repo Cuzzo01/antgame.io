@@ -20,21 +20,15 @@ const getGeneralizedTimeStringFromObjectID = objectID => {
 
 const getTimeStringForDailyChallenge = objectID => {
   const recordTime = objectID.getTimestamp();
-  recordTime.setHours(recordTime.getHours() - 12);
-  let hours = recordTime.getUTCHours();
-  const min = recordTime.getUTCMinutes();
-  let hoursDisplay;
-  if (hours === 0) {
-    hoursDisplay = 12;
-  } else if (hours > 12) {
-    hoursDisplay = hours - 12;
-  } else {
-    hoursDisplay = hours;
-  }
 
-  return `${hoursDisplay < 10 ? `0${hoursDisplay}` : hoursDisplay}:${min < 10 ? `0${min}` : min} ${
-    hours > 11 ? "PM" : "AM"
-  }`;
+  const nextNoon = new Date(recordTime);
+  if (nextNoon.getUTCHours() >= 12) nextNoon.setUTCDate(nextNoon.getUTCDate() + 1);
+  nextNoon.setUTCHours(12);
+  nextNoon.setUTCMinutes(0);
+  nextNoon.setUTCSeconds(0);
+
+  const delta = nextNoon - recordTime;
+  return `${getGeneralizedTimeString(delta)} left`;
 };
 
 const getShortMonthName = date => {
