@@ -34,6 +34,8 @@ const ChampionshipDetails = props => {
 export default ChampionshipDetails;
 
 const getPointsList = pointsArr => {
+  if (!pointsArr || pointsArr.length === 0) return;
+
   pointsArr.sort((a, b) => {
     if (a.points > b.points) return -1;
     return 1;

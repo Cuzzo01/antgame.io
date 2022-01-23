@@ -398,9 +398,11 @@ async function getChampionshipDetails(req, res) {
     const id = req.params.id;
     const details = await getChampionshipDetailsFromDB(id);
 
-    for (let i = 0; i < details.userPoints.length; i++) {
-      const entry = details.userPoints[i];
-      details.userPoints[i]["username"] = await UserIdToUsernameHandler.getUsername(entry.userID);
+    if (details.userPoints) {
+      for (let i = 0; i < details.userPoints.length; i++) {
+        const entry = details.userPoints[i];
+        details.userPoints[i]["username"] = await UserIdToUsernameHandler.getUsername(entry.userID);
+      }
     }
 
     for (let i = 0; i < details.configs.length; i++) {

@@ -28,7 +28,7 @@ class Logger {
   }
 
   logError(location, err) {
-    this.log({ message: "API Error", location: location, error: err });
+    this.log({ message: "API Error", location: location, error: err.stack });
   }
 
   logAuthEvent(event, data) {
