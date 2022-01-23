@@ -20,7 +20,7 @@ class ActiveDailyChallengeHandler {
         this.challengeId = new ExpiringResult(expireAt, value);
         return value;
       } catch (e) {
-        console.error(`unable to get daily challenge`, e);
+        Logger.logError("ActiveDailyChallengeHandler", e);
         return null;
       }
     }

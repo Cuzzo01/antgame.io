@@ -1,4 +1,5 @@
 const FlagHandler = require("../handler/FlagHandler");
+const Logger = require("../Logger");
 
 const getFlag = async (req, res) => {
   try {
@@ -10,7 +11,7 @@ const getFlag = async (req, res) => {
     }
     res.send(value);
   } catch (e) {
-    console.error(e);
+    Logger.logError("FlagController", e);
     res.sendStatus(500);
     return;
   }

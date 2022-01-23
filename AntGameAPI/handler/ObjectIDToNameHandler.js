@@ -1,23 +1,32 @@
-const { getLeaderboardByChampionshipID } = require("../dao/ChampionshipDao");
-const { getLeaderboardByChallengeId } = require("../dao/UserDao");
+const { getChallengeByChallengeId } = require("../dao/ChallengeDao");
+const { getChampionshipDetailsFromDB } = require("../dao/ChampionshipDao");
+const { getUsernameByID } = require("../dao/UserDao");
 const { ResultCache } = require("../helpers/ResultCache");
 const Logger = require("../Logger");
 
-class LeaderboardHandler {
+class ObjectIDToNameHandler {
   constructor() {
     this.resultCache = new ResultCache();
     this.timeToCache = 3600; // 1 hour
   }
 
-  async getChallengeLeaderboard(id) {
-    return await this.getOrFetchValue(id, "Challenge", async id => {
-      return await getLeaderboardByChallengeId(id, 15);
+  async getChallengeName(id) {
+    return await this.getOrFetchValue(id, "ChallengeName", async id => {
+      const config = await getChallengeByChallengeId(id);
+      return config.name;
     });
   }
 
-  async getChampionshipLeaderboard(id) {
+  async getUsername(id) {
+    return await this.getOrFetchValue(id, "Username", async id => {
+      return await getUsernameByID(id);
+    });
+  }
+
+  async getChampionshipName(id) {
     return await this.getOrFetchValue(id, "Championship", async id => {
-      return await getLeaderboardByChampionshipID(id, 10);
+      const championship = await getChampionshipDetailsFromDB(id);
+      return championship.name;
     });
   }
 
@@ -47,7 +56,7 @@ class LeaderboardHandler {
         });
         return result;
       } catch (e) {
-        Logger.logError("LeaderboardHandler", e);
+        Logger.logError("ObjectIDToNameHandler", e);
         return null;
       }
     }
@@ -55,7 +64,7 @@ class LeaderboardHandler {
 
   logMessage = ({ cacheMiss, id, result, startTime, type }) => {
     Logger.logCacheResult(
-      `LeaderboardHandler/${type}`,
+      `ObjectIDToNameHandler/${type}`,
       cacheMiss,
       id,
       JSON.stringify(result),
@@ -63,14 +72,10 @@ class LeaderboardHandler {
     );
   };
 
-  tryGetItemFromCache = id => {
+  tryGetItemFromCache(id) {
     if (this.resultCache.isSetAndActive(id)) return this.resultCache.getValue(id);
     else return false;
-  };
-
-  unsetLeaderboard = id => {
-    this.resultCache.expireValue(id);
-  };
+  }
 }
-const SingletonInstance = new LeaderboardHandler();
+const SingletonInstance = new ObjectIDToNameHandler();
 module.exports = SingletonInstance;
