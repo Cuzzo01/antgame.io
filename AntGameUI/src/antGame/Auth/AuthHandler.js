@@ -4,10 +4,18 @@ import { getToken, getAnonToken, reportSpacesLoadTime } from "./AuthService";
 import { sendRunArtifact } from "../Challenge/ChallengeService";
 import LogRocket from "logrocket";
 import { getFlag } from "../Helpers/FlagService";
+import { v4 as uuidV4 } from "uuid";
 
 class AuthHandler {
   constructor() {
     this._loggedIn = false;
+
+    this.clientID = localStorage.getItem("client-id");
+    if (!this.clientID) {
+      this.clientID = uuidV4();
+      localStorage.setItem("client-id", this.clientID);
+    }
+
     this.configureInterceptors();
 
     this.jwt = localStorage.getItem("jwt");

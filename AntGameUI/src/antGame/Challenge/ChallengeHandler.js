@@ -1,15 +1,9 @@
 import { Config } from "../config";
 import { getChallengeConfig, getPRInfo, getRecords, sendRunArtifact } from "./ChallengeService";
-import { v4 as uuidV4 } from "uuid";
 import AuthHandler from "../Auth/AuthHandler";
 
 class ChallengeHandler {
   constructor() {
-    this.clientID = localStorage.getItem("client-id");
-    if (!this.clientID) {
-      this.clientID = uuidV4();
-      localStorage.setItem("client-id", this.clientID);
-    }
     this.setEnv();
     this.score = "Not Scored";
     this.records = false;
