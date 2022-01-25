@@ -1,0 +1,47 @@
+.title {
+  text-align: center;
+  padding-bottom: 1em;
+}
+
+.container {
+  max-width: 30em;
+  margin: 5em auto;
+  font-family: "Courier Prime Bold";
+}
+
+.row {
+  border: 2px grey solid;
+  border-radius: 0.5em;
+  margin: 0.5em 1em;
+  padding: 0.5em 1em;
+}
+
+.rank {
+  padding-right: 0.5em;
+}
+
+.right {
+  float: right;
+}
+
+.age {
+  font-size: 0.8em;
+}
+
+.ownRow {
+  border-bottom: 0.2em dashed;
+  border-top: 0.2em dashed;
+  border-color: black;
+}
+
+.first {
+  background-color: #d6af36;
+}
+
+.second {
+  background-color: #a7a7ad;
+}
+
+.third {
+  background-color: #a77044;
+}

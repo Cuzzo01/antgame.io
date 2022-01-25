@@ -16,30 +16,11 @@
   padding-bottom: 1em;
 }
 
-.row {
-  border: 2px grey solid;
-  border-radius: 0.5em;
-  margin: 0.5em 1em;
-  padding: 0.5em 1em;
-}
-
-.rank {
-  padding-right: 0.5em;
-}
-
-.right {
-  float: right;
-}
-
 .nav {
   padding: 0.25em 0.75em;
   margin: 0.25em 0.75em;
   border-bottom: 2px solid black;
   color: blue;
-}
-
-.age {
-  font-size: 0.8em;
 }
 
 .navLeft {
@@ -48,24 +29,6 @@
 
 .navRight {
   text-align: right;
-}
-
-.first {
-  background-color: #d6af36;
-}
-
-.second {
-  background-color: #a7a7ad;
-}
-
-.third {
-  background-color: #a77044;
-}
-
-.ownRow {
-  border-bottom: 0.2em dashed;
-  border-top: 0.2em dashed;
-  border-color: black;
 }
 
 .playerCount {

@@ -1,0 +1,25 @@
+.title {
+  text-align: center;
+  padding-bottom: 1em;
+}
+
+.container {
+  max-width: 30em;
+  margin: 5em auto;
+  font-family: "Courier Prime Bold";
+}
+
+.nav {
+  padding: 0.25em 0.75em;
+  margin: 0.25em 0.75em;
+  border-bottom: 2px solid black;
+  color: blue;
+}
+
+.navLeft {
+  float: left;
+}
+
+.navRight {
+  text-align: right;
+}

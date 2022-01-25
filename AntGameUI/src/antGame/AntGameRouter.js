@@ -12,6 +12,7 @@ import RegistrationPage from "./Auth/RegistrationPage/RegistrationPage";
 import HomePage from "./HomePage/HomePage";
 import AdminHome from "./Admin/AdminHome";
 import MOTD from "./MOTD/Motd";
+import ChampionshipDetails from "./Championship/ChampionshipDetails/ChampionshipDetails";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
@@ -55,6 +56,10 @@ const AntGameRouter = () => {
           <Route exact path="/challenge/:id">
             <ChallengeMap />
             <UserBar showRecords />
+          </Route>
+          <Route exact path="/championship/:id">
+            <ChampionshipDetails />
+            <UserBar />
           </Route>
           <Route path="/map/:mapName">
             <LoadMapFromParams />
