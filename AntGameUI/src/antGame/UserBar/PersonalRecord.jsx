@@ -22,7 +22,7 @@ const PersonalRecord = props => {
         else {
           setContent(
             <div>
-              Personal Record: {records.pr}&nbsp;
+              PR: {records.pr}&nbsp;
               <Link to={`/challenge/${challengeId}/leaderboard`}>
                 <span className={styles.bold} title="Leaderboard">
                   #{records.rank}

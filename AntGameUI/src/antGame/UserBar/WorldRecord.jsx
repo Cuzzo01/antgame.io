@@ -10,7 +10,7 @@ const WorldRecord = props => {
   useEffect(() => {
     const listenerID = ChallengeHandler.addRecordListener(records => {
       if (!records.wr) setRecord("No World Record");
-      else setRecord(`World Record: ${records.wr.score} - ${records.wr.name}`);
+      else setRecord(`WR: ${records.wr.score} - ${records.wr.name}`);
       if (loading) setLoading(false);
     });
 

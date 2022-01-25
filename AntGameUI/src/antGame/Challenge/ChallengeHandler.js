@@ -201,7 +201,7 @@ class ChallengeHandler {
     this.artifact.Timing.SystemStopTime = new Date().getTime();
     this.artifact.FoodConsumed = mapHandler.foodToRespawn.length;
     this.artifact.Score = this.score;
-    this.artifact.ClientID = this.clientID;
+    this.artifact.ClientID = AuthHandler.clientID;
 
     this.sendArtifact();
     mapHandler.setHomeAmounts(mapHandler.homeFoodCounts);

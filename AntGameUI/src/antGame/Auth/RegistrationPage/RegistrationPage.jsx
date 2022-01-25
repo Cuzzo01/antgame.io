@@ -36,12 +36,7 @@ const RegistrationPage = props => {
   }
 
   const onSubmit = data => {
-    registerAccount(
-      data.username,
-      data.password,
-      data.email,
-      localStorage.getItem("client-id")
-    ).then(result => {
+    registerAccount(data.username, data.password, data.email, AuthHandler.clientID).then(result => {
       if (result === "usernameTaken")
         setError("username", {
           type: "manual",
