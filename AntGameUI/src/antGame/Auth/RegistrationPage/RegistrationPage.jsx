@@ -40,7 +40,7 @@ const RegistrationPage = props => {
       data.username,
       data.password,
       data.email,
-      localStorage.getItem("client-id")
+      AuthHandler.clientID
     ).then(result => {
       if (result === "usernameTaken")
         setError("username", {

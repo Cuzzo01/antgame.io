@@ -10,12 +10,6 @@ class AuthHandler {
   constructor() {
     this._loggedIn = false;
 
-    this.clientID = localStorage.getItem("client-id");
-    if (!this.clientID) {
-      this.clientID = uuidV4();
-      localStorage.setItem("client-id", this.clientID);
-    }
-
     this.configureInterceptors();
 
     this.jwt = localStorage.getItem("jwt");
@@ -60,6 +54,15 @@ class AuthHandler {
   get username() {
     if (this.loggedIn) return this.decodedToken.username;
     else return null;
+  }
+
+  get clientID() {
+    const clientID = localStorage.getItem("client-id");
+    if (!clientID) {
+      const newID = uuidV4();
+      localStorage.setItem("client-id", newID);
+      return newID;
+    } else return clientID;
   }
 
   configureLogRocket() {
@@ -125,7 +128,7 @@ class AuthHandler {
   }
 
   login(username, password) {
-    return getToken(username, password, localStorage.getItem("client-id"))
+    return getToken(username, password, this.clientID)
       .then(result => {
         this._loggedIn = true;
         this.jwt = result;
@@ -167,7 +170,7 @@ class AuthHandler {
   }
 
   loginAnon() {
-    return getAnonToken(localStorage.getItem("client-id")).then(result => {
+    return getAnonToken(this.clientID).then(result => {
       this._loggedIn = true;
       this.jwt = result;
       this.decodedToken = jwt_decode(this.jwt);
