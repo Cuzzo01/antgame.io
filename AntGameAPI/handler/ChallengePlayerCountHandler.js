@@ -35,7 +35,7 @@ class ChallengePlayerCountHandler {
         );
         return value;
       } catch (e) {
-        console.error(`getPlayerCount called with non-existent ID : ${challengeID}`);
+        Logger.logError("ChallengePlayerCountHandler", e);
         return null;
       }
     }

@@ -1,4 +1,6 @@
 const { ChampionshipOrchestrator } = require("../bll/ChampionshipOrchestrator");
+const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
+const LeaderboardHandler = require("../handler/LeaderboardHandler");
 
 async function awardPoints(req, res) {
   try {
@@ -24,7 +26,32 @@ async function awardPoints(req, res) {
   }
 }
 
-module.exports = { awardPoints };
+async function getLeaderboard(req, res) {
+  try {
+    const championshipID = req.params.id;
+    const result = await LeaderboardHandler.getChampionshipLeaderboard(championshipID);
+
+    if (result && result.length) {
+      for (let i = 0; i < result.length; i++) {
+        const entry = result[i];
+        const username = await ObjectIDToNameHandler.getUsername(entry._id);
+        entry.username = username;
+      }
+    }
+
+    const leaderboardResponse = {
+      name: await ObjectIDToNameHandler.getChampionshipName(championshipID),
+      leaderboard: result,
+    };
+
+    res.send(leaderboardResponse);
+  } catch (e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+}
+
+module.exports = { awardPoints, getLeaderboard };
 
 const send400 = (res, message) => {
   res.status(400);

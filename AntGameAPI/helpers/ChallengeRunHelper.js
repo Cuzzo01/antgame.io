@@ -105,7 +105,6 @@ const AnalyzeSnapshots = snapshots => {
     try {
       homeFoodCounts = JSON.parse(snapshot[5]);
     } catch (e) {
-      console.error(`Threw parsing home food counts in snapshot. \n${snapshot[5]}\n${snapshot}`);
       throw "Unparsable snapshot";
     }
 
@@ -116,7 +115,7 @@ const AnalyzeSnapshots = snapshots => {
     if (percent !== 0) {
       const calculatedPercent = currentFoodReturned / totalFood;
       if (calculatedPercent !== percent)
-        return `calculated percent doesn't match reported (${calculatedPercentLower}, ${roundedPercent}, ${calculatedPercentHigher},  ${i})`;
+        return `calculated percent doesn't match reported (${calculatedPercent},  ${i})`;
     }
 
     const percentGuess = (totalFood - (foodOnMap + foodInTransit)) / totalFood;

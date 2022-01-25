@@ -38,7 +38,8 @@ class TokenRevokedHandler {
         const timeToCache = await FlagHandler.getFlagValue("time-between-token-checks");
         this.resultCache.setItem(userID, { banned: IsBanned, admin: IsAdmin }, timeToCache);
       } catch (e) {
-        console.error(`Threw error getting token status in TokenRevokedHandler (${userID})`, e);
+        Logger.logError("TokenRevokedHandler", e);
+        Logger.logAuthEvent("Threw on trying to get token status", { userID });
         return false;
       }
       Logger.logCacheResult("TokenRevokedHandler", true, userID, IsValid, new Date() - startTime);

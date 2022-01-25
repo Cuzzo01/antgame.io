@@ -7,7 +7,7 @@ const {
   getTimeStringForDailyChallenge,
 } = require("../helpers/TimeHelper");
 const FlagHandler = require("../handler/FlagHandler");
-const ChallengeNameHandler = require("../handler/ChallengeIdToChallengeNameHandler");
+const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
@@ -392,7 +392,7 @@ async function getLeaderboard(req, res) {
     }
 
     const response = {
-      name: await ChallengeNameHandler.getChallengeName(challengeID),
+      name: await ObjectIDToNameHandler.getChallengeName(challengeID),
       leaderboard: leaderboardData,
       daily: isDaily,
     };

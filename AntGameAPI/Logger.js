@@ -1,5 +1,3 @@
-const FlagHandler = require("./handler/FlagHandler");
-
 class Logger {
   constructor() {
     this.logger = require("logzio-nodejs").createLogger({
@@ -28,7 +26,8 @@ class Logger {
   }
 
   logError(location, err) {
-    this.log({ message: "API Error", location: location, error: err.stack });
+    let errString = err.stack ? err.stack : err;
+    this.log({ message: "API Error", location: location, error: errString });
   }
 
   logAuthEvent(event, data) {

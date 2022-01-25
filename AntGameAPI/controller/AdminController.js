@@ -19,9 +19,8 @@ const {
 } = require("../dao/AdminDao");
 const { getActiveChallenges } = require("../dao/ChallengeDao");
 const { getLeaderboardRankByScore } = require("../dao/UserDao");
-const UserIdToUsernameHandler = require("../handler/UserIdToUsernameHandler");
 const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
-const ChallengeNameHandler = require("../handler/ChallengeIdToChallengeNameHandler");
+const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const { addStatToResponse } = require("../helpers/AuthStatHelpers");
 const Logger = require("../Logger");
 const { getChampionshipDetailsFromDB } = require("../dao/ChampionshipDao");
@@ -351,7 +350,7 @@ async function getRuns(req, res) {
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
         if (result.userID)
-          results[i].username = await UserIdToUsernameHandler.getUsername(result.userID);
+          results[i].username = await ObjectIDToNameHandler.getUsername(result.userID);
       }
 
       res.send(results);
@@ -371,7 +370,7 @@ async function getRunDetails(req, res) {
     const id = req.params.id;
 
     const details = await getRunDetailsByID(id);
-    details.username = await UserIdToUsernameHandler.getUsername(details.userID);
+    details.username = await ObjectIDToNameHandler.getUsername(details.userID);
 
     res.send(details);
   } catch (e) {
@@ -401,13 +400,13 @@ async function getChampionshipDetails(req, res) {
     if (details.userPoints) {
       for (let i = 0; i < details.userPoints.length; i++) {
         const entry = details.userPoints[i];
-        details.userPoints[i]["username"] = await UserIdToUsernameHandler.getUsername(entry.userID);
+        details.userPoints[i]["username"] = await ObjectIDToNameHandler.getUsername(entry.userID);
       }
     }
 
     for (let i = 0; i < details.configs.length; i++) {
       const configID = details.configs[i];
-      const configName = await ChallengeNameHandler.getChallengeName(configID);
+      const configName = await ObjectIDToNameHandler.getChallengeName(configID);
       details.configs[i] = {
         id: configID,
         name: configName,
