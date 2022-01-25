@@ -9,7 +9,6 @@ const port = 8080;
 
 const _challengeController = require("./controller/ChallengeController");
 const _authController = require("./auth/AuthController");
-// const _userController = require("./controller/UserController");
 const _adminController = require("./controller/AdminController");
 const _flagController = require("./controller/FlagController");
 const _mapController = require("./controller/MapController");
