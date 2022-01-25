@@ -8,7 +8,7 @@
   height: 1.75em;
   line-height: 1.75em;
   display: grid;
-  grid-template-columns: 19em auto 15em;
+  grid-template-columns: 14em auto 14em;
   background-color: lightgray;
   overflow: hidden;
 }

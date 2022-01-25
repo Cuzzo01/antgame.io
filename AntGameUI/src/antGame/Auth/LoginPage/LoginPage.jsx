@@ -36,7 +36,8 @@ const LoginPage = props => {
     const search = location.search;
     const params = new URLSearchParams(search);
     const redirectLoc = params.get("redirect");
-    if (redirectLoc) history.replace(redirectLoc);
+    if (redirectLoc?.includes("/challenge/")) window.location = redirectLoc;
+    else if (redirectLoc) history.replace(redirectLoc);
     else history.replace("/challenge");
   }
 
