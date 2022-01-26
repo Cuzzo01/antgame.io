@@ -157,7 +157,8 @@ class AuthHandler {
           localStorage.removeItem("artifactToSend");
         })
         .catch(e => {
-          if (e.response.status === 418 || e.response.status === 400)
+          const responseCode = e.response.status;
+          if (responseCode === 418 || responseCode === 400 || responseCode === 409)
             localStorage.removeItem("artifactToSend");
         });
     }
