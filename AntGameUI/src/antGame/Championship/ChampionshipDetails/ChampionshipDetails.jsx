@@ -4,6 +4,7 @@ import LeaderboardRow from "../../Helpers/LeaderboardRow";
 import { getChampionshipLeaderboard } from "../ChampionshipService";
 import styles from "./ChampionshipDetails.module.css";
 import AuthHandler from "../../Auth/AuthHandler";
+import InfoButton from "../InfoButton/InfoButton";
 
 const ChampionshipDetails = ({}) => {
   const currentUsername = AuthHandler.username;
@@ -12,6 +13,7 @@ const ChampionshipDetails = ({}) => {
   const [loading, setLoading] = useState(true);
   const [title, setTitle] = useState();
   const [userTable, setUserTable] = useState();
+  const [pointMap, setPointMap] = useState();
 
   useEffect(() => {
     getChampionshipLeaderboard(championshipID).then(data => {
@@ -31,6 +33,7 @@ const ChampionshipDetails = ({}) => {
           />
         );
       }
+      setPointMap(data.pointMap);
       setUserTable(table);
       setLoading(false);
     });
@@ -40,6 +43,7 @@ const ChampionshipDetails = ({}) => {
     <div className={styles.container}>
       <div className={styles.title}>
         <h2>{title}</h2>
+        <InfoButton pointMap={pointMap} />
       </div>
       <div className={styles.nav}>
         <div className={styles.navLeft}>

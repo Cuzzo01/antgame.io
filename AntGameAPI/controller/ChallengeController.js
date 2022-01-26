@@ -12,6 +12,7 @@ const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHand
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
 const { GetIpAddress } = require("../helpers/IpHelper");
+const Logger = require("../Logger");
 
 async function postRun(req, res) {
   try {
@@ -27,6 +28,10 @@ async function postRun(req, res) {
 
     const challengeConfig = await ChallengeDao.getChallengeByChallengeId(runData.challengeID);
     if (challengeConfig.active === false && req.user.admin !== true) {
+      Logger.logError(
+        "ChallengeController.PostRun",
+        `Run submitted on inactive challenge: ${challengeConfig.name}, ${user.username}`
+      );
       res.sendStatus(409);
       return;
     }
@@ -34,10 +39,9 @@ async function postRun(req, res) {
     try {
       verificationResult = VerifyArtifact(runData, user.clientID, challengeConfig);
     } catch (e) {
-      if (e === "Unparsable snapshot") {
-        res.sendStatus(400);
-        return;
-      }
+      Logger.logError("ChallengeController.PostRun", e);
+      res.sendStatus(400);
+      return;
     }
     if (verificationResult !== "verified") {
       if (RejectUnverifiedRuns === false) verificationResult += " *IGNORED*";
@@ -132,10 +136,8 @@ async function postRun(req, res) {
         if (isPB && currentDetails === null) {
           UserDao.addNewChallengeDetails(user.id, runData.challengeID, runData.Score, runID);
           ChallengePlayerCountHandler.unsetPlayerCount(runData.challengeID);
-          LeaderboardHandler.unsetLeaderboard(runData.challengeID);
         } else if (isPB && currentDetails.pb) {
           UserDao.updateChallengePBAndRunCount(user.id, runData.challengeID, runData.Score, runID);
-          LeaderboardHandler.unsetLeaderboard(runData.challengeID);
         } else {
           UserDao.incrementChallengeRunCount(user.id, runData.challengeID);
         }
@@ -147,6 +149,7 @@ async function postRun(req, res) {
             runData.Score
           );
           response.rank = newRank;
+          LeaderboardHandler.unsetLeaderboard(runData.challengeID);
         }
 
         if (await FlagHandler.getFlagValue("show-player-count-in-challenge")) {

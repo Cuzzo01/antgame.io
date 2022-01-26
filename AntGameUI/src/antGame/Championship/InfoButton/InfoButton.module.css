@@ -1,0 +1,52 @@
+.container {
+  display: inline-block;
+}
+
+.button:hover {
+  fill: #424949;
+  cursor: pointer;
+}
+
+.bold {
+  font-family: "Courier Prime Bold";
+}
+
+.header {
+  font-size: 1.2em;
+}
+
+.center {
+  margin: 0 auto;
+}
+
+.pointsTable {
+  margin: 1em;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.pointsTable table {
+  table-layout: fixed;
+  width: 20em;
+}
+
+.pointsTable td {
+  padding: 0.1em 0.3em;
+}
+
+.pointsTable th {
+  padding: 0.1em 0.3em;
+}
+
+.pointsTable tr {
+  border: 2px solid black;
+}
+
+.middleRow {
+  border-right: 2px solid black;
+}
+
+.section {
+  margin-bottom: 0.5em;
+}

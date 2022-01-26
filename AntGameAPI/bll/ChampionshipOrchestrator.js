@@ -11,6 +11,7 @@ const {
 const { getLeaderboardByChallengeId } = require("../dao/UserDao");
 const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
 const { getShortMonthName } = require("../helpers/TimeHelper");
+const LeaderboardHandler = require("../handler/LeaderboardHandler");
 
 const pointsMap = [
   { type: "rank", value: 1, points: 50 },
@@ -122,6 +123,8 @@ class ChampionshipOrchestrator {
           pointUpdateObject.points
         );
     });
+
+    LeaderboardHandler.unsetLeaderboard(challengeConfig.id);
 
     await updateConfigByID(challengeConfig.id, { pointsAwarded: awardedPoints });
   }

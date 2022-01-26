@@ -1,4 +1,7 @@
-const { getLeaderboardByChampionshipID } = require("../dao/ChampionshipDao");
+const {
+  getLeaderboardByChampionshipID,
+  getChampionshipDetailsFromDB,
+} = require("../dao/ChampionshipDao");
 const { getLeaderboardByChallengeId } = require("../dao/UserDao");
 const { ResultCache } = require("../helpers/ResultCache");
 const Logger = require("../Logger");
@@ -15,9 +18,15 @@ class LeaderboardHandler {
     });
   }
 
-  async getChampionshipLeaderboard(id) {
+  async getChampionshipLeaderboardData(id) {
     return await this.getOrFetchValue(id, "Championship", async id => {
-      return await getLeaderboardByChampionshipID(id, 10);
+      const leaderboard = getLeaderboardByChampionshipID(id, 50);
+      const data = getChampionshipDetailsFromDB(id);
+
+      return {
+        leaderboard: await leaderboard,
+        pointMap: (await data).pointsMap,
+      };
     });
   }
 

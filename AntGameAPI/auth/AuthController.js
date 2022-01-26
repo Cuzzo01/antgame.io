@@ -15,6 +15,7 @@ async function verifyLogin(req, res) {
     const username = loginRequest.user;
     const password = loginRequest.pass;
     const clientID = loginRequest.clientID;
+    const clientIP = GetIpAddress(req);
 
     if (!username || !password || !clientID) {
       res.sendStatus(400);
@@ -25,7 +26,7 @@ async function verifyLogin(req, res) {
     if (authDetails === false) {
       Logger.logAuthEvent("login failed - no matching username", {
         username,
-        ip: GetIpAddress(req),
+        ip: clientIP,
       });
       res.status(401);
       res.send("Invalid login");
@@ -37,6 +38,7 @@ async function verifyLogin(req, res) {
         Logger.logAuthEvent("login failed - account banned", {
           username: authDetails.username,
           userID: authDetails.id,
+          ip: clientIP,
         });
         res.status(403);
         res.send("Account banned");
@@ -52,7 +54,6 @@ async function verifyLogin(req, res) {
         }
       }
 
-      const clientIP = GetIpAddress(req);
       await AuthDao.logLogin(authDetails.id, clientIP, clientID);
       const tokenObject = {
         id: authDetails.id,
@@ -62,13 +63,18 @@ async function verifyLogin(req, res) {
       };
       const token = TokenHandler.generateAccessToken(tokenObject);
       res.send(token);
-      Logger.logAuthEvent("successful login", { username, userID: authDetails.id, clientIP });
+      Logger.logAuthEvent("successful login", {
+        username,
+        userID: authDetails.id,
+        ip: clientIP,
+        clientID,
+      });
       return;
     }
     Logger.logAuthEvent("login failed - bad password", {
       username: authDetails.username,
       userID: authDetails.id,
-      ip: GetIpAddress(req),
+      ip: clientIP,
     });
     res.status(401);
     res.send("Invalid login");
@@ -84,11 +90,14 @@ async function getAnonymousToken(req, res) {
   try {
     const data = req.body;
     const clientID = data.clientID;
+    const clientIP = GetIpAddress(req);
+
     if (!clientID) {
       res.status(400);
       res.send("Client ID required");
       return;
     }
+    Logger.logAuthEvent("Issued anon token", { clientID: data.clientID, ip: clientIP });
     const token = TokenHandler.generateAccessToken({
       clientID: data.clientID,
       anon: true,
@@ -124,7 +133,10 @@ async function registerUser(req, res) {
     }
 
     if (!IsAllowedUsername(username)) {
-      Logger.logAuthEvent("register attempt with non-allowed username", { username: username });
+      Logger.logAuthEvent("register attempt with non-allowed username", {
+        username: username,
+        ip: clientIP,
+      });
       res.status(409);
       res.send("Username taken");
       return;
@@ -132,6 +144,10 @@ async function registerUser(req, res) {
 
     const usernameTaken = await AuthDao.IsUsernameTaken(username);
     if (usernameTaken) {
+      Logger.logAuthEvent("register attempt with already used username", {
+        username: username,
+        ip: clientIP,
+      });
       res.status(409);
       res.send("Username taken");
       return;
@@ -151,6 +167,8 @@ async function registerUser(req, res) {
         date: new Date(),
       },
     });
+
+    Logger.logAuthEvent("registered new user", { username, ip: clientIP, clientID });
 
     const tokenObject = {
       id: user._id,

@@ -95,7 +95,6 @@ body {
   justify-content: center;
   align-items: center;
   text-decoration: none;
-  width: 7.5rem;
 }
 
 .challengeWR {
@@ -144,4 +143,8 @@ body {
 
 .age {
   margin-left: 0.1rem;
+}
+
+.bigLink {
+  grid-column: 1/3;
 }

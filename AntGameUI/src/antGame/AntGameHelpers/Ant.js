@@ -125,16 +125,22 @@ export class Ant {
   }
 
   lookForFood(points) {
-    const leftScore = this.foodTrailHandler.checkLine(points["front"], points["left"]);
-    const aheadScore = this.foodTrailHandler.checkLine(points["front"], points["ahead"]);
-    const rightScore = this.foodTrailHandler.checkLine(points["front"], points["right"]);
+    let leftScore = this.foodTrailHandler.checkLine(points["front"], points["left"]);
+    if (typeof leftScore === "number") leftScore = Math.round(leftScore);
+    let aheadScore = this.foodTrailHandler.checkLine(points["front"], points["ahead"]);
+    if (typeof aheadScore === "number") aheadScore = Math.round(aheadScore);
+    let rightScore = this.foodTrailHandler.checkLine(points["front"], points["right"]);
+    if (typeof rightScore === "number") rightScore = Math.round(rightScore);
     return this.navigate(leftScore, aheadScore, rightScore);
   }
 
   lookForHome(points) {
-    const leftScore = this.homeTrailHandler.checkLine(points["front"], points["left"]);
-    const aheadScore = this.homeTrailHandler.checkLine(points["front"], points["ahead"]);
-    const rightScore = this.homeTrailHandler.checkLine(points["front"], points["right"]);
+    let leftScore = this.homeTrailHandler.checkLine(points["front"], points["left"]);
+    if (typeof leftScore === "number") leftScore = Math.round(leftScore);
+    let aheadScore = this.homeTrailHandler.checkLine(points["front"], points["ahead"]);
+    if (typeof aheadScore === "number") aheadScore = Math.round(aheadScore);
+    let rightScore = this.homeTrailHandler.checkLine(points["front"], points["right"]);
+    if (typeof rightScore === "number") rightScore = Math.round(rightScore);
     return this.navigate(leftScore, aheadScore, rightScore);
   }
 
@@ -163,16 +169,20 @@ export class Ant {
     const leftIsString = typeof leftScore === "string";
     const aheadIsString = typeof aheadScore === "string";
     const rightIsString = typeof rightScore === "string";
+    // TODO: the dirt stuff works well and is prob a good idea
+    // when to push it out?
     if (aheadIsString && this.isObjective(aheadScore)) return "a";
     if (leftIsString) {
       if (this.isObjective(leftScore)) return "l";
       if (leftScore === WallValue) return "r";
       if (this.hasFood && leftScore === DirtValue) return "r";
+      // if (!this.hasFood && leftScore === DirtValue) return "l";
     }
     if (rightIsString) {
       if (this.isObjective(rightScore)) return "r";
       if (rightScore === WallValue) return "l";
       if (this.hasFood && rightScore === DirtValue) return "l";
+      // if (!this.hasFood && leftScore === DirtValue) return "r";
     }
     return false;
   }
