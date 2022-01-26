@@ -29,7 +29,11 @@ const ChallengeList = () => {
       challengeResponse.challenges.forEach(challenge => {
         if (challenge.dailyChallenge && seenDaily === false) {
           setDailyChallenge(
-            <DailyChallengeCard challenge={challenge} record={records[challenge.id]} />
+            <DailyChallengeCard
+              challenge={challenge}
+              record={records[challenge.id]}
+              championshipID={challenge.championshipID}
+            />
           );
           seenDaily = true;
         } else
@@ -124,13 +128,16 @@ const ChallengeCard = props => {
   );
 };
 
-const DailyChallengeCard = ({ challenge, record }) => {
-  const [showChampionshipLink, setShowChampionshipLink] = useState(false);
+const DailyChallengeCard = ({ challenge, record, championshipID }) => {
+  const [showChampionshipLink, setShowChampionshipLink] = useState(null);
 
   useEffect(() => {
     const getChampionshipFlag = async () => {
-      const showChampionshipLink = await getFlag("show-championship-link");
-      setShowChampionshipLink(showChampionshipLink);
+      getFlag("show-championship-link")
+        .then(flag => {
+          setShowChampionshipLink(flag);
+        })
+        .catch(() => setShowChampionshipLink(false));
     };
     getChampionshipFlag();
   }, []);
@@ -162,11 +169,13 @@ const DailyChallengeCard = ({ challenge, record }) => {
           </div>
         </div>
       </div>
-      <div className={styles.dailyLinks}>
-        <ChallengeLink id={"daily"} makeBig={showChampionshipLink} />
-        <LeaderboardLink id={"daily"} />
-        {showChampionshipLink ? <ChampionshipLink id={"61ec3fa919024f2430242874"} cols /> : null}
-      </div>
+      {showChampionshipLink !== null ? (
+        <div className={styles.dailyLinks}>
+          <ChallengeLink id={"daily"} makeBig={showChampionshipLink} />
+          <LeaderboardLink id={"daily"} />
+          {showChampionshipLink ? <ChampionshipLink id={championshipID} cols /> : null}
+        </div>
+      ) : null}
     </div>
   );
 };
