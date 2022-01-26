@@ -1,6 +1,14 @@
 .title {
   text-align: center;
   padding-bottom: 1em;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.title h2 {
+  display: inline;
+  margin-right: 0.5em;
 }
 
 .container {

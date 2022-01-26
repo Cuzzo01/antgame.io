@@ -125,6 +125,16 @@ const ChallengeCard = props => {
 };
 
 const DailyChallengeCard = ({ challenge, record }) => {
+  const [showChampionshipLink, setShowChampionshipLink] = useState(false);
+
+  useEffect(() => {
+    const getChampionshipFlag = async () => {
+      const showChampionshipLink = await getFlag("show-championship-link");
+      setShowChampionshipLink(showChampionshipLink);
+    };
+    getChampionshipFlag();
+  }, []);
+
   return (
     <div className={styles.dailyChallengeBox}>
       <div className={styles.dailyTitle}>
@@ -153,8 +163,9 @@ const DailyChallengeCard = ({ challenge, record }) => {
         </div>
       </div>
       <div className={styles.dailyLinks}>
-        <ChallengeLink id={"daily"} />
+        <ChallengeLink id={"daily"} makeBig={showChampionshipLink} />
         <LeaderboardLink id={"daily"} />
+        {showChampionshipLink ? <ChampionshipLink id={"61ec3fa919024f2430242874"} cols /> : null}
       </div>
     </div>
   );
@@ -219,9 +230,19 @@ const LeaderboardLink = props => {
   );
 };
 
-const ChallengeLink = props => {
+const ChampionshipLink = props => {
   return (
-    <a href={`/challenge/${props.id}`} className={styles.challengeLink}>
+    <Link className={styles.challengeLink} to={`/championship/${props.id}`}>
+      Championship
+    </Link>
+  );
+};
+
+const ChallengeLink = ({ id, makeBig }) => {
+  let className = styles.challengeLink;
+  if (makeBig) className += ` ${styles.bigLink}`;
+  return (
+    <a href={`/challenge/${id}`} className={className}>
       Play
     </a>
   );

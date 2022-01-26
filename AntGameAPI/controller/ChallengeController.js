@@ -39,7 +39,7 @@ async function postRun(req, res) {
     try {
       verificationResult = VerifyArtifact(runData, user.clientID, challengeConfig);
     } catch (e) {
-      Logger.logError("ChallengeController.PostRun", e)
+      Logger.logError("ChallengeController.PostRun", e);
       res.sendStatus(400);
       return;
     }
@@ -136,10 +136,8 @@ async function postRun(req, res) {
         if (isPB && currentDetails === null) {
           UserDao.addNewChallengeDetails(user.id, runData.challengeID, runData.Score, runID);
           ChallengePlayerCountHandler.unsetPlayerCount(runData.challengeID);
-          LeaderboardHandler.unsetLeaderboard(runData.challengeID);
         } else if (isPB && currentDetails.pb) {
           UserDao.updateChallengePBAndRunCount(user.id, runData.challengeID, runData.Score, runID);
-          LeaderboardHandler.unsetLeaderboard(runData.challengeID);
         } else {
           UserDao.incrementChallengeRunCount(user.id, runData.challengeID);
         }
@@ -151,6 +149,7 @@ async function postRun(req, res) {
             runData.Score
           );
           response.rank = newRank;
+          LeaderboardHandler.unsetLeaderboard(runData.challengeID);
         }
 
         if (await FlagHandler.getFlagValue("show-player-count-in-challenge")) {

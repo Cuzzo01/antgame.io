@@ -29,11 +29,12 @@ async function awardPoints(req, res) {
 async function getLeaderboard(req, res) {
   try {
     const championshipID = req.params.id;
-    const result = await LeaderboardHandler.getChampionshipLeaderboard(championshipID);
+    const leaderboardData = await LeaderboardHandler.getChampionshipLeaderboardData(championshipID);
 
-    if (result && result.length) {
-      for (let i = 0; i < result.length; i++) {
-        const entry = result[i];
+    const leaderboard = leaderboardData.leaderboard;
+    if (leaderboard && leaderboard.length) {
+      for (let i = 0; i < leaderboard.length; i++) {
+        const entry = leaderboard[i];
         const username = await ObjectIDToNameHandler.getUsername(entry._id);
         entry.username = username;
       }
@@ -41,7 +42,8 @@ async function getLeaderboard(req, res) {
 
     const leaderboardResponse = {
       name: await ObjectIDToNameHandler.getChampionshipName(championshipID),
-      leaderboard: result,
+      leaderboard: leaderboardData.leaderboard,
+      pointMap: leaderboardData.pointMap,
     };
 
     res.send(leaderboardResponse);
