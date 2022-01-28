@@ -24,9 +24,9 @@ const pointsMap = [
   { type: "rank", value: 8, points: 16 },
   { type: "rank", value: 9, points: 13 },
   { type: "rank", value: 10, points: 10 },
-  { type: "percent", value: 0.1, points: 5 },
-  { type: "percent", value: 0.25, points: 2 },
-  { type: "percent", value: 0.5, points: 1 },
+  { type: "percent", value: 0.1, points: 7 },
+  { type: "percent", value: 0.25, points: 5 },
+  { type: "percent", value: 0.5, points: 3 },
 ];
 
 class ChampionshipOrchestrator {
