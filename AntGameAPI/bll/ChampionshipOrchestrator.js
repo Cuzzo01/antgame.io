@@ -124,7 +124,7 @@ class ChampionshipOrchestrator {
         );
     });
 
-    LeaderboardHandler.unsetLeaderboard(challengeConfig.id);
+    LeaderboardHandler.unsetLeaderboard(championshipID);
 
     await updateConfigByID(challengeConfig.id, { pointsAwarded: awardedPoints });
   }
