@@ -34,7 +34,7 @@ class Logger {
     this.log({ message: "Auth Event", event: event, ...data });
   }
 
-  async logCacheResult(cacheName, cacheMiss, key, value, time) {
+  logCacheResult(cacheName, cacheMiss, key, value, time) {
     this.log({
       message: "Cache Result",
       cacheName: cacheName,
@@ -43,6 +43,17 @@ class Logger {
       value: value,
       time: time,
     });
+  }
+
+  logCronMessage(message) {
+    this.log({
+      message: "Daily challenge cron",
+      cronMessage: message,
+    });
+  }
+
+  logDBCleanupMessage(name, deletedCount) {
+    this.log({ message: "db cleanup cron", name: name, deleted: deletedCount });
   }
 }
 const SingletonInstance = new Logger();
