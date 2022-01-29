@@ -78,11 +78,7 @@ async function postRun(req, res) {
     if (saveRun === false) {
       // Where save limiting logic will live in the future
       // Only set to true % of time you want random run saved
-      if (Math.random() > 0.1) saveRun = "No Snapshot";
-      else {
-        saveRun = true;
-        runTags.push({ type: "random snapshot save" });
-      }
+      saveRun = "No Snapshot";
     }
 
     let runID;

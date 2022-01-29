@@ -3,10 +3,11 @@ import styles from "./RegistrationPage.module.css";
 import { registerAccount } from "../AuthService";
 import AuthHandler from "../AuthHandler";
 import { useHistory, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getFlag } from "../../Helpers/FlagService";
 
 const RegistrationPage = props => {
+  const [loading, setLoading] = useState(false);
   const {
     register,
     formState: { errors },
@@ -36,17 +37,23 @@ const RegistrationPage = props => {
   }
 
   const onSubmit = data => {
-    registerAccount(data.username, data.password, data.email, AuthHandler.clientID).then(result => {
-      if (result === "usernameTaken")
-        setError("username", {
-          type: "manual",
-          message: "Username taken",
-        });
-      else {
-        AuthHandler.token = result;
-        redirectOut();
-      }
-    });
+    if (!loading) {
+      setLoading(true);
+      registerAccount(data.username, data.password, data.email, AuthHandler.clientID).then(
+        result => {
+          if (result === "usernameTaken")
+            setError("username", {
+              type: "manual",
+              message: "Username taken",
+            });
+          else {
+            AuthHandler.token = result;
+            redirectOut();
+          }
+          setLoading(false);
+        }
+      );
+    }
   };
 
   if (AuthHandler.loggedIn) {
@@ -125,7 +132,7 @@ const RegistrationPage = props => {
           <input {...register("email")} autoComplete="email" type="email" />
           <p className={styles.subtext}>Only used for account recovery</p>
         </div>
-        <button className={styles.submitButton} type="submit">
+        <button className={styles.submitButton} type="submit" disabled={loading}>
           Register Account
         </button>
       </form>
