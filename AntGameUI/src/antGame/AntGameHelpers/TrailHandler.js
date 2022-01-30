@@ -64,6 +64,7 @@ export class TrailHandler {
 
     const intTrailXY = MapXYToInt(trailXY);
     const maxValue = 1500 * (1 - transparency) + 100;
+    // const maxValue = 3000 * (1 - transparency) + 100;
     for (let xOffset = -TrailMapOverSampleRate; xOffset <= TrailMapOverSampleRate; xOffset++) {
       for (let yOffset = -TrailMapOverSampleRate; yOffset <= TrailMapOverSampleRate; yOffset++) {
         const point = [intTrailXY[0] + xOffset, intTrailXY[1] + yOffset];

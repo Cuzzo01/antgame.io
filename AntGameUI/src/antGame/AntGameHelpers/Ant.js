@@ -172,7 +172,8 @@ export class Ant {
     // TODO: the dirt stuff works well and is prob a good idea
     // when to push it out?
     if (aheadIsString && this.isObjective(aheadScore)) return "a";
-    if (leftIsString) {
+    const leftFirst = Math.random() <= 0.5;
+    if (leftFirst && leftIsString) {
       if (this.isObjective(leftScore)) return "l";
       if (leftScore === WallValue) return "r";
       if (this.hasFood && leftScore === DirtValue) return "r";
@@ -182,7 +183,13 @@ export class Ant {
       if (this.isObjective(rightScore)) return "r";
       if (rightScore === WallValue) return "l";
       if (this.hasFood && rightScore === DirtValue) return "l";
-      // if (!this.hasFood && leftScore === DirtValue) return "r";
+      // if (!this.hasFood && rightScore === DirtValue) return "r";
+    }
+    if (!leftFirst && leftIsString) {
+      if (this.isObjective(leftScore)) return "l";
+      if (leftScore === WallValue) return "r";
+      if (this.hasFood && leftScore === DirtValue) return "r";
+      // if (!this.hasFood && leftScore === DirtValue) return "l";
     }
     return false;
   }
