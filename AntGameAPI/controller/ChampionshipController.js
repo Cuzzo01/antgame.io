@@ -2,6 +2,7 @@ const { ChampionshipOrchestrator } = require("../bll/ChampionshipOrchestrator");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
 const { getUserPointsByUserID } = require("../dao/ChampionshipDao");
+const Logger = require("../Logger");
 
 async function awardPoints(req, res) {
   try {
@@ -46,8 +47,9 @@ async function getLeaderboard(req, res) {
     }
 
     if (!userOnLeaderboard) {
-      const userResult = (await getUserPointsByUserID(championshipID, userID)).userPoints[0];
-      if (userResult !== null) {
+      const result = await getUserPointsByUserID(championshipID, userID);
+      if (result !== null) {
+        const userResult = result.userPoints[0];
         leaderboardData.leaderboard.push({
           points: userResult.points,
           _id: userID,
@@ -65,7 +67,7 @@ async function getLeaderboard(req, res) {
 
     res.send(leaderboardResponse);
   } catch (e) {
-    console.log(e);
+    Logger.logError("ChampionshipController.getLeaderboard");
     res.sendStatus(500);
   }
 }

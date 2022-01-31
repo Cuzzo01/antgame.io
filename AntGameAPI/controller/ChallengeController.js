@@ -102,10 +102,7 @@ async function postRun(req, res) {
         let snapshots = false;
         try {
           snapshots = runData.Snapshots.map(snapshot => {
-            return [
-              ...snapshot.slice(0, snapshot.length - 1),
-              JSON.parse(snapshot[snapshot.length - 1]),
-            ];
+            return [...snapshot.slice(0, 5), JSON.parse(snapshot[5]), ...snapshot.slice(6)];
           });
         } catch (e) {
           console.log(e);
