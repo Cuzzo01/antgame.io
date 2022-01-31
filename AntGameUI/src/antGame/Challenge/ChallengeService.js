@@ -8,6 +8,7 @@ export async function sendRunArtifact(artifact) {
     })
     .catch(err => {
       if (err.response.status === 409) window.location = "/challenge";
+      if (err.response.status === 418) window.location.reload();
     });
 }
 
