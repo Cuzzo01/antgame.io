@@ -12,6 +12,7 @@ class ChallengeHandler {
     this.recordListeners = [];
     this.wrListeners = [];
     this.prInfo = false;
+    this.lastSeenUpdateCount = 0;
   }
 
   set mapHandler(mapHandler) {
@@ -21,6 +22,10 @@ class ChallengeHandler {
       this._mapHandler.homeCellsAllowed = config.homeLimit;
       this._mapHandler.fetchAndLoadMap(config.mapPath);
     }
+  }
+
+  set updateCount(count) {
+    this.lastSeenUpdateCount = count;
   }
 
   get isPB() {
@@ -153,6 +158,7 @@ class ChallengeHandler {
     };
     this.artifact.Snapshots = [];
 
+    this.lastSeenUpdateCount = 0;
     this.generateSnapshot();
     if (this.snapshotInterval) clearInterval(this.snapshotInterval);
     this.snapshotInterval = setInterval(() => {
@@ -170,6 +176,7 @@ class ChallengeHandler {
       mapHandler.foodOnMap,
       mapHandler.foodInTransit,
       JSON.stringify(mapHandler.homeFoodCounts),
+      this.lastSeenUpdateCount,
     ]);
   }
 
