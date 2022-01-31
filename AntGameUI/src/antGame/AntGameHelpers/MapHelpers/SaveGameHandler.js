@@ -1,13 +1,17 @@
-import { Config } from "../config";
+import { Config } from "../../config";
+import { GenerateFoodTooltips } from "./FoodTooltipGenerator";
+import { CleanFoodAndDirt } from "./MapCleaner";
 
 const MapBounds = Config.MapBounds;
 
 export class SaveGameHandler {
   static GenerateSaveGame(map, mapName) {
+    CleanFoodAndDirt(map);
     return {
-      MapVersion: 1,
+      MapVersion: 2,
       MapName: mapName,
       Map: map,
+      Tooltips: GenerateFoodTooltips(map),
     };
   }
 
