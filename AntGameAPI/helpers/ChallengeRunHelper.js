@@ -92,12 +92,14 @@ const ScoreMatchesFinalSnapshot = runData => {
 const AnalyzeSnapshots = snapshots => {
   // FIXME: Should this value be validated? Maybe store it in the DB for each map?
   const totalFood = snapshots[0][3];
+  const totalSeconds = snapshots[0][1];
 
   let lastSnapshot = false;
   let deltaExceptions = [];
   for (let i = 0; i < snapshots.length; i++) {
     const snapshot = snapshots[i];
 
+    const gameTime = snapshot[1];
     const percent = snapshot[2];
     const foodOnMap = snapshot[3];
     const foodInTransit = snapshot[4];
@@ -107,9 +109,10 @@ const AnalyzeSnapshots = snapshots => {
     } catch (e) {
       throw "Unparsable snapshot";
     }
+    const updateCount = snapshot[6];
 
     let currentFoodReturned = 0;
-    for (const [homePos, foodCount] of Object.entries(homeFoodCounts)) {
+    for (const [, foodCount] of Object.entries(homeFoodCounts)) {
       currentFoodReturned += foodCount;
     }
     if (percent !== 0) {
@@ -122,8 +125,12 @@ const AnalyzeSnapshots = snapshots => {
     const guessDelta = Math.round(Math.abs(percent - percentGuess) * 10000);
     if (guessDelta > 0) deltaExceptions.push([i, guessDelta]);
 
-    if (!lastSnapshot) lastSnapshot = snapshot;
-    else {
+    const secondsElapsed = totalSeconds - gameTime;
+    const expectedUpdateCount = secondsElapsed * 1.5 * 30;
+    if (updateCount !== expectedUpdateCount)
+      return `calculated seconds elapsed dont match reported (${expectedUpdateCount}, ${updateCount}, ${i})`;
+
+    if (lastSnapshot) {
       // Disabling due to high false positive rate
       // FIXME: Is this check important? Should it be deleted or just reworked?
       // const gameTimeDelta = lastSnapshot[1] - snapshot[1];

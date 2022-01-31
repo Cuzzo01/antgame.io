@@ -1,6 +1,7 @@
 const { ChampionshipOrchestrator } = require("../bll/ChampionshipOrchestrator");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
+const { getUserPointsByUserID } = require("../dao/ChampionshipDao");
 
 async function awardPoints(req, res) {
   try {
@@ -28,15 +29,31 @@ async function awardPoints(req, res) {
 
 async function getLeaderboard(req, res) {
   try {
+    const userID = req.user.id;
+
     const championshipID = req.params.id;
     const leaderboardData = await LeaderboardHandler.getChampionshipLeaderboardData(championshipID);
 
     const leaderboard = leaderboardData.leaderboard;
+    let userOnLeaderboard = false;
     if (leaderboard && leaderboard.length) {
       for (let i = 0; i < leaderboard.length; i++) {
         const entry = leaderboard[i];
+        if (entry._id == userID) userOnLeaderboard = true;
         const username = await ObjectIDToNameHandler.getUsername(entry._id);
         entry.username = username;
+      }
+    }
+
+    if (!userOnLeaderboard) {
+      const userResult = (await getUserPointsByUserID(championshipID, userID)).userPoints[0];
+      if (userResult !== null) {
+        leaderboardData.leaderboard.push({
+          points: userResult.points,
+          _id: userID,
+          username: req.user.username,
+          noRank: true,
+        });
       }
     }
 

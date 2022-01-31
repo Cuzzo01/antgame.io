@@ -13,7 +13,8 @@
 
 .container {
   max-width: 30em;
-  margin: 5em auto;
+  margin: 0 auto;
+  padding: 3em 0;
   font-family: "Courier Prime Bold";
 }
 
@@ -30,4 +31,11 @@
 
 .navRight {
   text-align: right;
+}
+
+.hr {
+  display: block;
+  background-color: black;
+  height: 0.1em;
+  margin: 1em 0.5em;
 }

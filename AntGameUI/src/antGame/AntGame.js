@@ -272,9 +272,8 @@ export default class AntGame extends React.Component {
         this.mapHandler.calculateFoodToStopTime();
       }
 
-      // TODO: Can ticksPerSecond be fractional? That prob isn't good
       const ticksPerSecond = FrameRate * 1.5;
-      const updateRate = 1000 / ticksPerSecond;
+      const updateRate = Math.round(1000 / ticksPerSecond);
       this.updateCount = 0;
       this.gameLoopInterval = setInterval(() => {
         this.updateCount++;
@@ -283,8 +282,10 @@ export default class AntGame extends React.Component {
           this.foodTrailHandler.decayTrail();
           this.homeTrailHandler.decayTrail();
         }
-        if (this.state.timerActive && this.updateCount % ticksPerSecond === 0)
+        if (this.state.timerActive && this.updateCount % ticksPerSecond === 0) {
+          this.challengeHandler.updateCount = this.updateCount;
           this.timerHandler.tickTime();
+        }
       }, updateRate);
     } else {
       clearInterval(this.challengeSnapshotInterval);
