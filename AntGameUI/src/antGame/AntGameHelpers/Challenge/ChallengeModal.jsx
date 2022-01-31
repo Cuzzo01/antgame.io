@@ -17,7 +17,7 @@ const ChallengeModal = props => {
     };
   }, []);
 
-  const scoreIsNice = props.challengeHandler?.score.toString().includes("69");
+  const scoreIsNice = props.challengeHandler?.score.toString().endsWith("69");
   return (
     <div>
       {props.show ? (
