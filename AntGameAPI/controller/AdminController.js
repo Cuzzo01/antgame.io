@@ -257,32 +257,31 @@ async function getUserDetails(req, res) {
   try {
     const id = req.params.id;
     let result = await getUserDetailsByID(id);
-    const activeChallenges = await getActiveChallenges(id);
 
     let rankPromises = [];
-    result.activeChallengeDetails = {};
+    result.challengeInfo = {};
     const userChallengeDetails = result.challengeDetails;
     if (userChallengeDetails) {
-      activeChallenges.forEach(challenge => {
-        const userDetails = userChallengeDetails.find(details => details.ID.equals(challenge.id));
-        if (userDetails) {
-          rankPromises.push(
-            getLeaderboardRankByScore(challenge.id, userDetails.pb).then(rank => {
-              return { id: challenge.id, rank: rank };
-            })
-          );
-          result.activeChallengeDetails[challenge.id] = {
-            score: userDetails.pb,
-            runID: userDetails.pbRunID,
-            name: challenge.name,
-            runs: userDetails.runs,
-            runTime: userDetails.pbRunID.getTimestamp(),
-          };
-        }
+      userChallengeDetails.forEach(async challenge => {
+        rankPromises.push(
+          getLeaderboardRankByScore(challenge.ID, challenge.pb).then(rank => {
+            return { id: challenge.ID.toString(), rank: rank };
+          })
+        );
+        result.challengeInfo[challenge.ID] = {
+          score: challenge.pb,
+          runID: challenge.pbRunID,
+          name: await ObjectIDToNameHandler.getChallengeName(challenge.ID),
+          runs: challenge.runs,
+          runTime: challenge.pbRunID.getTimestamp(),
+        };
       });
 
       await Promise.all(rankPromises).then(ranks => {
-        ranks.forEach(rank => (result.activeChallengeDetails[rank.id].rank = rank.rank));
+        ranks.forEach(rank => {
+          if (!result.challengeInfo[rank.id]) return;
+          result.challengeInfo[rank.id].rank = rank.rank;
+        });
       });
     }
     delete result.challengeDetails;
