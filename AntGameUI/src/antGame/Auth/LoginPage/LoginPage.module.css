@@ -34,6 +34,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 0.5em;
 }
 
 .skipButton {
@@ -68,4 +69,14 @@
 
 .disabledMessage {
   text-align: center;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 0.5em;
+}
+
+.inputField {
+  margin: 1em 0;
 }

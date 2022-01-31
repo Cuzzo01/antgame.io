@@ -3,10 +3,15 @@ import styles from "./LoginPage.module.css";
 import AuthHandler from "../AuthHandler";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { getFlag } from "../../Helpers/FlagService";
+import { useForm } from "react-hook-form";
 
 const LoginPage = props => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm();
+
   const [formState, setFormState] = useState("");
   const [allowLogins, setAllowLogins] = useState(true);
   const [disabledMessage, setDisabledMessage] = useState("");
@@ -41,24 +46,15 @@ const LoginPage = props => {
     else history.replace("/challenge");
   }
 
-  function handleChange(event) {
-    const name = event.target.name;
-    if (name === "username") setUsername(event.target.value);
-    else if (name === "password") setPassword(event.target.value);
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
+  function onSubmit(data) {
     if (formState === "loading") return;
-    if (username && password) {
-      AuthHandler.login(username, password).then(result => {
-        if (result === true) redirectOut();
-        else if (result === false) setFormState("error");
-        else if (result === "banned") setFormState("banned");
-        else if (result === "disabled") setFormState("disabled");
-      });
-      setFormState("loading");
-    }
+    AuthHandler.login(data.username, data.password).then(result => {
+      if (result === true) redirectOut();
+      else if (result === false) setFormState("error");
+      else if (result === "banned") setFormState("banned");
+      else if (result === "disabled") setFormState("disabled");
+    });
+    setFormState("loading");
   }
 
   function continueWithoutLogin(event) {
@@ -72,42 +68,49 @@ const LoginPage = props => {
     redirectOut();
   }
 
-  // FIXME: Use the form library so empty submits show errors
   return (
     <div className={styles.container}>
       {allowLogins ? (
         <div>
           <h3 className={`${styles.title} ${styles.bold}`}>Login</h3>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className={styles.inputField}>
               <label htmlFor="username">Username:</label>
               <br />
               <input
-                className={styles.input}
-                type="text"
-                name="username"
-                onChange={handleChange}
-                value={username}
+                {...register("username", {
+                  required: true,
+                  minLength: "5",
+                  maxLength: "15",
+                  pattern: /^[a-z0-9_]+$/i,
+                })}
                 autoComplete="username"
               />
+              {errors.username?.type === "required" && <ErrorMessage>Required</ErrorMessage>}
+              {(errors.username?.type === "minLength" ||
+                errors.username?.type === "maxLength" ||
+                errors.username?.type === "pattern") && (
+                <ErrorMessage>Must enter a valid username</ErrorMessage>
+              )}
             </div>
             <div className={styles.inputField}>
               <label htmlFor="password">Password:</label>
               <br />
               <input
-                className={styles.input}
+                {...register("password", { required: true, minLength: "8", maxLength: "100" })}
                 type="password"
-                name="password"
-                onChange={handleChange}
-                value={password}
                 autoComplete="current-password"
               />
+              {errors.password?.type === "required" && <ErrorMessage>Required</ErrorMessage>}
+              {(errors.password?.type === "minLength" || errors.password?.type === "maxLength") && (
+                <ErrorMessage>Must enter a valid password</ErrorMessage>
+              )}
             </div>
             {formState === "error" ? (
               <div className={styles.error}>Login failed, try again</div>
             ) : null}
-            {formState === "banned" ? <div className={styles.error}>Account banned</div> : null}
-            {formState === "disabled" ? <div className={styles.error}>Login disabled</div> : null}
+            {formState === "banned" && <div className={styles.error}>Account banned</div>}
+            {formState === "disabled" && <div className={styles.error}>Login disabled</div>}
             <input type="submit" style={{ display: "none" }} />
             <div className={styles.buttonBar}>
               <div
@@ -116,9 +119,13 @@ const LoginPage = props => {
               >
                 Skip
               </div>
-              <div className={`${styles.divButton} ${styles.submitButton}`} onClick={handleSubmit}>
+              <button
+                className={styles.submitButton}
+                type="submit"
+                disabled={formState === "loading"}
+              >
                 Submit
-              </div>
+              </button>
             </div>
           </form>
           {allowRegistration ? (
@@ -138,3 +145,7 @@ const LoginPage = props => {
   );
 };
 export default LoginPage;
+
+const ErrorMessage = props => {
+  return <p className={styles.errorMessage}>{props.children}</p>;
+};
