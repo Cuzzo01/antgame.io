@@ -33,7 +33,7 @@ const AntGameRouter = () => {
             <UserBar />
           </Route>
           <Route path="/sandbox">
-            <GameModeContext.Provider value={"sandbox"}>
+            <GameModeContext.Provider value={{ mode: "sandbox" }}>
               <AntGame mapToLoad={PreloadMapPath} />
             </GameModeContext.Provider>
             <UserBar showLinkHome />

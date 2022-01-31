@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Config } from "../config";
-import { SaveGameHandler } from "./SaveGameHandler";
+import { SaveGameHandler } from "./MapHelpers/SaveGameHandler";
 
 const Brushes = Config.brushes;
 const MapBounds = Config.MapBounds;
@@ -370,6 +370,11 @@ export class MapHandler {
       }
     }
     if (foodRemoved) this.foodOnMap -= foodRemoved;
+    if (this._gameMode === "sandbox" && this._shouldDrawFoodAmounts) {
+      this.foodAmounts = false;
+      this.shouldDrawFoodAmounts = false;
+      this.redrawFullMap = true;
+    }
   }
 
   prepareForStart = IsChallenge => {
