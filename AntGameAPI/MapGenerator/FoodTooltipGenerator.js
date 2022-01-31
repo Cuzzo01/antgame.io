@@ -7,7 +7,7 @@ const GenerateFoodTooltips = mapData => {
   for (let x = 0; x < mapData.length; x++) {
     for (let y = 0; y < mapData[x].length; y++) {
       if (mapData[x][y] === "f" && !seenList.includes(`${x}, ${y}`)) {
-        const foodInGroup = [];
+        foodInGroup = [];
         CountGroupSize(x, y, "f", mapData, foodInGroup);
         const parsedFoodInGroup = [];
         foodInGroup.forEach(point => {

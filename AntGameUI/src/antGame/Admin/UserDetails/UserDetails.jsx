@@ -46,7 +46,7 @@ const UserDetails = props => {
           </div>
           <ExpandList
             title={"Challenge Details"}
-            itemsToList={getDetailsList(details.challengeInfo)}
+            itemsToList={getDetailsList(details.activeChallengeDetails)}
             emptyMessage={"No runs on active challenges"}
           />
           <ExpandList
