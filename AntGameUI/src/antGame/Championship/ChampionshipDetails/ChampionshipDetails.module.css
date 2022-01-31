@@ -31,3 +31,10 @@
 .navRight {
   text-align: right;
 }
+
+.hr {
+  display: block;
+  background-color: black;
+  height: 0.1em;
+  margin: 1em 0.5em;
+}

@@ -10,6 +10,8 @@
 }
 
 .row {
+  display: grid;
+  grid-template-columns: 3em auto 5em;
   border: 2px grey solid;
   border-radius: 0.5em;
   margin: 0.5em 1em;
@@ -21,7 +23,7 @@
 }
 
 .right {
-  float: right;
+  text-align: right;
 }
 
 .age {

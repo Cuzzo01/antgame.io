@@ -21,17 +21,22 @@ const ChampionshipDetails = ({}) => {
       setTitle(data.name);
       const leaderboard = data.leaderboard;
       const table = [];
+      let lastPoints = 0;
       for (let i = 0; i < leaderboard.length; i++) {
         const user = leaderboard[i];
+        const isTied = lastPoints === user.points;
+        if (user.noRank) table.push(<div className={styles.hr} />);
         table.push(
           <LeaderboardRow
             ownRow={user.username === currentUsername}
             key={user.username}
+            noRank={isTied || user.noRank}
             rank={i + 1}
             name={user.username}
             pb={`${user.points} pts`}
           />
         );
+        lastPoints = user.points;
       }
       setPointMap(data.pointMap);
       setUserTable(table);

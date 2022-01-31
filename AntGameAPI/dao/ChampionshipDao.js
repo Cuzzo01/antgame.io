@@ -98,6 +98,18 @@ const getLeaderboardByChampionshipID = async (ID, recordCount) => {
   return result;
 };
 
+const getUserPointsByUserID = async (championshipID, userID) => {
+  const championshipObjectID = TryParseObjectID(championshipID, "ChampionshipID");
+  const userObjectID = TryParseObjectID(userID, "UserID");
+
+  const collection = await getCollection("championships");
+  const result = await collection.findOne(
+    { _id: championshipObjectID, "userPoints.userID": userObjectID },
+    { projection: { "userPoints.$": 1 } }
+  );
+  return result;
+};
+
 module.exports = {
   getChampionshipDetailsFromDB,
   updateUserPointsTotal,
@@ -106,6 +118,7 @@ module.exports = {
   createNewChampionship,
   getChampionshipIDByName,
   getLeaderboardByChampionshipID,
+  getUserPointsByUserID,
 };
 const TryParseObjectID = (stringID, name) => {
   try {
