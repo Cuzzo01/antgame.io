@@ -4,7 +4,7 @@ body {
 
 .container {
   width: 85rem;
-  max-width: 80%;
+  width: 80%;
   margin: 0 auto;
   padding-top: 3em;
 }
@@ -19,7 +19,7 @@ body {
 }
 
 .dailyChallengeBox {
-  max-width: 35rem;
+  width: 35rem;
   border-radius: 1rem;
   border: 0.2rem black solid;
   padding: 1rem;

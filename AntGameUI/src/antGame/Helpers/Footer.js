@@ -5,7 +5,7 @@ const Footer = () => {
     <div className={styles.footerContainer}>
       <hr />
       <span>
-        Questions/Feedback/Bug Reports? <a href="mailto:hi@antgame.io">hi@antgame.io</a>
+        Questions/Feedback/Bugs: <a href="mailto:hi@antgame.io">hi@antgame.io</a>
       </span>
     </div>
   );
