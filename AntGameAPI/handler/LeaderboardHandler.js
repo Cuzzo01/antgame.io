@@ -80,6 +80,10 @@ class LeaderboardHandler {
   unsetLeaderboard = id => {
     this.resultCache.expireValue(id);
   };
+
+  unsetAll = () => {
+    this.resultCache = new ResultCache();
+  };
 }
 const SingletonInstance = new LeaderboardHandler();
 module.exports = SingletonInstance;
