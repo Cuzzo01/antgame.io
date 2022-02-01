@@ -262,6 +262,7 @@ export default class AntGame extends React.Component {
       this.toggleTimer(true);
       this.mapHandler.shouldDrawFoodAmounts = false;
       if (!this.antHandler.antsSpawned) {
+        this.updateCount = 0;
         this.antHandler.spawnAnts(this.homeTrailHandler, this.foodTrailHandler);
         this.mapHandler.prepareForStart(IsChallenge);
         if (IsChallenge) {
@@ -274,7 +275,6 @@ export default class AntGame extends React.Component {
 
       const ticksPerSecond = FrameRate * 1.5;
       const updateRate = Math.round(1000 / ticksPerSecond);
-      this.updateCount = 0;
       this.gameLoopInterval = setInterval(() => {
         this.updateCount++;
         this.antHandler.updateAnts();
