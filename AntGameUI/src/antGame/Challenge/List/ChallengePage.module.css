@@ -5,7 +5,8 @@ body {
 .container {
   width: 85rem;
   max-width: 80%;
-  margin: 5em auto;
+  margin: 0 auto;
+  padding-top: 3em;
 }
 
 .header {
