@@ -13,13 +13,15 @@ import HomePage from "./HomePage/HomePage";
 import AdminHome from "./Admin/AdminHome";
 import MOTD from "./MOTD/Motd";
 import ChampionshipDetails from "./Championship/ChampionshipDetails/ChampionshipDetails";
+import Footer from "./Helpers/Footer";
+import styles from "./Helpers/GenericStyles.module.css";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
 
 const AntGameRouter = () => {
   return (
-    <div>
+    <div className={styles.windowContainer}>
       <BrowserRouter>
         <Switch>
           <Route exact path="/error">
@@ -40,6 +42,7 @@ const AntGameRouter = () => {
           </Route>
           <Route path="/login">
             <LoginPage />
+            <Footer />
           </Route>
           <Route path="/register">
             <RegistrationPage />
@@ -47,10 +50,12 @@ const AntGameRouter = () => {
           <Route exact path="/challenge">
             <MOTD />
             <ChallengeList />
+            <Footer />
             <UserBar showLinkHome />
           </Route>
           <Route path="/challenge/:id/leaderboard">
             <Leaderboard />
+            <Footer />
             <UserBar />
           </Route>
           <Route exact path="/challenge/:id">
@@ -59,6 +64,7 @@ const AntGameRouter = () => {
           </Route>
           <Route exact path="/championship/:id">
             <ChampionshipDetails />
+            <Footer />
             <UserBar />
           </Route>
           <Route path="/map/:mapName">

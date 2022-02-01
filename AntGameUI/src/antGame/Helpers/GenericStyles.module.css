@@ -47,3 +47,23 @@
 .third {
   background-color: #a77044;
 }
+
+.footerContainer {
+  margin: 0 auto;
+  padding-bottom: 1em;
+  text-align: center;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.windowContainer {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.windowContainer div {
+  flex-shrink: 0;
+  flex-grow: 0;
+}

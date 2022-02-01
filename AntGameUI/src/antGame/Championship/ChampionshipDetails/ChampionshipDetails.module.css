@@ -12,9 +12,9 @@
 }
 
 .container {
-  max-width: 30em;
+  width: 30rem;
   margin: 0 auto;
-  padding: 3em 0;
+  padding-top: 3em;
   font-family: "Courier Prime Bold";
 }
 
@@ -38,4 +38,9 @@
   background-color: black;
   height: 0.1em;
   margin: 1em 0.5em;
+}
+
+.emptyMessage {
+  padding: 1em 0;
+  text-align: center;
 }
