@@ -28,7 +28,6 @@ const AntGameRouter = () => {
           </Route>
           <Route exact path="/">
             <HomePage />
-            <Footer />
           </Route>
           <Route path="/admin">
             <AdminPath />
