@@ -1,6 +1,6 @@
 {
   "short_name": "AntGame",
-  "name": "Sandbox ant simulator",
+  "name": "An ant simulator strategy game",
   "icons": [
     {
       "src": "favicon.ico",
