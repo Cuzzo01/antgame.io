@@ -12,7 +12,7 @@
 }
 
 .container {
-  width: 30rem;
+  width: 80%;
   margin: 0 auto;
   padding-top: 3em;
   font-family: "Courier Prime Bold";
@@ -43,4 +43,28 @@
 .emptyMessage {
   padding: 1em 0;
   text-align: center;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.section {
+  width: 25em;
+}
+
+.section h5 {
+  text-align: center;
+  padding: 1em 0;
+}
+
+.lastPointsRow {
+  border: 2px grey solid;
+  border-radius: 0.5em;
+  margin: 0.5em 1em;
+  padding: 0.5em 1em;
+  display: grid;
+  grid-template-columns: auto 10em;
 }

@@ -5,21 +5,20 @@ import { getChampionshipLeaderboard } from "../ChampionshipService";
 import styles from "./ChampionshipDetails.module.css";
 import AuthHandler from "../../Auth/AuthHandler";
 import InfoButton from "../InfoButton/InfoButton";
+import { useCallback } from "react";
+import genericStyles from "../../Helpers/GenericStyles.module.css";
 
 const ChampionshipDetails = ({}) => {
   const currentUsername = AuthHandler.username;
   const championshipID = useParams().id;
 
-  const [loading, setLoading] = useState(true);
-  const [title, setTitle] = useState();
+  const [lastPoints, setLastPoints] = useState(false);
+  const [title, setTitle] = useState(false);
   const [userTable, setUserTable] = useState();
   const [pointMap, setPointMap] = useState();
 
-  useEffect(() => {
-    getChampionshipLeaderboard(championshipID).then(data => {
-      console.log(data);
-      setTitle(data.name);
-      const leaderboard = data.leaderboard;
+  const setLeaderboard = useCallback(
+    ({ leaderboard, usernames }) => {
       const table = [];
       let lastPoints = 0;
       if (!leaderboard.length) {
@@ -27,32 +26,56 @@ const ChampionshipDetails = ({}) => {
       } else {
         for (let i = 0; i < leaderboard.length; i++) {
           const user = leaderboard[i];
+          const username = usernames[user._id];
+
           const isTied = lastPoints === user.points;
           if (user.noRank) table.push(<div className={styles.hr} />);
           table.push(
             <LeaderboardRow
-              ownRow={user.username === currentUsername}
-              key={user.username}
+              ownRow={username === currentUsername}
+              key={username}
               noRank={isTied || user.noRank}
               rank={i + 1}
-              name={user.username}
+              name={username}
               pb={`${user.points} pts`}
             />
           );
           lastPoints = user.points;
         }
       }
-      setPointMap(data.pointMap);
       setUserTable(table);
-      setLoading(false);
-    });
-  }, [championshipID, currentUsername]);
+    },
+    [currentUsername]
+  );
 
-  return loading ? null : (
+  const setLastPointsAwarded = useCallback(({ lastPointsAwarded, usernames }) => {
+    if (!lastPointsAwarded) return;
+    const table = [];
+    lastPointsAwarded.forEach(user => {
+      table.push(
+        <div className={styles.lastPointsRow}>
+          <span>{usernames[user.userID]}</span>
+          <span className={genericStyles.right}>{user.points} pts</span>
+        </div>
+      );
+    });
+    setLastPoints(table);
+  }, []);
+
+  useEffect(() => {
+    getChampionshipLeaderboard(championshipID).then(data => {
+      setTitle(data.name);
+      setPointMap(data.pointMap);
+      setLastPointsAwarded(data);
+      setLeaderboard(data);
+    });
+  }, [championshipID, currentUsername, setLastPointsAwarded, setLeaderboard]);
+
+  return (
     <div className={styles.container}>
       <div className={styles.title}>
         <h2>{title}</h2>
-        <InfoButton pointMap={pointMap} />
+        {pointMap ? <InfoButton pointMap={pointMap} /> : null}
       </div>
       <div className={styles.nav}>
         <div className={styles.navLeft}>
@@ -62,7 +85,18 @@ const ChampionshipDetails = ({}) => {
           <a href={`/challenge/daily`}>Play Daily</a>
         </div>
       </div>
-      {userTable}
+      <div className={styles.flex}>
+        <div className={`${styles.section}`}>
+          <h5>Leaderboard</h5>
+          <div className={styles.box}>{userTable}</div>
+        </div>
+        {lastPoints ? (
+          <div className={`${styles.section}`}>
+            <h5>Yesterday's points</h5>
+            <div className={styles.box}>{lastPoints}</div>
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 };

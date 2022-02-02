@@ -16,40 +16,37 @@ const Leaderboard = props => {
   const [playerCount, setPlayerCount] = useState(false);
   const [showDailyPicker, setShowDailyPicker] = useState(false);
 
-  const setLeaderboardData = useCallback(
-    ({ daily, leaderboard, name, playerCount }) => {
-      const currentUsername = AuthHandler.username;
+  const setLeaderboardData = useCallback(({ daily, leaderboard, name, playerCount }) => {
+    const currentUsername = AuthHandler.username;
 
-      const isDaily = daily === true;
-      if (isDaily) setShowDailyPicker(true);
-      else if (showDailyPicker) setShowDailyPicker(false);
+    const isDaily = daily === true;
+    if (isDaily) setShowDailyPicker(true);
+    else setShowDailyPicker(false);
 
-      let table = [];
-      let lastRank = 0;
-      leaderboard.forEach(data => {
-        if (data.rank !== lastRank + 1) {
-          table.push(<div className={styles.hr} />);
-        }
-        lastRank = data.rank;
-        table.push(
-          <LeaderboardRow
-            ownRow={data.username === currentUsername}
-            key={data.username}
-            rank={data.rank}
-            name={data.username}
-            pb={data.pb}
-            age={data.age}
-            isDaily={isDaily}
-          />
-        );
-      });
-      setRunData(table);
-      setTitle(name);
-      if (playerCount) setPlayerCount(playerCount);
-      document.title = `${name} - Leaderboard`;
-    },
-    [showDailyPicker]
-  );
+    let table = [];
+    let lastRank = 0;
+    leaderboard.forEach(data => {
+      if (data.rank !== lastRank + 1) {
+        table.push(<div className={styles.hr} />);
+      }
+      lastRank = data.rank;
+      table.push(
+        <LeaderboardRow
+          ownRow={data.username === currentUsername}
+          key={data.username}
+          rank={data.rank}
+          name={data.username}
+          pb={data.pb}
+          age={data.age}
+          isDaily={isDaily}
+        />
+      );
+    });
+    setRunData(table);
+    setTitle(name);
+    if (playerCount) setPlayerCount(playerCount);
+    document.title = `${name} - Leaderboard`;
+  }, []);
 
   const fetchLeaderboard = useCallback(
     ({ id }) => {

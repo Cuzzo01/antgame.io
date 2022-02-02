@@ -6,8 +6,8 @@ const StrictCensor = new CensorSensor();
 StrictCensor.disableTier(CensorTier.CommonProfanity);
 StrictCensor.disableTier(CensorTier.PossiblyOffensive);
 StrictCensor.disableTier(CensorTier.SexualTerms);
-StrictCensor.addWord("queer")
-StrictCensor.addWord("slave")
+StrictCensor.addWord("queer");
+StrictCensor.addWord("slave");
 
 const LaxCensor = new CensorSensor();
 

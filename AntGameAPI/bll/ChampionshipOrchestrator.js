@@ -7,6 +7,7 @@ const {
   addConfigIDToChampionship,
   createNewChampionship,
   getChampionshipIDByName,
+  setLastAwarded,
 } = require("../dao/ChampionshipDao");
 const { getLeaderboardByChallengeId } = require("../dao/UserDao");
 const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
@@ -126,6 +127,7 @@ class ChampionshipOrchestrator {
 
     LeaderboardHandler.unsetLeaderboard(championshipID);
 
+    await setLastAwarded(championshipID, challengeConfig.id);
     await updateConfigByID(challengeConfig.id, { pointsAwarded: awardedPoints });
   }
 }

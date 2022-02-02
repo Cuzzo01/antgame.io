@@ -31,9 +31,7 @@
 }
 
 .ownRow {
-  border-bottom: 0.2em dashed;
-  border-top: 0.2em dashed;
-  border-color: black;
+  border: 2px dashed black;
 }
 
 .first {
@@ -50,7 +48,7 @@
 
 .footerContainer {
   margin: 0 auto;
-  padding-bottom: 1em;
+  padding-bottom: 1.5em;
   text-align: center;
   flex-shrink: 0;
   width: 100%;
