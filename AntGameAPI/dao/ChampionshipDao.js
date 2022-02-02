@@ -59,6 +59,32 @@ const addConfigIDToChampionship = async (championshipID, configID) => {
   );
 };
 
+const setLastAwarded = async (championshipID, configID) => {
+  const championshipObjectId = TryParseObjectID(championshipID, "ChampionshipId");
+  const configObjectID = TryParseObjectID(configID, "ConfigID");
+
+  const collection = await getCollection("championships");
+  await collection.updateOne(
+    { _id: championshipObjectId },
+    {
+      $set: {
+        lastAwarded: configObjectID,
+      },
+    }
+  );
+};
+
+const getLastPointsAwarded = async championshipID => {
+  const championshipObjectID = TryParseObjectID(championshipID, "ChampionshipId");
+
+  const collection = await getCollection("championships");
+  const result = await collection.findOne(
+    { _id: championshipObjectID },
+    { projection: { lastAwarded: 1 } }
+  );
+  return result.lastAwarded;
+};
+
 const createNewChampionship = async ({ name, pointsMap }) => {
   const collection = await getCollection("championships");
   const result = await collection.insertOne({ name, pointsMap, userCount: 0 });
@@ -119,6 +145,8 @@ module.exports = {
   getChampionshipIDByName,
   getLeaderboardByChampionshipID,
   getUserPointsByUserID,
+  setLastAwarded,
+  getLastPointsAwarded,
 };
 const TryParseObjectID = (stringID, name) => {
   try {

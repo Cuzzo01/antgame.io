@@ -35,16 +35,20 @@ async function getLeaderboard(req, res) {
     const championshipID = req.params.id;
     const leaderboardData = await LeaderboardHandler.getChampionshipLeaderboardData(championshipID);
 
-    const leaderboard = leaderboardData.leaderboard;
+    const usernamePromises = new Map();
+
     let userOnLeaderboard = false;
-    if (leaderboard && leaderboard.length) {
-      for (let i = 0; i < leaderboard.length; i++) {
-        const entry = leaderboard[i];
-        if (entry._id == userID) userOnLeaderboard = true;
-        const username = await ObjectIDToNameHandler.getUsername(entry._id);
-        entry.username = username;
-      }
-    }
+    const leaderboard = leaderboardData.leaderboard;
+    leaderboard.forEach(entry => {
+      const id = entry._id.toString();
+      if (id == userID) userOnLeaderboard = true;
+      usernamePromises.set(
+        id,
+        ObjectIDToNameHandler.getUsername(id).then(name => {
+          return { id: id, name: name };
+        })
+      );
+    });
 
     if (!userOnLeaderboard) {
       const result = await getUserPointsByUserID(championshipID, userID);
@@ -59,10 +63,32 @@ async function getLeaderboard(req, res) {
       }
     }
 
+    const lastPointsAwarded = leaderboardData.lastPointsAwarded;
+    if (lastPointsAwarded)
+      lastPointsAwarded.forEach(entry => {
+        const id = entry.userID.toString();
+        if (!usernamePromises.has(id))
+          usernamePromises.set(
+            id,
+            ObjectIDToNameHandler.getUsername(id).then(name => {
+              return { id: id, name: name };
+            })
+          );
+      });
+
+    const usernames = {};
+    await Promise.all(usernamePromises.values()).then(results => {
+      results.forEach(userData => {
+        usernames[userData.id] = userData.name;
+      });
+    });
+
     const leaderboardResponse = {
       name: await ObjectIDToNameHandler.getChampionshipName(championshipID),
       leaderboard: leaderboardData.leaderboard,
       pointMap: leaderboardData.pointMap,
+      lastPointsAwarded: leaderboardData.lastPointsAwarded,
+      usernames: usernames,
     };
 
     res.send(leaderboardResponse);

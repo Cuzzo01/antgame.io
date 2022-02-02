@@ -1,6 +1,10 @@
 const {
+  getChallengeByChallengeId,
+} = require("../dao/ChallengeDao");
+const {
   getLeaderboardByChampionshipID,
   getChampionshipDetailsFromDB,
+  getLastPointsAwarded,
 } = require("../dao/ChampionshipDao");
 const { getLeaderboardByChallengeId } = require("../dao/UserDao");
 const { ResultCache } = require("../helpers/ResultCache");
@@ -22,11 +26,20 @@ class LeaderboardHandler {
     return await this.getOrFetchValue(id, "Championship", async id => {
       const leaderboard = getLeaderboardByChampionshipID(id, 50);
       const data = getChampionshipDetailsFromDB(id);
-
-      return {
+      const toReturn = {
         leaderboard: await leaderboard,
         pointMap: (await data).pointsMap,
       };
+
+      const lastPointsAwardedID = await getLastPointsAwarded(id);
+      if (lastPointsAwardedID) {
+        const lastPointsAwardedChallenge = await getChallengeByChallengeId(
+          lastPointsAwardedID.toString()
+        );
+        toReturn.lastPointsAwarded = lastPointsAwardedChallenge.pointsAwarded;
+      }
+
+      return toReturn;
     });
   }
 
@@ -37,7 +50,7 @@ class LeaderboardHandler {
     if (cacheResult !== false) {
       this.logMessage({
         cacheMiss: false,
-        result: cacheResult,
+        result: {},
         id,
         startTime,
         type,
@@ -49,7 +62,7 @@ class LeaderboardHandler {
         this.resultCache.setItem(id, result, this.timeToCache, new Date() - startTime);
         this.logMessage({
           cacheMiss: true,
-          result,
+          result: {},
           id,
           startTime,
           type,
