@@ -16,6 +16,7 @@ const LoginPage = props => {
   const [allowLogins, setAllowLogins] = useState(true);
   const [disabledMessage, setDisabledMessage] = useState("");
   const [allowRegistration, setAllowRegistration] = useState(false);
+  const [disableSubmit, setDisableSubmit] = useState(false);
   const history = useHistory();
   const location = useLocation();
 
@@ -47,12 +48,14 @@ const LoginPage = props => {
   }
 
   function onSubmit(data) {
+    setDisableSubmit(true);
     if (formState === "loading") return;
     AuthHandler.login(data.username, data.password).then(result => {
       if (result === true) redirectOut();
       else if (result === false) setFormState("error");
       else if (result === "banned") setFormState("banned");
       else if (result === "disabled") setFormState("disabled");
+      setTimeout(() => setDisableSubmit(false), 5000);
     });
     setFormState("loading");
   }
@@ -119,11 +122,7 @@ const LoginPage = props => {
               >
                 Skip
               </div>
-              <button
-                className={styles.submitButton}
-                type="submit"
-                disabled={formState === "loading"}
-              >
+              <button className={styles.submitButton} type="submit" disabled={disableSubmit}>
                 Submit
               </button>
             </div>
