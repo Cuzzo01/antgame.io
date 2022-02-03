@@ -46,7 +46,7 @@ class ObjectIDToNameHandler {
     } else {
       try {
         const result = await fetchMethod(id);
-        const cacheTime = Math.round(this.timeToCache * (1 - (Math.random() * 0.1)))
+        const cacheTime = Math.round(this.timeToCache * (1 - (Math.random() * 0.2)))
         this.resultCache.setItem(id, result, cacheTime, new Date() - startTime);
         this.logMessage({
           cacheMiss: true,
