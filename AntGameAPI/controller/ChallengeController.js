@@ -36,6 +36,10 @@ async function postRun(req, res) {
       return;
     }
 
+    if (runData.Score === null || runData.ClientID === null) {
+      res.sendStatus(400);
+    }
+
     try {
       verificationResult = VerifyArtifact(runData, user.clientID, challengeConfig);
     } catch (e) {
