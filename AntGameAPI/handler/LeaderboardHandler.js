@@ -1,6 +1,4 @@
-const {
-  getChallengeByChallengeId,
-} = require("../dao/ChallengeDao");
+const { getChallengeByChallengeId } = require("../dao/ChallengeDao");
 const {
   getLeaderboardByChampionshipID,
   getChampionshipDetailsFromDB,

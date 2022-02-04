@@ -103,18 +103,19 @@ const AnalyzeSnapshots = snapshots => {
     const percent = snapshot[2];
     const foodOnMap = snapshot[3];
     const foodInTransit = snapshot[4];
+    const updateCount = snapshot[6];
     let homeFoodCounts;
     try {
       homeFoodCounts = JSON.parse(snapshot[5]);
     } catch (e) {
       throw "Unparsable snapshot";
     }
-    const updateCount = snapshot[6];
 
     let currentFoodReturned = 0;
     for (const [, foodCount] of Object.entries(homeFoodCounts)) {
       currentFoodReturned += foodCount;
     }
+
     if (percent !== 0) {
       const calculatedPercent = currentFoodReturned / totalFood;
       if (calculatedPercent !== percent)

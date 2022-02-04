@@ -104,7 +104,10 @@ class AuthHandler {
     );
 
     axios.interceptors.request.use(async config => {
-      if (config.url.includes("digitaloceanspaces.com")) {
+      if (config.url.includes("antgame.io/map/")) {
+        config.metadata = { startTime: new Date() };
+        return config;
+      } else if (config.url.includes("digitaloceanspaces.com")) {
         config.metadata = { startTime: new Date() };
         if (await getFlag("use-new-map-loading")) {
           const url = config.url.split("/");

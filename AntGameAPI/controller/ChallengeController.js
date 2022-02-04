@@ -11,6 +11,7 @@ const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
+const MapHandler = require("../handler/MapHandler");
 const { GetIpAddress } = require("../helpers/IpHelper");
 const Logger = require("../Logger");
 
@@ -34,6 +35,10 @@ async function postRun(req, res) {
       );
       res.sendStatus(409);
       return;
+    }
+
+    if (runData.Score === null || runData.ClientID === null) {
+      res.sendStatus(400);
     }
 
     try {
@@ -209,13 +214,26 @@ async function getChallenge(req, res) {
       res.send("Invalid challenge ID");
       return;
     }
-    res.send({
+
+    const toReturn = {
       id: config.id,
-      mapPath: config.mapPath,
       seconds: config.seconds,
       homeLimit: config.homeLimit,
       name: config.name,
-    });
+    };
+
+    if (config.mapID) {
+      const mapData = await MapHandler.getMapData({ mapID: config.mapID.toString() });
+      if (await FlagHandler.getFlagValue("use-new-map-loading")) {
+        toReturn.mapPath = `https://antgame.io/map/${mapData.url}`;
+      } else {
+        toReturn.mapPath = `https://antgame.nyc3.digitaloceanspaces.com/${mapData.url}`;
+      }
+    } else {
+      toReturn.mapPath = config.mapPath;
+    }
+
+    res.send(toReturn);
   } catch (e) {
     console.log(e);
     res.status(500);
