@@ -104,11 +104,19 @@ class AuthHandler {
     );
 
     axios.interceptors.request.use(async config => {
-      if (config.url.includes("antgame.io/map/") || config.url.includes("digitaloceanspaces.com")) {
+      if (config.url.includes("antgame.io/map/")) {
         config.metadata = { startTime: new Date() };
         return config;
+      } else if (config.url.includes("digitaloceanspaces.com")) {
+        config.metadata = { startTime: new Date() };
+        if (await getFlag("use-new-map-loading")) {
+          const url = config.url.split("/");
+          const pathStart = 1 + url.findIndex(a => a.includes("digitaloceanspaces.com"));
+          const path = `https://antgame.io/map/${url.slice(pathStart).join("/")}`;
+          config.url = path;
+        }
+        return config;
       }
-
       if (this.token) {
         this.checkForUpdatedToken();
         config.headers.Authorization = `Bearer ${this.token}`;
