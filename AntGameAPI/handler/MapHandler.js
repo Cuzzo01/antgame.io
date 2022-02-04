@@ -1,36 +1,25 @@
-const { getChallengeByChallengeId } = require("../dao/ChallengeDao");
-const { getChampionshipDetailsFromDB } = require("../dao/ChampionshipDao");
-const { getUsernameByID } = require("../dao/UserDao");
+const { getMapByID } = require("../dao/MapDao");
 const { ResultCache } = require("../helpers/ResultCache");
 const Logger = require("../Logger");
 
-class ObjectIDToNameHandler {
+class MapHandler {
   constructor() {
     this.resultCache = new ResultCache();
     this.timeToCache = 3600; // 1 hour
   }
 
-  async getChallengeName(id) {
-    return await this.getOrFetchValue(id, "ChallengeName", async id => {
-      const config = await getChallengeByChallengeId(id);
-      return config.name;
+  async getMapData({ mapID }) {
+    return await this.getOrFetchValue(mapID, async () => {
+      const mapData = await getMapByID({ mapID: mapID });
+      return {
+        url: mapData.url,
+        name: mapData.name,
+        foodCount: mapData.foodCount,
+      };
     });
   }
 
-  async getUsername(id) {
-    return await this.getOrFetchValue(id, "Username", async id => {
-      return await getUsernameByID(id);
-    });
-  }
-
-  async getChampionshipName(id) {
-    return await this.getOrFetchValue(id, "Championship", async id => {
-      const championship = await getChampionshipDetailsFromDB(id);
-      return championship.name;
-    });
-  }
-
-  async getOrFetchValue(id, type, fetchMethod) {
+  async getOrFetchValue(id, fetchMethod) {
     const startTime = new Date();
 
     const cacheResult = this.tryGetItemFromCache(id);
@@ -40,7 +29,6 @@ class ObjectIDToNameHandler {
         result: cacheResult,
         id,
         startTime,
-        type,
       });
       return cacheResult;
     } else {
@@ -53,7 +41,6 @@ class ObjectIDToNameHandler {
           result,
           id,
           startTime,
-          type,
         });
         return result;
       } catch (e) {
@@ -63,9 +50,9 @@ class ObjectIDToNameHandler {
     }
   }
 
-  logMessage = ({ cacheMiss, id, result, startTime, type }) => {
+  logMessage = ({ cacheMiss, id, result, startTime }) => {
     Logger.logCacheResult(
-      `ObjectIDToNameHandler/${type}`,
+      `MapHandler`,
       cacheMiss,
       id,
       JSON.stringify(result),
@@ -78,5 +65,5 @@ class ObjectIDToNameHandler {
     else return false;
   }
 }
-const SingletonInstance = new ObjectIDToNameHandler();
+const SingletonInstance = new MapHandler();
 module.exports = SingletonInstance;

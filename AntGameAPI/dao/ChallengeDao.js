@@ -136,6 +136,7 @@ const getChallengeByChallengeId = async id => {
   return {
     id: result._id,
     mapPath: result.mapPath,
+    mapID: result.mapID,
     seconds: result.seconds,
     homeLimit: result.homeLimit,
     name: result.name,

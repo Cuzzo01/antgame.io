@@ -1,10 +1,11 @@
 const { addNewConfig } = require("../dao/AdminDao");
-const { getRandomInRange } = require("../MapGenerator/Helpers");
+const { getRandomInRange, CountOnMap } = require("../MapGenerator/Helpers");
 const { generateMap } = require("../MapGenerator/MapGenerator");
 const SpacesService = require("../services/SpacesService");
 const Logger = require("../Logger");
 const { GenerateFoodTooltips } = require("../MapGenerator/FoodTooltipGenerator");
 const { getShortMonthName } = require("../helpers/TimeHelper");
+const { addMapToDB } = require("../dao/MapDao");
 
 const mapWidth = 200;
 const mapHeight = 112;
@@ -18,20 +19,24 @@ class ChallengeGenerator {
       const mapName = getChallengeName().replace(/ /g, "_");
 
       const mapData = generateMap(mapWidth, mapHeight);
+      const foodCount = CountOnMap("f", mapData);
       const mapObject = {
         MapVersion: 2,
         MapName: mapName,
         Map: mapData,
         Tooltips: GenerateFoodTooltips(mapData),
+        FoodCount: foodCount,
       };
 
-      const mapURL = SpacesService.uploadDailyMap(mapName, mapObject);
+      const mapPath = SpacesService.uploadDailyMap(mapName, mapObject);
+
+      const mapID = (await addMapToDB({ url: mapPath, name: mapName, foodCount: foodCount }))._id;
 
       const time = Math.round(getRandomInRange(60, 180) / 5) * 5;
       const homeLimit = Math.round(getRandomInRange(2, 8));
       const newChallenge = {
         name: getChallengeName(),
-        mapPath: mapURL,
+        mapID: mapID,
         seconds: time,
         homeLimit: homeLimit,
         active: false,
