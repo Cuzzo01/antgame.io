@@ -15,3 +15,7 @@
 .playButton svg {
   width: 1.3em;
 }
+
+.justifyLeft {
+  justify-self: flex-start;
+}

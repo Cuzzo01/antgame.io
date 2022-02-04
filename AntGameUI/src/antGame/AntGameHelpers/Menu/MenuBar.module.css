@@ -1,35 +1,32 @@
 .foodTracker {
   text-align: left;
-  padding-left: 0.5em;
 }
 
 .timer {
   text-align: right;
-  padding-right: 0.5em;
-  border-right: 3px solid black;
 }
 
 .timerChallenge {
   text-align: center;
-  padding: 0 0.5em;
-  border-right: 3px solid black;
-  border-left: 3px solid black;
 }
 
 .middle {
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: auto min-content auto;
+  align-items: center;
+  justify-self: center;
 }
 
 .challengeMiddle {
   display: grid;
-  grid-template-columns: 44% 7vw auto;
+  grid-template-columns: auto min-content auto min-content auto;
   align-items: center;
+  justify-self: center;
 }
 
 .container {
   display: grid;
-  grid-template-columns: 19em auto 19em;
+  grid-template-columns: auto auto auto;
   align-items: center;
 }
 
@@ -40,7 +37,6 @@
 .challengeName {
   text-align: right;
   font-family: "Courier Prime Bold";
-  padding-right: 0.5em;
 }
 
 .challengeMiddle h3 {
@@ -50,4 +46,20 @@
 
 .active {
   color: green;
+}
+
+.verticalLine {
+  border-right: .2em solid black;
+  height: 75%;
+}
+
+.vertLineContainer {
+  display: grid;
+  height: 100%;
+  grid-template-columns: .5em .2em .5em;
+  align-items: center;
+}
+
+.justifyRight {
+  justify-self: flex-end;
 }
