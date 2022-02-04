@@ -38,8 +38,11 @@ const ReportedConfigMatchesExpectedConfig = (runData, expectedConfig) => {
   const TimeMatches = expectedConfig.seconds === runData.GameConfig.Time;
   if (!TimeMatches) return `Time mismatch (${runData.GameConfig.Time})`;
 
-  const MapPathMatches = expectedConfig.mapPath === runData.GameConfig.MapPath;
-  if (!MapPathMatches) return `MapPath mismatch (${runData.GameConfig.mapPath})`;
+  // TODO add some check for MapID
+  if (expectedConfig.mapPath) {
+    const MapPathMatches = expectedConfig.mapPath === runData.GameConfig.MapPath;
+    if (!MapPathMatches) return `MapPath mismatch (${runData.GameConfig.mapPath})`;
+  }
 
   const CorrectNumberOfHomes = parseInt(expectedConfig.homeLimit) >= runData.HomeLocations.length;
   if (!CorrectNumberOfHomes) return "Too many homes";
