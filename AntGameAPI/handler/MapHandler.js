@@ -44,7 +44,7 @@ class MapHandler {
         });
         return result;
       } catch (e) {
-        Logger.logError("ObjectIDToNameHandler", e);
+        Logger.logError("MapHandler", e);
         return null;
       }
     }
