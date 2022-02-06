@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": "16.x"
+  },
   "name": "antgameapi",
   "version": "0.0.1",
   "description": "AntGame backend",
