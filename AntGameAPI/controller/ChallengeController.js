@@ -225,7 +225,7 @@ async function getChallenge(req, res) {
     if (config.mapID) {
       const mapData = await MapHandler.getMapData({ mapID: config.mapID.toString() });
       if (await FlagHandler.getFlagValue("use-spaces-proxy")) {
-        toReturn.mapPath = `https://antgame.io/map/${mapData.url}`;
+        toReturn.mapPath = `https://antgame.io/assets/${mapData.url}`;
       } else {
         toReturn.mapPath = `https://antgame.nyc3.digitaloceanspaces.com/${mapData.url}`;
       }

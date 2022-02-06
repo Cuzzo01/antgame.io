@@ -7,10 +7,7 @@ const SolutionImage = ({ path }) => {
 
   return (
     <div className={styles.solutionImageContainer}>
-      <div
-        className={globalStyles.divButton}
-        onClick={() => setShowImage(!showImage)}
-      >
+      <div className={globalStyles.divButton} onClick={() => setShowImage(!showImage)}>
         {showImage ? "Hide" : "See WR Setup"}
       </div>
       {showImage ? (
