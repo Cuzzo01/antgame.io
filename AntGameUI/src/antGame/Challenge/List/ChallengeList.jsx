@@ -151,7 +151,7 @@ const DailyChallengeCard = ({ challenge, record, championshipID }) => {
           </strong>
         </span>
       </div>
-      <div className={styles.infoBlock}>
+      <div>
         <div className={styles.challengeInfo}>
           <div className={styles.challengeName}>
             <span>{challenge.name}</span>
