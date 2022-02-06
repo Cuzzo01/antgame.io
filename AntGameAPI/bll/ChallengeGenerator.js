@@ -57,7 +57,7 @@ class ChallengeGenerator {
 
 const getChallengeName = () => {
   const date = new Date();
-  const day = date.getDate();
+  const day = date.getUTCDate();
   const month = getShortMonthName(date);
   return `${month} ${day < 10 ? `0${day}` : day} ${date.getFullYear()}`;
 };
