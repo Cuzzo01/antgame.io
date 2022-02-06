@@ -14,6 +14,8 @@ const FoodPerCell = 20;
 
 const GenerateSolutionImage = async ({ challengeID }) => {
   const challengeDetails = await getConfigDetailsByID(challengeID);
+  if (challengeDetails === null) throw `Unable to pull challenge by ID : ${challengeID}`
+
   const WR = challengeDetails.records[0];
   const mapID = challengeDetails.mapID;
   const configMapPath = challengeDetails.mapPath;
@@ -75,7 +77,7 @@ const GenerateSolutionImage = async ({ challengeID }) => {
     fs.readFileSync(diskPathToImage)
   );
 
-  fs.unlink(diskPathToImage);
+  fs.unlinkSync(diskPathToImage);
 
   return pathName;
 };
