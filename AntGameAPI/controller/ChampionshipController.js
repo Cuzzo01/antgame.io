@@ -34,11 +34,12 @@ async function getLeaderboard(req, res) {
 
     const championshipID = req.params.id;
     const leaderboardData = await LeaderboardHandler.getChampionshipLeaderboardData(championshipID);
+    const leaderboard = [...leaderboardData.leaderboard];
+    const lastPointsAwarded = [...leaderboardData.lastPointsAwarded];
 
     const usernamePromises = new Map();
 
     let userOnLeaderboard = false;
-    const leaderboard = leaderboardData.leaderboard;
     leaderboard.forEach(entry => {
       const id = entry._id.toString();
       if (id == userID) userOnLeaderboard = true;
@@ -54,7 +55,7 @@ async function getLeaderboard(req, res) {
       const result = await getUserPointsByUserID(championshipID, userID);
       if (result !== null) {
         const userResult = result.userPoints[0];
-        leaderboardData.leaderboard.push({
+        leaderboard.push({
           points: userResult.points,
           _id: userID,
           username: req.user.username,
@@ -63,7 +64,6 @@ async function getLeaderboard(req, res) {
       }
     }
 
-    const lastPointsAwarded = leaderboardData.lastPointsAwarded;
     if (lastPointsAwarded)
       lastPointsAwarded.forEach(entry => {
         const id = entry.userID.toString();
@@ -85,9 +85,9 @@ async function getLeaderboard(req, res) {
 
     const leaderboardResponse = {
       name: await ObjectIDToNameHandler.getChampionshipName(championshipID),
-      leaderboard: leaderboardData.leaderboard,
+      leaderboard: leaderboard,
       pointMap: leaderboardData.pointMap,
-      lastPointsAwarded: leaderboardData.lastPointsAwarded,
+      lastPointsAwarded: lastPointsAwarded,
       usernames: usernames,
     };
 
