@@ -36,7 +36,7 @@ class ChallengeGenerator {
         mapID = (await addMapToDB({ url: mapPath, name: mapName, foodCount: foodCount }))._id;
       }
 
-      const time = Math.round(getRandomInRange(60, 180) / 5) * 5;
+      const time = Math.round(getRandomInRange(60, 150) / 5) * 5;
       const homeLimit = Math.round(getRandomInRange(2, 8));
       const newChallenge = {
         name: getChallengeName(),
