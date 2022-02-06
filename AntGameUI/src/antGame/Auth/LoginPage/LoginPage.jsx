@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./LoginPage.module.css";
+import globalStyles from "../../Helpers/GenericStyles.module.css";
 import AuthHandler from "../AuthHandler";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { getFlag } from "../../Helpers/FlagService";
@@ -117,7 +118,7 @@ const LoginPage = props => {
             <input type="submit" style={{ display: "none" }} />
             <div className={styles.buttonBar}>
               <div
-                className={`${styles.divButton} ${styles.skipButton}`}
+                className={`${globalStyles.divButton} ${styles.skipButton}`}
                 onClick={continueWithoutLogin}
               >
                 Skip

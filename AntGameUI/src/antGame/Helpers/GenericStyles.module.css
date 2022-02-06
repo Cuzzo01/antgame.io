@@ -65,3 +65,16 @@
   flex-shrink: 0;
   flex-grow: 0;
 }
+
+.divButton {
+  border: 2px gray solid;
+  border-radius: 0.5em;
+  padding: 0.5em;
+  text-align: center;
+}
+
+.divButton:hover {
+  background-color: gray;
+  color: black;
+  cursor: pointer;
+}

@@ -109,7 +109,7 @@ class AuthHandler {
         return config;
       } else if (config.url.includes("digitaloceanspaces.com")) {
         config.metadata = { startTime: new Date() };
-        if (await getFlag("use-new-map-loading")) {
+        if (await getFlag("use-spaces-proxy")) {
           const url = config.url.split("/");
           const pathStart = 1 + url.findIndex(a => a.includes("digitaloceanspaces.com"));
           const path = `https://antgame.io/map/${url.slice(pathStart).join("/")}`;
