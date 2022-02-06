@@ -54,7 +54,7 @@ const handleDailyChallengeChange = async () => {
         currentChampionship,
         newDailyChallengeID
       );
-      Logger.logCronMessage("bound new config to this current championship");
+      Logger.logCronMessage("bound new config to the current championship");
     }
 
     await updateConfigByID(newDailyChallengeID, { active: true });

@@ -86,9 +86,12 @@ const CreateRecordImage = async ({
     ctx.fillText(attributeTag, 10, imgHeight - 10);
   }
 
-  const imagePath = `${challengeName.replaceAll(" ", "_")}-WR.png`;
-  await PImage.encodePNGToStream(img1, fs.createWriteStream(imagePath));
-  return imagePath;
+  if (challengeName) {
+    const imagePath = `${challengeName.replaceAll(" ", "_")}-WR.png`;
+    await PImage.encodePNGToStream(img1, fs.createWriteStream(imagePath));
+    return imagePath;
+  }
+  throw `Falsy challenge name passed in : ${challengeName}`;
 };
 
 module.exports = { CreateRecordImage };
