@@ -36,7 +36,7 @@ export class TrailHandler {
 
   refreshSize() {
     this.canvasBounds = [this._graphics.width, this._graphics.height];
-    this.clearTrails();
+    this._graphics.clear();
   }
 
   buildTrailMap() {
