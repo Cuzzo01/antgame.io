@@ -215,11 +215,18 @@ async function getChallenge(req, res) {
       return;
     }
 
+    if (!config.active && !req.user.admin) {
+      res.status(400);
+      res.send("Challenge not active");
+      return;
+    }
+
     const toReturn = {
       id: config.id,
       seconds: config.seconds,
       homeLimit: config.homeLimit,
       name: config.name,
+      active: config.active,
     };
 
     if (config.mapID) {

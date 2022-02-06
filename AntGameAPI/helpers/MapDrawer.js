@@ -49,7 +49,7 @@ const CreateRecordImage = async ({
     }
   }
 
-  if (homeAmounts || foodAmounts || attributeTag) {
+  if (homeAmounts || foodAmounts) {
     await PImage.registerFont("assets/CourierPrime-Bold.ttf", "CourierPrime").loadPromise();
     ctx.font = "20pt CourierPrime";
     ctx.textAlign = "center";

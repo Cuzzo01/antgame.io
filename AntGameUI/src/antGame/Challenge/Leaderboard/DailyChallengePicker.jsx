@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getDailyChallengeList } from "../ChallengeService";
 import styles from "./Leaderboard.module.css";
 
-const DailyChallengePicker = ({ callback }) => {
+const DailyChallengePicker = ({ callback, currentID }) => {
   const [selectOptions, setSelectOptions] = useState(false);
 
   useEffect(() => {
@@ -30,7 +30,9 @@ const DailyChallengePicker = ({ callback }) => {
   return (
     <div className={styles.dailyPicker}>
       <span>Other daily challenges:</span>
-      <select onChange={handleChange}>{selectOptions}</select>
+      <select onChange={handleChange} defaultValue={currentID}>
+        {selectOptions}
+      </select>
     </div>
   );
 };

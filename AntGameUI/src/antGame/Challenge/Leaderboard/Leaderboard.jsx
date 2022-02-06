@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { getLeaderboard } from "../../Challenge/ChallengeService";
 import styles from "./Leaderboard.module.css";
 import AuthHandler from "../../Auth/AuthHandler";
@@ -10,12 +10,13 @@ import SolutionImage from "./SolutionImage";
 
 const Leaderboard = props => {
   const challengeID = useParams().id;
+  const history = useHistory();
 
   const [loading, setLoading] = useState(true);
   const [runTable, setRunData] = useState([]);
   const [title, setTitle] = useState();
   const [playerCount, setPlayerCount] = useState(false);
-  const [showDailyPicker, setShowDailyPicker] = useState(false);
+  const [isDaily, setIsDaily] = useState(false);
   const [solutionImagePath, setSolutionImagePath] = useState(false);
 
   const setLeaderboardData = useCallback(
@@ -25,9 +26,9 @@ const Leaderboard = props => {
       if (solutionImage) setSolutionImagePath(solutionImage);
       else setSolutionImagePath(false);
 
-      const isDaily = daily === true;
-      if (isDaily) setShowDailyPicker(true);
-      else setShowDailyPicker(false);
+      const dailyChallenge = daily === true;
+      if (dailyChallenge) setIsDaily(true);
+      else setIsDaily(false);
 
       let table = [];
       let lastRank = 0;
@@ -44,7 +45,6 @@ const Leaderboard = props => {
             name={data.username}
             pb={data.pb}
             age={data.age}
-            isDaily={isDaily}
           />
         );
       });
@@ -59,6 +59,7 @@ const Leaderboard = props => {
   const fetchLeaderboard = useCallback(
     ({ id }) => {
       getLeaderboard(id).then(data => {
+        if (window.location.pathname.includes("daily")) setIsDaily(true);
         if (data === null) {
           setLoading(false);
           setRunData(<h5>No records for this challenge</h5>);
@@ -83,8 +84,11 @@ const Leaderboard = props => {
       <div className={styles.title}>
         <h2>{title}</h2>
       </div>
-      {showDailyPicker ? (
-        <DailyChallengePicker callback={newId => fetchLeaderboard({ id: newId })} />
+      {isDaily ? (
+        <DailyChallengePicker
+          callback={newId => history.push(`/challenge/${newId}/leaderboard`)}
+          currentID={challengeID}
+        />
       ) : null}
       {solutionImagePath ? <SolutionImage path={solutionImagePath} /> : null}
       <div className={styles.nav}>
@@ -92,7 +96,11 @@ const Leaderboard = props => {
           <Link to="/challenge">Menu</Link>
         </div>
         <div className={styles.navRight}>
-          <a href={`/challenge/${challengeID}`}>Play Challenge</a>
+          {isDaily ? (
+            <a href="/challenge/daily">Play Daily</a>
+          ) : (
+            <a href={`/challenge/${challengeID}`}>Play Challenge</a>
+          )}
         </div>
       </div>
       {runTable}
