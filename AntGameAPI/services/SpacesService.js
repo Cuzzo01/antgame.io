@@ -28,14 +28,14 @@ class spacesService {
   }
 
   uploadDailyMap(mapName, mapFile) {
-    let fileName = `dailyMaps/${mapName}.json`;
+    let fileName = `dailyMaps/${mapName}_${getCacheString()}.json`;
     if (process.env.environment !== "PROD") fileName = "dev/" + fileName;
     this.uploadFile(fileName, JSON.stringify(mapFile), "application/json");
     return fileName;
   }
 
   uploadRecordImage(challengeName, image) {
-    let fileName = `recordImages/${challengeName.replaceAll(" ", "_")}-WR.png`;
+    let fileName = `recordImages/${challengeName.replaceAll(" ", "_")}_WR_${getCacheString()}.png`;
     if (process.env.environment !== "PROD") fileName = "dev/" + fileName;
     this.uploadFile(fileName, image, "image/png");
     return fileName;
@@ -44,3 +44,9 @@ class spacesService {
 
 const SpacesService = new spacesService();
 module.exports = SpacesService;
+
+const getCacheString = () => {
+  return Math.floor(Math.random() * 1000000)
+    .toString()
+    .padStart(6, "0");
+};

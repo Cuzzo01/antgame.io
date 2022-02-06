@@ -59,6 +59,7 @@ const Leaderboard = props => {
   const fetchLeaderboard = useCallback(
     ({ id }) => {
       getLeaderboard(id).then(data => {
+        if (window.location.pathname.includes("daily")) setIsDaily(true);
         if (data === null) {
           setLoading(false);
           setRunData(<h5>No records for this challenge</h5>);
