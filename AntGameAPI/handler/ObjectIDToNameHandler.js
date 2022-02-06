@@ -7,7 +7,7 @@ const Logger = require("../Logger");
 class ObjectIDToNameHandler {
   constructor() {
     this.resultCache = new ResultCache();
-    this.timeToCache = 3600; // 1 hour
+    this.timeToCache = 43200; // 1 hour
   }
 
   async getChallengeName(id) {
