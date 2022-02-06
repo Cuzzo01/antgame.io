@@ -14,7 +14,7 @@ const FoodPerCell = 20;
 
 const GenerateSolutionImage = async ({ challengeID }) => {
   const challengeDetails = await getConfigDetailsByID(challengeID);
-  if (challengeDetails === null) throw `Unable to pull challenge by ID : ${challengeID}`
+  if (challengeDetails === null) throw `Unable to pull challenge by ID : ${challengeID}`;
 
   const WR = challengeDetails.records[0];
   const mapID = challengeDetails.mapID;
