@@ -104,15 +104,15 @@ class AuthHandler {
     );
 
     axios.interceptors.request.use(async config => {
-      if (config.url.includes("antgame.io/map/")) {
+      if (config.url.includes("antgame.io/assets/")) {
         config.metadata = { startTime: new Date() };
         return config;
       } else if (config.url.includes("digitaloceanspaces.com")) {
         config.metadata = { startTime: new Date() };
-        if (await getFlag("use-new-map-loading")) {
+        if (await getFlag("use-spaces-proxy")) {
           const url = config.url.split("/");
           const pathStart = 1 + url.findIndex(a => a.includes("digitaloceanspaces.com"));
-          const path = `https://antgame.io/map/${url.slice(pathStart).join("/")}`;
+          const path = `https://antgame.io/assets/${url.slice(pathStart).join("/")}`;
           config.url = path;
         }
         return config;

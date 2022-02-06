@@ -3,6 +3,7 @@
   margin: 0 auto;
   padding-top: 3em;
   font-family: "Courier Prime Bold";
+  max-width: 95vw;
 }
 
 .hr {
@@ -40,9 +41,22 @@
 .dailyPicker {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .dailyPicker select {
   margin-left: 0.5rem;
   padding: 0.25em 0.5em;
+}
+
+.solutionImageContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1em 0;
+  margin: 1em 0;
+}
+
+.solutionImage {
+  max-width: 90vw;
 }

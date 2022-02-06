@@ -6,6 +6,7 @@ import AuthHandler from "../../Auth/AuthHandler";
 import DailyChallengePicker from "./DailyChallengePicker";
 import { useCallback } from "react";
 import LeaderboardRow from "../../Helpers/LeaderboardRow";
+import SolutionImage from "./SolutionImage";
 
 const Leaderboard = props => {
   const challengeID = useParams().id;
@@ -15,38 +16,45 @@ const Leaderboard = props => {
   const [title, setTitle] = useState();
   const [playerCount, setPlayerCount] = useState(false);
   const [showDailyPicker, setShowDailyPicker] = useState(false);
+  const [solutionImagePath, setSolutionImagePath] = useState(false);
 
-  const setLeaderboardData = useCallback(({ daily, leaderboard, name, playerCount }) => {
-    const currentUsername = AuthHandler.username;
+  const setLeaderboardData = useCallback(
+    ({ daily, leaderboard, name, playerCount, solutionImage }) => {
+      const currentUsername = AuthHandler.username;
 
-    const isDaily = daily === true;
-    if (isDaily) setShowDailyPicker(true);
-    else setShowDailyPicker(false);
+      if (solutionImage) setSolutionImagePath(solutionImage);
+      else setSolutionImagePath(false);
 
-    let table = [];
-    let lastRank = 0;
-    leaderboard.forEach(data => {
-      if (data.rank !== lastRank + 1) {
-        table.push(<div className={styles.hr} />);
-      }
-      lastRank = data.rank;
-      table.push(
-        <LeaderboardRow
-          ownRow={data.username === currentUsername}
-          key={data.username}
-          rank={data.rank}
-          name={data.username}
-          pb={data.pb}
-          age={data.age}
-          isDaily={isDaily}
-        />
-      );
-    });
-    setRunData(table);
-    setTitle(name);
-    if (playerCount) setPlayerCount(playerCount);
-    document.title = `${name} - Leaderboard`;
-  }, []);
+      const isDaily = daily === true;
+      if (isDaily) setShowDailyPicker(true);
+      else setShowDailyPicker(false);
+
+      let table = [];
+      let lastRank = 0;
+      leaderboard.forEach(data => {
+        if (data.rank !== lastRank + 1) {
+          table.push(<div className={styles.hr} />);
+        }
+        lastRank = data.rank;
+        table.push(
+          <LeaderboardRow
+            ownRow={data.username === currentUsername}
+            key={data.username}
+            rank={data.rank}
+            name={data.username}
+            pb={data.pb}
+            age={data.age}
+            isDaily={isDaily}
+          />
+        );
+      });
+      setRunData(table);
+      setTitle(name);
+      if (playerCount) setPlayerCount(playerCount);
+      document.title = `${name} - Leaderboard`;
+    },
+    []
+  );
 
   const fetchLeaderboard = useCallback(
     ({ id }) => {
@@ -56,6 +64,7 @@ const Leaderboard = props => {
           setRunData(<h5>No records for this challenge</h5>);
           setTitle("Error");
           setPlayerCount(false);
+          setSolutionImagePath(false);
           return;
         }
         setLeaderboardData(data);
@@ -77,6 +86,7 @@ const Leaderboard = props => {
       {showDailyPicker ? (
         <DailyChallengePicker callback={newId => fetchLeaderboard({ id: newId })} />
       ) : null}
+      {solutionImagePath ? <SolutionImage path={solutionImagePath} /> : null}
       <div className={styles.nav}>
         <div className={styles.navLeft}>
           <Link to="/challenge">Menu</Link>

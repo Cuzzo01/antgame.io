@@ -25,14 +25,12 @@ const DailyChallengePicker = ({ callback }) => {
     callback(event.target.value);
   };
 
+  if (!selectOptions) return <div />;
+
   return (
     <div className={styles.dailyPicker}>
-      {selectOptions ? (
-        <div>
-          Other daily challenges:
-          <select onChange={handleChange}>{selectOptions}</select>
-        </div>
-      ) : null}
+      <span>Other daily challenges:</span>
+      <select onChange={handleChange}>{selectOptions}</select>
     </div>
   );
 };

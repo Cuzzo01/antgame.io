@@ -224,8 +224,8 @@ async function getChallenge(req, res) {
 
     if (config.mapID) {
       const mapData = await MapHandler.getMapData({ mapID: config.mapID.toString() });
-      if (await FlagHandler.getFlagValue("use-new-map-loading")) {
-        toReturn.mapPath = `https://antgame.io/map/${mapData.url}`;
+      if (await FlagHandler.getFlagValue("use-spaces-proxy")) {
+        toReturn.mapPath = `https://antgame.io/assets/${mapData.url}`;
       } else {
         toReturn.mapPath = `https://antgame.nyc3.digitaloceanspaces.com/${mapData.url}`;
       }
@@ -405,10 +405,20 @@ async function getLeaderboard(req, res) {
       }
     }
 
+    let solutionImgPath;
+    if (details.solutionImage) {
+      if (await FlagHandler.getFlagValue("use-spaces-proxy")) {
+        solutionImgPath = "https://antgame.io/assets/" + details.solutionImage;
+      } else {
+        solutionImgPath = "https://antgame.nyc3.digitaloceanspaces.com/" + details.solutionImage;
+      }
+    }
+
     const response = {
       name: await ObjectIDToNameHandler.getChallengeName(challengeID),
       leaderboard: leaderboardData,
       daily: isDaily,
+      solutionImage: solutionImgPath,
     };
 
     if (await FlagHandler.getFlagValue("show-player-count-on-leaderboard"))
