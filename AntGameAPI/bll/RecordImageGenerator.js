@@ -58,7 +58,7 @@ const GenerateSolutionImage = async ({ challengeID }) => {
   }
 
   const wrUsername = await ObjectIDToNameHandler.getUsername(WR.userID);
-  const attributeTag = `${wrUsername} - ${WR.score}`;
+  const attributeTag = `${wrUsername} - ${WR.score} (World Record)`;
   let foodAmounts;
   if (mapObject.Tooltips) foodAmounts = mapObject.Tooltips;
   else foodAmounts = GenerateFoodTooltips(mapData);
