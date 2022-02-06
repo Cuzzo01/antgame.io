@@ -1,6 +1,6 @@
 import styles from "./GenericStyles.module.css";
 
-const LeaderboardRow = ({ rank, ownRow, name, age, isDaily, pb, noRank }) => {
+const LeaderboardRow = ({ rank, ownRow, name, age, pb, noRank }) => {
   let placeStyle = "";
   if (!noRank) {
     switch (rank) {
