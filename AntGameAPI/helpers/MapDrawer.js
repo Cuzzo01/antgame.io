@@ -2,10 +2,10 @@ const PImage = require("pureimage");
 const fs = require("fs");
 
 const WallColor = "black";
-const HomeColor = "#C0392B";
+const HomeColor = "#f04837";
 const FoodColor = "#186A3B";
 const DirtColor = "#40260F";
-const HomeAmountColor = "#F1948A";
+const HomeAmountColor = "#8e2a1f";
 const FoodAmountColor = "#7DCEA0";
 const BackgroundColor = "#909497";
 
@@ -51,31 +51,37 @@ const CreateRecordImage = async ({
 
   if (homeAmounts || foodAmounts || attributeTag) {
     await PImage.registerFont("assets/CourierPrime-Bold.ttf", "CourierPrime").loadPromise();
-    ctx.font = "18px CourierPrime";
+    ctx.font = "20pt CourierPrime";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
   }
 
-  if (foodAmounts) {
-    ctx.fillStyle = FoodAmountColor;
-    foodAmounts.forEach(amountData => {
-      const pixelX = Math.round(amountData.x * pixelDensity[0]);
-      const pixelY = Math.round(amountData.y * pixelDensity[1]);
-      ctx.fillText(amountData.value.toString(), pixelX, pixelY);
+  foodAmounts.forEach(amountData => {
+    const pixelX = Math.round(amountData.x * pixelDensity[0]);
+    const pixelY = Math.round(amountData.y * pixelDensity[1]);
+    drawText({
+      color: FoodAmountColor,
+      text: amountData.value.toString(),
+      x: pixelX,
+      y: pixelY,
+      context: ctx,
     });
-  }
+  });
 
-  if (homeAmounts) {
-    ctx.fillStyle = HomeAmountColor;
-    homeAmounts.forEach(amountData => {
-      const pixelX = Math.floor(amountData.x * pixelDensity[0]);
-      const pixelY = Math.floor(amountData.y * pixelDensity[1]);
-      ctx.fillText(amountData.value.toString(), pixelX, pixelY);
+  homeAmounts.forEach(amountData => {
+    const pixelX = Math.floor(amountData.x * pixelDensity[0]);
+    const pixelY = Math.floor(amountData.y * pixelDensity[1]);
+    drawText({
+      color: HomeAmountColor,
+      text: amountData.value.toString(),
+      x: pixelX,
+      y: pixelY,
+      context: ctx,
     });
-  }
+  });
 
   ctx.fillStyle = "white";
-  ctx.font = "20px CourierPrime";
+  ctx.font = "25pt CourierPrime";
 
   ctx.textAlign = "left";
   ctx.textBaseline = "top";
@@ -95,3 +101,8 @@ const CreateRecordImage = async ({
 };
 
 module.exports = { CreateRecordImage };
+
+const drawText = ({ color, text, x, y, context }) => {
+  context.fillStyle = color;
+  context.fillText(text, x, y);
+};
