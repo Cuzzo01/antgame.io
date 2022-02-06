@@ -100,8 +100,6 @@ const SettingButton = props => {
 };
 
 const styles = {
-  container: {
-  },
   button: {
     marginLeft: "0.2em",
     borderRadius: "5px",

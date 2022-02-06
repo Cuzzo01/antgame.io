@@ -26,7 +26,7 @@
 
 .container {
   display: grid;
-  grid-template-columns: auto auto auto;
+  grid-template-columns: 35% auto 35%;
   align-items: center;
 }
 
@@ -49,14 +49,14 @@
 }
 
 .verticalLine {
-  border-right: .2em solid black;
+  border-right: 0.2em solid black;
   height: 75%;
 }
 
 .vertLineContainer {
   display: grid;
   height: 100%;
-  grid-template-columns: .5em .2em .5em;
+  grid-template-columns: 0.5em 0.2em 0.5em;
   align-items: center;
 }
 

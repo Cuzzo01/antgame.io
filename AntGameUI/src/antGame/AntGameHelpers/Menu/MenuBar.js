@@ -36,18 +36,18 @@ export default function MenuBar(props) {
         ) : null}
         {IsChallenge ? (
           <div className={styles.vertLineContainer}>
-            <div/>
+            <div />
             <div className={styles.verticalLine}></div>
-            <div/>
+            <div />
           </div>
         ) : null}
         <div className={IsChallenge ? styles.timerChallenge : styles.timer}>
           <Timer time={props.time} active={props.timerActive} />
         </div>
         <div className={styles.vertLineContainer}>
-          <div/>
+          <div />
           <div className={styles.verticalLine}></div>
-          <div/>
+          <div />
         </div>
         <div className={styles.foodTracker}>
           <FoodTracker
