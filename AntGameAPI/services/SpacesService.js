@@ -12,15 +12,16 @@ class spacesService {
     }
   }
 
-  uploadFile(fileName, fileToUpload) {
+  uploadFile(fileName, fileToUpload, ContentType) {
     this.s3.putObject(
       {
         Bucket: process.env.DO_SPACES_NAME,
         Key: fileName,
-        Body: JSON.stringify(fileToUpload),
+        Body: fileToUpload,
         ACL: "public-read",
+        ContentType,
       },
-      (err, data) => {
+      err => {
         if (err) return console.log(err);
       }
     );
@@ -28,8 +29,15 @@ class spacesService {
 
   uploadDailyMap(mapName, mapFile) {
     let fileName = `dailyMaps/${mapName}.json`;
-    if (process.env.environment === "DEV") fileName = "dev/" + fileName;
-    this.uploadFile(fileName, mapFile);
+    if (process.env.environment !== "PROD") fileName = "dev/" + fileName;
+    this.uploadFile(fileName, JSON.stringify(mapFile), "application/json");
+    return fileName;
+  }
+
+  uploadRecordImage(challengeName, image) {
+    let fileName = `recordImages/${challengeName.replaceAll(" ", "_")}-WR.png`;
+    if (process.env.environment !== "PROD") fileName = "dev/" + fileName;
+    this.uploadFile(fileName, image, "image/png");
     return fileName;
   }
 }

@@ -41,7 +41,7 @@ export default function GameMenu(props) {
     );
 
   return (
-    <div style={styles.container}>
+    <div style={styles.container} className={cssStyles.justifyLeft}>
       {gameMode.mode === "challenge" ? (
         <SettingButton
           className={props.playState ? cssStyles.disabled : null}
@@ -100,9 +100,6 @@ const SettingButton = props => {
 };
 
 const styles = {
-  container: {
-    textAlign: "left",
-  },
   button: {
     marginLeft: "0.2em",
     borderRadius: "5px",

@@ -34,8 +34,20 @@ export default function MenuBar(props) {
             <h3>{ChallengeHandler.config.name}</h3>
           </div>
         ) : null}
+        {IsChallenge ? (
+          <div className={styles.vertLineContainer}>
+            <div />
+            <div className={styles.verticalLine}></div>
+            <div />
+          </div>
+        ) : null}
         <div className={IsChallenge ? styles.timerChallenge : styles.timer}>
           <Timer time={props.time} active={props.timerActive} />
+        </div>
+        <div className={styles.vertLineContainer}>
+          <div />
+          <div className={styles.verticalLine}></div>
+          <div />
         </div>
         <div className={styles.foodTracker}>
           <FoodTracker
@@ -45,7 +57,7 @@ export default function MenuBar(props) {
           />
         </div>
       </div>
-      <div className={styles.alignRight}>
+      <div className={styles.justifyRight}>
         {IsChallenge ? <HomeTracker homeOnMap={props.homeOnMap} greyedOut={brushDisabled} /> : null}
         <BrushMenu
           disableButtons={brushDisabled}

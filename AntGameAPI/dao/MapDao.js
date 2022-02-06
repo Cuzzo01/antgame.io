@@ -20,6 +20,12 @@ const getMapByID = async ({ mapID }) => {
   return result;
 };
 
+const getMapByName = async ({ name }) => {
+  const collection = await getCollection("maps");
+  const result = await collection.findOne({ name: name });
+  return result;
+};
+
 const TryParseObjectID = (stringID, name) => {
   try {
     return new ObjectID(stringID);
@@ -29,4 +35,4 @@ const TryParseObjectID = (stringID, name) => {
   }
 };
 
-module.exports = { addMapToDB, getMapByID };
+module.exports = { addMapToDB, getMapByID, getMapByName };

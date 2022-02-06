@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": "16.x"
+  },
   "name": "antgameapi",
   "version": "0.0.1",
   "description": "AntGame backend",
@@ -12,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "aws-sdk": "^2.1051.0",
+    "axios": "^0.25.0",
     "bcrypt": "^5.0.1",
     "censor-sensor": "^1.0.6",
     "express": "^4.17.1",
@@ -21,6 +25,7 @@
     "mongodb": "^3.6.9",
     "node-schedule": "^2.1.0",
     "prettier": "^2.3.2",
+    "pureimage": "^0.3.8",
     "response-time": "^2.3.2",
     "simplex-noise": "^3.0.0",
     "the-big-username-blacklist": "^1.5.2"

@@ -5,6 +5,7 @@ const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const FlagHandler = require("../handler/FlagHandler");
 const { getDailyChallengesInReverseOrder } = require("../dao/ChallengeDao");
 const { ChampionshipOrchestrator } = require("./ChampionshipOrchestrator");
+const { GenerateSolutionImage } = require("./RecordImageGenerator");
 
 const handleDailyChallengeChange = async () => {
   if ((await FlagHandler.getFlagValue("run-daily-challenge-cron")) === false) {
@@ -19,18 +20,26 @@ const handleDailyChallengeChange = async () => {
   Logger.logCronMessage(`new challenge generated : challengeID: ${newDailyChallengeID}`);
 
   if (currentDailyChallenge) {
-    await updateConfigByID(currentDailyChallenge._id, { active: false, order: 0 });
+    const challengeID = currentDailyChallenge._id;
+    await updateConfigByID(challengeID, { active: false, order: 0 });
     Logger.logCronMessage("set old map inactive");
 
     if (currentDailyChallenge.championshipID) {
       const championshipID = currentDailyChallenge.championshipID;
-      const challengeID = currentDailyChallenge._id;
       try {
         await ChampionshipOrchestrator.awardPointsForChallenge({ championshipID, challengeID });
         Logger.logCronMessage("awarded points for yesterdays challenge");
       } catch (e) {
         Logger.logCronMessage(`Could not award points for challenge : ${e}`);
       }
+    }
+
+    try {
+      const solutionImagePath = await GenerateSolutionImage({ challengeID });
+      await updateConfigByID(challengeID, { solutionImage: solutionImagePath });
+      Logger.logCronMessage(`Generated and set solution image`);
+    } catch (e) {
+      Logger.logCronMessage(`Could not generate solution image : ${e}`);
     }
   } else {
     Logger.logCronMessage("skipping setting old map inactive");
@@ -45,7 +54,7 @@ const handleDailyChallengeChange = async () => {
         currentChampionship,
         newDailyChallengeID
       );
-      Logger.logCronMessage("bound new config to this current championship");
+      Logger.logCronMessage("bound new config to the current championship");
     }
 
     await updateConfigByID(newDailyChallengeID, { active: true });
