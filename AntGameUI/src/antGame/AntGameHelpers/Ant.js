@@ -1,4 +1,5 @@
 import { Config } from "../config";
+import seedrandom from "seedrandom";
 
 const ViewDistance = Config.ViewDistance;
 const ViewAngle = toRad(Config.ViewAngle);
@@ -18,13 +19,14 @@ const WallValue = Brushes.find(brush => brush.name === "Wall").value;
 const TrailDropRate = Config.TrailDropRate;
 
 export class Ant {
-  constructor(pos, mapHandler, homeTrailHandler, foodTrailHandler, homeBrush) {
+  constructor(pos, mapHandler, homeTrailHandler, foodTrailHandler, homeBrush, id) {
+    this.rng = seedrandom(id);
     this._pos = pos;
     this.mapHandler = mapHandler;
     this.homeTrailHandler = homeTrailHandler;
     this.foodTrailHandler = foodTrailHandler;
     this.homeBrush = homeBrush;
-    this._angle = Math.random() * (Math.PI * 2);
+    this._angle = this.rng.quick() * (Math.PI * 2);
     this._front = 0;
     this._left = 0;
     this._ahead = 0;
@@ -96,9 +98,9 @@ export class Ant {
   getNewAngle() {
     if (this.currentCell === WallValue || this.currentCell === DirtValue) return;
     if (this.checkSight()) {
-      if (Math.random() < 0.01) this.wander();
+      if (this.rng.quick() < 0.01) this.wander();
     } else this.wander();
-    if (Math.random() < 0.01) {
+    if (this.rng.quick() < 0.01) {
       if (Math.abs(this.cumulativeAngle) > 50) {
         this.cumulativeAngle = 0;
         this.abortTrip();
@@ -107,7 +109,7 @@ export class Ant {
   }
 
   walk() {
-    const dropPoint = Math.random() < 1 / TrailDropRate;
+    const dropPoint = this.rng.quick() < 1 / TrailDropRate;
     if (dropPoint) this.currentCell = this.mapHandler.getCell(this._pos);
     if (dropPoint && this.dropsToSkip > 0) {
       this.dropsToSkip--;
@@ -159,7 +161,7 @@ export class Ant {
     if (this.dropsToSkip !== 0) return false;
     if (aheadScore === 0 && leftScore === 0 && rightScore === 0) return false;
     if (aheadScore >= leftScore && aheadScore >= rightScore) return this.takeAction("a");
-    if (rightScore === leftScore) Math.random() < 0.5 ? this.turnLeft() : this.turnRight();
+    if (rightScore === leftScore) this.rng.quick() < 0.5 ? this.turnLeft() : this.turnRight();
     if (rightScore > leftScore) this.turnRight();
     if (leftScore > rightScore) this.turnLeft();
     return true;
@@ -172,7 +174,7 @@ export class Ant {
     // TODO: the dirt stuff works well and is prob a good idea
     // when to push it out?
     if (aheadIsString && this.isObjective(aheadScore)) return "a";
-    const leftFirst = Math.random() <= 0.5;
+    const leftFirst = this.rng.quick() <= 0.5;
     if (leftFirst && leftIsString) {
       if (this.isObjective(leftScore)) return "l";
       if (leftScore === WallValue) return "r";
@@ -233,28 +235,28 @@ export class Ant {
   }
 
   stayOnCourse() {
-    if (Math.random() < 0.3)
-      this.angle += toRad((Math.random() * 2 - 1) * StayOnCourseWanderAmount);
+    if (this.rng.quick() < 0.3)
+      this.angle += toRad((this.rng.quick() * 2 - 1) * StayOnCourseWanderAmount);
   }
 
   turnLeft() {
-    this.angle -= toRad(ExtraSmellTurnAmount * Math.random() + MinSmellTurnAmount);
+    this.angle -= toRad(ExtraSmellTurnAmount * this.rng.quick() + MinSmellTurnAmount);
   }
 
   turnRight() {
-    this.angle += toRad(ExtraSmellTurnAmount * Math.random() + MinSmellTurnAmount);
+    this.angle += toRad(ExtraSmellTurnAmount * this.rng.quick() + MinSmellTurnAmount);
   }
 
   wander() {
-    if (Math.random() < AntWanderChance) {
-      let offset = (Math.random() - 0.5) * 2 * AntWanderAmount;
+    if (this.rng.quick() < AntWanderChance) {
+      let offset = (this.rng.quick() - 0.5) * 2 * AntWanderAmount;
       this.angle = this._angle + toRad(offset);
     }
   }
 
   abortTrip() {
     this.dropsToSkip = 20;
-    this._angle = Math.random() * (Math.PI * 2);
+    this._angle = this.rng.quick() * (Math.PI * 2);
   }
 
   moveToNewPosition(dropPoint) {
@@ -265,9 +267,9 @@ export class Ant {
 
     if (this.canMoveToNewPos(newPos)) {
       this.distanceTraveled += AntStepDistance;
-      if (Math.random() < 0.01 && this.distanceTraveled > 500) {
+      if (this.rng.quick() < 0.01 && this.distanceTraveled > 500) {
         const percentOut = (this.distanceTraveled - 500) / 500;
-        if (Math.random() * percentOut > 1 - 0.01) {
+        if (this.rng.quick() * percentOut > 1 - 0.01) {
           this.distanceTraveled -= 100;
           this.abortTrip();
         }
@@ -343,7 +345,7 @@ export class Ant {
 
   bounceOffWall(dropsToSkip) {
     this.dropsToSkip = dropsToSkip;
-    this.angle = Math.random() * (Math.PI * 2);
+    this.angle = this.rng.quick() * (Math.PI * 2);
   }
 
   foodChange() {

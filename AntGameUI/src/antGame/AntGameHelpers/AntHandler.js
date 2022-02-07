@@ -1,5 +1,6 @@
 import { Config } from "../config";
 import { Ant } from "./Ant";
+import ChallengeHandler from "../Challenge/ChallengeHandler";
 
 const Brushes = Config.brushes;
 const AntsToSpawn = Config.AntsToSpawn;
@@ -44,6 +45,8 @@ export class AntsHandler {
   }
 
   spawnAnts(homeTrailHandler, foodTrailHandler) {
+    const seed = Math.floor(Math.random() * 1000000);
+    ChallengeHandler.runSeed = seed;
     const map = this.mapHandler.map;
     this.ants = [];
     const homeCells = this.mapHandler.homeCellCount;
@@ -63,7 +66,8 @@ export class AntsHandler {
                 this.mapHandler,
                 homeTrailHandler,
                 foodTrailHandler,
-                Brushes.find(brush => brush.value === map[x][y])
+                Brushes.find(brush => brush.value === map[x][y]),
+                `${seed}-${i}`
               )
             );
           }
