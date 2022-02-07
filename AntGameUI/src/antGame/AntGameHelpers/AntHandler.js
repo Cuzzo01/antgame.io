@@ -13,10 +13,24 @@ export class AntsHandler {
     this.mapHandler = mapHandler;
     this.ants = [];
     this.redrawAnts = false;
+    this.deterministicMode = false;
+    document.addEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
   get antsSpawned() {
     return this.ants.length !== 0;
+  }
+
+  handleKeyDown(event) {
+    if (event.key === "d" && event.ctrlKey) {
+      if (!this.deterministicMode) {
+        this.deterministicMode = true;
+        console.log("Deterministic Mode Enabled");
+      } else {
+        this.deterministicMode = false;
+        console.log("Deterministic Mode Disabled");
+      }
+    }
   }
 
   drawAnts(graphics, antNoFoodImage, antFoodImage) {
@@ -45,8 +59,15 @@ export class AntsHandler {
   }
 
   spawnAnts(homeTrailHandler, foodTrailHandler) {
-    const seed = Math.floor(Math.random() * 1000000);
+    let seed;
+    if (this.deterministicMode) {
+      seed = "1";
+    } else {
+      seed = Math.floor(Math.random() * 1000000);
+    }
     ChallengeHandler.runSeed = seed;
+    console.log(seed);
+
     const map = this.mapHandler.map;
     this.ants = [];
     const homeCells = this.mapHandler.homeCellCount;
