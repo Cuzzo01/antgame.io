@@ -39,6 +39,7 @@ const ReportedConfigMatchesExpectedConfig = (runData, expectedConfig) => {
   if (!TimeMatches) return `Time mismatch (${runData.GameConfig.Time})`;
 
   const seed = runData.GameConfig.seed;
+  if (seed === null || seed === undefined) return `Undefined seed`;
   if (seed < 0 || seed > 1000000) return `Seed out of bounds`;
 
   // TODO add some check for MapID
