@@ -98,7 +98,7 @@ app.use(
 
     if (req.user.admin !== true) {
       const LoginsEnabled = await TokenRevokedHandler.AreLoginsEnabled();
-      if (LoginsEnabled !== true) {
+      if (!LoginsEnabled) {
         res.sendStatus(401);
         return;
       }

@@ -23,10 +23,10 @@ const LoginPage = props => {
 
   useEffect(() => {
     document.title = "Login";
-    getFlag("allow-logins").then(value => {
+    getFlag("allow-logins").then(async value => {
       if (value !== true && !window.location.href.includes("/admin")) {
         setAllowLogins(false);
-        setDisabledMessage(value);
+        setDisabledMessage(await getFlag("disabled-login-message"));
       } else {
         getFlag("allowAccountRegistration")
           .then(value => {
