@@ -48,7 +48,7 @@ class TokenRevokedHandler {
   }
 
   async AreLoginsEnabled() {
-    return await FlagHandler.getFlagValue("allow-logins");
+    return (await FlagHandler.getFlagValue("allow-logins")) === true;
   }
 }
 const SingletonInstance = new TokenRevokedHandler();

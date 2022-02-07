@@ -99,6 +99,7 @@ async function postRun(req, res) {
           homeLocations: runData.HomeLocations,
           timing: runData.Timing,
           foodConsumed: runData.FoodConsumed,
+          seed: runData.GameConfig.seed,
         },
         tags: runTags,
       };

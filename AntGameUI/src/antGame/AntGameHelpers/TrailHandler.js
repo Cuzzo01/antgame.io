@@ -32,10 +32,12 @@ export class TrailHandler {
     this.graphicsSet = true;
 
     this.buildTrailMap();
+    this.setPixelDensity();
   }
 
   refreshSize() {
     this.canvasBounds = [this._graphics.width, this._graphics.height];
+    this.setPixelDensity();
     this._graphics.clear();
   }
 
@@ -46,6 +48,9 @@ export class TrailHandler {
         this.trailMap[x][y] = 0;
       }
     }
+  }
+
+  setPixelDensity() {
     const drawableWidth = this.canvasBounds[0] - BorderWeight;
     const drawableHeight = this.canvasBounds[1] - BorderWeight;
     this.pixelDensity = [drawableWidth / MapBounds[0], drawableHeight / MapBounds[1]];

@@ -148,6 +148,10 @@ export default class AntGame extends React.Component {
 
     this.setupAndInitialize();
 
+    this.homeTrailHandler.graphic = this.homeTrailGraphic;
+    this.foodTrailHandler.graphic = this.foodTrailGraphic;
+    this.mapHandler.graphic = this.mapGraphic;
+
     p5.createCanvas(canvasW, canvasH).parent(parentRef);
 
     if (!this.mapHandler.mapSetup) this.mapHandler.generateMap();
@@ -164,10 +168,6 @@ export default class AntGame extends React.Component {
   setupAndInitialize = () => {
     this.mapHandler.setupMap(canvasW, canvasH);
     this.mapHandler.redrawMap = true;
-
-    this.homeTrailHandler.graphic = this.homeTrailGraphic;
-    this.foodTrailHandler.graphic = this.foodTrailGraphic;
-    this.mapHandler.graphic = this.mapGraphic;
   };
 
   draw = p5 => {

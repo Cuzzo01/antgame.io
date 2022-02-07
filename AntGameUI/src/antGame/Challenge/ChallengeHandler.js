@@ -57,6 +57,10 @@ class ChallengeHandler {
     this._timerHandler.resetTime();
   }
 
+  set runSeed(seed) {
+    this._runSeed = seed;
+  }
+
   get config() {
     if (this._config) return this._config;
     else return false;
@@ -203,6 +207,7 @@ class ChallengeHandler {
       spawnedAnts: this._antHandler.ants.length,
       FoodPerCell: this._mapHandler.foodPerCell,
       DirtPerCell: this._mapHandler.dirtPerCell,
+      seed: this._runSeed,
     };
 
     this.artifact.Timing.SystemStopTime = new Date().getTime();
