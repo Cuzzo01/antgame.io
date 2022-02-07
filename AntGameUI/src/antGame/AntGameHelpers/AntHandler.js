@@ -66,7 +66,6 @@ export class AntsHandler {
       seed = Math.floor(Math.random() * 1000000);
     }
     ChallengeHandler.runSeed = seed;
-    console.log(seed);
 
     const map = this.mapHandler.map;
     this.ants = [];
