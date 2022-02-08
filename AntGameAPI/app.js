@@ -109,8 +109,8 @@ app.use(
 );
 
 const runSubmissionLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 2,
+  windowMs: 2 * 60 * 1000,
+  max: 4,
   message: "Only 2 runs per min allowed",
   standardHeaders: true,
   skip: req => req.user.anon,
