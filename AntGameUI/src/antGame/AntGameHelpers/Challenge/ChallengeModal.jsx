@@ -7,15 +7,29 @@ import GenericModal from "../../Helpers/GenericModal";
 const ChallengeModal = props => {
   const [isWrRun, setIsWrRun] = useState(false);
   const [records, setRecords] = useState();
+  const [showRateLimitMessage, setShowRateLimitMessage] = useState(false);
+  const [showRejectedMessage, setShowRejectedMessage] = useState(false);
 
   useEffect(() => {
-    const wrID = ChallengeHandler.addWrListener(isWrRun => setIsWrRun(isWrRun));
+    const runResponseId = ChallengeHandler.addRunResponseListener(response =>
+      handleRunResponse(response)
+    );
     const recordID = ChallengeHandler.addRecordListener(records => setRecords(records));
     return () => {
-      ChallengeHandler.removeWrListener(wrID);
+      ChallengeHandler.removeRunResponseListener(runResponseId);
       ChallengeHandler.removeRecordListener(recordID);
     };
   }, []);
+
+  const handleRunResponse = response => {
+    if (response === false) {
+      setIsWrRun(false);
+      setShowRateLimitMessage(false);
+      setShowRejectedMessage(false);
+    } else if (response.isWrRun) setIsWrRun(true);
+    else if (response === "rateLimit") setShowRateLimitMessage(true);
+    else if (response === "rejected") setShowRejectedMessage(true);
+  };
 
   const scoreIsNice = props.challengeHandler?.score.toString().endsWith("69");
   return (
@@ -39,6 +53,25 @@ const ChallengeModal = props => {
                   </h6>
                 ) : null}
                 {isWrRun ? <h4 className={styles.newWR}>New World Record!</h4> : null}
+                {showRateLimitMessage ? (
+                  <div>
+                    <h3>Whoa There</h3>
+                    <span>
+                      You're submitting runs too fast. <strong>This run did not count.</strong> You
+                      can submit two runs per minute. You can submit runs again in 60 seconds.
+                    </span>
+                  </div>
+                ) : null}
+                {showRejectedMessage ? (
+                  <div>
+                    <h3>Run Rejected</h3>
+                    <span>
+                      This run was rejected by the anti-cheat system. This can happen if you're
+                      running old code, or are trying to cheat. If you're seeing this often and not
+                      cheating, email us. This page will refresh in 10 seconds.
+                    </span>
+                  </div>
+                ) : null}
                 {props.challengeHandler?.isPB ? (
                   <div>
                     <h5 className={styles.newPB}>New Personal Record</h5>

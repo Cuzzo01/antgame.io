@@ -8,9 +8,8 @@ class ChallengeHandler {
     this.score = "Not Scored";
     this.records = false;
     this.recordsPromise = false;
-    this.WrRun = false;
     this.recordListeners = [];
-    this.wrListeners = [];
+    this.runResponseListeners = [];
     this.prInfo = false;
     this.lastSeenUpdateCount = 0;
   }
@@ -88,9 +87,9 @@ class ChallengeHandler {
     return index;
   }
 
-  addWrListener(callback) {
-    const index = this.wrListeners.length;
-    this.wrListeners.push(callback);
+  addRunResponseListener(callback) {
+    const index = this.runResponseListeners.length;
+    this.runResponseListeners.push(callback);
     return index;
   }
 
@@ -98,8 +97,8 @@ class ChallengeHandler {
     this.recordListeners[id] = null;
   }
 
-  removeWrListener(id) {
-    this.wrListeners[id] = null;
+  removeRunResponseListener(id) {
+    this.runResponseListeners[id] = null;
   }
 
   async getConfig() {
@@ -146,10 +145,7 @@ class ChallengeHandler {
   }
 
   handleStart(homeLocations) {
-    if (this.WrRun) {
-      this.WrRun = false;
-      this.notifyWrListeners();
-    }
+    this.notifyRunResponseListener(false);
 
     const config = this.config;
     this.artifact = {};
@@ -223,13 +219,7 @@ class ChallengeHandler {
     try {
       const response = await sendRunArtifact(this.artifact);
 
-      if (response.wr) {
-        this.records.wr = response.wr;
-        if (response.isWrRun) {
-          this.WrRun = true;
-          this.notifyWrListeners();
-        }
-      }
+      this.notifyRunResponseListener(response);
 
       if (response.rank) this.records.rank = response.rank;
       if (response.playerCount) this.records.playerCount = response.playerCount;
@@ -240,10 +230,10 @@ class ChallengeHandler {
     }
   }
 
-  notifyWrListeners() {
-    if (this.wrListeners)
-      this.wrListeners.forEach(callback => {
-        if (callback) callback(this.WrRun);
+  notifyRunResponseListener(response) {
+    if (this.runResponseListeners)
+      this.runResponseListeners.forEach(callback => {
+        if (callback) callback(response);
       });
   }
 

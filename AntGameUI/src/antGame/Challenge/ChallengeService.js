@@ -8,7 +8,11 @@ export async function sendRunArtifact(artifact) {
     })
     .catch(err => {
       if (err.response.status === 409) window.location = "/challenge";
-      if (err.response.status === 418) window.location.reload();
+      if (err.response.status === 429) return "rateLimit";
+      if (err.response.status === 418) {
+        setTimeout(() => window.location.reload(), 10000);
+        return "rejected";
+      }
     });
 }
 

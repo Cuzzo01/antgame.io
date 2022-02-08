@@ -3,6 +3,7 @@ if (!process.env.environment) require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const jwt = require("express-jwt");
+const rateLimit = require("express-rate-limit");
 
 const app = express();
 const port = 8080;
@@ -107,6 +108,14 @@ app.use(
   }
 );
 
+const runSubmissionLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 2,
+  message: "Only 2 runs per min allowed",
+  standardHeaders: true,
+  keyGenerator: req => req.user.id,
+});
+
 //#region Admin
 app.get("/admin/stats", RejectNotAdmin, _adminController.getStats);
 
@@ -148,7 +157,7 @@ app.post("/auth/anonToken", _authController.getAnonymousToken);
 app.post("/auth/register", _authController.registerUser);
 app.post("/auth/createUser", RejectNotAdmin, _authController.createUser);
 
-app.post("/challenge/artifact", _challengeController.postRun);
+app.post("/challenge/artifact", runSubmissionLimiter, _challengeController.postRun);
 app.get("/challenge/:id/records", _challengeController.getRecords);
 app.get("/challenge/dailyList", _challengeController.getDailyChallenges);
 app.get("/challenge/:id", _challengeController.getChallenge);
