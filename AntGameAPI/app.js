@@ -113,6 +113,7 @@ const runSubmissionLimiter = rateLimit({
   max: 2,
   message: "Only 2 runs per min allowed",
   standardHeaders: true,
+  skip: req => req.user.anon,
   keyGenerator: req => req.user.id,
 });
 
