@@ -223,6 +223,7 @@ class ChallengeHandler {
 
       if (response.rank) this.records.rank = response.rank;
       if (response.playerCount) this.records.playerCount = response.playerCount;
+      if (response.wr) this.records.wr = response.wr
 
       this.notifyRecordsListeners();
     } catch (e) {
