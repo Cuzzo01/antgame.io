@@ -171,8 +171,6 @@ export class Ant {
     const leftIsString = typeof leftScore === "string";
     const aheadIsString = typeof aheadScore === "string";
     const rightIsString = typeof rightScore === "string";
-    // TODO: the dirt stuff works well and is prob a good idea
-    // when to push it out?
     if (aheadIsString && this.isObjective(aheadScore)) return "a";
     const leftFirst = this.rng.quick() <= 0.5;
     if (leftFirst && leftIsString) {
@@ -333,7 +331,7 @@ export class Ant {
           }
         } else if (newCell === DirtValue) {
           this.mapHandler.decayDirt(pos);
-          this.bounceOffWall(3);
+          if (this.rng.quick() < 0.5) this.bounceOffWall(3);
           return false;
         }
         return true;

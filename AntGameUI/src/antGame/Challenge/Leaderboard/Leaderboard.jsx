@@ -66,6 +66,7 @@ const Leaderboard = props => {
           setTitle("Error");
           setPlayerCount(false);
           setSolutionImagePath(false);
+          document.title = "Leaderboard";
           return;
         }
         setLeaderboardData(data);

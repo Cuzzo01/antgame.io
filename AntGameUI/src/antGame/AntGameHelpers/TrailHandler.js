@@ -73,13 +73,10 @@ export class TrailHandler {
     for (let xOffset = -TrailMapOverSampleRate; xOffset <= TrailMapOverSampleRate; xOffset++) {
       for (let yOffset = -TrailMapOverSampleRate; yOffset <= TrailMapOverSampleRate; yOffset++) {
         const point = [intTrailXY[0] + xOffset, intTrailXY[1] + yOffset];
-        const cellStrength = Math.round(
-          strength * (1 - (Math.abs(xOffset) + Math.abs(yOffset)) / (2.5 * TrailMapOverSampleRate))
-        );
-        if (cellStrength && this.mapXYInBounds(point)) {
+        if (strength && this.mapXYInBounds(point)) {
           const currentValue = this.trailMap[point[0]][point[1]];
           if (currentValue < maxValue) {
-            const newValue = currentValue + cellStrength;
+            const newValue = currentValue + strength;
             this.trailMap[point[0]][point[1]] = newValue > maxValue ? maxValue : newValue;
           }
         }
