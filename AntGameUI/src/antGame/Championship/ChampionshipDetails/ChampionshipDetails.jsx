@@ -65,6 +65,7 @@ const ChampionshipDetails = ({}) => {
   useEffect(() => {
     getChampionshipLeaderboard(championshipID).then(data => {
       setTitle(data.name);
+      document.title = `${data.name} - Championship`;
       setPointMap(data.pointMap);
       setLastPointsAwarded(data);
       setLeaderboard(data);

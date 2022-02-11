@@ -34,7 +34,8 @@
   text-align: right;
 }
 
-.challengeName {
+.challengeName h3 {
+  padding-top: 0.1em;
   text-align: right;
   font-family: "Courier Prime Bold";
 }
