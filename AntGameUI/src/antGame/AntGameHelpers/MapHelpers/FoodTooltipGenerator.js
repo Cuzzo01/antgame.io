@@ -29,7 +29,7 @@ export const GenerateFoodTooltips = mapData => {
   return tooltips;
 };
 
-const CountOnMap = (charToCount, mapData) => {
+export const CountOnMap = (charToCount, mapData) => {
   let count = 0;
   for (let x = 0; x < mapData.length; x++) {
     for (let y = 0; y < mapData[x].length; y++) {

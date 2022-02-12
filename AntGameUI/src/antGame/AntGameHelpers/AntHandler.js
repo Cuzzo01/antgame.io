@@ -4,16 +4,14 @@ import ChallengeHandler from "../Challenge/ChallengeHandler";
 
 const Brushes = Config.brushes;
 const AntsToSpawn = Config.AntsToSpawn;
-const AntSize = Config.AntSize;
-const AntOffset = AntSize / 2;
 const HomeValue = Brushes.find(brush => brush.name === "Home").value;
 
 export class AntsHandler {
-  constructor(mapHandler) {
-    this.mapHandler = mapHandler;
+  constructor() {
     this.ants = [];
     this.redrawAnts = false;
-    this.deterministicMode = false;
+    // //// DONT LEAVE ME LIKE THIS
+    this.deterministicMode = true;
     document.addEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
@@ -33,23 +31,6 @@ export class AntsHandler {
     }
   }
 
-  drawAnts(graphics, antNoFoodImage, antFoodImage) {
-    graphics.clear();
-
-    this.ants.forEach(ant => {
-      const canvasXY = this.mapHandler.mapXYToCanvasXY([ant.x, ant.y]);
-      graphics.resetMatrix();
-
-      graphics.translate(canvasXY[0], canvasXY[1]);
-      graphics.rotate(ant.angle);
-      graphics.translate(-AntOffset, -AntOffset);
-      const antImage = ant.hasFood ? antFoodImage : antNoFoodImage;
-      graphics.image(antImage, 0, 0, AntSize, AntSize);
-    });
-
-    this.redrawAnts = false;
-  }
-
   updateAnts() {
     this.ants.forEach(ant => {
       ant.getNewAngle();
@@ -58,7 +39,7 @@ export class AntsHandler {
     this.redrawAnts = true;
   }
 
-  spawnAnts(homeTrailHandler, foodTrailHandler) {
+  spawnAnts({ homeTrailHandler, foodTrailHandler, mapHandler }) {
     let seed;
     if (this.deterministicMode) {
       seed = "1";
@@ -67,9 +48,9 @@ export class AntsHandler {
     }
     ChallengeHandler.runSeed = seed;
 
-    const map = this.mapHandler.map;
+    const map = mapHandler.map;
     this.ants = [];
-    const homeCells = this.mapHandler.homeCellCount;
+    const homeCells = mapHandler.homeCellCount;
     let antsPerCell = AntsToSpawn / homeCells;
     if (antsPerCell > 1) antsPerCell = Math.round(antsPerCell);
     for (let x = 0; x < map.length; x++) {
@@ -83,7 +64,7 @@ export class AntsHandler {
             this.ants.push(
               new Ant(
                 [x, y],
-                this.mapHandler,
+                mapHandler,
                 homeTrailHandler,
                 foodTrailHandler,
                 Brushes.find(brush => brush.value === map[x][y]),

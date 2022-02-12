@@ -16,6 +16,8 @@ import { GameModeContext } from "./GameModeContext";
 import ChallengeHandler from "./Challenge/ChallengeHandler";
 import ChallengeModal from "./AntGameHelpers/Challenge/ChallengeModal";
 import cssStyles from "./Antgame.module.css";
+import { DrawAnts } from "./AntGameHelpers/Graphics/AntGraphics";
+import { MapGraphics } from "./AntGameHelpers/Graphics/MapGraphics";
 
 let canvasW, canvasH;
 
@@ -46,7 +48,7 @@ export default class AntGame extends React.Component {
     this.timerHandler = new TimerHandler(this.handleChallengeTimeout, this.setTime);
 
     this.mapHandler = new MapHandler(this.toggleTimer);
-    this.antHandler = new AntHandler(this.mapHandler);
+    this.antHandler = new AntHandler();
 
     let emptyMap = true;
     if (PreloadMap && props.mapToLoad) {
@@ -146,11 +148,12 @@ export default class AntGame extends React.Component {
     this.homeTrailGraphic = p5.createGraphics(canvasW, canvasH);
     this.foodTrailGraphic = p5.createGraphics(canvasW, canvasH);
 
+    this.mapDrawer = new MapGraphics(this.mapGraphic);
+
     this.setupAndInitialize();
 
     this.homeTrailHandler.graphic = this.homeTrailGraphic;
     this.foodTrailHandler.graphic = this.foodTrailGraphic;
-    this.mapHandler.graphic = this.mapGraphic;
 
     p5.createCanvas(canvasW, canvasH).parent(parentRef);
 
@@ -166,7 +169,7 @@ export default class AntGame extends React.Component {
   };
 
   setupAndInitialize = () => {
-    this.mapHandler.setupMap(canvasW, canvasH);
+    this.mapDrawer.setupMap(canvasW, canvasH);
     this.mapHandler.redrawMap = true;
   };
 
@@ -176,18 +179,61 @@ export default class AntGame extends React.Component {
     if (p5.windowWidth !== this.windowSize[0] || p5.windowHeight !== this.windowSize[1]) {
       this.resizeCanvas(p5);
       this.containerRef.current.style.height = this.windowSize[1];
-      this.mapHandler.drawFullMap();
+      this.mapDrawer.drawFullMap({ map: this.mapHandler.map });
       this.homeTrailHandler.refreshSize();
       this.foodTrailHandler.refreshSize();
     }
 
     if (p5.mouseIsPressed) this.handleMousePressed(p5);
 
-    if (this.mapHandler.redrawFullMap) this.mapHandler.drawFullMap();
-    else if (this.mapHandler.redrawMap) this.mapHandler.drawMap();
+    if (this.mapHandler.redrawFullMap) {
+      this.mapDrawer.drawFullMap({ map: this.mapHandler.map });
+      this.mapHandler.redrawFullMap = false;
 
-    if (this.antHandler.redrawAnts)
-      this.antHandler.drawAnts(this.antGraphic, this.antImage, this.antFoodImage);
+      if (this.mapHandler.shouldDrawFoodAmounts && this.mapHandler.foodAmounts)
+        this.mapDrawer.drawFoodAmounts({ foodAmounts: this.mapHandler.foodAmounts });
+
+      if (this.mapHandler.shouldDrawHomeAmounts) {
+        this.mapDrawer.drawHomeAmounts({
+          homeAmounts: this.mapHandler.homeAmounts,
+          totalFood: this.mapHandler.totalFood,
+        });
+        this.mapHandler.homeAmountsDrawn = true;
+      }
+    } else if (this.mapHandler.redrawMap) {
+      this.mapDrawer.drawMap({
+        cellsToDraw: this.mapHandler.cellsToDraw,
+        map: this.mapHandler.map,
+      });
+      this.mapHandler.cellsToDraw = [];
+      this.mapHandler.redrawMap = false;
+
+      if (this.mapHandler.shouldDrawFoodAmounts && this.mapHandler.foodAmounts)
+        this.mapDrawer.drawFoodAmounts({ foodAmounts: this.mapHandler.foodAmounts });
+
+      if (this.mapHandler.shouldDrawHomeAmounts && this.mapHandler.homeAmounts) {
+        this.mapDrawer.drawHomeAmounts({
+          homeAmounts: this.mapHandler.homeAmounts,
+          totalFood: this.mapHandler.totalFood,
+        });
+        this.mapHandler.homeAmountsDrawn = true;
+        this.mapHandler.shouldDrawHomeAmounts = false;
+      } else {
+        this.mapHandler.homeAmountsDrawn = false;
+      }
+    }
+
+    if (this.antHandler.redrawAnts) {
+      const ants = this.antHandler.ants;
+      DrawAnts({
+        graphics: this.antGraphic,
+        ants,
+        mapXYToCanvasXY: this.mapDrawer.mapXYToCanvasXY.bind(this.mapDrawer),
+        antNoFoodImage: this.antImage,
+        antFoodImage: this.antFoodImage,
+      });
+      this.antHandler.redrawAnts = false;
+    }
 
     StaticElements.background(p5);
     p5.image(this.homeTrailGraphic, 0, 0);
@@ -232,7 +278,7 @@ export default class AntGame extends React.Component {
     if (this.blockDrawing) return;
     if (this.gamemode === "challenge" && this.updateCount !== 0) return;
 
-    let mousePos = this.mapHandler.canvasXYToMapXY([p5.mouseX, p5.mouseY]);
+    let mousePos = this.mapDrawer.canvasXYToMapXY([p5.mouseX, p5.mouseY]);
 
     if (this.mapHandler.mapXYInBounds(mousePos)) {
       if (p5.mouseButton === "right") {
@@ -263,7 +309,11 @@ export default class AntGame extends React.Component {
       this.mapHandler.shouldDrawFoodAmounts = false;
       if (!this.antHandler.antsSpawned) {
         this.updateCount = 0;
-        this.antHandler.spawnAnts(this.homeTrailHandler, this.foodTrailHandler);
+        this.antHandler.spawnAnts({
+          homeTrailHandler: this.homeTrailHandler,
+          foodTrailHandler: this.foodTrailHandler,
+          mapHandler: this.mapHandler,
+        });
         this.mapHandler.prepareForStart(IsChallenge);
         if (IsChallenge) {
           this.challengeHandler.handleStart(this.mapHandler.homeLocations);
