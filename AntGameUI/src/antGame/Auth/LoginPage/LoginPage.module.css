@@ -61,3 +61,7 @@
 .inputField {
   margin: 1em 0;
 }
+
+.inputField input {
+  width: 100%;
+}
