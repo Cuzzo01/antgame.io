@@ -54,7 +54,7 @@ class UserHandler {
   }
 
   logMessage = ({ cacheMiss, id, startTime }) => {
-    Logger.logCacheResult(`UserHandler`, cacheMiss, id, {}, new Date() - startTime);
+    Logger.logCacheResult(`UserHandler`, cacheMiss, id, JSON.stringify({}), new Date() - startTime);
   };
 
   tryGetItemFromCache(id) {

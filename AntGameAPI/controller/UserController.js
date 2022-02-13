@@ -6,6 +6,11 @@ const getUserBadges = async (req, res) => {
   try {
     const userID = req.params.id;
 
+    if (!userID) {
+      res.sendStatus(400);
+      return;
+    }
+
     const { badges, ttl } = await UserHandler.getBadges(userID);
 
     if (ttl) {
