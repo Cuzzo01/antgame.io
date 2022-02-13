@@ -187,10 +187,10 @@ const WRDisplay = ({ wr }) => {
     return (
       <span>
         {wr.score}-<Username id={wr.id} name={wr.username} />
-        {wrUsernameLength < 9 ? (
+        {wrUsernameLength < 8 ? (
           <span className={`${styles.smallText} ${styles.age}`}>({wr.age} ago)</span>
         ) : null}
-        {wrUsernameLength >= 9 && wrUsernameLength < 13 ? (
+        {wrUsernameLength >= 8 && wrUsernameLength < 12 ? (
           <span className={`${styles.smallText} ${styles.age}`}>({wr.age})</span>
         ) : null}
       </span>
