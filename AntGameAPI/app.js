@@ -15,6 +15,7 @@ const _flagController = require("./controller/FlagController");
 const _mapController = require("./controller/MapController");
 const _championshipController = require("./controller/ChampionshipController");
 const _reportController = require("./controller/ReportController");
+const _userController = require("./controller/UserController");
 const TokenHandler = require("./auth/WebTokenHandler");
 const TokenRevokedHandler = require("./handler/TokenRevokedHandler");
 const { RejectNotAdmin } = require("./auth/AuthHelpers");
@@ -167,6 +168,8 @@ app.get("/challenges/active", _challengeController.getActiveChallenges);
 app.get("/challenge/:id/leaderboard", _challengeController.getLeaderboard);
 
 app.get("/championship/:id", _championshipController.getLeaderboard);
+
+app.get("/user/:id/badges", _userController.getUserBadges);
 
 app.post("/report/spaces", _reportController.reportSpacesData);
 

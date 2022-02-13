@@ -43,6 +43,7 @@ const Leaderboard = props => {
             key={data.username}
             rank={data.rank}
             name={data.username}
+            id={data.id}
             pb={data.pb}
             age={data.age}
           />

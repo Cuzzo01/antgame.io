@@ -314,6 +314,7 @@ async function getRecords(req, res) {
       response.wr = {
         score: worldRecord.score,
         name: worldRecord.username,
+        id: worldRecord.id,
       };
 
     if (!user.anon) {
@@ -373,6 +374,7 @@ async function getLeaderboard(req, res) {
       }
 
       leaderboardData.push({
+        id: entry._id,
         rank: i + 1,
         username: entry.username,
         pb: entry.pb,
@@ -385,13 +387,14 @@ async function getLeaderboard(req, res) {
       if (pr) {
         const currentUserRank = await UserDao.getLeaderboardRankByScore(challengeID, pr.pb);
 
-        if (currentUserRank > 6) {
+        if (currentUserRank > leaderboardData.length + 1) {
           const entryAbove = await UserDao.getPRByLeaderboardRank(challengeID, currentUserRank - 1);
           const timeString =
             isDaily && !isCurrentDaily
               ? getTimeStringForDailyChallenge(entryAbove.runID)
               : getGeneralizedTimeStringFromObjectID(entryAbove.runID) + " ago";
           leaderboardData.push({
+            id: entryAbove._id,
             rank: currentUserRank - 1,
             username: entryAbove.username,
             pb: entryAbove.pb,
@@ -405,6 +408,7 @@ async function getLeaderboard(req, res) {
             : getGeneralizedTimeStringFromObjectID(pr.pbRunID) + " ago";
 
         leaderboardData.push({
+          id: user.id,
           rank: currentUserRank,
           username: user.username,
           pb: pr.pb,

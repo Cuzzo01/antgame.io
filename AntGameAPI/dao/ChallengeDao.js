@@ -40,6 +40,7 @@ const getRecordByChallenge = async challengeID => {
     return {
       score: result.records[0].score,
       username: result.records[0].username,
+      id: result.records[0].userID,
     };
   } else return {};
 };
@@ -65,6 +66,7 @@ const getRecordsByChallengeList = async challengeIDList => {
       const timeString = getGeneralizedTimeStringFromObjectID(record.runID);
       records[challenge._id] = {
         wr: {
+          id: record.userID,
           score: record.score,
           username: record.username,
           age: timeString,

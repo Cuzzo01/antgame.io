@@ -4,12 +4,8 @@ class ExpiringResult {
     this.value = value;
   }
 
-  get timeBeforeExpires() {
-    return Math.round((this.expireAt.getTime() - new Date().getTime()) / 1000);
-  }
-
   getValue = () => {
-    if (this.isActive()) {
+    if (this.value !== [null, null] && this.isActive()) {
       return this.value;
     } else throw "getValue called on expired result";
   };
@@ -22,4 +18,4 @@ class ExpiringResult {
     }
   };
 }
-module.exports = { ExpiringResult };
+export default ExpiringResult;
