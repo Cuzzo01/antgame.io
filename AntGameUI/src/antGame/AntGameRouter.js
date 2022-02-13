@@ -38,47 +38,49 @@ const AntGameRouter = () => {
             <ChallengeMap />
             <UserBar showRecords />
           </Route>
-          <Route path="/">
+          <Route>
             <div className={styles.windowContainer}>
-              <Route exact path="/error">
-                <ErrorPage />
-              </Route>
-              <Route exact path="/">
-                <HomePage />
-              </Route>
-              <Route path="/admin">
-                <AdminPath />
-                <UserBar />
-              </Route>
-              <Route path="/login">
-                <LoginPage />
-                <Footer />
-              </Route>
-              <Route path="/register">
-                <RegistrationPage />
-              </Route>
-              <Route exact path="/challenge">
-                <MOTD />
-                <ChallengeList />
-                <Footer />
-                <UserBar showLinkHome />
-              </Route>
-              <Route path="/challenge/:id/leaderboard">
-                <Leaderboard />
-                <Footer />
-                <UserBar />
-              </Route>
-              <Route exact path="/championship/:id">
-                <ChampionshipDetails />
-                <Footer />
-                <UserBar />
-              </Route>
-              <Route path="/map/:mapName">
-                <LoadMapFromParams />
-              </Route>
-              <Route path="/">
-                <Redirect to="/" />
-              </Route>
+              <Switch>
+                <Route exact path="/error">
+                  <ErrorPage />
+                </Route>
+                <Route exact path="/">
+                  <HomePage />
+                </Route>
+                <Route path="/admin">
+                  <AdminPath />
+                  <UserBar />
+                </Route>
+                <Route path="/login">
+                  <LoginPage />
+                  <Footer />
+                </Route>
+                <Route path="/register">
+                  <RegistrationPage />
+                </Route>
+                <Route exact path="/challenge">
+                  <MOTD />
+                  <ChallengeList />
+                  <Footer />
+                  <UserBar showLinkHome />
+                </Route>
+                <Route path="/challenge/:id/leaderboard">
+                  <Leaderboard />
+                  <Footer />
+                  <UserBar />
+                </Route>
+                <Route exact path="/championship/:id">
+                  <ChampionshipDetails />
+                  <Footer />
+                  <UserBar />
+                </Route>
+                <Route path="/map/:mapName">
+                  <LoadMapFromParams />
+                </Route>
+                <Route path="/">
+                  <Redirect to="/" />
+                </Route>
+              </Switch>
             </div>
           </Route>
         </Switch>
