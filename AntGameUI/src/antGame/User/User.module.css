@@ -12,7 +12,7 @@
 }
 
 .active {
-  background-color: rgba(215, 234, 248, 1);
+  background-color: #a9cce3;
 }
 
 .badgeRow svg {
@@ -21,7 +21,7 @@
 }
 
 .badgeRow {
-  padding: 0.1em 0.2em;
+  padding: 0.1em 0.4em;
   margin: 0.25em 0;
   border-radius: 0.25em;
   color: black;
