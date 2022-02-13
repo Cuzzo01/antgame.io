@@ -1,5 +1,6 @@
 const Logger = require("../Logger");
 const UserHandler = require("../handler/UserHandler");
+const FlagHandler = require("../handler/FlagHandler");
 
 const getUserBadges = async (req, res) => {
   try {
@@ -8,7 +9,7 @@ const getUserBadges = async (req, res) => {
     const { badges, ttl } = await UserHandler.getBadges(userID);
 
     if (ttl) {
-      const maxCacheTime = 120;
+      const maxCacheTime = await FlagHandler.getFlagValue("time-to-cache-badges-external");
       const age = maxCacheTime - ttl;
       res.set(`Cache-Control`, `public, max-age=${maxCacheTime}`);
       if (age > 0) res.set(`Age`, age);

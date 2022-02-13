@@ -37,7 +37,7 @@ class UserHandler {
     } else {
       try {
         const result = await fetchMethod(id);
-        const maxTimeToCache = await FlagHandler.getFlagValue("time-to-cache-badges");
+        const maxTimeToCache = await FlagHandler.getFlagValue("time-to-cache-badges-internal");
         const cacheTime = Math.round(maxTimeToCache * (1 - Math.random() * 0.2));
         this.resultCache.setItem(id, result, cacheTime, new Date() - startTime);
         this.logMessage({
