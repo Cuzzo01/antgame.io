@@ -9,6 +9,11 @@ class FlagHandler {
     this.timeToCache = null;
   }
 
+  getFlagTTL(name) {
+    if (this.resultCache.isSetAndActive(name)) return this.resultCache.getTimeToExpire(name);
+    else return false;
+  }
+
   async getFlagValue(name) {
     const startTime = new Date();
     if (this.resultCache.isSetAndActive(name)) {
