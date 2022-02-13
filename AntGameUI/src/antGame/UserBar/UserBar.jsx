@@ -3,6 +3,7 @@ import AuthHandler from "../Auth/AuthHandler";
 import PersonalRecord from "./PersonalRecord";
 import WorldRecord from "./WorldRecord";
 import { Link } from "react-router-dom";
+import Username from "../User/Username";
 
 const UserBar = props => {
   return (
@@ -29,10 +30,10 @@ const UserBar = props => {
           </div>
         ) : (
           <div>
-            {AuthHandler.username}
+            <Username id={AuthHandler.decodedToken.id} name={AuthHandler.username} />
             <Link
               className={styles.loginLink}
-              to="/home"
+              to="/"
               onClick={() => {
                 AuthHandler.logout();
               }}

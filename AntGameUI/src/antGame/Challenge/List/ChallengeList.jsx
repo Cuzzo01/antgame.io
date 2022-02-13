@@ -7,6 +7,7 @@ import { HomeIcon, TimeIcon } from "../../AntGameHelpers/Icons";
 import loaderGif from "../../../assets/thumbnailLoader.gif";
 import { getFlag } from "../../Helpers/FlagService";
 import DailyCountdown from "../DailyCountdown/DailyCountdown";
+import Username from "../../User/Username";
 
 const ChallengeList = () => {
   const [loading, setLoading] = useState(true);
@@ -185,7 +186,7 @@ const WRDisplay = ({ wr }) => {
     const wrUsernameLength = wr.username.length;
     return (
       <span>
-        {wr.score}-{wr.username}
+        {wr.score}-<Username id={wr.id} name={wr.username} />
         {wrUsernameLength < 9 ? (
           <span className={`${styles.smallText} ${styles.age}`}>({wr.age} ago)</span>
         ) : null}

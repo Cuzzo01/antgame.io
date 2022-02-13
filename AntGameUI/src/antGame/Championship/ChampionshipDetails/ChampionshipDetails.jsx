@@ -7,6 +7,7 @@ import AuthHandler from "../../Auth/AuthHandler";
 import InfoButton from "../InfoButton/InfoButton";
 import { useCallback } from "react";
 import genericStyles from "../../Helpers/GenericStyles.module.css";
+import Username from "../../User/Username";
 
 const ChampionshipDetails = ({}) => {
   const currentUsername = AuthHandler.username;
@@ -32,6 +33,7 @@ const ChampionshipDetails = ({}) => {
           if (user.noRank) table.push(<div className={styles.hr} />);
           table.push(
             <LeaderboardRow
+              id={user._id}
               ownRow={username === currentUsername}
               key={username}
               noRank={isTied || user.noRank}
@@ -53,8 +55,10 @@ const ChampionshipDetails = ({}) => {
     const table = [];
     lastPointsAwarded.forEach(user => {
       table.push(
-        <div className={styles.lastPointsRow}>
-          <span>{usernames[user.userID]}</span>
+        <div className={styles.lastPointsRow} key={user.userID}>
+          <span>
+            <Username name={usernames[user.userID]} id={user.userID} />
+          </span>
           <span className={genericStyles.right}>{user.points} pts</span>
         </div>
       );

@@ -48,7 +48,7 @@ const updateChallengePBAndRunCount = async (userID, challengeID, score, runID) =
   const runObjectID = TryParseObjectID(runID, "runID");
 
   const collection = await getCollection("users");
-  const result = await collection.updateOne(
+  await collection.updateOne(
     { _id: userObjectID },
     {
       $set: {
@@ -68,7 +68,7 @@ const incrementChallengeRunCount = async (userID, challengeID) => {
   const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
 
   const collection = await getCollection("users");
-  const result = await collection.updateOne(
+  await collection.updateOne(
     { _id: userObjectID },
     {
       $inc: { "challengeDetails.$[challenge].runs": 1 },
@@ -85,7 +85,7 @@ const addNewChallengeDetails = async (userID, challengeID, score, runID) => {
   const runObjectID = TryParseObjectID(runID, "runID");
 
   const collection = await getCollection("users");
-  const result = await collection.updateOne(
+  await collection.updateOne(
     { _id: userObjectID },
     {
       $push: {
@@ -134,7 +134,7 @@ const getLeaderboardByChallengeId = async (id, recordCount) => {
         $match: {
           "challengeDetails.ID": challengeObjectID,
           showOnLeaderboard: true,
-          banned: {$ne: true}
+          banned: { $ne: true }
         },
       },
       {
@@ -166,7 +166,7 @@ const getLeaderboardRankByScore = async (challengeID, score) => {
           "challengeDetails.ID": challengeObjectID,
           showOnLeaderboard: true,
           "challengeDetails.pb": { $gt: score },
-          banned: {$ne: true},
+          banned: { $ne: true },
         },
       },
       { $count: "usersAhead" }
@@ -260,6 +260,24 @@ const shouldShowUserOnLeaderboard = async id => {
   return false;
 };
 
+const getUserBadgesByID = async id => {
+  const userObjectID = TryParseObjectID(id, "UserID");
+
+  const collection = await getCollection("users");
+  const result = await collection.findOne({ _id: userObjectID }, { projection: { badges: 1 } });
+  if (!result.badges) return [];
+  else
+    return result.badges.map(badge => {
+      return {
+        name: badge.name,
+        color: badge.color,
+        icon: badge.icon,
+        backgroundColor: badge.backgroundColor,
+        value: badge.value,
+      };
+    });
+};
+
 const TryParseObjectID = (stringID, name) => {
   try {
     return new ObjectID(stringID);
@@ -283,4 +301,5 @@ module.exports = {
   getUsernameByID,
   getPlayerCountByChallengeID,
   shouldShowUserOnLeaderboard,
+  getUserBadgesByID,
 };

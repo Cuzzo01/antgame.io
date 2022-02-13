@@ -1,6 +1,7 @@
+import Username from "../User/Username";
 import styles from "./GenericStyles.module.css";
 
-const LeaderboardRow = ({ rank, ownRow, name, age, pb, noRank }) => {
+const LeaderboardRow = ({ rank, ownRow, name, age, pb, noRank, id }) => {
   let placeStyle = "";
   if (!noRank) {
     switch (rank) {
@@ -21,7 +22,13 @@ const LeaderboardRow = ({ rank, ownRow, name, age, pb, noRank }) => {
   return (
     <div className={`${styles.row} ${placeStyle} ${ownRow ? styles.ownRow : ""}`}>
       <span className={styles.rank}>{noRank ? null : `#${rank}`}</span>
-      <span>{name}</span>
+      {id ? (
+        <div>
+          <Username id={id} name={name} />
+        </div>
+      ) : (
+        <span>{name}</span>
+      )}
       <span className={styles.right}>
         <span className={styles.age}>{age}</span>
         &nbsp;{pb}

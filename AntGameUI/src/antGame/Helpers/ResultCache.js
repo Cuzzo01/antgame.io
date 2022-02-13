@@ -1,4 +1,4 @@
-const { ExpiringResult } = require("./ExpiringResult");
+import ExpiringResult from "./ExpiringResult";
 
 class ResultCache {
   constructor() {
@@ -26,10 +26,5 @@ class ResultCache {
   expireValue(name) {
     this.cache[name] = null;
   }
-
-  getTimeToExpire(name) {
-    const tte = this.cache[name].timeBeforeExpires;
-    return tte;
-  }
 }
-module.exports = { ResultCache };
+export default ResultCache;

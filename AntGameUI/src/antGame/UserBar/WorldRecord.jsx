@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import ChallengeHandler from "../Challenge/ChallengeHandler";
 import DailyCountdown from "../Challenge/DailyCountdown/DailyCountdown";
+import Username from "../User/Username";
 import styles from "./RecordDisplay.module.css";
 
 const WorldRecord = props => {
@@ -10,7 +11,12 @@ const WorldRecord = props => {
   useEffect(() => {
     const listenerID = ChallengeHandler.addRecordListener(records => {
       if (!records.wr) setRecord("No World Record");
-      else setRecord(`WR: ${records.wr.score} - ${records.wr.name}`);
+      else
+        setRecord(
+          <span>
+            WR: {records.wr.score} - <Username name={records.wr.name} id={records.wr.id} />
+          </span>
+        );
       if (loading) setLoading(false);
     });
 
