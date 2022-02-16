@@ -11,7 +11,8 @@ const getUserBadges = async (req, res) => {
       return;
     }
 
-    const { badges, ttl } = await UserHandler.getBadges(userID);
+    const badges = await UserHandler.getBadges(userID);
+    const ttl = UserHandler.getTimeToExpire(userID);
 
     if (ttl) {
       const maxCacheTime = await FlagHandler.getFlagValue("time-to-cache-badges-external");

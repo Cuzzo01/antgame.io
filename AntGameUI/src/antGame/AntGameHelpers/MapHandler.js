@@ -5,7 +5,6 @@ import { SaveGameHandler } from "./MapHelpers/SaveGameHandler";
 const Brushes = Config.brushes;
 const MapBounds = Config.MapBounds;
 const PercentFoodReturnedToStopTime = Config.PercentFoodReturnedToStopTime;
-const BorderWeight = Config.borderWeight;
 const BlockDecaySteps = Config.BlockDecaySteps;
 const FoodPerCell = Config.FoodPerCell;
 const DirtPerCell = Config.DirtPerCell;
@@ -43,7 +42,7 @@ export class MapHandler {
     this.foodReturnedLocations = {};
     this.foodAmounts = false;
     this._shouldDrawFoodAmounts = true;
-    this._shouldDrawHomeAmounts = false;
+    this.shouldDrawHomeAmounts = false;
     this.homeAmountsDrawn = false;
   }
 
@@ -60,6 +59,10 @@ export class MapHandler {
     this._shouldDrawFoodAmounts = value;
   }
 
+  get shouldDrawFoodAmounts() {
+    return this._shouldDrawFoodAmounts;
+  }
+
   get map() {
     return this._map;
   }
@@ -67,6 +70,10 @@ export class MapHandler {
   get percentFoodReturned() {
     this.calculateFoodRatio();
     return this.foodRatio;
+  }
+
+  get totalFood() {
+    return this.foodOnMap + this.foodInTransit + this.foodReturned;
   }
 
   get homeFoodCounts() {
@@ -88,25 +95,6 @@ export class MapHandler {
 
   get dirtPerCell() {
     return DirtPerCell;
-  }
-
-  set graphic(graphics) {
-    this._graphics = graphics;
-    this._graphics.noStroke();
-
-    this.populateBrushColors();
-    this.graphicsSet = true;
-  }
-
-  setupMap(canvasWidth, canvasHeight) {
-    const drawableWidth = canvasWidth - BorderWeight * 2;
-    const drawableHeight = canvasHeight - BorderWeight * 2;
-    this.pixelDensity = [
-      (drawableWidth / MapBounds[0]).toFixed(2),
-      (drawableHeight / MapBounds[1]).toFixed(2),
-    ];
-    if (Config.debug)
-      console.log("Pixel density is: ", [this.pixelDensity[0], this.pixelDensity[1]]);
   }
 
   clearMap() {
@@ -133,7 +121,6 @@ export class MapHandler {
   }
 
   generateMap() {
-    this._graphics.clear();
     this._map = [];
     this.foodAmounts = false;
     this.foodToRespawn = [];
@@ -229,108 +216,6 @@ export class MapHandler {
     this.brushColors["foodText"] = this._graphics.color("#7DCEA0");
   }
 
-  drawMap() {
-    if (!this.graphicsSet) return;
-    this.cellsToDraw.forEach(cellPos => {
-      let cell = this._map[cellPos[0]][cellPos[1]];
-      if (cell === " ") {
-        this.eraseCell(cellPos);
-        return;
-      }
-      if (cell !== this.lastCell) {
-        this.lastCell = cell;
-        if (cell[0] === FoodValue || cell[0] === DirtValue) {
-          const cellAmount = cell.substr(1);
-          let strength;
-          if (!cellAmount) strength = BlockDecaySteps;
-          else {
-            const maxPerCell = cell[0] === FoodValue ? FoodPerCell : DirtPerCell;
-            strength = Math.ceil(BlockDecaySteps * (cellAmount / maxPerCell));
-          }
-          const index = cell[0] + strength;
-          this.setFillColor(this.brushColors[index]);
-        } else {
-          this.setFillColor(this.brushColors[cell]);
-        }
-      }
-      this.eraseCell(cellPos);
-      this.drawCellColor(cellPos);
-    });
-    if (this.cellsToDraw.length || this._shouldDrawHomeAmounts) this.drawHomeAmounts();
-    this.cellsToDraw = [];
-    this.redrawMap = false;
-  }
-
-  eraseCell(intMapXY) {
-    this._graphics.erase();
-    this.drawCellColor(intMapXY);
-    this._graphics.noErase();
-  }
-
-  drawFullMap() {
-    if (!this.graphicsSet) return;
-    this._graphics.clear();
-    let lastCell = "";
-    for (let x = 0; x < MapBounds[0]; x++) {
-      for (let y = 0; y < MapBounds[1]; y++) {
-        let cell = this._map[x][y];
-        if (cell.length !== 1) cell = cell[0];
-        if (cell !== " ") {
-          if (cell !== lastCell) {
-            lastCell = cell;
-            this.setFillColor(this.brushColors[cell]);
-          }
-          this.drawCellColor([x, y]);
-        }
-      }
-    }
-    this.drawFoodAmounts();
-    this.drawHomeAmounts();
-    this.lastCell = "";
-    this.redrawFullMap = false;
-    this.redrawMap = false;
-  }
-
-  drawFoodAmounts() {
-    if (!this.graphicsSet) return;
-    if (this.foodAmounts && this._shouldDrawFoodAmounts)
-      this.foodAmounts.forEach(amount => {
-        this.drawText([amount.x, amount.y], amount.value, this.brushColors.foodText);
-      });
-  }
-
-  drawHomeAmounts() {
-    if (!this.graphicsSet) return;
-    if (this.homeAmounts && this._shouldDrawHomeAmounts) {
-      const totalFood = this.foodOnMap + this.foodInTransit + this.foodReturned;
-      for (const [key, value] of Object.entries(this.homeAmounts)) {
-        const location = key.split(",").map(point => parseInt(point));
-        const score = Math.round((value / totalFood) * 100000);
-        this.drawText([location[0], location[1]], score, this.brushColors.homeText);
-      }
-      this.homeAmountsDrawn = true;
-      this._shouldDrawHomeAmounts = false;
-    } else {
-      this.homeAmountsDrawn = false;
-    }
-  }
-
-  drawText([x, y], textValue, color) {
-    const intMapXY = MapXYToInt([x, y]);
-    this._graphics.textAlign(this._graphics.CENTER, this._graphics.CENTER);
-    this._graphics.textFont("Courier New", 16);
-    this._graphics.fill(color);
-    this._graphics.stroke(0);
-    this._graphics.strokeWeight(4);
-    this._graphics.text(
-      textValue,
-      Math.floor(BorderWeight + intMapXY[0] * this.pixelDensity[0] + this.pixelDensity[0] / 2),
-      Math.floor(BorderWeight + intMapXY[1] * this.pixelDensity[1] + this.pixelDensity[1] / 2)
-    );
-    this.lastCell = false;
-    this._graphics.strokeWeight(0);
-  }
-
   mapXYInBounds(mapXY) {
     if (mapXY[0] >= 0 && mapXY[1] >= 0)
       if (mapXY[0] < MapBounds[0] && mapXY[1] < MapBounds[1]) return true;
@@ -372,7 +257,7 @@ export class MapHandler {
     if (foodRemoved) this.foodOnMap -= foodRemoved;
     if (this._gameMode === "sandbox" && this._shouldDrawFoodAmounts) {
       this.foodAmounts = false;
-      this.shouldDrawFoodAmounts = false;
+      this._shouldDrawFoodAmounts = false;
       this.redrawFullMap = true;
     }
   }
@@ -426,7 +311,7 @@ export class MapHandler {
 
   setHomeAmounts = amounts => {
     this.homeAmounts = amounts;
-    this._shouldDrawHomeAmounts = true;
+    this.shouldDrawHomeAmounts = true;
     this.redrawMap = true;
   };
 
@@ -545,35 +430,6 @@ export class MapHandler {
     if (mapXY[1] < 0 || mapXY[1] >= MapBounds[1]) return false;
     return true;
   };
-
-  setFillColor(color) {
-    this._graphics.noErase();
-    this._graphics.fill(color);
-  }
-
-  drawCellColor(mapXY) {
-    const intMapXY = MapXYToInt(mapXY);
-    this._graphics.rect(
-      Math.floor(BorderWeight + intMapXY[0] * this.pixelDensity[0]),
-      Math.floor(BorderWeight + intMapXY[1] * this.pixelDensity[1]),
-      Math.ceil(this.pixelDensity[0]),
-      Math.ceil(this.pixelDensity[1])
-    );
-  }
-
-  canvasXYToMapXY(canvasXY) {
-    return [
-      Math.floor((canvasXY[0] - BorderWeight) / this.pixelDensity[0]),
-      Math.floor((canvasXY[1] - BorderWeight) / this.pixelDensity[1]),
-    ];
-  }
-
-  mapXYToCanvasXY(mapXY) {
-    return [
-      BorderWeight + mapXY[0] * this.pixelDensity[0] + this.pixelDensity[0] / 2,
-      BorderWeight + mapXY[1] * this.pixelDensity[1] + this.pixelDensity[1] / 2,
-    ];
-  }
 }
 
 const MapXYToInt = mapXY => {

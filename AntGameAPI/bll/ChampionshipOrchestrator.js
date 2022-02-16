@@ -125,7 +125,7 @@ class ChampionshipOrchestrator {
         );
     });
 
-    LeaderboardHandler.unsetLeaderboard(championshipID);
+    LeaderboardHandler.unsetItem(championshipID);
 
     await setLastAwarded(championshipID, challengeConfig.id);
     await updateConfigByID(challengeConfig.id, { pointsAwarded: awardedPoints });

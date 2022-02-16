@@ -4,7 +4,6 @@ export const GenerateFoodTooltips = mapData => {
   const seenList = [];
   for (let x = 0; x < mapData.length; x++) {
     for (let y = 0; y < mapData[x].length; y++) {
-      const cell = mapData[x][y];
       if (mapData[x][y] === "f" && !seenList.includes(`${x}, ${y}`)) {
         const foodInGroup = [];
         CountGroupSize(x, y, "f", mapData, foodInGroup);
@@ -29,7 +28,7 @@ export const GenerateFoodTooltips = mapData => {
   return tooltips;
 };
 
-const CountOnMap = (charToCount, mapData) => {
+export const CountOnMap = (charToCount, mapData) => {
   let count = 0;
   for (let x = 0; x < mapData.length; x++) {
     for (let y = 0; y < mapData[x].length; y++) {

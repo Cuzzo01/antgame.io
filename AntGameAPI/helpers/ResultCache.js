@@ -28,8 +28,7 @@ class ResultCache {
   }
 
   getTimeToExpire(name) {
-    const tte = this.cache[name].timeBeforeExpires;
-    return tte;
+    return this.cache[name].timeBeforeExpires;
   }
 }
 module.exports = { ResultCache };

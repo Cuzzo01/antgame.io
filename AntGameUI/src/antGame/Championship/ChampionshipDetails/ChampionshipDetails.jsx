@@ -9,7 +9,7 @@ import { useCallback } from "react";
 import genericStyles from "../../Helpers/GenericStyles.module.css";
 import Username from "../../User/Username";
 
-const ChampionshipDetails = ({}) => {
+const ChampionshipDetails = () => {
   const currentUsername = AuthHandler.username;
   const championshipID = useParams().id;
 
