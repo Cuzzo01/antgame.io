@@ -2,7 +2,6 @@ import { Config } from "../../config";
 
 const Brushes = Config.brushes;
 const FoodValue = Brushes.find(brush => brush.name === "Food").value;
-const HomeValue = Brushes.find(brush => brush.name === "Home").value;
 const DirtValue = Brushes.find(brush => brush.name === "Dirt").value;
 const BlockDecaySteps = Config.BlockDecaySteps;
 const FoodPerCell = Config.FoodPerCell;

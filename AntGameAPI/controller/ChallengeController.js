@@ -11,6 +11,7 @@ const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
+const ActiveChallengeHandler = require("../handler/ActiveChallengeHandler");
 const MapHandler = require("../handler/MapHandler");
 const { GetIpAddress } = require("../helpers/IpHelper");
 const Logger = require("../Logger");
@@ -148,7 +149,7 @@ async function postRun(req, res) {
             runData.Score
           );
           response.rank = newRank;
-          LeaderboardHandler.unsetLeaderboard(runData.challengeID);
+          LeaderboardHandler.unsetItem(runData.challengeID);
         }
 
         if (await FlagHandler.getFlagValue("show-player-count-in-challenge")) {
@@ -173,6 +174,7 @@ async function postRun(req, res) {
               );
 
               ChallengeDao.addTagToRun(runID, { type: "wr" });
+              ActiveChallengeHandler.unsetItem();
             }
           }
         }
@@ -253,15 +255,21 @@ async function getActiveChallenges(req, res) {
   try {
     const user = req.user;
 
-    const activeChallenges = await ChallengeDao.getActiveChallenges();
+    const activeChallengeData = await ActiveChallengeHandler.getActiveChallenges();
+    const activeChallenges = activeChallengeData.challenges;
+    const worldRecords = activeChallengeData.worldRecords;
 
     let challengeIDList = [];
     activeChallenges.forEach(challenge => {
       challengeIDList.push(challenge.id);
     });
 
-    let records = await ChallengeDao.getRecordsByChallengeList(challengeIDList);
     let userRecords = false;
+    const records = {};
+    for (const [id, wr] of Object.entries(worldRecords)) {
+      records[id] = { wr: wr };
+    }
+
     if (!user.anon) {
       userRecords = await UserDao.getUserPBsByChallengeList(user.id, challengeIDList);
       if (userRecords) {

@@ -26,7 +26,7 @@ class Logger {
   }
 
   logError(location, err) {
-    let errString = err.stack ? err.stack : err;
+    let errString = err && err.stack ? err.stack : err;
     this.log({ message: "API Error", location: location, error: errString });
   }
 
@@ -35,14 +35,16 @@ class Logger {
   }
 
   logCacheResult(cacheName, cacheMiss, key, value, time) {
-    this.log({
+    const toLog = {
       message: "Cache Result",
-      cacheName: cacheName,
+      cacheName,
       resultType: cacheMiss ? "miss" : "hit",
       key: key,
-      value: value,
       time: time,
-    });
+    };
+
+    if (value && value.length) toLog.value = value;
+    this.log(toLog);
   }
 
   logCronMessage(message) {

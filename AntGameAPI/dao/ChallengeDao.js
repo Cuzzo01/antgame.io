@@ -65,12 +65,10 @@ const getRecordsByChallengeList = async challengeIDList => {
       const record = challenge.records[0];
       const timeString = getGeneralizedTimeStringFromObjectID(record.runID);
       records[challenge._id] = {
-        wr: {
-          id: record.userID,
-          score: record.score,
-          username: record.username,
-          age: timeString,
-        },
+        id: record.userID,
+        score: record.score,
+        username: record.username,
+        age: timeString,
       };
     } else {
       records[challenge._id] = {};

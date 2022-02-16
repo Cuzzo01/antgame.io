@@ -5,7 +5,6 @@ import { SaveGameHandler } from "./MapHelpers/SaveGameHandler";
 const Brushes = Config.brushes;
 const MapBounds = Config.MapBounds;
 const PercentFoodReturnedToStopTime = Config.PercentFoodReturnedToStopTime;
-const BorderWeight = Config.borderWeight;
 const BlockDecaySteps = Config.BlockDecaySteps;
 const FoodPerCell = Config.FoodPerCell;
 const DirtPerCell = Config.DirtPerCell;
