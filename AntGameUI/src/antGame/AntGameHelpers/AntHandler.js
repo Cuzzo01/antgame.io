@@ -10,8 +10,7 @@ export class AntsHandler {
   constructor() {
     this.ants = [];
     this.redrawAnts = false;
-    // //// DONT LEAVE ME LIKE THIS
-    this.deterministicMode = true;
+    this.deterministicMode = false;
     document.addEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
