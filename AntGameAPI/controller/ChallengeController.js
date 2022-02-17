@@ -8,7 +8,6 @@ const {
 } = require("../helpers/TimeHelper");
 const FlagHandler = require("../handler/FlagHandler");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
-const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
 const ActiveChallengeHandler = require("../handler/ActiveChallengeHandler");
@@ -135,7 +134,6 @@ async function postRun(req, res) {
       if (!user.anon) {
         if (isPB && currentDetails === null) {
           UserDao.addNewChallengeDetails(user.id, runData.challengeID, runData.Score, runID);
-          ChallengePlayerCountHandler.unsetPlayerCount(runData.challengeID);
         } else if (isPB && currentDetails.pb) {
           UserDao.updateChallengePBAndRunCount(user.id, runData.challengeID, runData.Score, runID);
         } else {
@@ -148,7 +146,7 @@ async function postRun(req, res) {
 
         let response = {};
         if (await FlagHandler.getFlagValue("show-player-count-in-challenge")) {
-          const playerCount = await ChallengePlayerCountHandler.getPlayerCount(runData.challengeID);
+          const playerCount = await LeaderboardHandler.getChallengePlayerCount(runData.challengeID);
           response.playerCount = playerCount;
         }
 
@@ -335,7 +333,7 @@ async function getRecords(req, res) {
     }
 
     if (await FlagHandler.getFlagValue("show-player-count-in-challenge")) {
-      const playerCount = await ChallengePlayerCountHandler.getPlayerCount(challengeID);
+      const playerCount = await LeaderboardHandler.getChallengePlayerCount(challengeID);
       response.playerCount = playerCount;
     }
 
@@ -448,7 +446,7 @@ async function getLeaderboard(req, res) {
     };
 
     if (await FlagHandler.getFlagValue("show-player-count-on-leaderboard"))
-      response.playerCount = await ChallengePlayerCountHandler.getPlayerCount(challengeID);
+      response.playerCount = await LeaderboardHandler.getChallengePlayerCount(challengeID);
 
     res.send(response);
   } catch (e) {

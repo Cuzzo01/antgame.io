@@ -94,6 +94,11 @@ class LeaderboardHandler extends ResultCacheWrapper {
     const entry = leaderboardArr.find(entry => entry._id.equals(userID));
     return entry;
   }
+
+  async getChallengePlayerCount(challengeID) {
+    const leaderboardArr = await this.getRawChallengeLeaderboard(challengeID)
+    return leaderboardArr.length
+  }
 }
 const SingletonInstance = new LeaderboardHandler();
 module.exports = SingletonInstance;
