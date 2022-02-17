@@ -6,17 +6,12 @@ const getCollection = async collection => {
   return await connection.db("challenges").collection(collection);
 };
 
-const getUserPBsByChallengeList = async (userID, challengeIDList) => {
-  let objectIDList = [];
-  challengeIDList.forEach(id => {
-    const parseResult = TryParseObjectID(id, "listChallengeID");
-    objectIDList.push(parseResult);
-  });
+const getUserPBs = async userID => {
   const userObjectID = TryParseObjectID(userID, "userID");
 
   const collection = await getCollection("users");
   const result = await collection.findOne(
-    { _id: userObjectID, "challengeDetails.ID": { $in: objectIDList } },
+    { _id: userObjectID },
     {
       projection: {
         "challengeDetails.ID": 1,
@@ -235,7 +230,7 @@ module.exports = {
   addNewChallengeDetails,
   getChallengeDetailsByUser,
   incrementChallengeRunCount,
-  getUserPBsByChallengeList,
+  getUserPBs,
   getPRRunIDByChallengeID,
   getLeaderboardByChallengeId,
   isUserBanned,

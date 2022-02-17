@@ -269,27 +269,29 @@ async function getActiveChallenges(req, res) {
 
     let userRecords = false;
     if (!user.anon) {
-      userRecords = await UserDao.getUserPBsByChallengeList(user.id, challengeIDList);
-      if (userRecords) {
+      userRecords = await UserDao.getUserPBs(user.id);
+      const activeUserRecords = userRecords.filter(
+        record => challengeIDList.findIndex(id => id.equals(record.ID)) > -1
+      );
+
+      if (activeUserRecords) {
         const shouldGetRanks = await FlagHandler.getFlagValue("show-rank-on-challenge-list");
 
         let rankPromises = [];
-        userRecords.forEach(userRecord => {
+        activeUserRecords.forEach(userRecord => {
           const challengeID = userRecord.ID;
-          if (records.hasOwnProperty(challengeID)) {
-            records[challengeID].pb = userRecord.pb;
-            records[challengeID].runs = userRecord.runs;
+          records[challengeID].pb = userRecord.pb;
+          records[challengeID].runs = userRecord.runs;
 
-            if (shouldGetRanks) {
-              rankPromises.push(
-                LeaderboardHandler.getChallengeRankByUserId(challengeID, user.id).then(rank => {
-                  return {
-                    id: challengeID,
-                    rank: rank,
-                  };
-                })
-              );
-            }
+          if (shouldGetRanks) {
+            rankPromises.push(
+              LeaderboardHandler.getChallengeRankByUserId(challengeID, user.id).then(rank => {
+                return {
+                  id: challengeID,
+                  rank: rank,
+                };
+              })
+            );
           }
         });
 
