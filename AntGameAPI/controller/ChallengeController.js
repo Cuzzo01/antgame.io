@@ -198,7 +198,7 @@ async function postRun(req, res) {
     }
     res.send("Ok");
   } catch (e) {
-    console.log(e);
+    Logger.logError("ChallengeController.PostRun", e);
     res.status(500);
     res.send("Save failed");
   }
