@@ -61,7 +61,7 @@ class ChampionshipOrchestrator {
     if (challengeConfig.pointsAwarded !== undefined) {
       throw "Points already awarded";
     }
-    
+
     const playerCount = await LeaderboardHandler.getChallengePlayerCount(challengeID);
     if (playerCount === 0) {
       throw "Challenge has no users";
