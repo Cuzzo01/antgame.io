@@ -41,7 +41,6 @@ const Username = ({ name, id }) => {
         </span>
       );
     }
-    badges.forEach(badge => {});
 
     if (list.length) setBadges(list);
     if (Object.keys(nameStyles).length) setNameStyles(nameStyles);
