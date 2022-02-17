@@ -181,12 +181,14 @@ async function postRun(req, res) {
           response.wr = {
             score: runData.Score,
             name: user.username,
+            id: user.id,
           };
           response.isWrRun = true;
         } else if (challengeRecord) {
           response.wr = {
             score: challengeRecord.score,
             name: challengeRecord.username,
+            id: challengeRecord.id,
           };
         }
 
