@@ -8,7 +8,6 @@ const {
 } = require("../helpers/TimeHelper");
 const FlagHandler = require("../handler/FlagHandler");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
-const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
 const ActiveChallengeHandler = require("../handler/ActiveChallengeHandler");
@@ -135,31 +134,25 @@ async function postRun(req, res) {
       if (!user.anon) {
         if (isPB && currentDetails === null) {
           UserDao.addNewChallengeDetails(user.id, runData.challengeID, runData.Score, runID);
-          ChallengePlayerCountHandler.unsetPlayerCount(runData.challengeID);
         } else if (isPB && currentDetails.pb) {
           UserDao.updateChallengePBAndRunCount(user.id, runData.challengeID, runData.Score, runID);
         } else {
           UserDao.incrementChallengeRunCount(user.id, runData.challengeID);
         }
 
-        let response = {};
-        if (runData.PB) {
-          const newRank = await UserDao.getLeaderboardRankByScore(
-            runData.challengeID,
-            runData.Score
-          );
-          response.rank = newRank;
+        if (isPB) {
           LeaderboardHandler.unsetItem(runData.challengeID);
         }
 
+        let response = {};
         if (await FlagHandler.getFlagValue("show-player-count-in-challenge")) {
-          const playerCount = await ChallengePlayerCountHandler.getPlayerCount(runData.challengeID);
+          const playerCount = await LeaderboardHandler.getChallengePlayerCount(runData.challengeID);
           response.playerCount = playerCount;
         }
 
         let isWorldRecord = false;
         let challengeRecord = await ChallengeDao.getRecordByChallenge(runData.challengeID);
-        if (runData.PB) {
+        if (isPB) {
           const recordEmpty = challengeRecord && Object.keys(challengeRecord).length === 0;
           if (recordEmpty || challengeRecord.score < runData.Score) {
             const shouldShowUserOnLeaderboard = await UserDao.shouldShowUserOnLeaderboard(user.id);
@@ -178,6 +171,11 @@ async function postRun(req, res) {
             }
           }
         }
+
+        response.rank = await LeaderboardHandler.getChallengeRankByUserId(
+          runData.challengeID,
+          user.id
+        );
 
         if (isWorldRecord) {
           response.wr = {
@@ -198,7 +196,7 @@ async function postRun(req, res) {
     }
     res.send("Ok");
   } catch (e) {
-    console.log(e);
+    Logger.logError("ChallengeController.PostRun", e);
     res.status(500);
     res.send("Save failed");
   }
@@ -264,12 +262,12 @@ async function getActiveChallenges(req, res) {
       challengeIDList.push(challenge.id);
     });
 
-    let userRecords = false;
     const records = {};
     for (const [id, wr] of Object.entries(worldRecords)) {
       records[id] = { wr: wr };
     }
 
+    let userRecords = false;
     if (!user.anon) {
       userRecords = await UserDao.getUserPBsByChallengeList(user.id, challengeIDList);
       if (userRecords) {
@@ -284,7 +282,7 @@ async function getActiveChallenges(req, res) {
 
             if (shouldGetRanks) {
               rankPromises.push(
-                UserDao.getLeaderboardRankByScore(challengeID, userRecord.pb).then(rank => {
+                LeaderboardHandler.getChallengeRankByUserId(challengeID, user.id).then(rank => {
                   return {
                     id: challengeID,
                     rank: rank,
@@ -328,14 +326,14 @@ async function getRecords(req, res) {
     if (!user.anon) {
       const challengeDetails = await UserDao.getChallengeDetailsByUser(user.id, challengeID);
       if (challengeDetails !== null) {
-        const rank = await UserDao.getLeaderboardRankByScore(challengeID, challengeDetails.pb);
-
-        (response.pr = challengeDetails.pb), (response.rank = rank);
+        const rank = await LeaderboardHandler.getChallengeRankByUserId(challengeID, user.id);
+        response.pr = challengeDetails.pb;
+        response.rank = rank;
       }
     }
 
     if (await FlagHandler.getFlagValue("show-player-count-in-challenge")) {
-      const playerCount = await ChallengePlayerCountHandler.getPlayerCount(challengeID);
+      const playerCount = await LeaderboardHandler.getChallengePlayerCount(challengeID);
       response.playerCount = playerCount;
     }
 
@@ -393,10 +391,16 @@ async function getLeaderboard(req, res) {
     if (!onLeaderboard) {
       const pr = await UserDao.getChallengeDetailsByUser(user.id, challengeID);
       if (pr) {
-        const currentUserRank = await UserDao.getLeaderboardRankByScore(challengeID, pr.pb);
+        const currentUserRank = await LeaderboardHandler.getChallengeRankByUserId(
+          challengeID,
+          user.id
+        );
 
         if (currentUserRank > leaderboardData.length + 1) {
-          const entryAbove = await UserDao.getPRByLeaderboardRank(challengeID, currentUserRank - 1);
+          const entryAbove = await LeaderboardHandler.getLeaderboardEntryByRank(
+            challengeID,
+            currentUserRank - 1
+          );
           const timeString =
             isDaily && !isCurrentDaily
               ? getTimeStringForDailyChallenge(entryAbove.runID)
@@ -442,7 +446,7 @@ async function getLeaderboard(req, res) {
     };
 
     if (await FlagHandler.getFlagValue("show-player-count-on-leaderboard"))
-      response.playerCount = await ChallengePlayerCountHandler.getPlayerCount(challengeID);
+      response.playerCount = await LeaderboardHandler.getChallengePlayerCount(challengeID);
 
     res.send(response);
   } catch (e) {
@@ -459,9 +463,8 @@ async function getPRHomeLocations(req, res) {
     const user = req.user;
     const challengeID = req.params.id;
 
-    // FIXME: Make a mongo aggregate function to do this lookup in just one call
-    const runID = await UserDao.getPRRunIDByChallengeID(user.id, challengeID);
-    const result = await ChallengeDao.getRunHomePositionsByRunId(runID);
+    const prRun = await LeaderboardHandler.getLeaderboardEntryByUserID(challengeID, user.id);
+    const result = await ChallengeDao.getRunHomePositionsByRunId(prRun.runID);
 
     if (!result) {
       res.status(404);

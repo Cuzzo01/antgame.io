@@ -126,86 +126,30 @@ const getLeaderboardByChallengeId = async (id, recordCount) => {
   const challengeObjectID = TryParseObjectID(id, "challengeID");
 
   const collection = await getCollection("users");
-  // prettier-ignore
-  const result = await collection
-    .aggregate([
-      { $unwind: "$challengeDetails" },
-      {
-        $match: {
-          "challengeDetails.ID": challengeObjectID,
-          showOnLeaderboard: true,
-          banned: { $ne: true }
-        },
+  const aggregateArr = [
+    { $unwind: "$challengeDetails" },
+    {
+      $match: {
+        "challengeDetails.ID": challengeObjectID,
+        showOnLeaderboard: true,
+        banned: { $ne: true },
       },
-      {
-        $group: {
-          _id: "$_id",
-          username: { $first: "$username" },
-          pb: { $first: "$challengeDetails.pb" },
-          runID: { $first: "$challengeDetails.pbRunID" }
-        },
+    },
+    {
+      $group: {
+        _id: "$_id",
+        username: { $first: "$username" },
+        pb: { $first: "$challengeDetails.pb" },
+        runID: { $first: "$challengeDetails.pbRunID" },
       },
-      { $sort: { pb: -1, runID: 1 } },
-      { $limit: recordCount },
-    ])
-    .toArray();
+    },
+    { $sort: { pb: -1, runID: 1 } },
+  ];
+  if (recordCount) aggregateArr.push({ $limit: recordCount });
+
+  const result = await collection.aggregate(aggregateArr).toArray();
 
   return result;
-};
-
-const getLeaderboardRankByScore = async (challengeID, score) => {
-  const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
-
-  const collection = await getCollection("users");
-  // prettier-ignore
-  const result = await collection
-    .aggregate([
-      { $unwind: "$challengeDetails" },
-      {
-        $match: {
-          "challengeDetails.ID": challengeObjectID,
-          showOnLeaderboard: true,
-          "challengeDetails.pb": { $gt: score },
-          banned: { $ne: true },
-        },
-      },
-      { $count: "usersAhead" }
-    ])
-    .toArray();
-
-  if (result.length > 0) return result[0].usersAhead + 1;
-  return 1;
-};
-
-const getPRByLeaderboardRank = async (challengeID, rank) => {
-  const challengeObjectID = TryParseObjectID(challengeID, "ChallengeID");
-
-  const collection = await getCollection("users");
-  const result = await collection
-    .aggregate([
-      { $unwind: "$challengeDetails" },
-      {
-        $match: {
-          "challengeDetails.ID": challengeObjectID,
-          showOnLeaderboard: true,
-          banned: { $ne: true },
-        },
-      },
-      {
-        $group: {
-          _id: "$_id",
-          username: { $first: "$username" },
-          pb: { $first: "$challengeDetails.pb" },
-          runID: { $first: "$challengeDetails.pbRunID" },
-        },
-      },
-      { $sort: { pb: -1, runID: 1 } },
-      { $skip: rank - 1 },
-      { $limit: 1 },
-    ])
-    .toArray();
-
-  return result[0];
 };
 
 const isUserBanned = async id => {
@@ -294,8 +238,6 @@ module.exports = {
   getUserPBsByChallengeList,
   getPRRunIDByChallengeID,
   getLeaderboardByChallengeId,
-  getLeaderboardRankByScore,
-  getPRByLeaderboardRank,
   isUserBanned,
   isUserAdmin,
   getUsernameByID,

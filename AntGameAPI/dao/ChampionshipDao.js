@@ -102,24 +102,24 @@ const getLeaderboardByChampionshipID = async (ID, recordCount) => {
   const championshipObjectId = TryParseObjectID(ID, "ChampionshipID");
 
   const collection = await getCollection("championships");
-  const result = await collection
-    .aggregate([
-      {
-        $match: {
-          _id: championshipObjectId,
-        },
+  const aggregateArr = [
+    {
+      $match: {
+        _id: championshipObjectId,
       },
-      { $unwind: "$userPoints" },
-      {
-        $group: {
-          _id: "$userPoints.userID",
-          points: { $first: "$userPoints.points" },
-        },
+    },
+    { $unwind: "$userPoints" },
+    {
+      $group: {
+        _id: "$userPoints.userID",
+        points: { $first: "$userPoints.points" },
       },
-      { $sort: { points: -1 } },
-      { $limit: recordCount },
-    ])
-    .toArray();
+    },
+    { $sort: { points: -1 } },
+  ];
+  if (recordCount) aggregateArr.push({ $limit: recordCount });
+
+  const result = await collection.aggregate(aggregateArr).toArray();
 
   return result;
 };

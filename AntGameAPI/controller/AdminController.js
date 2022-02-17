@@ -18,8 +18,6 @@ const {
   getChampionshipListFromDB,
 } = require("../dao/AdminDao");
 const { getActiveChallenges } = require("../dao/ChallengeDao");
-const { getLeaderboardRankByScore } = require("../dao/UserDao");
-const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
 const { addStatToResponse } = require("../helpers/AuthStatHelpers");
@@ -79,7 +77,7 @@ async function getConfigList(req, res) {
       }
       if (config.active) {
         playerCountPromises.push(
-          ChallengePlayerCountHandler.getPlayerCount(config._id).then(count => {
+          LeaderboardHandler.getChallengePlayerCount(config._id).then(count => {
             return { index: index, count: count };
           })
         );
@@ -106,7 +104,7 @@ async function getConfigDetails(req, res) {
     const id = req.params.id;
     let result = await getConfigDetailsByID(id);
 
-    result["playerCount"] = await ChallengePlayerCountHandler.getPlayerCount(id);
+    result["playerCount"] = await LeaderboardHandler.getChallengePlayerCount(id);
 
     if (result.records) {
       let modifiedRecords = result.records;
@@ -268,7 +266,7 @@ async function getUserDetails(req, res) {
         const userDetails = userChallengeDetails.find(details => details.ID.equals(challenge.id));
         if (userDetails) {
           rankPromises.push(
-            getLeaderboardRankByScore(challenge.id, userDetails.pb).then(rank => {
+            LeaderboardHandler.getChallengeRankByUserId(challenge.id, id).then(rank => {
               return { id: challenge.id, rank: rank };
             })
           );
