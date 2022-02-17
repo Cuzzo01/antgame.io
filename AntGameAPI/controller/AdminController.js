@@ -18,7 +18,6 @@ const {
   getChampionshipListFromDB,
 } = require("../dao/AdminDao");
 const { getActiveChallenges } = require("../dao/ChallengeDao");
-const { getLeaderboardRankByScore } = require("../dao/UserDao");
 const ChallengePlayerCountHandler = require("../handler/ChallengePlayerCountHandler");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
@@ -268,7 +267,7 @@ async function getUserDetails(req, res) {
         const userDetails = userChallengeDetails.find(details => details.ID.equals(challenge.id));
         if (userDetails) {
           rankPromises.push(
-            getLeaderboardRankByScore(challenge.id, userDetails.pb).then(rank => {
+            LeaderboardHandler.getChallengeRankByUserId(challenge.id, id).then(rank => {
               return { id: challenge.id, rank: rank };
             })
           );

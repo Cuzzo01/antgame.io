@@ -7,6 +7,10 @@ class ResultCacheWrapper {
     this.name = name;
   }
 
+  itemIsSet(id) {
+    return this.resultCache.isSetAndActive(id);
+  }
+
   getOrFetchValue = async ({ id, type, fetchMethod, getTimeToCache }) => {
     const startTime = new Date();
 
@@ -47,9 +51,9 @@ class ResultCacheWrapper {
     else return false;
   };
 
-  unsetItem = id => {
+  unsetItem(id) {
     this.resultCache.expireValue(id);
-  };
+  }
 
   unsetAll = () => {
     this.resultCache = new ResultCache();
