@@ -28,6 +28,7 @@ class UserHandler extends ResultCacheWrapper {
         const cacheTime = Math.round(maxTimeToCache * (1 - Math.random() * 0.2));
         return cacheTime;
       },
+      logFormatter: () => "",
     });
   }
 }

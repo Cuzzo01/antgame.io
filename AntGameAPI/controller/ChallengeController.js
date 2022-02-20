@@ -10,7 +10,7 @@ const FlagHandler = require("../handler/FlagHandler");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
-const ActiveChallengeHandler = require("../handler/ActiveChallengeHandler");
+const ActiveChallengesHandler = require("../handler/ActiveChallengesHandler");
 const MapHandler = require("../handler/MapHandler");
 const { GetIpAddress } = require("../helpers/IpHelper");
 const Logger = require("../Logger");
@@ -167,7 +167,7 @@ async function postRun(req, res) {
               );
 
               ChallengeDao.addTagToRun(runID, { type: "wr" });
-              ActiveChallengeHandler.unsetItem();
+              ActiveChallengesHandler.unsetItem();
             }
           }
         }
@@ -255,7 +255,7 @@ async function getActiveChallenges(req, res) {
   try {
     const user = req.user;
 
-    const activeChallengeData = await ActiveChallengeHandler.getActiveChallenges();
+    const activeChallengeData = await ActiveChallengesHandler.getActiveChallenges();
     const activeChallenges = activeChallengeData.challenges;
     const worldRecords = activeChallengeData.worldRecords;
 

@@ -11,30 +11,43 @@ class ResultCacheWrapper {
     return this.resultCache.isSetAndActive(id);
   }
 
-  getOrFetchValue = async ({ id, type, fetchMethod, getTimeToCache }) => {
+  getOrFetchValue = async ({ id, type, fetchMethod, getTimeToCache, logFormatter }) => {
     const startTime = new Date();
+    const timeToCache = await getTimeToCache();
 
     const cacheResult = this.tryGetItemFromCache(id);
     if (cacheResult !== false) {
-      this.logMessage({
+      const toReturn = await Promise.resolve(cacheResult);
+
+      const toLog = {
         cacheMiss: false,
         id,
         startTime,
         type,
-      });
-      return cacheResult;
+      };
+      if (logFormatter) toLog.value = logFormatter(toReturn);
+      else toLog.value = toReturn;
+      this.logMessage(toLog);
+
+      return toReturn;
     } else {
       try {
-        const result = await fetchMethod(id);
-        const timeToCache = await getTimeToCache();
+        const result = fetchMethod(id);
         this.resultCache.setItem(id, result, timeToCache, new Date() - startTime);
-        this.logMessage({
+
+        const resolvedResult = await Promise.resolve(result);
+
+        const toLog = {
           cacheMiss: true,
           id,
           startTime,
           type,
-        });
-        return result;
+        };
+        if (logFormatter) toLog.value = logFormatter(resolvedResult);
+        else toLog.value = resolvedResult;
+        this.logMessage(toLog);
+
+        return resolvedResult;
       } catch (e) {
         Logger.logError(this.name, e);
         return null;
@@ -42,8 +55,9 @@ class ResultCacheWrapper {
     }
   };
 
-  logMessage = ({ cacheMiss, id, startTime, type }) => {
-    Logger.logCacheResult(`${this.name}/${type}`, cacheMiss, id, "", new Date() - startTime);
+  logMessage = ({ cacheMiss, id, startTime, type, value }) => {
+    const nameString = type ? `${this.name}/${type}` : this.name;
+    Logger.logCacheResult(nameString, cacheMiss, id, value, new Date() - startTime);
   };
 
   tryGetItemFromCache = id => {
