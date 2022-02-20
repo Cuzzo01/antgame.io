@@ -42,8 +42,10 @@ const Username = ({ name, id }) => {
       );
     }
 
-    setBadges(list);
-    setNameStyles(nameStyles);
+    if (list.length) setBadges(list);
+    else setBadges(false);
+    if (Object.keys(nameStyles)) setNameStyles(nameStyles);
+    else setNameStyles({})
   }, [id]);
 
   useEffect(() => {
