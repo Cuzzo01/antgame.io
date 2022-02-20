@@ -2,15 +2,14 @@ const { getActiveChallenges, getRecordsByChallengeList } = require("../dao/Chall
 const FlagHandler = require("./FlagHandler");
 const { ResultCacheWrapper } = require("./ResultCacheWrapper");
 
-class ActiveChallengeHandler extends ResultCacheWrapper {
+class ActiveChallengesHandler extends ResultCacheWrapper {
   constructor() {
-    super({ name: "ActiveChallengeHandler" });
+    super({ name: "ActiveChallengesHandler" });
   }
 
   getActiveChallenges = async () => {
     return await this.getOrFetchValue({
       id: "",
-      type: "CurrentActive",
       fetchMethod: async () => {
         const activeChallenges = await getActiveChallenges();
 
@@ -30,5 +29,5 @@ class ActiveChallengeHandler extends ResultCacheWrapper {
     super.unsetItem("");
   }
 }
-const SingletonInstance = new ActiveChallengeHandler();
+const SingletonInstance = new ActiveChallengesHandler();
 module.exports = SingletonInstance;

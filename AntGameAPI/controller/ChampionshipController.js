@@ -93,7 +93,7 @@ async function getLeaderboard(req, res) {
 
     res.send(leaderboardResponse);
   } catch (e) {
-    Logger.logError("ChampionshipController.getLeaderboard");
+    Logger.logError("ChampionshipController.getLeaderboard", e);
     res.sendStatus(500);
   }
 }

@@ -1,81 +1,50 @@
 const { getChallengeByChallengeId } = require("../dao/ChallengeDao");
 const { getChampionshipDetailsFromDB } = require("../dao/ChampionshipDao");
 const { getUsernameByID } = require("../dao/UserDao");
-const { ResultCache } = require("../helpers/ResultCache");
-const Logger = require("../Logger");
+const { ResultCacheWrapper } = require("./ResultCacheWrapper.js");
 
-class ObjectIDToNameHandler {
+class ObjectIDToNameHandler extends ResultCacheWrapper {
   constructor() {
-    this.resultCache = new ResultCache();
-    this.timeToCache = 43200; // 1 hour
+    super({ name: "ObjectIDToNameHandler" });
+  }
+
+  get timeToCache() {
+    return Math.round(43200 * (1 - Math.random() * 0.1));
   }
 
   async getChallengeName(id) {
-    return await this.getOrFetchValue(id, "ChallengeName", async id => {
-      const config = await getChallengeByChallengeId(id);
-      return config.name;
+    return await this.getOrFetchValue({
+      id,
+      type: "Challenge",
+      getTimeToCache: () => this.timeToCache,
+      fetchMethod: async () => {
+        const config = await getChallengeByChallengeId(id);
+        return config.name;
+      },
     });
   }
 
   async getUsername(id) {
-    return await this.getOrFetchValue(id, "Username", async id => {
-      return await getUsernameByID(id);
+    return await this.getOrFetchValue({
+      id,
+      type: "Username",
+      getTimeToCache: () => this.timeToCache,
+      fetchMethod: async () => {
+        return await getUsernameByID(id);
+      },
     });
   }
 
   async getChampionshipName(id) {
-    return await this.getOrFetchValue(id, "Championship", async id => {
-      const championship = await getChampionshipDetailsFromDB(id);
-      return championship.name;
-    });
-  }
-
-  async getOrFetchValue(id, type, fetchMethod) {
-    const startTime = new Date();
-
-    const cacheResult = this.tryGetItemFromCache(id);
-    if (cacheResult !== false) {
-      this.logMessage({
-        cacheMiss: false,
-        result: cacheResult,
-        id,
-        startTime,
-        type,
-      });
-      return cacheResult;
-    } else {
-      try {
-        const result = await fetchMethod(id);
-        const cacheTime = Math.round(this.timeToCache * (1 - Math.random() * 0.2));
-        this.resultCache.setItem(id, result, cacheTime, new Date() - startTime);
-        this.logMessage({
-          cacheMiss: true,
-          result,
-          id,
-          startTime,
-          type,
-        });
-        return result;
-      } catch (e) {
-        Logger.logError("ObjectIDToNameHandler", e);
-        return null;
-      }
-    }
-  }
-
-  logMessage = ({ cacheMiss, id, result, startTime, type }) => {
-    Logger.logCacheResult(
-      `ObjectIDToNameHandler/${type}`,
-      cacheMiss,
+    return await this.getOrFetchValue({
       id,
-      JSON.stringify(result),
-      new Date() - startTime
-    );
-  };
-
-  tryGetItemFromCache(id) {
-    if (this.resultCache.isSetAndActive(id)) return this.resultCache.getValue(id);
-    else return false;
+      type: "Championship",
+      getTimeToCache: () => this.timeToCache,
+      fetchMethod: async () => {
+        const championship = await getChampionshipDetailsFromDB(id);
+        return championship.name;
+      },
+    });
   }
 }
 const SingletonInstance = new ObjectIDToNameHandler();

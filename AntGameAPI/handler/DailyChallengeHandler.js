@@ -1,34 +1,25 @@
 const { getDailyChallengesInReverseOrder } = require("../dao/ChallengeDao");
-const { ExpiringResult } = require("../helpers/ExpiringResult");
-const Logger = require("../Logger");
+const { ResultCacheWrapper } = require("./ResultCacheWrapper");
 
-class ActiveDailyChallengeHandler {
+class DailyChallengeHandler extends ResultCacheWrapper {
   constructor() {
-    this.challengeId = new ExpiringResult();
-    this.timeToCache = 3600; // 1 hour
+    super({ name: "DailyChallengeHandler" });
   }
 
   async getActiveDailyChallenge() {
-    if (this.challengeId.isActive()) {
-      const result = this.challengeId.getValue();
-      return result;
-    } else {
-      try {
-        const value = (await getDailyChallengesInReverseOrder({ limit: 1 }))[0]._id;
-        const expireAt = new Date();
-        expireAt.setSeconds(expireAt.getSeconds() + this.timeToCache);
-        this.challengeId = new ExpiringResult(expireAt, value);
-        return value;
-      } catch (e) {
-        Logger.logError("ActiveDailyChallengeHandler", e);
-        return null;
-      }
-    }
+    return await this.getOrFetchValue({
+      id: "",
+      getTimeToCache: () => 3600,
+      logFormatter: () => "",
+      fetchMethod: async () => {
+        return (await getDailyChallengesInReverseOrder({ limit: 1 }))[0]._id;
+      },
+    });
   }
 
-  clearCache = () => {
-    this.challengeId = new ExpiringResult();
-  };
+  clearCache() {
+    super.unsetAll();
+  }
 }
-const SingletonInstance = new ActiveDailyChallengeHandler();
+const SingletonInstance = new DailyChallengeHandler();
 module.exports = SingletonInstance;

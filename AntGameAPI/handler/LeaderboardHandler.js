@@ -6,10 +6,16 @@ const {
 } = require("../dao/ChampionshipDao");
 const { getLeaderboardByChallengeId } = require("../dao/UserDao");
 const { ResultCacheWrapper } = require("./ResultCacheWrapper");
+const FlagHandler = require("./FlagHandler");
 
 class LeaderboardHandler extends ResultCacheWrapper {
   constructor() {
     super({ name: "LeaderboardHandler" });
+  }
+
+  async getTimeToCache() {
+    const maxTime = await FlagHandler.getFlagValue("time-to-cache-leaderboards");
+    return Math.round(maxTime * (1 - Math.random() * 0.2));
   }
 
   unsetItem(id) {
@@ -25,7 +31,8 @@ class LeaderboardHandler extends ResultCacheWrapper {
       fetchMethod: async id => {
         return await getLeaderboardByChallengeId(id, 15);
       },
-      getTimeToCache: () => 3600,
+      getTimeToCache: this.getTimeToCache,
+      logFormatter: () => "",
     });
   }
 
@@ -51,7 +58,8 @@ class LeaderboardHandler extends ResultCacheWrapper {
 
         return toReturn;
       },
-      getTimeToCache: () => 3600,
+      getTimeToCache: this.getTimeToCache,
+      logFormatter: () => "",
     });
   }
 
@@ -62,7 +70,8 @@ class LeaderboardHandler extends ResultCacheWrapper {
       fetchMethod: async () => {
         return await getLeaderboardByChampionshipID(id);
       },
-      getTimeToCache: () => 3600,
+      getTimeToCache: this.getTimeToCache,
+      logFormatter: value => `Length: ${value.length}`,
     });
   }
 
@@ -73,7 +82,8 @@ class LeaderboardHandler extends ResultCacheWrapper {
       fetchMethod: async () => {
         return await getLeaderboardByChallengeId(id);
       },
-      getTimeToCache: () => 3600,
+      getTimeToCache: this.getTimeToCache,
+      logFormatter: value => `Length: ${value.length}`,
     });
   }
 

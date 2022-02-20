@@ -21,7 +21,7 @@ class Logger {
     if (this.env !== "LOCAL") {
       this.logger.log({ ...obj, env: this.env });
     } else {
-      console.log(JSON.stringify(obj));
+      console.log(new Date().toISOString(), JSON.stringify(obj));
     }
   }
 

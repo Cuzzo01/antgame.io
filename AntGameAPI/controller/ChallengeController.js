@@ -10,7 +10,7 @@ const FlagHandler = require("../handler/FlagHandler");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
-const ActiveChallengeHandler = require("../handler/ActiveChallengeHandler");
+const ActiveChallengesHandler = require("../handler/ActiveChallengesHandler");
 const MapHandler = require("../handler/MapHandler");
 const { GetIpAddress } = require("../helpers/IpHelper");
 const Logger = require("../Logger");
@@ -111,8 +111,7 @@ async function postRun(req, res) {
             return [...snapshot.slice(0, 5), JSON.parse(snapshot[5]), ...snapshot.slice(6)];
           });
         } catch (e) {
-          console.log(e);
-          console.log("Unable to parse snapshots, using unparsed");
+          Logger.logError("ChallengeController.PostRun", e)
           runRecord.tags.push({ type: "Unparsable snapshots" });
         }
         runRecord.details.snapshots = snapshots ? snapshots : runData.Snapshots;
@@ -167,7 +166,7 @@ async function postRun(req, res) {
               );
 
               ChallengeDao.addTagToRun(runID, { type: "wr" });
-              ActiveChallengeHandler.unsetItem();
+              ActiveChallengesHandler.unsetItem();
             }
           }
         }
@@ -245,7 +244,7 @@ async function getChallenge(req, res) {
 
     res.send(toReturn);
   } catch (e) {
-    console.log(e);
+    Logger.logError("ChallengeController.GetChallenge", e)
     res.status(500);
     res.send("Get challenge failed");
   }
@@ -255,7 +254,7 @@ async function getActiveChallenges(req, res) {
   try {
     const user = req.user;
 
-    const activeChallengeData = await ActiveChallengeHandler.getActiveChallenges();
+    const activeChallengeData = await ActiveChallengesHandler.getActiveChallenges();
     const activeChallenges = activeChallengeData.challenges;
     const worldRecords = activeChallengeData.worldRecords;
 
@@ -307,7 +306,7 @@ async function getActiveChallenges(req, res) {
 
     res.send({ challenges: activeChallenges, records: records });
   } catch (e) {
-    console.log(e);
+    Logger.logError("ChallengeController.GetActiveChallenges", e)
     res.status(500);
     res.send("Get challenge failed");
   }
@@ -343,7 +342,7 @@ async function getRecords(req, res) {
 
     res.send(response);
   } catch (e) {
-    console.log(e);
+    Logger.logError("ChallengeController.GetRecords", e)
     res.status(500);
     res.send("Get run details failed");
   }
@@ -454,7 +453,7 @@ async function getLeaderboard(req, res) {
 
     res.send(response);
   } catch (e) {
-    console.log(e);
+    Logger.logError("ChallengeController.GetLeaderboard", e)
     res.status(500);
     res.send("Get leader board failed");
   }
@@ -477,7 +476,7 @@ async function getPRHomeLocations(req, res) {
     }
     res.send({ locations: result.locations, amounts: result.amounts });
   } catch (e) {
-    console.log(e);
+    Logger.logError("ChallengeController.GetPRHomeLocations", e)
     res.status(500);
     res.send("Get leader board failed");
   }
@@ -491,7 +490,7 @@ async function getDailyChallenges(req, res) {
     });
     res.send(mappedResult);
   } catch (e) {
-    console.log(e);
+    Logger.logError("ChallengeController.GetDailyChallenges", e)
     res.status(500);
     res.send("Get leader board failed");
   }
