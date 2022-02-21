@@ -132,11 +132,11 @@ async function postRun(req, res) {
 
       if (!user.anon) {
         if (isPB && currentDetails === null) {
-          UserDao.addNewChallengeDetails(user.id, runData.challengeID, runData.Score, runID);
+          await UserDao.addNewChallengeDetails(user.id, runData.challengeID, runData.Score, runID);
         } else if (isPB && currentDetails.pb) {
-          UserDao.updateChallengePBAndRunCount(user.id, runData.challengeID, runData.Score, runID);
+          await UserDao.updateChallengePBAndRunCount(user.id, runData.challengeID, runData.Score, runID);
         } else {
-          UserDao.incrementChallengeRunCount(user.id, runData.challengeID);
+          await UserDao.incrementChallengeRunCount(user.id, runData.challengeID);
         }
 
         if (isPB) {
