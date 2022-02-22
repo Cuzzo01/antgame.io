@@ -26,6 +26,7 @@ const Username = ({ name, id }) => {
       else if (badge.backgroundColor === "bronze") inlineStyles["backgroundColor"] = "#a77044";
       else if (badge.backgroundColor === "red") inlineStyles["backgroundColor"] = "#e74c3c";
       else if (badge.backgroundColor === "green") inlineStyles["backgroundColor"] = "#7dcea0";
+      else if (badge.backgroundColor) inlineStyles["backgroundColor"] = badge.backgroundColor;
 
       if (i === 0 && inlineStyles.color) nameStyles["color"] = inlineStyles.color;
       if (i === 0 && inlineStyles.backgroundColor)
@@ -45,7 +46,7 @@ const Username = ({ name, id }) => {
     if (list.length) setBadges(list);
     else setBadges(false);
     if (Object.keys(nameStyles)) setNameStyles(nameStyles);
-    else setNameStyles({})
+    else setNameStyles({});
   }, [id]);
 
   useEffect(() => {

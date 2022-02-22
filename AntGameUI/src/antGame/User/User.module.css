@@ -3,6 +3,7 @@
   font-size: 1em !important;
   border-left: 0px solid black !important;
   text-align: center !important;
+  opacity: 1 !important;
 }
 
 .baseBadge {
