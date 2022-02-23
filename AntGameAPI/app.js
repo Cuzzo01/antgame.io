@@ -146,7 +146,8 @@ app.get("/admin/flagData/:id", RejectNotAdmin, _adminController.getFlagDetails);
 app.patch("/admin/flagData/:id", RejectNotAdmin, _adminController.patchFlagDetails);
 
 app.post("/admin/dailyChallenge", RejectNotAdmin, _adminController.dailyChallengeSwap);
-app.post("/admin/clearLeaderboardCache", RejectNotAdmin, _adminController.dumpLeaderboardCache);
+app.delete("/admin/leaderboardCache", RejectNotAdmin, _adminController.dumpLeaderboardCache);
+app.delete("/admin/userCache", RejectNotAdmin, _adminController.dumpUserCache);
 //#endregion Admin
 
 app.get("/flag/:name", _flagController.getFlag);

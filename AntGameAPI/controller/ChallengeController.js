@@ -111,7 +111,7 @@ async function postRun(req, res) {
             return [...snapshot.slice(0, 5), JSON.parse(snapshot[5]), ...snapshot.slice(6)];
           });
         } catch (e) {
-          Logger.logError("ChallengeController.PostRun", e)
+          Logger.logError("ChallengeController.PostRun", e);
           runRecord.tags.push({ type: "Unparsable snapshots" });
         }
         runRecord.details.snapshots = snapshots ? snapshots : runData.Snapshots;
@@ -134,7 +134,12 @@ async function postRun(req, res) {
         if (isPB && currentDetails === null) {
           await UserDao.addNewChallengeDetails(user.id, runData.challengeID, runData.Score, runID);
         } else if (isPB && currentDetails.pb) {
-          await UserDao.updateChallengePBAndRunCount(user.id, runData.challengeID, runData.Score, runID);
+          await UserDao.updateChallengePBAndRunCount(
+            user.id,
+            runData.challengeID,
+            runData.Score,
+            runID
+          );
         } else {
           await UserDao.incrementChallengeRunCount(user.id, runData.challengeID);
         }
@@ -244,7 +249,7 @@ async function getChallenge(req, res) {
 
     res.send(toReturn);
   } catch (e) {
-    Logger.logError("ChallengeController.GetChallenge", e)
+    Logger.logError("ChallengeController.GetChallenge", e);
     res.status(500);
     res.send("Get challenge failed");
   }
@@ -306,7 +311,7 @@ async function getActiveChallenges(req, res) {
 
     res.send({ challenges: activeChallenges, records: records });
   } catch (e) {
-    Logger.logError("ChallengeController.GetActiveChallenges", e)
+    Logger.logError("ChallengeController.GetActiveChallenges", e);
     res.status(500);
     res.send("Get challenge failed");
   }
@@ -342,7 +347,7 @@ async function getRecords(req, res) {
 
     res.send(response);
   } catch (e) {
-    Logger.logError("ChallengeController.GetRecords", e)
+    Logger.logError("ChallengeController.GetRecords", e);
     res.status(500);
     res.send("Get run details failed");
   }
@@ -453,7 +458,7 @@ async function getLeaderboard(req, res) {
 
     res.send(response);
   } catch (e) {
-    Logger.logError("ChallengeController.GetLeaderboard", e)
+    Logger.logError("ChallengeController.GetLeaderboard", e);
     res.status(500);
     res.send("Get leader board failed");
   }
@@ -476,7 +481,7 @@ async function getPRHomeLocations(req, res) {
     }
     res.send({ locations: result.locations, amounts: result.amounts });
   } catch (e) {
-    Logger.logError("ChallengeController.GetPRHomeLocations", e)
+    Logger.logError("ChallengeController.GetPRHomeLocations", e);
     res.status(500);
     res.send("Get leader board failed");
   }
@@ -490,7 +495,7 @@ async function getDailyChallenges(req, res) {
     });
     res.send(mappedResult);
   } catch (e) {
-    Logger.logError("ChallengeController.GetDailyChallenges", e)
+    Logger.logError("ChallengeController.GetDailyChallenges", e);
     res.status(500);
     res.send("Get leader board failed");
   }

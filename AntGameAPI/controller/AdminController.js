@@ -20,6 +20,7 @@ const {
 const { getActiveChallenges } = require("../dao/ChallengeDao");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
+const UserHandler = require("../handler/UserHandler");
 const { addStatToResponse } = require("../helpers/AuthStatHelpers");
 const Logger = require("../Logger");
 const { getChampionshipDetailsFromDB } = require("../dao/ChampionshipDao");
@@ -491,6 +492,16 @@ async function dumpLeaderboardCache(req, res) {
   }
 }
 
+async function dumpUserCache(req, res) {
+  try {
+    UserHandler.unsetAll();
+    res.sendStatus(200);
+  } catch (e) {
+    Logger.logError("AdminController.dumpLeaderboardCache", e);
+    res.sendStatus(500);
+  }
+}
+
 const send400 = (res, message) => {
   res.status(400);
   res.send(message);
@@ -514,4 +525,5 @@ module.exports = {
   getFlagDetails,
   patchFlagDetails,
   dumpLeaderboardCache,
+  dumpUserCache,
 };
