@@ -28,9 +28,10 @@ const Username = ({ name, id }) => {
       else if (badge.backgroundColor === "green") inlineStyles["backgroundColor"] = "#7dcea0";
       else if (badge.backgroundColor) inlineStyles["backgroundColor"] = badge.backgroundColor;
 
-      if (i === 0 && inlineStyles.color) nameStyles["color"] = inlineStyles.color;
-      if (i === 0 && inlineStyles.backgroundColor)
+      if (i === 0 && inlineStyles.backgroundColor) {
         nameStyles["backgroundColor"] = inlineStyles.backgroundColor;
+        if (inlineStyles.color) nameStyles["color"] = inlineStyles.color;
+      }
 
       let icon = false;
       if (badge.icon === "trophy") icon = <TrophyIcon />;
