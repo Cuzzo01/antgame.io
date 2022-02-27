@@ -95,11 +95,12 @@ export class MapGraphics {
   }
 
   drawHomeAmounts({ homeAmounts, totalFood }) {
-    for (const [key, value] of Object.entries(homeAmounts)) {
-      const location = key.split(",").map(point => parseInt(point));
-      const score = Math.round((value / totalFood) * 100000);
-      this.drawText([location[0], location[1]], score, this.brushColors.homeText);
-    }
+    if (homeAmounts)
+      for (const [key, value] of Object.entries(homeAmounts)) {
+        const location = key.split(",").map(point => parseInt(point));
+        const score = Math.round((value / totalFood) * 100000);
+        this.drawText([location[0], location[1]], score, this.brushColors.homeText);
+      }
   }
 
   drawFoodAmounts({ foodAmounts }) {
