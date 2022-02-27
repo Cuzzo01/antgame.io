@@ -30,7 +30,11 @@ const UserBar = props => {
           </div>
         ) : (
           <div>
-            <Username id={AuthHandler.decodedToken.id} name={AuthHandler.username} />
+            <Username
+              id={AuthHandler.decodedToken.id}
+              name={AuthHandler.username}
+              showBorder={false}
+            />
             <Link
               className={styles.loginLink}
               to="/"

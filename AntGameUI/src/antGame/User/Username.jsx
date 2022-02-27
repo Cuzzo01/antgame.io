@@ -5,7 +5,7 @@ import { TrophyIcon } from "../AntGameHelpers/Icons";
 import styles from "./User.module.css";
 import BadgeService from "./BadgeService";
 
-const Username = ({ name, id }) => {
+const Username = ({ name, id, showBorder = true }) => {
   const [badges, setBadges] = useState(false);
   const [nameStyles, setNameStyles] = useState({});
 
@@ -31,6 +31,10 @@ const Username = ({ name, id }) => {
       if (i === 0 && inlineStyles.backgroundColor) {
         nameStyles["backgroundColor"] = inlineStyles.backgroundColor;
         if (inlineStyles.color) nameStyles["color"] = inlineStyles.color;
+      }
+
+      if (nameStyles.backgroundColor && showBorder) {
+        nameStyles["border"] = "0.15em solid black";
       }
 
       let icon = false;

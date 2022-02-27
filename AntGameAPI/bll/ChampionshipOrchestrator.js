@@ -8,10 +8,12 @@ const {
   createNewChampionship,
   getChampionshipIDByName,
   setLastAwarded,
+  getLeaderboardByChampionshipID,
 } = require("../dao/ChampionshipDao");
-const { getLeaderboardByChallengeId } = require("../dao/UserDao");
+const { getLeaderboardByChallengeId, addBadgeToUser } = require("../dao/UserDao");
 const { getShortMonthName } = require("../helpers/TimeHelper");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
+const { BadgeDataGenerator } = require("../helpers/BadgeDataGenerator");
 
 const pointsMap = [
   { type: "rank", value: 1, points: 50 },
@@ -47,6 +49,16 @@ class ChampionshipOrchestrator {
   static async addConfigToChampionship(championshipID, configID) {
     await addConfigIDToChampionship(championshipID, configID);
     await addChampionshipIDToConfig(configID, championshipID);
+  }
+
+  static async getLastMonthsChampionshipID() {
+    const date = new Date();
+    if (date.getMonth() === 0) {
+      date.setMonth(11);
+      date.setFullYear(date.getFullYear() - 1);
+    } else date.setMonth(date.getMonth() - 1);
+    const name = `${getShortMonthName(date)} ${date.getFullYear()}`;
+    return await getChampionshipIDByName(name);
   }
 
   static async awardPointsForChallenge({ championshipID, challengeID }) {
@@ -128,6 +140,59 @@ class ChampionshipOrchestrator {
 
     await setLastAwarded(championshipID, challengeConfig.id);
     await updateConfigByID(challengeConfig.id, { pointsAwarded: awardedPoints });
+  }
+
+  static async awardBadgesForChampionship({ championshipID }) {
+    const leaderboard = await getLeaderboardByChampionshipID(championshipID, 50);
+    const championshipName = (await getChampionshipDetailsFromDB(championshipID)).name;
+
+    const badges = [];
+    let lastPoints = 0;
+    let tieCount = 0;
+    for (let rank = 1; rank <= leaderboard.length; rank++) {
+      const leaderboardEntry = leaderboard[rank - 1];
+
+      let actualRank = rank;
+      if (leaderboardEntry.points === lastPoints) {
+        tieCount++;
+        actualRank = rank - tieCount;
+      } else {
+        tieCount = 0;
+      }
+      lastPoints = leaderboardEntry.points;
+
+      const userID = leaderboardEntry._id;
+      if (actualRank === 1) {
+        badges.push({
+          userID: userID,
+          badgeData: BadgeDataGenerator.getFirstPlaceBadge(championshipName),
+        });
+      } else if (actualRank === 2) {
+        badges.push({
+          userID: userID,
+          badgeData: BadgeDataGenerator.getSecondPlaceBadge(championshipName),
+        });
+      } else if (actualRank === 3) {
+        badges.push({
+          userID: userID,
+          badgeData: BadgeDataGenerator.getThirdPlaceBadge(championshipName),
+        });
+      } else if (actualRank <= 10) {
+        badges.push({
+          userID: userID,
+          badgeData: BadgeDataGenerator.getTopTenBadge(rank, championshipName),
+        });
+      } else {
+        badges.push({
+          userID: userID,
+          badgeData: BadgeDataGenerator.getTop50Badge(rank, championshipName),
+        });
+      }
+    }
+
+    badges.forEach(async badge => {
+      await addBadgeToUser(badge.userID, badge.badgeData);
+    });
   }
 }
 module.exports = { ChampionshipOrchestrator };
