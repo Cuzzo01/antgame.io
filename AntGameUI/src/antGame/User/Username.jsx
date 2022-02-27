@@ -52,7 +52,7 @@ const Username = ({ name, id, showBorder = true }) => {
     else setBadges(false);
     if (Object.keys(nameStyles)) setNameStyles(nameStyles);
     else setNameStyles({});
-  }, [id]);
+  }, [id, showBorder]);
 
   useEffect(() => {
     ReactTooltip.rebuild();
