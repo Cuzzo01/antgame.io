@@ -49,6 +49,10 @@ const handleDailyChallengeChange = async () => {
       let currentChampionship = await ChampionshipOrchestrator.getCurrentDailyChampionship();
       if (currentChampionship === null) {
         currentChampionship = await ChampionshipOrchestrator.generateDailyChampionship();
+        const lastChampionship = await ChampionshipOrchestrator.getLastMonthsChampionshipID();
+        await ChampionshipOrchestrator.awardBadgesForChampionship({
+          championshipID: lastChampionship,
+        });
       }
       await ChampionshipOrchestrator.addConfigToChampionship(
         currentChampionship,

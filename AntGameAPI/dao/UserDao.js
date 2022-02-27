@@ -217,6 +217,22 @@ const getUserBadgesByID = async id => {
     });
 };
 
+const addBadgeToUser = async (userID, badgeData) => {
+  const userObjectID = TryParseObjectID(userID, "UserID");
+
+  const collection = await getCollection("users");
+  await collection.updateOne(
+    { _id: userObjectID },
+    {
+      $push: {
+        badges: {
+          ...badgeData,
+        },
+      },
+    }
+  );
+};
+
 const TryParseObjectID = (stringID, name) => {
   try {
     return new ObjectID(stringID);
@@ -239,4 +255,5 @@ module.exports = {
   getPlayerCountByChallengeID,
   shouldShowUserOnLeaderboard,
   getUserBadgesByID,
+  addBadgeToUser,
 };
