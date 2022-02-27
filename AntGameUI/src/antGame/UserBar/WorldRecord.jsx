@@ -14,7 +14,8 @@ const WorldRecord = props => {
       else
         setRecord(
           <span>
-            WR: {records.wr.score} - <Username name={records.wr.name} id={records.wr.id} />
+            WR: {records.wr.score} -{" "}
+            <Username name={records.wr.name} id={records.wr.id} showBorder={false} />
           </span>
         );
       if (loading) setLoading(false);
