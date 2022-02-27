@@ -35,7 +35,9 @@ async function getLeaderboard(req, res) {
     const championshipID = req.params.id;
     const leaderboardData = await LeaderboardHandler.getChampionshipLeaderboardData(championshipID);
     const leaderboard = [...leaderboardData.leaderboard];
-    const lastPointsAwarded = [...leaderboardData.lastPointsAwarded];
+    let lastPointsAwarded = false;
+    if (leaderboardData.lastPointsAwarded)
+      lastPointsAwarded = [...leaderboardData.lastPointsAwarded];
 
     const usernamePromises = new Map();
 
