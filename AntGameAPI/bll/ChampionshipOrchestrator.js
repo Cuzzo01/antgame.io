@@ -13,6 +13,7 @@ const {
 const { getLeaderboardByChallengeId, addBadgeToUser } = require("../dao/UserDao");
 const { getShortMonthName } = require("../helpers/TimeHelper");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
+const UserHandler = require("../handler/UserHandler");
 const { BadgeDataGenerator } = require("../helpers/BadgeDataGenerator");
 
 const pointsMap = [
@@ -192,6 +193,7 @@ class ChampionshipOrchestrator {
 
     badges.forEach(async badge => {
       await addBadgeToUser(badge.userID, badge.badgeData);
+      UserHandler.unsetItem(badge.userID);
     });
   }
 }
