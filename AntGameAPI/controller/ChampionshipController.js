@@ -57,10 +57,10 @@ async function getLeaderboard(req, res) {
       const result = await getUserPointsByUserID(championshipID, userID);
       if (result !== null) {
         const userResult = result.userPoints[0];
+        usernamePromises.set(userID, Promise.resolve({ id: userID, name: req.user.username }));
         leaderboard.push({
           points: userResult.points,
           _id: userID,
-          username: req.user.username,
           noRank: true,
         });
       }
