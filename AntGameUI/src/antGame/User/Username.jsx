@@ -33,10 +33,6 @@ const Username = ({ name, id, showBorder = true }) => {
         if (inlineStyles.color) nameStyles["color"] = inlineStyles.color;
       }
 
-      if (nameStyles.backgroundColor && showBorder) {
-        nameStyles["border"] = "0.15em solid black";
-      }
-
       let icon = false;
       if (badge.icon === "trophy") icon = <TrophyIcon />;
 
@@ -48,8 +44,10 @@ const Username = ({ name, id, showBorder = true }) => {
       );
     }
 
-    if (list.length) setBadges(list);
-    else setBadges(false);
+    if (badges.length) {
+      setBadges(list);
+      if (showBorder) nameStyles["border"] = "0.15em solid black";
+    } else setBadges(false);
     if (Object.keys(nameStyles)) setNameStyles(nameStyles);
     else setNameStyles({});
   }, [id, showBorder]);
