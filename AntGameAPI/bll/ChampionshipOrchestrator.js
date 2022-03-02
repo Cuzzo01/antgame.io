@@ -181,12 +181,12 @@ class ChampionshipOrchestrator {
       } else if (actualRank <= 10) {
         badges.push({
           userID: userID,
-          badgeData: BadgeDataGenerator.getTopTenBadge(rank, championshipName),
+          badgeData: BadgeDataGenerator.getTopTenBadge(actualRank, championshipName),
         });
       } else {
         badges.push({
           userID: userID,
-          badgeData: BadgeDataGenerator.getTop50Badge(rank, championshipName),
+          badgeData: BadgeDataGenerator.getTop50Badge(actualRank, championshipName),
         });
       }
     }

@@ -11,7 +11,11 @@ class BadgeDataGenerator {
   }
 
   static getTopTenBadge(rank, name) {
-    return this.getBadge({ name: `#${rank} ${name}`, backgroundColor: "green", value: 100 - rank });
+    return this.getBadge({
+      name: `${rank}th ${name}`,
+      backgroundColor: "green",
+      value: 100 - rank,
+    });
   }
 
   static getTop50Badge(rank, name) {
