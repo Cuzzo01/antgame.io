@@ -11,7 +11,7 @@
 
 .row {
   display: grid;
-  grid-template-columns: 3em auto 8em;
+  grid-template-columns: 2.5em auto 8em;
   border: 2px grey solid;
   border-radius: 0.5em;
   margin: 0.5em 1em;
