@@ -10,7 +10,7 @@ import DailyCountdown from "../DailyCountdown/DailyCountdown";
 import Username from "../../User/Username";
 
 const ChallengeList = () => {
-  const InitialList = Array(12).fill(<ChallengeCard />)
+  const InitialList = Array(12).fill(<ChallengeCard showThumbnails loading />);
 
   const [loading, setLoading] = useState(true);
   const [menuList, setMenuList] = useState([]);
@@ -65,17 +65,26 @@ const ChallengeList = () => {
       </div>
       {!loading && dailyChallenge ? dailyChallenge : null}
       <div className={styles.challengeGrid}>
-        {loading ?
-          InitialList
-          // null
-          : menuList}
+        {loading
+          ? InitialList
+          : // null
+            menuList}
       </div>
     </div>
   );
 };
 export default ChallengeList;
 
-const ChallengeCard = ({ name, time, homes, records, id, showThumbnails, thumbnailURL }) => {
+const ChallengeCard = ({
+  name,
+  time,
+  homes,
+  records,
+  id,
+  showThumbnails,
+  thumbnailURL,
+  loading,
+}) => {
   const [thumbnailLoading, setThumbnailLoading] = useState(true);
 
   return (
@@ -95,11 +104,7 @@ const ChallengeCard = ({ name, time, homes, records, id, showThumbnails, thumbna
             </div>
             <div className={styles.challengePR}>
               PR:
-              <PBDisplay
-                pb={records?.pb}
-                rank={records?.rank}
-                runs={records?.runs}
-              />
+              <PBDisplay pb={records?.pb} rank={records?.rank} runs={records?.runs} />
             </div>
           </div>
         </div>
@@ -110,26 +115,24 @@ const ChallengeCard = ({ name, time, homes, records, id, showThumbnails, thumbna
       </div>
       {showThumbnails ? (
         <div className={styles.thumbnail}>
-          <div
-            className={styles.thumbnailContainer}
-            style={thumbnailLoading ? { display: "none" } : null}
-          >
-            <img
-              src={thumbnailURL}
-              alt="Map thumbnail"
-              onLoad={() => setThumbnailLoading(false)}
-              onError={() => setThumbnailLoading("error")}
-            />
-          </div>
           {thumbnailLoading ? (
             <div className={styles.thumbnailLoader}>
-              {thumbnailURL && thumbnailLoading !== "error" ? (
+              {loading || (thumbnailURL && thumbnailLoading !== "error") ? (
                 <img src={loaderGif} alt="Loader" />
               ) : (
                 <div>No Thumbnail</div>
               )}
             </div>
-          ) : null}
+          ) : (
+            <div className={styles.thumbnailContainer}>
+              <img
+                src={thumbnailURL}
+                alt="Map thumbnail"
+                onLoad={() => setThumbnailLoading(false)}
+                onError={() => setThumbnailLoading("error")}
+              />
+            </div>
+          )}
         </div>
       ) : null}
     </div>
@@ -266,7 +269,7 @@ const ChallengeLink = ({ id, makeBig }) => {
 };
 
 const getDisplayTime = seconds => {
-  if (!seconds) return "00:00"
+  if (!seconds) return "00:00";
   const min = Math.floor(seconds / 60);
   let sec = seconds % 60;
   if (sec < 10) sec = "0" + sec;
