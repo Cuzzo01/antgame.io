@@ -51,37 +51,38 @@ const AntGameRouter = () => {
                   <AdminPath />
                   <UserBar />
                 </Route>
-                <Route path="/login">
-                  <LoginPage />
-                  <Footer />
-                </Route>
                 <Route path="/register">
                   <RegistrationPage />
-                </Route>
-                <Route exact path="/challenge">
-                  <MOTD />
-                  <ChallengeList />
-                  <Footer />
-                  <UserBar showLinkHome />
-                </Route>
-                <Route path="/challenge/:id/leaderboard">
-                  <Leaderboard />
-                  <Footer />
-                  <UserBar />
-                </Route>
-                <Route exact path="/championship/:id">
-                  <ChampionshipDetails />
-                  <Footer />
-                  <UserBar />
                 </Route>
                 <Route path="/map/:mapName">
                   <LoadMapFromParams />
                 </Route>
-                <Route path="/">
-                  <Redirect to="/" />
+                <Route>
+                  <Switch>
+                    <Route path="/login">
+                      <LoginPage />
+                    </Route>
+                    <Route exact path="/challenge">
+                      <MOTD />
+                      <ChallengeList />
+                      <UserBar showLinkHome />
+                    </Route>
+                    <Route path="/challenge/:id/leaderboard">
+                      <Leaderboard />
+                      <UserBar />
+                    </Route>
+                    <Route exact path="/championship/:id">
+                      <ChampionshipDetails />
+                      <UserBar />
+                    </Route>
+                  </Switch>
+                  <Footer />
                 </Route>
               </Switch>
             </div>
+          </Route>
+          <Route path="/">
+            <Redirect to="/" />
           </Route>
         </Switch>
       </BrowserRouter>

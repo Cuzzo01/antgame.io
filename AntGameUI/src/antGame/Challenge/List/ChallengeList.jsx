@@ -62,7 +62,11 @@ const ChallengeList = () => {
         <h2>Challenges</h2>
       </div>
       {!loading && dailyChallenge ? dailyChallenge : null}
-      {loading ? null : <div className={styles.challengeGrid}>{menuList}</div>}
+      <div className={styles.challengeGrid}>
+        {loading ?
+          null
+          : menuList}
+      </div>
     </div>
   );
 };

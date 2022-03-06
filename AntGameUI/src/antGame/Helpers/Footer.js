@@ -4,11 +4,12 @@ import styles from "./GenericStyles.module.css";
 
 const Footer = () => {
   const [shouldShow, setShouldShow] = useState(false);
+
   useEffect(() => {
     getFlag("show-footer").then(res => {
       setShouldShow(res);
     });
-  });
+  }, []);
 
   return (
     <div>

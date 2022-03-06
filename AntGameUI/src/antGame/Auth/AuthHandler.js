@@ -2,7 +2,6 @@ import jwt_decode from "jwt-decode";
 import axios from "axios";
 import { getToken, getAnonToken, reportSpacesLoadTime } from "./AuthService";
 import { sendRunArtifact } from "../Challenge/ChallengeService";
-import LogRocket from "logrocket";
 import { getFlag } from "../Helpers/FlagService";
 import { v4 as uuidV4 } from "uuid";
 
@@ -18,7 +17,6 @@ class AuthHandler {
       if (decodedToken.exp * 1000 > new Date().getTime()) {
         this._loggedIn = true;
         this.decodedToken = decodedToken;
-        this.configureLogRocket();
       } else {
         this.jwt = "";
         localStorage.removeItem("jwt");
@@ -63,22 +61,6 @@ class AuthHandler {
       localStorage.setItem("client-id", newID);
       return newID;
     } else return clientID;
-  }
-
-  configureLogRocket() {
-    if (window.location.host === "antgame.io" && !this.isAdmin) {
-      LogRocket.init("epzwap/antgame");
-
-      if (this.isAnon) {
-        LogRocket.identify(this.decodedToken.clientID, {
-          name: "Anon User",
-        });
-      } else {
-        LogRocket.identify(this.decodedToken.id, {
-          name: this.decodedToken.username,
-        });
-      }
-    } else console.log("Not initializing logrocket");
   }
 
   configureInterceptors() {
@@ -136,7 +118,6 @@ class AuthHandler {
         this._loggedIn = true;
         this.jwt = result;
         this.decodedToken = jwt_decode(this.jwt);
-        this.configureLogRocket();
         localStorage.setItem("jwt", this.jwt);
         localStorage.setItem("checkForMOTD", true);
 
@@ -178,7 +159,6 @@ class AuthHandler {
       this._loggedIn = true;
       this.jwt = result;
       this.decodedToken = jwt_decode(this.jwt);
-      this.configureLogRocket();
       localStorage.setItem("jwt", this.jwt);
       localStorage.setItem("checkForMOTD", true);
       return true;
