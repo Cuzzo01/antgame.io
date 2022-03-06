@@ -10,9 +10,11 @@ import DailyCountdown from "../DailyCountdown/DailyCountdown";
 import Username from "../../User/Username";
 
 const ChallengeList = () => {
+  const InitialList = Array(12).fill(<ChallengeCard />)
+
   const [loading, setLoading] = useState(true);
   const [menuList, setMenuList] = useState([]);
-  const [dailyChallenge, setDailyChallenge] = useState(false);
+  const [dailyChallenge, setDailyChallenge] = useState();
   const history = useHistory();
 
   useEffect(() => {
@@ -64,7 +66,8 @@ const ChallengeList = () => {
       {!loading && dailyChallenge ? dailyChallenge : null}
       <div className={styles.challengeGrid}>
         {loading ?
-          null
+          InitialList
+          // null
           : menuList}
       </div>
     </div>
@@ -72,7 +75,7 @@ const ChallengeList = () => {
 };
 export default ChallengeList;
 
-const ChallengeCard = props => {
+const ChallengeCard = ({ name, time, homes, records, id, showThumbnails, thumbnailURL }) => {
   const [thumbnailLoading, setThumbnailLoading] = useState(true);
 
   return (
@@ -81,38 +84,38 @@ const ChallengeCard = props => {
         <div className={styles.infoBlock}>
           <div className={styles.challengeInfo}>
             <div className={styles.challengeName}>
-              <span>{props.name}</span>
+              <span>{name}</span>
             </div>
-            <ChallengeDetails time={props.time} homes={props.homes} />
+            <ChallengeDetails time={time} homes={homes} />
           </div>
           <div className={styles.records}>
             <div className={styles.challengeWR}>
               WR:
-              <WRDisplay wr={props.records?.wr} />
+              <WRDisplay wr={records?.wr} />
             </div>
             <div className={styles.challengePR}>
               PR:
               <PBDisplay
-                pb={props.records?.pb}
-                rank={props.records?.rank}
-                runs={props.records?.runs}
+                pb={records?.pb}
+                rank={records?.rank}
+                runs={records?.runs}
               />
             </div>
           </div>
         </div>
         <div className={styles.challengeButtons}>
-          <ChallengeLink id={props.id} />
-          <LeaderboardLink id={props.id} />
+          <ChallengeLink id={id} />
+          <LeaderboardLink id={id} />
         </div>
       </div>
-      {props.showThumbnails ? (
+      {showThumbnails ? (
         <div className={styles.thumbnail}>
           <div
             className={styles.thumbnailContainer}
             style={thumbnailLoading ? { display: "none" } : null}
           >
             <img
-              src={props.thumbnailURL}
+              src={thumbnailURL}
               alt="Map thumbnail"
               onLoad={() => setThumbnailLoading(false)}
               onError={() => setThumbnailLoading("error")}
@@ -120,7 +123,7 @@ const ChallengeCard = props => {
           </div>
           {thumbnailLoading ? (
             <div className={styles.thumbnailLoader}>
-              {props.thumbnailURL && thumbnailLoading !== "error" ? (
+              {thumbnailURL && thumbnailLoading !== "error" ? (
                 <img src={loaderGif} alt="Loader" />
               ) : (
                 <div>No Thumbnail</div>
@@ -263,6 +266,7 @@ const ChallengeLink = ({ id, makeBig }) => {
 };
 
 const getDisplayTime = seconds => {
+  if (!seconds) return "00:00"
   const min = Math.floor(seconds / 60);
   let sec = seconds % 60;
   if (sec < 10) sec = "0" + sec;
