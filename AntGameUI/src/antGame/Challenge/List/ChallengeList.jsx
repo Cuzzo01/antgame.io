@@ -110,6 +110,17 @@ const ChallengeCard = ({
       </div>
       {showThumbnails ? (
         <div className={styles.thumbnail}>
+          <div
+            className={styles.thumbnailContainer}
+            style={thumbnailLoading ? { display: "none" } : null}
+          >
+            <img
+              src={thumbnailURL}
+              alt="Map thumbnail"
+              onLoad={() => setThumbnailLoading(false)}
+              onError={() => setThumbnailLoading("error")}
+            />
+          </div>
           {thumbnailLoading ? (
             <div className={styles.thumbnailLoader}>
               {loading || (thumbnailURL && thumbnailLoading !== "error") ? (
@@ -118,16 +129,7 @@ const ChallengeCard = ({
                 <div>No Thumbnail</div>
               )}
             </div>
-          ) : (
-            <div className={styles.thumbnailContainer}>
-              <img
-                src={thumbnailURL}
-                alt="Map thumbnail"
-                onLoad={() => setThumbnailLoading(false)}
-                onError={() => setThumbnailLoading("error")}
-              />
-            </div>
-          )}
+          ) : null}
         </div>
       ) : null}
     </div>
