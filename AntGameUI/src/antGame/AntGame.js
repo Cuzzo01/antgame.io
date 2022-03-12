@@ -18,6 +18,7 @@ import ChallengeModal from "./AntGameHelpers/Challenge/ChallengeModal";
 import cssStyles from "./Antgame.module.css";
 import { DrawAnts } from "./AntGameHelpers/Graphics/AntGraphics";
 import { MapGraphics } from "./AntGameHelpers/Graphics/MapGraphics";
+import { TrailGraphics } from "./AntGameHelpers/Graphics/TrailGraphics";
 
 let canvasW, canvasH;
 
@@ -68,14 +69,13 @@ export default class AntGame extends React.Component {
       homeOnMap: 0,
     };
 
-    this.homeTrailHandler = new TrailHandler(
-      Brushes.find(brush => brush.value === HomeValue).color,
-      this.mapHandler
-    );
-    this.foodTrailHandler = new TrailHandler(
-      Brushes.find(brush => brush.value === FoodValue).color,
-      this.mapHandler
-    );
+    const homeColor = Brushes.find(brush => brush.value === HomeValue).color;
+    this.homeTrailDrawer = new TrailGraphics(homeColor);
+    this.homeTrailHandler = new TrailHandler(this.mapHandler, this.homeTrailDrawer);
+
+    const foodColor = Brushes.find(brush => brush.value === FoodValue).color;
+    this.foodTrailDrawer = new TrailGraphics(foodColor);
+    this.foodTrailHandler = new TrailHandler(this.mapHandler, this.foodTrailDrawer);
   }
 
   componentDidMount() {
@@ -152,8 +152,8 @@ export default class AntGame extends React.Component {
 
     this.setupAndInitialize();
 
-    this.homeTrailHandler.graphic = this.homeTrailGraphic;
-    this.foodTrailHandler.graphic = this.foodTrailGraphic;
+    this.homeTrailDrawer.graphics = this.homeTrailGraphic;
+    this.foodTrailDrawer.graphics = this.foodTrailGraphic;
 
     p5.createCanvas(canvasW, canvasH).parent(parentRef);
 
@@ -180,8 +180,8 @@ export default class AntGame extends React.Component {
       this.resizeCanvas(p5);
       this.containerRef.current.style.height = this.windowSize[1];
       this.mapDrawer.drawFullMap({ map: this.mapHandler.map });
-      this.homeTrailHandler.refreshSize();
-      this.foodTrailHandler.refreshSize();
+      this.homeTrailDrawer.refreshSize();
+      this.foodTrailDrawer.refreshSize();
     }
 
     if (p5.mouseIsPressed) this.handleMousePressed(p5);
@@ -234,6 +234,9 @@ export default class AntGame extends React.Component {
       });
       this.antHandler.redrawAnts = false;
     }
+
+    if (this.homeTrailDrawer.hasPointsToDraw) this.homeTrailDrawer.drawPoints();
+    if (this.foodTrailDrawer.hasPointsToDraw) this.foodTrailDrawer.drawPoints();
 
     StaticElements.background(p5);
     p5.image(this.homeTrailGraphic, 0, 0);
@@ -329,11 +332,13 @@ export default class AntGame extends React.Component {
         this.updateCount++;
         this.antHandler.updateAnts();
         if (this.updateCount % TrailDecayRate === 0) {
-          this.foodTrailHandler.decayTrail();
-          this.homeTrailHandler.decayTrail();
+          this.foodTrailHandler.decayTrailMap();
+          this.foodTrailDrawer.decayTrail();
+          this.homeTrailHandler.decayTrailMap();
+          this.homeTrailDrawer.decayTrail();
         }
         if (this.state.timerActive && this.updateCount % ticksPerSecond === 0) {
-          this.challengeHandler.updateCount = this.updateCount;
+          if (this.challengeHandler) this.challengeHandler.updateCount = this.updateCount;
           this.timerHandler.tickTime();
         }
       }, updateRate);
@@ -386,7 +391,9 @@ export default class AntGame extends React.Component {
   reset = () => {
     this.antHandler.clearAnts();
     this.foodTrailHandler.clearTrails();
+    this.foodTrailDrawer.clear();
     this.homeTrailHandler.clearTrails();
+    this.homeTrailDrawer.clear();
     this.timerHandler.resetTime();
     this.mapHandler.handleReset();
     this.updateCount = 0;

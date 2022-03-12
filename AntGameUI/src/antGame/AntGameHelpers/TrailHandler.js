@@ -5,65 +5,29 @@ const MapBounds = [
   Config.MapBounds[0] * TrailMapOverSampleRate,
   Config.MapBounds[1] * TrailMapOverSampleRate,
 ];
-const BorderWeight = Config.borderWeight;
 
 export class TrailHandler {
-  constructor(color, mapHandler) {
-    this.graphicsSet = false;
+  constructor(mapHandler, trailGraphics) {
     this.mapHandler = mapHandler;
-    this.canvasBounds = [];
-    this.color = color;
-    this.trailMap = [];
-  }
-
-  set graphic(graphics) {
-    this._graphics = graphics;
-    this.clean = true;
-
-    this.canvasBounds = [this._graphics.width, this._graphics.height];
-
-    this.decayMode = this._graphics.REMOVE;
-    this.drawMode = this._graphics.BLEND;
-
-    this._graphics.noStroke();
-    this.color = this._graphics.color(this.color);
-    this._graphics.fill(this.color);
-
-    this.graphicsSet = true;
-
+    if (trailGraphics) this.trailGraphics = trailGraphics;
+    else this.trailGraphics = false;
     this.buildTrailMap();
-    this.setPixelDensity();
-  }
-
-  refreshSize() {
-    this.canvasBounds = [this._graphics.width, this._graphics.height];
-    this.setPixelDensity();
-    this._graphics.clear();
   }
 
   buildTrailMap() {
+    this.trailMap = [];
     for (let x = 0; x < MapBounds[0]; x++) {
       this.trailMap[x] = [];
       for (let y = 0; y < MapBounds[1]; y++) {
         this.trailMap[x][y] = 0;
       }
     }
-  }
-
-  setPixelDensity() {
-    const drawableWidth = this.canvasBounds[0] - BorderWeight;
-    const drawableHeight = this.canvasBounds[1] - BorderWeight;
-    this.pixelDensity = [drawableWidth / MapBounds[0], drawableHeight / MapBounds[1]];
-  }
-
-  prepareForAntUpdate() {
-    this._graphics.loadPixels();
+    this.clean = true;
   }
 
   dropPoint(mapXY, transparency) {
     const trailXY = this.mapXYToTrailXY(mapXY);
-    const canvasXY = this.trailXYToCanvasXY(trailXY);
-    this._graphics.circle(canvasXY[0], canvasXY[1], Config.TrailDiameter);
+    if (this.trailGraphics) this.trailGraphics.addPointToDraw(trailXY);
     if (this.clean) this.clean = false;
     const strength = Math.round(110 * (1 - transparency) + 25);
 
@@ -82,15 +46,6 @@ export class TrailHandler {
         }
       }
     }
-  }
-
-  decayTrail() {
-    this._graphics.blendMode(this.decayMode);
-    this._graphics.fill(0, Config.AlphaPerDecay);
-    this._graphics.rect(0, 0, this.canvasBounds[0], this.canvasBounds[1]);
-    this._graphics.blendMode(this.drawMode);
-    this._graphics.fill(this.color);
-    this.decayTrailMap();
   }
 
   decayTrailMap() {
@@ -131,17 +86,8 @@ export class TrailHandler {
   }
 
   clearTrails = () => {
-    this._graphics.clear();
     this.buildTrailMap();
-    this.clean = true;
   };
-
-  trailXYToCanvasXY(mapXY) {
-    return [
-      BorderWeight + mapXY[0] * this.pixelDensity[0] + this.pixelDensity[0] / 2,
-      BorderWeight + mapXY[1] * this.pixelDensity[1] + this.pixelDensity[1] / 2,
-    ];
-  }
 
   mapXYToTrailXY(mapXY) {
     return [mapXY[0] * TrailMapOverSampleRate, mapXY[1] * TrailMapOverSampleRate];
