@@ -10,7 +10,6 @@ const FoodPerCell = Config.FoodPerCell;
 const DirtPerCell = Config.DirtPerCell;
 const FoodPerDecayStep = FoodPerCell / BlockDecaySteps;
 const DirtDecayPerStep = DirtPerCell / BlockDecaySteps;
-const MinDecayableAlpha = Config.MinDecayableAlpha;
 const FoodValue = Brushes.find(brush => brush.name === "Food").value;
 const HomeValue = Brushes.find(brush => brush.name === "Home").value;
 const DirtValue = Brushes.find(brush => brush.name === "Dirt").value;
@@ -197,23 +196,6 @@ export class MapHandler {
     const keys = Object.keys(SampleMaps);
     const index = Math.floor(Math.random() * keys.length);
     return SampleMaps[keys[index]];
-  }
-
-  populateBrushColors() {
-    Brushes.forEach(brush => {
-      if (brush.decayable) {
-        for (let i = 1; i <= BlockDecaySteps; i++) {
-          const index = brush.value + i;
-          const alpha =
-            Math.round((255 - MinDecayableAlpha) * (i / BlockDecaySteps)) + MinDecayableAlpha;
-          this.brushColors[index] = this._graphics.color(brush.color);
-          this.brushColors[index].setAlpha(alpha);
-        }
-      }
-      if (brush.color) this.brushColors[brush.value] = this._graphics.color(brush.color);
-    });
-    this.brushColors["homeText"] = this._graphics.color("#F1948A");
-    this.brushColors["foodText"] = this._graphics.color("#7DCEA0");
   }
 
   mapXYInBounds(mapXY) {
