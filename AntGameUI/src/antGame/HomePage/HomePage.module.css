@@ -1,6 +1,6 @@
 .container {
   width: 60em;
-  max-width: 80%;
+  max-width: 60%;
   margin: 0 auto;
 }
 
@@ -18,8 +18,9 @@
 }
 
 .links {
-  margin: 0 auto;
+  margin: 2em auto;
   text-align: center;
+  display: flex;
   flex-direction: column;
   width: 100%;
   row-gap: 1em;
@@ -27,7 +28,6 @@
 
 .link {
   height: 5rem;
-  margin: 1em 0;
   background-color: #40260f;
   color: white;
   display: block;
