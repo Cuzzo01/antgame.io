@@ -60,3 +60,7 @@
 .solutionImage {
   max-width: 90vw;
 }
+
+.solutionImage img {
+  width: 100%;
+}
