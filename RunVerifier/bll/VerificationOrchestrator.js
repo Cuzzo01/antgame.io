@@ -30,7 +30,13 @@ class VerificationOrchestrator {
         if (result) {
           await addTagToRun({ id: run._id, tag: { type: "run verified" } });
         } else {
-          await addTagToRun({ id: run._id, tag: { type: "simulated score mismatch" } });
+          await addTagToRun({
+            id: run._id,
+            tag: {
+              type: "failed verification",
+              metadata: { reason: "simulated score did not match" },
+            },
+          });
         }
 
         await unsetToVerifyFlag({ runID: run._id });
