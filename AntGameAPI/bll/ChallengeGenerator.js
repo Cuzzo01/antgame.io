@@ -10,10 +10,6 @@ const { addMapToDB, getMapByName } = require("../dao/MapDao");
 const mapWidth = 200;
 const mapHeight = 112;
 class ChallengeGenerator {
-  constructor() {
-    SpacesService.initializeConnection();
-  }
-
   async generateDailyChallenge() {
     try {
       const mapName = getChallengeName().replace(/ /g, "_");
