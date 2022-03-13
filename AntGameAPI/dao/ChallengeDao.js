@@ -199,6 +199,13 @@ const addChampionshipIDToConfig = async (configID, championshipID) => {
   );
 };
 
+const markRunForVerification = async ({ runID }) => {
+  const runObjectID = TryParseObjectID(runID, "RunID");
+
+  const collection = await getCollection("runs");
+  await collection.updateOne({ _id: runObjectID }, { $set: { toVerify: true } });
+};
+
 const TryParseObjectID = (stringID, name) => {
   try {
     return new Mongo.ObjectID(stringID);
@@ -219,4 +226,5 @@ module.exports = {
   getRunHomePositionsByRunId,
   getDailyChallengesInReverseOrder,
   addChampionshipIDToConfig,
+  markRunForVerification,
 };

@@ -1,0 +1,21 @@
+{
+  "name": "runverifier",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prettier": "prettier --write . --print-width 100 --arrow-parens avoid",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "dotenv": "^16.0.0",
+    "logzio-nodejs": "^2.0.3",
+    "mongodb": "^4.4.1",
+    "node-schedule": "^2.1.0",
+    "prettier": "^2.5.1",
+    "seedrandom": "^3.0.5"
+  }
+}
