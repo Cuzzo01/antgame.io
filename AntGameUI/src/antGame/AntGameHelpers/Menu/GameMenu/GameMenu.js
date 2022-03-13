@@ -32,7 +32,7 @@ export default function GameMenu(props) {
       <UploadMapButton key="upload" styles={styles.button} loadMapHandler={props.loadMapHandler} />
     );
   else {
-    var isInIframe = window.frameElement && window.frameElement.nodeName === "IFRAME";
+    var isInIframe = window.self !== window.top;
     if (isInIframe) {
       sandBoxButtons.push(
         <span data-tip="" data-for={"warning"} className={`${styles.baseBadge} ${styles.active}`}>
