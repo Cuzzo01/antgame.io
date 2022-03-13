@@ -26,7 +26,7 @@ class ActiveChallengesHandler extends ResultCacheWrapper {
   };
 
   unsetItem() {
-    this.unsetItem("");
+    super.unsetItem("");
   }
 }
 const SingletonInstance = new ActiveChallengesHandler();

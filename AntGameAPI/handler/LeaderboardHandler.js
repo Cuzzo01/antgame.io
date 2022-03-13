@@ -19,9 +19,9 @@ class LeaderboardHandler extends ResultCacheWrapper {
   }
 
   unsetItem(id) {
-    this.unsetItem(id);
+    super.unsetItem(id);
     const rawID = `${id}-raw`;
-    if (this.itemIsSet(rawID)) this.unsetItem(rawID);
+    if (super.itemIsSet(rawID)) super.unsetItem(rawID);
   }
 
   async getChallengeLeaderboard(id) {
