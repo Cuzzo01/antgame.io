@@ -3,6 +3,7 @@ import { MenuIcon } from "../../Icons";
 import AuthHandler from "../../../Auth/AuthHandler";
 
 import styles from "./OptionsMenu.module.css";
+import ReactTooltip from "react-tooltip";
 
 const OptionsMenu = props => {
   const [showMenu, setShowMenu] = useState();
@@ -42,6 +43,8 @@ const OptionsMenu = props => {
     };
   };
 
+  var isInIframe = window.self !== window.top;
+
   return (
     <div className={styles.container}>
       <Button
@@ -65,11 +68,29 @@ const OptionsMenu = props => {
             disabled={props.mapNameDisabled}
           />
           <MenuHeader>Save image of...</MenuHeader>
-          <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("trail"))}>Trails</MenuRow>
-          <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("map"))}>Map</MenuRow>
-          <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("map&trail"))}>
-            Both
-          </MenuRow>
+          {isInIframe ? (
+            <span
+              data-tip=""
+              data-for={"warning"}
+              className={`${styles.baseBadge} ${styles.active}`}
+            >
+              <MenuRow>Disabled</MenuRow>
+              <ReactTooltip effect="solid" id={"warning"}>
+                Image saving does not work on outside sites. To save images, visit antgame.io.
+              </ReactTooltip>
+            </span>
+          ) : (
+            <span>
+              <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("trail"))}>
+                Trails
+              </MenuRow>
+              <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("map"))}>Map</MenuRow>
+              <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("map&trail"))}>
+                Both
+              </MenuRow>
+            </span>
+          )}
+
           <MenuHeader>Maps</MenuHeader>
           <MenuRow onClick={getMenuCallback(() => props.loadMapHandler("sample"))}>
             Load sample
