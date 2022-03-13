@@ -10,13 +10,11 @@ const HomePage = () => {
   return (
     <div className={styles.container}>
       <div className={styles.title}>
-        <div className={styles.titleInner}>
-          <img
-            className={styles.titleImage}
-            src={"https://antgame.io/asset/static/background.webp"}
-            alt="AntGame.io"
-          />
-        </div>
+        <img
+          className={styles.titleImage}
+          src={"https://antgame.io/asset/static/background.webp"}
+          alt="AntGame.io"
+        />
       </div>
       <div className={styles.links}>
         <Link to="/challenge" className={`${styles.link}`}>

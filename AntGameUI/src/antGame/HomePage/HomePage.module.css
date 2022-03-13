@@ -9,19 +9,12 @@
   background-color: black;
   padding: 1em;
   border-radius: 1.5em;
-  padding-top: 50.42%;
-  position: relative;
-}
-
-.titleInner {
-  position: absolute;
-  top: 1em;
-  left: 1em;
-  padding-bottom: 100%;
 }
 
 .titleImage {
-  width: 98.5%;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1.98;
 }
 
 .links {
