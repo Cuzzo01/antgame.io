@@ -20,9 +20,9 @@
 .links {
   margin: 0 auto;
   text-align: center;
-  display: grid;
-  grid-template-columns: 70% auto;
-  column-gap: 2em;
+  flex-direction: column;
+  width: 100%;
+  row-gap: 1em;
 }
 
 .link {

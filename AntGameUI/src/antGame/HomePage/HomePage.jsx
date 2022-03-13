@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import styles from "./HomePage.module.css";
-import backgroundImage from "./background.webp";
 import { useEffect } from "react";
 
 const HomePage = () => {
