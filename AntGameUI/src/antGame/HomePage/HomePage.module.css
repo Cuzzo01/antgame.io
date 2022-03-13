@@ -1,6 +1,6 @@
 .container {
   width: 60em;
-  max-width: 80%;
+  max-width: 60%;
   margin: 0 auto;
 }
 
@@ -9,31 +9,25 @@
   background-color: black;
   padding: 1em;
   border-radius: 1.5em;
-  padding-top: 50.42%;
-  position: relative;
 }
 
-.titleInner {
-  position: absolute;
-  top: 1em;
-  left: 1em;
-}
-
-img {
-  width: 98.5%;
+.titleImage {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1.98;
 }
 
 .links {
-  margin: 0 auto;
+  margin: 2em auto;
   text-align: center;
-  display: grid;
-  grid-template-columns: 70% auto;
-  column-gap: 2em;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  row-gap: 1em;
 }
 
 .link {
   height: 5rem;
-  margin: 1em 0;
   background-color: #40260f;
   color: white;
   display: block;
