@@ -25,6 +25,7 @@ const { addStatToResponse } = require("../helpers/AuthStatHelpers");
 const Logger = require("../Logger");
 const { getChampionshipDetailsFromDB } = require("../dao/ChampionshipDao");
 const { handleDailyChallengeChange } = require("../bll/DailyChallengeCron");
+const { GenerateSolutionImage } = require("../bll/RecordImageGenerator");
 
 //#region stats
 async function getStats(req, res) {
@@ -210,6 +211,21 @@ async function dailyChallengeSwap(req, res) {
     res.sendStatus(200);
   } catch (e) {
     Logger.logError("AdminController.generateDailyChallenge", e);
+    res.sendStatus(500);
+    return;
+  }
+}
+
+async function generateAndBindSolutionImage(req, res) {
+  try {
+    const challengeID = req.body.challengeID;
+    const solutionImagePath = await GenerateSolutionImage({ challengeID });
+    await updateConfigByID(challengeID, { solutionImage: solutionImagePath });
+
+    res.sendStatus(200);
+    return;
+  } catch (e) {
+    Logger.logError("AdminController.generateAndBindSolutionImage", e);
     res.sendStatus(500);
     return;
   }
@@ -482,6 +498,7 @@ async function patchFlagDetails(req, res) {
 }
 //#endregion Flags
 
+//#region Cache
 async function dumpLeaderboardCache(req, res) {
   try {
     LeaderboardHandler.unsetAll();
@@ -501,6 +518,7 @@ async function dumpUserCache(req, res) {
     res.sendStatus(500);
   }
 }
+//#endregion Cache
 
 const send400 = (res, message) => {
   res.status(400);
@@ -526,4 +544,5 @@ module.exports = {
   patchFlagDetails,
   dumpLeaderboardCache,
   dumpUserCache,
+  generateAndBindSolutionImage,
 };

@@ -18,7 +18,7 @@ class DailyChallengeHandler extends ResultCacheWrapper {
   }
 
   clearCache() {
-    super.unsetAll();
+    this.unsetAll();
   }
 }
 const SingletonInstance = new DailyChallengeHandler();
