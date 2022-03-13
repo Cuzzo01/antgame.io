@@ -7,6 +7,7 @@ import ChallengeHandler from "../../../Challenge/ChallengeHandler";
 import cssStyles from "./GameMenu.module.css";
 import { getFlag } from "../../../Helpers/FlagService";
 import { useHistory } from "react-router-dom";
+import ReactTooltip from "react-tooltip";
 
 export default function GameMenu(props) {
   const [flashReset, setFlashReset] = useState(false);
@@ -30,15 +31,28 @@ export default function GameMenu(props) {
     sandBoxButtons.push(
       <UploadMapButton key="upload" styles={styles.button} loadMapHandler={props.loadMapHandler} />
     );
-  else
-    sandBoxButtons.push(
-      <SettingButton
-        key="save"
-        handler={props.saveMapHandler}
-        disabled={props.playState}
-        text="Save"
-      />
-    );
+  else {
+    var isInIframe = window.frameElement && window.frameElement.nodeName === "IFRAME";
+    if (isInIframe) {
+      sandBoxButtons.push(
+        <span data-tip="" data-for={"warning"} className={`${styles.baseBadge} ${styles.active}`}>
+          <SettingButton key="save" disabled={true} text="Save" />
+          <ReactTooltip effect="solid" id={"warning"}>
+            Map saving does not work on outside sites. To save maps, visit antgame.io.
+          </ReactTooltip>
+        </span>
+      );
+    } else {
+      sandBoxButtons.push(
+        <SettingButton
+          key="save"
+          handler={props.saveMapHandler}
+          disabled={props.playState}
+          text="Save"
+        />
+      );
+    }
+  }
 
   return (
     <div style={styles.container} className={cssStyles.justifyLeft}>
@@ -86,15 +100,15 @@ export default function GameMenu(props) {
   );
 }
 
-const SettingButton = props => {
+const SettingButton = ({ handler, className, disabled, text }) => {
   return (
     <button
-      className={props.className}
-      disabled={props.disabled}
+      className={className}
+      disabled={disabled}
       style={styles.button}
-      onClick={() => props.handler()}
+      onClick={() => handler()}
     >
-      {props.text}
+      {text}
     </button>
   );
 };
