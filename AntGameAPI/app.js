@@ -23,6 +23,7 @@ const responseTime = require("response-time");
 const { GetIpAddress } = require("./helpers/IpHelper");
 const Logger = require("./Logger");
 const { initializeScheduledTasks } = require("./bll/TaskScheduler");
+const SpacesService = require("./services/SpacesService");
 
 const UnauthenticatedRoutes = [
   "/auth/login",
@@ -39,6 +40,7 @@ const send401 = (res, message) => {
 };
 
 initializeScheduledTasks();
+SpacesService.initializeConnection();
 
 app.use(bodyParser.json({ extended: true, limit: "50mb" }));
 
@@ -146,6 +148,7 @@ app.get("/admin/flagData/:id", RejectNotAdmin, _adminController.getFlagDetails);
 app.patch("/admin/flagData/:id", RejectNotAdmin, _adminController.patchFlagDetails);
 
 app.post("/admin/dailyChallenge", RejectNotAdmin, _adminController.dailyChallengeSwap);
+app.post("/admin/solutionImage", RejectNotAdmin, _adminController.generateAndBindSolutionImage);
 app.delete("/admin/leaderboardCache", RejectNotAdmin, _adminController.dumpLeaderboardCache);
 app.delete("/admin/userCache", RejectNotAdmin, _adminController.dumpUserCache);
 //#endregion Admin
