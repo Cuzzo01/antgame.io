@@ -11,7 +11,6 @@ import { TrailHandler } from "./AntGameHelpers/TrailHandler";
 import { TimerHandler } from "./AntGameHelpers/Menu/Timer/TimerHandler";
 import MenuBar from "./AntGameHelpers/Menu/MenuBar";
 import { AntFoodSmol, AntSmol } from "./AntGameHelpers/AntImages";
-import { GTMEmitter } from "./AntGameHelpers/GTMEmitter";
 import { GameModeContext } from "./GameModeContext";
 import ChallengeHandler from "./Challenge/ChallengeHandler";
 import ChallengeModal from "./AntGameHelpers/Challenge/ChallengeModal";
@@ -349,7 +348,6 @@ export default class AntGame extends React.Component {
       this.toggleTimer(false);
     }
     this.setState({ playState: state });
-    GTMEmitter.PlayHandler(state);
   };
 
   toggleTimer = state => {
@@ -375,17 +373,14 @@ export default class AntGame extends React.Component {
     const emptyMap = this.mapHandler.clearMap();
     if (emptyMap) this.setState({ emptyMap: true });
     this.reset();
-    GTMEmitter.ClearHandler();
   };
 
   saveMapHandler = () => {
     this.mapHandler.saveMap();
-    GTMEmitter.SaveHandler();
   };
 
   loadMapHandler = map => {
     if (this.mapHandler.loadMap(map)) this.setState({ emptyMap: false });
-    GTMEmitter.LoadHandler();
   };
 
   reset = () => {
@@ -406,12 +401,10 @@ export default class AntGame extends React.Component {
 
   resetHandler = () => {
     this.reset();
-    GTMEmitter.ResetHandler();
   };
 
   saveImageHandler = imageToSave => {
     this.imageToSave = imageToSave;
-    GTMEmitter.SaveImageHandler(imageToSave);
   };
 
   setBlockDraw = blockDrawing => {
@@ -427,7 +420,6 @@ export default class AntGame extends React.Component {
       this.mapHandler.loadMap(type);
     }
     if (this.state.emptyMap) this.setState({ emptyMap: false });
-    GTMEmitter.LoadSampleHandler();
   };
 
   closeChallengeModal = () => {
