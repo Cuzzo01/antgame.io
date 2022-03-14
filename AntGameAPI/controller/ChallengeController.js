@@ -146,6 +146,7 @@ async function postRun(req, res) {
 
         if (isPB) {
           LeaderboardHandler.unsetItem(runData.challengeID);
+          if (challengeConfig.mapID) await ChallengeDao.markRunForVerification({ runID });
         }
 
         let response = {};

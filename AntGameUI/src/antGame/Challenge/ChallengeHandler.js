@@ -184,7 +184,7 @@ class ChallengeHandler {
     const mapHandler = this._mapHandler;
     this.score = Math.round(mapHandler.percentFoodReturned * 100000);
 
-    this.generateSnapshot(mapHandler);
+    this.generateSnapshot();
     if (!AuthHandler.isAnon && (!this.records?.pr || this.score > this.records.pr)) {
       this.artifact.PB = true;
       if (!this.records) this.records = {};
