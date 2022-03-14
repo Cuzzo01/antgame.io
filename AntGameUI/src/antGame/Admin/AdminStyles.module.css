@@ -56,6 +56,11 @@
   color: #1e8449;
 }
 
+.verified {
+  color: green;
+  border: 2px green solid !important;
+}
+
 .red {
   color: #d9534f;
 }
