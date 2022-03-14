@@ -10,7 +10,7 @@ class VerificationOrchestrator {
     if (runsToVerify.length > 0) {
       Logger.logVerificationMessage({ message: `Got ${runsToVerify.length} runs to verify` });
 
-      runsToVerify.forEach(async run => {
+      for (const run of runsToVerify) {
         let result = false;
         try {
           const startTime = new Date();
@@ -40,7 +40,7 @@ class VerificationOrchestrator {
         }
 
         await unsetToVerifyFlag({ runID: run._id });
-      });
+      }
     } else {
       Logger.logVerificationMessage({ message: "No runs to verify" });
     }
