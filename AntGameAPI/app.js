@@ -30,6 +30,7 @@ const UnauthenticatedRoutes = [
   "/auth/anonToken",
   "/auth/register",
   /\/flag\//,
+  /\/user\/[A-z0-9]*\/badges/,
   "/health",
   "/time",
 ];
