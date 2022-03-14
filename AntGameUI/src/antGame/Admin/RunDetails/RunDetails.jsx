@@ -12,7 +12,6 @@ const RunDetails = props => {
   useEffect(() => {
     document.title = "Run Details";
     getRunDetails(props.id).then(details => {
-      console.log(details);
       setDetails(details);
     });
   }, [props.id]);
@@ -103,9 +102,19 @@ const getTagRow = tag => {
           <span className={adminStyles.smallText}>{tag.metadata.reason}</span>
         </div>
       ) : null}
+      {type === "falsely claimed pb" ? (
+        <div className={adminStyles.redBackground}>
+          <strong>Falsely claimed PB</strong>
+        </div>
+      ) : null}
       {type === "random snapshot save" ? (
         <div className={adminStyles.yellowBackground}>
           <strong>Random Snapshot Save</strong>
+        </div>
+      ) : null}
+      {type === "run verified" ? (
+        <div className={adminStyles.verified}>
+          <strong>Verified</strong>
         </div>
       ) : null}
     </div>

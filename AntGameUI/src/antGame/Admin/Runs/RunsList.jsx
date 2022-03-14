@@ -58,6 +58,7 @@ const RunsListElement = props => {
       setBodyTagStyles(adminStyles.redBackground);
     else if (tags.find(tag => tag.type === "random snapshot save"))
       setBodyTagStyles(adminStyles.yellowBackground);
+    else if (tags.find(tag => tag.type === "run verified")) setBodyTagStyles(adminStyles.verified);
   }, [props.run.tags]);
 
   return (
