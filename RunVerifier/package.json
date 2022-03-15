@@ -12,7 +12,6 @@
   "dependencies": {
     "axios": "^0.26.1",
     "dotenv": "^16.0.0",
-    "eslint": "^8.11.0",
     "logzio-nodejs": "^2.0.3",
     "mongodb": "^4.4.1",
     "node-schedule": "^2.1.0",
