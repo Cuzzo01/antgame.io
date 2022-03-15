@@ -17,7 +17,7 @@ const {
   updateFlagByID,
   getChampionshipListFromDB,
 } = require("../dao/AdminDao");
-const { getActiveChallenges } = require("../dao/ChallengeDao");
+const { getActiveChallenges, markRunForVerification } = require("../dao/ChallengeDao");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
 const UserHandler = require("../handler/UserHandler");
@@ -394,6 +394,25 @@ async function getRunDetails(req, res) {
     res.sendStatus(500);
   }
 }
+
+async function patchRun(req, res) {
+  try {
+    const id = req.params.id;
+    const patchReq = req.body;
+
+    if (patchReq.toVerify) {
+      await markRunForVerification({ runID: id });
+    } else {
+      send400(res, "Unknown patch operation");
+      return;
+    }
+
+    res.sendStatus(200);
+  } catch (e) {
+    Logger.logError("AdminController.patchRun", e);
+    res.sendStatus(500);
+  }
+}
 //#endregion runs
 
 //#region championships
@@ -545,4 +564,5 @@ module.exports = {
   dumpLeaderboardCache,
   dumpUserCache,
   generateAndBindSolutionImage,
+  patchRun,
 };
