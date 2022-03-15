@@ -1,4 +1,9 @@
-const { getRunIDsToVerify, addTagToRun, unsetToVerifyFlag } = require("../dao/Dao");
+const {
+  getRunIDsToVerify,
+  addTagToRun,
+  unsetToVerifyFlag,
+  markRunAsProcessing,
+} = require("../dao/Dao");
 const Logger = require("../Logger");
 const { SpawnVerificationRun } = require("./VerificationProcess");
 
@@ -13,6 +18,7 @@ class VerificationOrchestrator {
 
         const promises = new Map();
         for (const run of runsToVerify) {
+          await markRunAsProcessing({ runID: run._id });
           promises.set(run._id, SpawnVerificationRun({ runData: run }));
         }
 
