@@ -1,56 +1,51 @@
-const {
-  getRunIDsToVerify,
-  addTagToRun,
-  unsetToVerifyFlag,
-  markRunAsProcessing,
-} = require("../dao/Dao");
+const { VerifyRun } = require("../AntEngine/RunVerifier");
+const { getRunIDsToVerify, addTagToRun, unsetToVerifyFlag } = require("../dao/Dao");
 const Logger = require("../Logger");
-const { SpawnVerificationRun } = require("./VerificationProcess");
 
 class VerificationOrchestrator {
   static async getAndProcessRunsToVerify() {
-    try {
-      Logger.logVerificationMessage({ message: "Starting to process runs" });
-      const runsToVerify = await getRunIDsToVerify();
+    Logger.logVerificationMessage({ message: "Starting to process runs" });
+    const runsToVerify = await getRunIDsToVerify();
 
-      if (runsToVerify.length > 0) {
-        Logger.logVerificationMessage({ message: `Got ${runsToVerify.length} runs to verify` });
+    if (runsToVerify.length > 0) {
+      Logger.logVerificationMessage({ message: `Got ${runsToVerify.length} runs to verify` });
 
-        const promises = new Map();
-        for (const run of runsToVerify) {
-          await markRunAsProcessing({ runID: run._id });
-          promises.set(run._id, SpawnVerificationRun({ runData: run }));
+      for (const run of runsToVerify) {
+        let result = false;
+        try {
+          const startTime = new Date();
+
+          result = await VerifyRun({ run });
+
+          const totalTime = new Date() - startTime;
+          Logger.logVerificationMessage({
+            message: "run verification result",
+            time: totalTime,
+            result,
+          });
+        } catch (e) {
+          Logger.logError("VerifyRun", e);
         }
 
-        for (const [id, resultPromise] of promises) {
-          let result = false;
-          try {
-            result = await resultPromise;
-
-            if (result) {
-              await addTagToRun({ id, tag: { type: "run verified" } });
-            } else {
-              await addTagToRun({
-                id,
-                tag: {
-                  type: "failed verification",
-                  metadata: { reason: "simulated score did not match" },
-                },
-              });
-            }
-          } catch (e) {
-            Logger.logError("VerifyRun", e);
-          }
-          await unsetToVerifyFlag({ runID: id });
+        if (result) {
+          await addTagToRun({ id: run._id, tag: { type: "run verified" } });
+        } else {
+          await addTagToRun({
+            id: run._id,
+            tag: {
+              type: "failed verification",
+              metadata: { reason: "simulated score did not match" },
+            },
+          });
         }
-      } else {
-        Logger.logVerificationMessage({ message: "No runs to verify" });
+
+        await unsetToVerifyFlag({ runID: run._id });
       }
-
-      Logger.logVerificationMessage({ message: "Done" });
-    } catch (e) {
-      Logger.logError("VerificationOrchestrator", e);
+    } else {
+      Logger.logVerificationMessage({ message: "No runs to verify" });
     }
+
+    Logger.logVerificationMessage({ message: "Done" });
   }
 }
 module.exports = { VerificationOrchestrator };

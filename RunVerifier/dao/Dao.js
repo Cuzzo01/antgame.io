@@ -8,7 +8,7 @@ const getCollection = async collection => {
 
 const getRunIDsToVerify = async () => {
   const collection = await getCollection("runs");
-  const result = await collection.find({ toVerify: true, verification: null }).limit(50).toArray();
+  const result = await collection.find({ toVerify: true }).limit(50).toArray();
   return result;
 };
 
@@ -40,17 +40,7 @@ const unsetToVerifyFlag = async ({ runID }) => {
   const runObjectID = TryParseObjectID(runID, "RunID");
 
   const collection = await getCollection("runs");
-  await collection.updateOne(
-    { _id: runObjectID },
-    { $unset: { toVerify: "" }, $set: { "verification.end": new Date() } }
-  );
-};
-
-const markRunAsProcessing = async ({ runID }) => {
-  const runObjectID = TryParseObjectID(runID, "RunID");
-
-  const collection = await getCollection("runs");
-  await collection.updateOne({ _id: runObjectID }, { $set: { "verification.start": new Date() } });
+  await collection.updateOne({ _id: runObjectID }, { $unset: { toVerify: "" } });
 };
 module.exports = {
   getChallengeDetailsByID,
@@ -58,7 +48,6 @@ module.exports = {
   getRunIDsToVerify,
   addTagToRun,
   unsetToVerifyFlag,
-  markRunAsProcessing,
 };
 
 const TryParseObjectID = (stringID, name) => {
