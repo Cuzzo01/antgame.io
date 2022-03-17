@@ -38,14 +38,10 @@ export class AntsHandler {
     this.redrawAnts = true;
   }
 
-  spawnAnts({ homeTrailHandler, foodTrailHandler, mapHandler }) {
-    let seed;
+  async spawnAnts({ homeTrailHandler, foodTrailHandler, mapHandler, seed }) {
     if (this.deterministicMode) {
       seed = "1";
-    } else {
-      seed = Math.floor(Math.random() * 1000000);
     }
-    ChallengeHandler.runSeed = seed;
 
     const map = mapHandler.map;
     this.ants = [];

@@ -1,8 +1,7 @@
 const { default: axios } = require("axios");
-const { getRunDetailsByID, getChallengeDetailsByID } = require("../dao/Dao");
+const { getChallengeDetailsByID } = require("../dao/Dao");
 const MapHandler = require("../handler/MapHandler");
 const { GameRunner } = require("./GameRunner");
-const Logger = require("../Logger");
 
 const VerifyRun = async ({ run }) => {
   const challengeDetails = await getChallengeDetailsByID({ challengeID: run.challengeID });

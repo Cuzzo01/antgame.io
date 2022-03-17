@@ -300,30 +300,40 @@ export default class AntGame extends React.Component {
     this.brushType = type;
   };
 
-  updatePlayState = state => {
+  updatePlayState = async state => {
     const IsChallenge = this.gamemode === "challenge";
     if (state) {
       if (this.state.emptyMap) return;
       if (this.mapHandler.homeCellCount === 0) return;
       if (IsChallenge && this.timerHandler.noTime) return "reset";
-      this.setMapUiUpdate(500);
-      this.toggleTimer(true);
-      this.mapHandler.shouldDrawFoodAmounts = false;
+    this.mapHandler.shouldDrawFoodAmounts = false;
       if (!this.antHandler.antsSpawned) {
         this.updateCount = 0;
+        this.mapHandler.prepareForStart(IsChallenge);
+        let seed = Math.round(Math.random() * 1e8);
+        if (IsChallenge) {
+          seed = await this.challengeHandler.getSeed({
+            homeLocations: this.mapHandler.homeLocations,
+          });
+          if (seed === false) {
+            // TODO: Map modal to explain rate limit
+            return
+          };
+          this.challengeHandler.handleStart(this.mapHandler.homeLocations);
+        }
         this.antHandler.spawnAnts({
           homeTrailHandler: this.homeTrailHandler,
           foodTrailHandler: this.foodTrailHandler,
           mapHandler: this.mapHandler,
+          seed,
         });
-        this.mapHandler.prepareForStart(IsChallenge);
-        if (IsChallenge) {
-          this.challengeHandler.handleStart(this.mapHandler.homeLocations);
-        }
       } else {
         this.mapHandler.findNewDecayableBlocks();
         this.mapHandler.calculateFoodToStopTime();
       }
+
+      this.setMapUiUpdate(500);
+      this.toggleTimer(true);
 
       const ticksPerSecond = FrameRate * 1.5;
       const updateRate = Math.round(1000 / ticksPerSecond);

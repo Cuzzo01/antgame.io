@@ -16,6 +16,7 @@ const _mapController = require("./controller/MapController");
 const _championshipController = require("./controller/ChampionshipController");
 const _reportController = require("./controller/ReportController");
 const _userController = require("./controller/UserController");
+const _seedController = require("./controller/SeedController");
 const TokenHandler = require("./auth/WebTokenHandler");
 const TokenRevokedHandler = require("./handler/TokenRevokedHandler");
 const { RejectNotAdmin } = require("./auth/AuthHelpers");
@@ -121,6 +122,15 @@ const runSubmissionLimiter = rateLimit({
   keyGenerator: req => req.user.id,
 });
 
+const getSeedLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20,
+  message: "Only 20 seeds per min allowed",
+  standardHeaders: true,
+  skip: req => req.user.anon,
+  keyGenerator: req => req.user.id,
+});
+
 //#region Admin
 app.get("/admin/stats", RejectNotAdmin, _adminController.getStats);
 
@@ -171,6 +181,8 @@ app.get("/challenge/:id", _challengeController.getChallenge);
 app.get("/challenge/:id/pr", _challengeController.getPRHomeLocations);
 app.get("/challenges/active", _challengeController.getActiveChallenges);
 app.get("/challenge/:id/leaderboard", _challengeController.getLeaderboard);
+
+app.post("/getSeed", getSeedLimiter, _seedController.getSeed);
 
 app.get("/championship/:id", _championshipController.getLeaderboard);
 
