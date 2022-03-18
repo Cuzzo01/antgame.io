@@ -61,6 +61,18 @@ const RunDetails = props => {
             <div className={styles.timeRow}>
               <strong>Submission Time:</strong>&nbsp;{GetTimeString(details.submissionTime)}
             </div>
+            {details.verification ? (
+              <div>
+                <div className={styles.timeRow}>
+                  <strong>Verification Start:</strong>&nbsp;
+                  {GetTimeString(details.verification.startTime)}
+                </div>
+                <div className={styles.timeRow}>
+                  <strong>Verification Finish:</strong>&nbsp;
+                  {GetTimeString(details.verification.finishTime)}
+                </div>
+              </div>
+            ) : null}
           </div>
           <div className={adminStyles.divSection}>
             <h5 className={adminStyles.bold}>Tags</h5>
