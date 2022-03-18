@@ -306,7 +306,7 @@ export default class AntGame extends React.Component {
       if (this.state.emptyMap) return;
       if (this.mapHandler.homeCellCount === 0) return;
       if (IsChallenge && this.timerHandler.noTime) return "reset";
-    this.mapHandler.shouldDrawFoodAmounts = false;
+      this.mapHandler.shouldDrawFoodAmounts = false;
       if (!this.antHandler.antsSpawned) {
         this.updateCount = 0;
         this.mapHandler.prepareForStart(IsChallenge);
@@ -317,8 +317,8 @@ export default class AntGame extends React.Component {
           });
           if (seed === false) {
             // TODO: Map modal to explain rate limit
-            return
-          };
+            return;
+          }
           this.challengeHandler.handleStart(this.mapHandler.homeLocations);
         }
         this.antHandler.spawnAnts({

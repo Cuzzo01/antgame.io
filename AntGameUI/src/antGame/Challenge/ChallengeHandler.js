@@ -247,7 +247,7 @@ class ChallengeHandler {
       });
   }
 
-  async getSeed({homeLocations}) {
+  async getSeed({ homeLocations }) {
     const seed = await getSeed({ homeLocations });
     if (seed) this._runSeed = seed;
     return seed;
