@@ -90,7 +90,7 @@ export async function getDailyChallengeList() {
 
 export async function getSeed({ homeLocations }) {
   return axios
-    .post("/api/getSeed", { homeLocations })
+    .post("/api/seed", { homeLocations })
     .then(res => res.data.seed)
     .catch(() => false);
 }

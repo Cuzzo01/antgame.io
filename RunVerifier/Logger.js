@@ -30,8 +30,8 @@ class Logger {
     this.log({ message: "API Error", location: location, error: errString });
   }
 
-  logVerificationMessage({ message, time, result }) {
-    this.log({ message: "Verification", update: message, time, result });
+  logVerificationMessage({ message, time, result, traceID, runID }) {
+    this.log({ message: "Verification", update: message, time, result, traceID, runID });
   }
 
   logCacheResult(cacheName, cacheMiss, key, value, time) {

@@ -182,7 +182,7 @@ app.get("/challenge/:id/pr", _challengeController.getPRHomeLocations);
 app.get("/challenges/active", _challengeController.getActiveChallenges);
 app.get("/challenge/:id/leaderboard", _challengeController.getLeaderboard);
 
-app.post("/getSeed", getSeedLimiter, _seedController.getSeed);
+app.post("/seed", getSeedLimiter, _seedController.getSeed);
 
 app.get("/championship/:id", _championshipController.getLeaderboard);
 
