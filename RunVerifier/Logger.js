@@ -1,7 +1,7 @@
 class Logger {
   constructor() {
     this.logger = require("logzio-nodejs").createLogger({
-      token: "UKOLffEwBTJxXdUzPkeIMzsVJkoUiLrs",
+      token: process.env.logzio_token,
       protocol: "https",
       host: "listener.logz.io",
       port: "8071",
@@ -30,8 +30,8 @@ class Logger {
     this.log({ message: "API Error", location: location, error: errString });
   }
 
-  logVerificationMessage({ message, time, result, traceID, runID }) {
-    this.log({ message: "Verification", update: message, time, result, traceID, runID });
+  logVerificationMessage({ message, time, result, traceID, runID, count }) {
+    this.log({ message: "Verification", update: message, time, result, traceID, runID, count });
   }
 
   logCacheResult(cacheName, cacheMiss, key, value, time) {

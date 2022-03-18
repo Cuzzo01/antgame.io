@@ -1,5 +1,5 @@
 const { VerifyRun } = require("../AntEngine/RunVerifier");
-const { addTagToRun, unsetToVerifyFlagAndSetFinishTime, getRunToVerify } = require("../dao/Dao");
+const { addTagToRun, unsetToVerifyFlagAndSetFinishTime, getRunToVerify, fixOrphanedRuns } = require("../dao/Dao");
 const Logger = require("../Logger");
 
 class VerificationOrchestrator {
@@ -42,6 +42,15 @@ class VerificationOrchestrator {
     }
 
     await unsetToVerifyFlagAndSetFinishTime({ runID: runToVerify._id });
+  }
+
+  static async findAndResetOrphanedRuns() { 
+
+    const tenMinAgo = new Date();
+    tenMinAgo.setMinutes(tenMinAgo.getMinutes() - 10)
+
+    const count = await fixOrphanedRuns({cutoffTime: tenMinAgo});
+    if (count) Logger.logVerificationMessage({message: `reset orphaned runs`, count})
   }
 }
 module.exports = { VerificationOrchestrator };

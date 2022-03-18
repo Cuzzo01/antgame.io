@@ -1,12 +1,17 @@
+if (!process.env.environment) require("dotenv").config();
+
 const { scheduleJob } = require("node-schedule");
 const { VerificationOrchestrator } = require("./bll/VerificationOrchestrator");
 const Logger = require("./Logger");
 const { v4: uuidv4 } = require("uuid");
 
-if (!process.env.environment) require("dotenv").config();
 
 const startup = () => {
   StartRunVerifier();
+  const cleanupCron = scheduleJob('*/10 * * * *', VerificationOrchestrator.findAndResetOrphanedRuns)
+  Logger.logVerificationMessage({
+    message: `cron started, runs next at: ${cleanupCron.nextInvocation()}`,
+  });
 };
 
 const StartRunVerifier = async () => {
