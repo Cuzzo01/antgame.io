@@ -1,5 +1,10 @@
 const { VerifyRun } = require("../AntEngine/RunVerifier");
-const { addTagToRun, unsetToVerifyFlagAndSetFinishTime, getRunToVerify, fixOrphanedRuns } = require("../dao/Dao");
+const {
+  addTagToRun,
+  unsetToVerifyFlagAndSetFinishTime,
+  getRunToVerify,
+  fixOrphanedRuns,
+} = require("../dao/Dao");
 const Logger = require("../Logger");
 
 class VerificationOrchestrator {
@@ -12,7 +17,11 @@ class VerificationOrchestrator {
       return false;
     }
 
-    Logger.logVerificationMessage({ message: "Starting run verification", runID: runToVerify._id, traceID });
+    Logger.logVerificationMessage({
+      message: "Starting run verification",
+      runID: runToVerify._id,
+      traceID,
+    });
 
     let result = false;
     try {
@@ -44,13 +53,12 @@ class VerificationOrchestrator {
     await unsetToVerifyFlagAndSetFinishTime({ runID: runToVerify._id });
   }
 
-  static async findAndResetOrphanedRuns() { 
-
+  static async findAndResetOrphanedRuns() {
     const tenMinAgo = new Date();
-    tenMinAgo.setMinutes(tenMinAgo.getMinutes() - 10)
+    tenMinAgo.setMinutes(tenMinAgo.getMinutes() - 10);
 
-    const count = await fixOrphanedRuns({cutoffTime: tenMinAgo});
-    if (count) Logger.logVerificationMessage({message: `reset orphaned runs`, count})
+    const count = await fixOrphanedRuns({ cutoffTime: tenMinAgo });
+    if (count) Logger.logVerificationMessage({ message: `reset orphaned runs`, count });
   }
 }
 module.exports = { VerificationOrchestrator };

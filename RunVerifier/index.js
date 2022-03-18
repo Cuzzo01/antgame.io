@@ -5,10 +5,12 @@ const { VerificationOrchestrator } = require("./bll/VerificationOrchestrator");
 const Logger = require("./Logger");
 const { v4: uuidv4 } = require("uuid");
 
-
 const startup = () => {
   StartRunVerifier();
-  const cleanupCron = scheduleJob('*/10 * * * *', VerificationOrchestrator.findAndResetOrphanedRuns)
+  const cleanupCron = scheduleJob(
+    "*/10 * * * *",
+    VerificationOrchestrator.findAndResetOrphanedRuns
+  );
   Logger.logVerificationMessage({
     message: `cron started, runs next at: ${cleanupCron.nextInvocation()}`,
   });

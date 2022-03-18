@@ -51,16 +51,19 @@ const unsetToVerifyFlagAndSetFinishTime = async ({ runID }) => {
 
 const fixOrphanedRuns = async ({ cutoffTime }) => {
   const collection = await getCollection("runs");
-  const result = await collection.updateMany({ "verification.startTime": { $lt: cutoffTime }, "verification.finishTime": null }, { $unset: {"verification.startTime": null}, $inc: { "verification.resets": 1 } })
-  return result.modifiedCount
-}
+  const result = await collection.updateMany(
+    { "verification.startTime": { $lt: cutoffTime }, "verification.finishTime": null },
+    { $unset: { "verification.startTime": null }, $inc: { "verification.resets": 1 } }
+  );
+  return result.modifiedCount;
+};
 module.exports = {
   getChallengeDetailsByID,
   getRunDetailsByID,
   getRunToVerify,
   addTagToRun,
   unsetToVerifyFlagAndSetFinishTime,
-  fixOrphanedRuns
+  fixOrphanedRuns,
 };
 
 const TryParseObjectID = (stringID, name) => {
