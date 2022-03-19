@@ -18,6 +18,7 @@ import cssStyles from "./Antgame.module.css";
 import { DrawAnts } from "./AntGameHelpers/Graphics/AntGraphics";
 import { MapGraphics } from "./AntGameHelpers/Graphics/MapGraphics";
 import { TrailGraphics } from "./AntGameHelpers/Graphics/TrailGraphics";
+import AuthHandler from "./Auth/AuthHandler";
 
 let canvasW, canvasH;
 
@@ -312,12 +313,16 @@ export default class AntGame extends React.Component {
         this.mapHandler.prepareForStart(IsChallenge);
         let seed = Math.round(Math.random() * 1e8);
         if (IsChallenge) {
-          seed = await this.challengeHandler.getSeed({
-            homeLocations: this.mapHandler.homeLocations,
-          });
-          if (seed === false) {
-            // TODO: Map modal to explain rate limit
-            return;
+          if (!AuthHandler.isAnon) {
+            seed = await this.challengeHandler.getSeed({
+              homeLocations: this.mapHandler.homeLocations,
+            });
+            if (seed === false) {
+              // TODO: Map modal to explain rate limit
+              return;
+            }
+          } else {
+            this.challengeHandler._runSeed = seed;
           }
           this.challengeHandler.handleStart(this.mapHandler.homeLocations);
         }
