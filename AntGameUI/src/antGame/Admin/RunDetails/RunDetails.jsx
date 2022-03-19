@@ -61,16 +61,16 @@ const RunDetails = props => {
             <div className={styles.timeRow}>
               <strong>Submission Time:</strong>&nbsp;{GetTimeString(details.submissionTime)}
             </div>
-            {details.verification ? (
-              <div>
-                <div className={styles.timeRow}>
-                  <strong>Verification Start:</strong>&nbsp;
-                  {GetTimeString(details.verification.startTime)}
-                </div>
-                <div className={styles.timeRow}>
-                  <strong>Verification Finish:</strong>&nbsp;
-                  {GetTimeString(details.verification.finishTime)}
-                </div>
+            {details.verification.startTime ? (
+              <div className={styles.timeRow}>
+                <strong>Verification Start:</strong>&nbsp;
+                {GetTimeString(details.verification.startTime)}
+              </div>
+            ) : null}
+            {details.verification.finishTime ? (
+              <div className={styles.timeRow}>
+                <strong>Verification Finish:</strong>&nbsp;
+                {GetTimeString(details.verification.finishTime)}
               </div>
             ) : null}
           </div>
