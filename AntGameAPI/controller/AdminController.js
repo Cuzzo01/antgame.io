@@ -386,7 +386,7 @@ async function getRunDetails(req, res) {
     const id = req.params.id;
 
     const details = await getRunDetailsByID(id);
-    details.username = await ObjectIDToNameHandler.getUsername(details.userID);
+    if (details.userID) details.username = await ObjectIDToNameHandler.getUsername(details.userID);
 
     res.send(details);
   } catch (e) {

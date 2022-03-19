@@ -52,6 +52,20 @@
   text-align: center;
   flex-shrink: 0;
   width: 100%;
+  display: grid;
+  grid-template-columns: 3em auto 3em;
+}
+
+.githubLink {
+  display: flex;
+  justify-content: left;
+  padding: 0.1em;
+  margin: 0.1em;
+  padding-right: 1em;
+}
+
+.githubLink img {
+  width: 100%;
 }
 
 .windowContainer {
