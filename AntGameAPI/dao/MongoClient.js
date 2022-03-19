@@ -14,6 +14,10 @@ class Connection {
     this.db = await MongoClient.connect(ConnectionString, Options);
     return this.db;
   }
+
+  get isConnected() {
+    return this.db.isConnected();
+  }
 }
 const SingletonInstance = new Connection();
 module.exports = SingletonInstance;
