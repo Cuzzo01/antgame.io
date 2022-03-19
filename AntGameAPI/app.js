@@ -25,6 +25,7 @@ const { GetIpAddress } = require("./helpers/IpHelper");
 const Logger = require("./Logger");
 const { initializeScheduledTasks } = require("./bll/TaskScheduler");
 const SpacesService = require("./services/SpacesService");
+const MongoClient = require("./dao/MongoClient");
 
 const UnauthenticatedRoutes = [
   "/auth/login",
@@ -190,7 +191,11 @@ app.get("/user/:id/badges", _userController.getUserBadges);
 
 app.post("/report/spaces", _reportController.reportSpacesData);
 
-app.get("/health", (req, res) => res.sendStatus(200));
+app.get("/health", async (req, res) => {
+  await MongoClient.open();
+  if (MongoClient.isConnected) res.sendStatus(200);
+  else res.sendStatus(503);
+});
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
