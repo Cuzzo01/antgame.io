@@ -87,3 +87,10 @@ export async function getDailyChallengeList() {
       return [];
     });
 }
+
+export async function getSeed({ homeLocations }) {
+  return axios
+    .post("/api/seed", { homeLocations })
+    .then(res => res.data.seed)
+    .catch(() => false);
+}

@@ -12,6 +12,7 @@ const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
 const ActiveChallengesHandler = require("../handler/ActiveChallengesHandler");
 const MapHandler = require("../handler/MapHandler");
+const { SeedBroker } = require("../bll/SeedBroker");
 const { GetIpAddress } = require("../helpers/IpHelper");
 const Logger = require("../Logger");
 
@@ -25,7 +26,6 @@ async function postRun(req, res) {
     let saveRun = false;
 
     const RejectUnverifiedRuns = await FlagHandler.getFlagValue("reject-anticheat-fail-runs");
-    let verificationResult;
 
     const challengeConfig = await ChallengeDao.getChallengeByChallengeId(runData.challengeID);
     if (challengeConfig.active === false && req.user.admin !== true) {
@@ -41,6 +41,7 @@ async function postRun(req, res) {
       res.sendStatus(400);
     }
 
+    let verificationResult;
     try {
       verificationResult = VerifyArtifact(runData, user.clientID, challengeConfig);
     } catch (e) {
@@ -51,6 +52,17 @@ async function postRun(req, res) {
     if (verificationResult !== "verified") {
       if (RejectUnverifiedRuns === false) verificationResult += " *IGNORED*";
       runTags.push({ type: "failed verification", metadata: { reason: verificationResult } });
+      saveRun = "Verify Failed";
+    }
+
+    const validSeed = await SeedBroker.checkSeed({
+      seed: runData.GameConfig.seed,
+      userID: user.id,
+      homeLocations: runData.HomeLocations,
+    });
+    if (!validSeed) {
+      verificationResult = false;
+      runTags.push({ type: "failed verification", metadata: { reason: "Invalid seed" } });
       saveRun = "Verify Failed";
     }
 
@@ -146,7 +158,7 @@ async function postRun(req, res) {
 
         if (isPB) {
           LeaderboardHandler.unsetItem(runData.challengeID);
-          if (challengeConfig.mapID) await ChallengeDao.markRunForVerification({ runID });
+          await ChallengeDao.markRunForVerification({ runID });
         }
 
         let response = {};

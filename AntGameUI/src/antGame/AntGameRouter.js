@@ -75,14 +75,14 @@ const AntGameRouter = () => {
                       <ChampionshipDetails />
                       <UserBar />
                     </Route>
+                    <Route path="/">
+                      <Redirect to="/" />
+                    </Route>
                   </Switch>
                   <Footer />
                 </Route>
               </Switch>
             </div>
-          </Route>
-          <Route path="/">
-            <Redirect to="/" />
           </Route>
         </Switch>
       </BrowserRouter>

@@ -1,5 +1,11 @@
 import { Config } from "../config";
-import { getChallengeConfig, getPRInfo, getRecords, sendRunArtifact } from "./ChallengeService";
+import {
+  getChallengeConfig,
+  getPRInfo,
+  getRecords,
+  getSeed,
+  sendRunArtifact,
+} from "./ChallengeService";
 import AuthHandler from "../Auth/AuthHandler";
 
 class ChallengeHandler {
@@ -54,10 +60,6 @@ class ChallengeHandler {
     this._mapHandler.fetchAndLoadMap(config.mapPath);
     this._timerHandler.defaultTime = config.seconds;
     this._timerHandler.resetTime();
-  }
-
-  set runSeed(seed) {
-    this._runSeed = seed;
   }
 
   get config() {
@@ -243,6 +245,12 @@ class ChallengeHandler {
       this.recordListeners.forEach(callback => {
         if (callback) callback(this.records);
       });
+  }
+
+  async getSeed({ homeLocations }) {
+    const seed = await getSeed({ homeLocations });
+    if (seed) this._runSeed = seed;
+    return seed;
   }
 }
 

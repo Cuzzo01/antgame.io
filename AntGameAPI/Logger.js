@@ -1,7 +1,7 @@
 class Logger {
   constructor() {
     this.logger = require("logzio-nodejs").createLogger({
-      token: "UKOLffEwBTJxXdUzPkeIMzsVJkoUiLrs",
+      token: process.env.logzio_token,
       protocol: "https",
       host: "listener.logz.io",
       port: "8071",

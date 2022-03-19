@@ -40,7 +40,7 @@ const ReportedConfigMatchesExpectedConfig = (runData, expectedConfig) => {
 
   const seed = runData.GameConfig.seed;
   if (seed === null || seed === undefined) return `Undefined seed`;
-  if (seed < 0 || seed > 1000000) return `Seed out of bounds`;
+  if (seed < 0 || seed > 1e8) return `Seed out of bounds`;
 
   // TODO add some check for MapID
   if (expectedConfig.mapPath) {
