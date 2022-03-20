@@ -342,6 +342,7 @@ export default class AntGame extends React.Component {
 
       const ticksPerSecond = FrameRate * 1.5;
       const updateRate = Math.round(1000 / ticksPerSecond);
+      clearInterval(this.gameLoopInterval);
       this.gameLoopInterval = setInterval(() => {
         this.updateCount++;
         this.antHandler.updateAnts();
