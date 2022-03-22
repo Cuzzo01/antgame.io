@@ -43,7 +43,16 @@ async function postRun(req, res) {
 
     let verificationResult;
     try {
-      verificationResult = VerifyArtifact(runData, user.clientID, challengeConfig);
+      let mapPath;
+      if (challengeConfig.mapID)
+        mapPath = (await MapHandler.getMapData({ mapID: challengeConfig.mapID })).url;
+        
+      verificationResult = VerifyArtifact({
+        runData,
+        clientID: user.clientID,
+        challengeConfig,
+        mapPath,
+      });
     } catch (e) {
       Logger.logError("ChallengeController.PostRun", e);
       res.sendStatus(400);
@@ -97,7 +106,7 @@ async function postRun(req, res) {
     if (saveRun === false) {
       // Where save limiting logic will live in the future
       // Only set to true % of time you want random run saved
-      saveRun = "No Snapshot";
+      saveRun = true;
     }
 
     let runID;
@@ -118,18 +127,23 @@ async function postRun(req, res) {
         tags: runTags,
       };
 
-      if (saveRun !== "No Snapshot") {
-        let snapshots = false;
-        try {
-          snapshots = runData.Snapshots.map(snapshot => {
-            return [...snapshot.slice(0, 5), JSON.parse(snapshot[5]), ...snapshot.slice(6)];
-          });
-        } catch (e) {
-          Logger.logError("ChallengeController.PostRun", e);
-          runRecord.tags.push({ type: "Unparsable snapshots" });
-        }
-        runRecord.details.snapshots = snapshots ? snapshots : runData.Snapshots;
+      let snapshots = [];
+      try {
+        const startSnapshot = runData.Snapshots.start;
+        const startHomeCounts = JSON.parse(startSnapshot[5]);
+        const finishSnapshot = runData.Snapshots.finish;
+        const finishHomeCounts = JSON.parse(finishSnapshot[5]);
+        snapshots[0] = [...startSnapshot.slice(0, 5), startHomeCounts, ...startSnapshot.slice(6)];
+        snapshots[1] = [
+          ...finishSnapshot.slice(0, 5),
+          finishHomeCounts,
+          ...finishSnapshot.slice(6),
+        ];
+      } catch (e) {
+        Logger.logError("ChallengeController.PostRun", e);
+        runRecord.tags.push({ type: "Unparsable snapshots" });
       }
+      runRecord.details.snapshots = snapshots ? snapshots : runData.Snapshots;
 
       if (user.id) {
         runRecord.userID = user.id;

@@ -343,19 +343,36 @@ export default class AntGame extends React.Component {
       const ticksPerSecond = FrameRate * 1.5;
       const updateRate = Math.round(1000 / ticksPerSecond);
       clearInterval(this.gameLoopInterval);
+      this.lastGameUpdateRunTime = new Date();
+      let catchUpUpdates = 0;
       this.gameLoopInterval = setInterval(() => {
-        this.updateCount++;
-        this.antHandler.updateAnts();
-        if (this.updateCount % TrailDecayRate === 0) {
-          this.foodTrailHandler.decayTrailMap();
-          this.foodTrailDrawer.decayTrail();
-          this.homeTrailHandler.decayTrailMap();
-          this.homeTrailDrawer.decayTrail();
+        let updates = 1;
+
+        const timeSinceLastRun = new Date().getTime() - this.lastGameUpdateRunTime.getTime();
+        if (timeSinceLastRun > 200) {
+          const missedUpdates = Math.floor(timeSinceLastRun / updateRate);
+          catchUpUpdates += missedUpdates;
+        } else {
+          if (catchUpUpdates) {
+            updates = Math.min(catchUpUpdates, 10);
+            catchUpUpdates -= updates;
+          }
         }
-        if (this.state.timerActive && this.updateCount % ticksPerSecond === 0) {
-          if (this.challengeHandler) this.challengeHandler.updateCount = this.updateCount;
-          this.timerHandler.tickTime();
+        for (let count = 0; count < updates; count++) {
+          this.updateCount++;
+          this.antHandler.updateAnts();
+          if (this.updateCount % TrailDecayRate === 0) {
+            this.foodTrailHandler.decayTrailMap();
+            this.foodTrailDrawer.decayTrail();
+            this.homeTrailHandler.decayTrailMap();
+            this.homeTrailDrawer.decayTrail();
+          }
+          if (this.state.timerActive && this.updateCount % ticksPerSecond === 0) {
+            if (this.challengeHandler) this.challengeHandler.updateCount = this.updateCount;
+            this.timerHandler.tickTime();
+          }
         }
+        this.lastGameUpdateRunTime = new Date();
       }, updateRate);
     } else {
       clearInterval(this.challengeSnapshotInterval);

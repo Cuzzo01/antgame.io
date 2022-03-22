@@ -158,20 +158,16 @@ class ChallengeHandler {
     this.artifact.Timing = {
       SystemStartTime: new Date().getTime(),
     };
-    this.artifact.Snapshots = [];
+    this.artifact.Snapshots = {};
 
     this.lastSeenUpdateCount = 0;
-    this.generateSnapshot();
-    if (this.snapshotInterval) clearInterval(this.snapshotInterval);
-    this.snapshotInterval = setInterval(() => {
-      this.generateSnapshot();
-    }, 5000);
+    this.generateSnapshot({ name: "start" });
   }
 
-  generateSnapshot() {
+  generateSnapshot({ name }) {
     const mapHandler = this._mapHandler;
     const time = this._timerHandler.min * 60 + this._timerHandler.sec;
-    this.artifact.Snapshots.push([
+    this.artifact.Snapshots[name] = [
       new Date().getTime(),
       time,
       mapHandler.percentFoodReturned,
@@ -179,14 +175,14 @@ class ChallengeHandler {
       mapHandler.foodInTransit,
       JSON.stringify(mapHandler.homeFoodCounts),
       this.lastSeenUpdateCount,
-    ]);
+    ];
   }
 
   handleTimeout() {
     const mapHandler = this._mapHandler;
     this.score = Math.round(mapHandler.percentFoodReturned * 100000);
 
-    this.generateSnapshot();
+    this.generateSnapshot({ name: "finish" });
     if (!AuthHandler.isAnon && (!this.records?.pr || this.score > this.records.pr)) {
       this.artifact.PB = true;
       if (!this.records) this.records = {};
