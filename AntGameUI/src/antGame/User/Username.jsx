@@ -37,7 +37,11 @@ const Username = ({ name, id, showBorder = true }) => {
       if (badge.icon === "trophy") icon = <TrophyIcon />;
 
       list.push(
-        <span style={{ ...inlineStyles }} key={badge.name} className={styles.badgeRow}>
+        <span
+          style={{ ...inlineStyles }}
+          key={`${badge.name}-${Math.round(Math.random() * 1e4)}`}
+          className={styles.badgeRow}
+        >
           {icon}
           <span>{badge.name}</span>
         </span>
