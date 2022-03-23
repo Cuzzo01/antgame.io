@@ -1,6 +1,6 @@
 # AntGame.io
 
-[AntGame.io](htps://antgame.io) is puzzle web game built around an ant simulator. 
+[AntGame.io](htps://antgame.io) is a puzzle web game built around an ant simulator. 
 
 ## Description
 
