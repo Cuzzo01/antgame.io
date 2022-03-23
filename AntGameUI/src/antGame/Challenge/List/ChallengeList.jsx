@@ -14,7 +14,7 @@ const ChallengeList = () => {
 
   const [loading, setLoading] = useState(true);
   const [menuList, setMenuList] = useState([]);
-  const [dailyChallenge, setDailyChallenge] = useState();
+  const [dailyChallenge, setDailyChallenge] = useState(<DailyChallengeCard />);
   const history = useHistory();
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const ChallengeList = () => {
             />
           );
           seenDaily = true;
-        } else
+        } else {
           list.push(
             <ChallengeCard
               key={challenge.id}
@@ -52,7 +52,9 @@ const ChallengeList = () => {
               thumbnailURL={challenge.thumbnailURL}
             />
           );
+        }
       });
+      if (!seenDaily) setDailyChallenge(false);
       setMenuList(list);
       setLoading(false);
     });
@@ -63,7 +65,7 @@ const ChallengeList = () => {
       <div className={styles.header}>
         <h2>Challenges</h2>
       </div>
-      {!loading && dailyChallenge ? dailyChallenge : null}
+      {dailyChallenge}
       <div className={styles.challengeGrid}>{loading ? InitialList : menuList}</div>
     </div>
   );
@@ -162,9 +164,9 @@ const DailyChallengeCard = ({ challenge, record, championshipID }) => {
       <div>
         <div className={styles.challengeInfo}>
           <div className={styles.challengeName}>
-            <span>{challenge.name}</span>
+            <span>{challenge?.name}</span>
           </div>
-          <ChallengeDetails time={challenge.time} homes={challenge.homes} />
+          <ChallengeDetails time={challenge?.time} homes={challenge?.homes} />
         </div>
         <div className={styles.records}>
           <div className={styles.challengeWR}>
