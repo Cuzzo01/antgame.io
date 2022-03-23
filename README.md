@@ -10,13 +10,13 @@ AntGame is a full stack application consisting of a React frontend with a node/e
 
 AntGame has two systems to ensure fairness: deterministic run verification and server controlled seeds. Together, these systems make AntGame extremely fair by protecting against brute force attacks and run forgery. 
 
-#### Deterministic run verification
+### Deterministic run verification
 
 AntGame runs are deterministic. Given the same map, home locations, and run seed, AntGame will always produce the exact same score. This means when a run is submitted, the server can take that information and simply re-simulate a run. And that's exactly what the server does. This makes it impossible to submit a forged run.
 
 All runs appearing on AntGame leader boards have been verified.
 
-#### Server controlled seeds
+### Server controlled seeds
 
 Seeds for challenge runs are generated and controlled by the server.
 
