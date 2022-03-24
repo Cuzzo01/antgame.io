@@ -17,7 +17,7 @@ const {
   updateFlagByID,
   getChampionshipListFromDB,
 } = require("../dao/AdminDao");
-const { getActiveChallenges } = require("../dao/ChallengeDao");
+const { getActiveChallenges, markRunForVerification } = require("../dao/ChallengeDao");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
 const UserHandler = require("../handler/UserHandler");
@@ -394,6 +394,18 @@ async function getRunDetails(req, res) {
     res.sendStatus(500);
   }
 }
+
+async function addRunVerificationTag(req, res) {
+  try {
+    const runID = req.body.runID;
+
+    await markRunForVerification({ runID });
+    res.sendStatus(200);
+  } catch (e) {
+    Logger.logError("AdminController.markRunForVerification", e);
+    res.sendStatus(500);
+  }
+}
 //#endregion runs
 
 //#region championships
@@ -537,6 +549,7 @@ module.exports = {
   patchUser,
   getRuns,
   getRunDetails,
+  addRunVerificationTag,
   getChampionshipList,
   getChampionshipDetails,
   getFlagList,

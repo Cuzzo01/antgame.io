@@ -141,6 +141,7 @@ app.patch("/admin/user/:id", RejectNotAdmin, _adminController.patchUser);
 
 app.get("/admin/runs", RejectNotAdmin, _adminController.getRuns);
 app.get("/admin/run/:id", RejectNotAdmin, _adminController.getRunDetails);
+app.post("/admin/verifyRun", RejectNotAdmin, _adminController.addRunVerificationTag);
 
 app.get("/admin/configList", RejectNotAdmin, _adminController.getConfigList);
 app.get("/admin/config/:id", RejectNotAdmin, _adminController.getConfigDetails);

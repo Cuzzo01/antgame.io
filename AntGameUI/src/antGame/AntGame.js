@@ -345,6 +345,7 @@ export default class AntGame extends React.Component {
       clearInterval(this.gameLoopInterval);
       this.lastGameUpdateRunTime = new Date();
       let catchUpUpdates = 0;
+      let keepGoing = true;
       this.gameLoopInterval = setInterval(() => {
         const timeSinceLastRun = new Date().getTime() - this.lastGameUpdateRunTime.getTime();
         if (timeSinceLastRun > 200) {
@@ -357,6 +358,7 @@ export default class AntGame extends React.Component {
             catchUpUpdates -= updates;
           }
           for (let count = 0; count < updates; count++) {
+            if (!keepGoing) return;
             this.updateCount++;
             this.antHandler.updateAnts();
             if (this.updateCount % TrailDecayRate === 0) {
@@ -367,7 +369,7 @@ export default class AntGame extends React.Component {
             }
             if (this.state.timerActive && this.updateCount % ticksPerSecond === 0) {
               if (this.challengeHandler) this.challengeHandler.updateCount = this.updateCount;
-              this.timerHandler.tickTime();
+              if (!this.timerHandler.tickTime()) keepGoing = false;
             }
           }
         }
