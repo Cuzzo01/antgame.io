@@ -46,7 +46,7 @@ async function postRun(req, res) {
       let mapPath;
       if (challengeConfig.mapID)
         mapPath = (await MapHandler.getMapData({ mapID: challengeConfig.mapID })).url;
-        
+
       verificationResult = VerifyArtifact({
         runData,
         clientID: user.clientID,
