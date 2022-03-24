@@ -51,15 +51,16 @@ export class TimerHandler {
   }
 
   tickTime() {
-    if (this._gameMode === "challenge") {
+    const IsChallenge = this._gameMode === "challenge";
+    if (IsChallenge) {
       this.sec--;
-      if (this.sec === 0 && this.min === 0) {
-        this.handleChallengeTimeout();
-        return false;
-      }
     } else this.sec++;
     this.updateDisplayTime();
     this.setDisplayTimeFunc(this.displayTime);
+    if (IsChallenge && this.sec === 0 && this.min === 0) {
+      this.handleChallengeTimeout();
+      return false;
+    }
     return true;
   }
 
