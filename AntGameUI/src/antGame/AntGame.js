@@ -357,8 +357,7 @@ export default class AntGame extends React.Component {
             updates = Math.min(catchUpUpdates, 10);
             catchUpUpdates -= updates;
           }
-          for (let count = 0; count < updates; count++) {
-            if (!keepGoing) return;
+          for (let count = 0; count < updates && keepGoing; count++) {
             this.updateCount++;
             this.antHandler.updateAnts();
             if (this.updateCount % TrailDecayRate === 0) {
