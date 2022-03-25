@@ -384,15 +384,15 @@ export default class AntGame extends React.Component {
   };
 
   determineUpdateCount = catchUpUpdates => {
-    if (catchUpUpdates > 990) return 10;
-    else if (catchUpUpdates > 792) return 9;
-    else if (catchUpUpdates > 616) return 8;
-    else if (catchUpUpdates > 462) return 7;
-    else if (catchUpUpdates > 330) return 6;
-    else if (catchUpUpdates > 220) return 5;
-    else if (catchUpUpdates > 132) return 4;
-    else if (catchUpUpdates > 66) return 3;
-    else if (catchUpUpdates > 22) return 2;
+    if (catchUpUpdates > 900) return 10;
+    else if (catchUpUpdates > 800) return 9;
+    else if (catchUpUpdates > 700) return 8;
+    else if (catchUpUpdates > 600) return 7;
+    else if (catchUpUpdates > 500) return 6;
+    else if (catchUpUpdates > 400) return 5;
+    else if (catchUpUpdates > 300) return 4;
+    else if (catchUpUpdates > 200) return 3;
+    else if (catchUpUpdates > 100) return 2;
     else return 1;
   };
 
