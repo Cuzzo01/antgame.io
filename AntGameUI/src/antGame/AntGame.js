@@ -354,7 +354,7 @@ export default class AntGame extends React.Component {
         } else {
           let updates = 1;
           if (catchUpUpdates) {
-            updates = Math.min(catchUpUpdates, 10);
+            updates = this.determineUpdateCount(catchUpUpdates);
             catchUpUpdates -= updates;
           }
           for (let count = 0; count < updates && keepGoing; count++) {
@@ -381,6 +381,19 @@ export default class AntGame extends React.Component {
       this.toggleTimer(false);
     }
     this.setState({ playState: state });
+  };
+
+  determineUpdateCount = catchUpUpdates => {
+    if (catchUpUpdates > 990) return 10;
+    else if (catchUpUpdates > 792) return 9;
+    else if (catchUpUpdates > 616) return 8;
+    else if (catchUpUpdates > 462) return 7;
+    else if (catchUpUpdates > 330) return 6;
+    else if (catchUpUpdates > 220) return 5;
+    else if (catchUpUpdates > 132) return 4;
+    else if (catchUpUpdates > 66) return 3;
+    else if (catchUpUpdates > 22) return 2;
+    else return 1;
   };
 
   toggleTimer = state => {
