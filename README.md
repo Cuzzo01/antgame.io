@@ -30,4 +30,4 @@ Online brute forcing would be asking for seeds at a high rate, looking for the p
 
 ## Contact
 
-Email me at: admin@antame.io
+Email me at: admin@antgame.io
