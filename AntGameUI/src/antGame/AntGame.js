@@ -341,7 +341,6 @@ export default class AntGame extends React.Component {
       this.toggleTimer(true);
 
       const ticksPerSecond = FrameRate * 1.5;
-      console.log(ticksPerSecond);
       const updateRate = Math.round(1000 / ticksPerSecond);
       clearInterval(this.gameLoopInterval);
       this.lastGameUpdateRunTime = new Date();
