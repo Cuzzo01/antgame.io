@@ -9,7 +9,6 @@ class Connection {
   async open() {
     if (this.db) return this.db;
 
-    console.log(JSON.stringify(process.env))
     const ConnectionString = process.env.connection_string;
 
     if (ConnectionString.length === 0) throw "No connection string given"

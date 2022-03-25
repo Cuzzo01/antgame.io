@@ -6,6 +6,8 @@ const Logger = require("./Logger");
 const { v4: uuidv4 } = require("uuid");
 
 const startup = () => {
+  console.log(JSON.stringify(process.env))
+
   StartRunVerifier();
   const cleanupCron = scheduleJob(
     "*/10 * * * *",
