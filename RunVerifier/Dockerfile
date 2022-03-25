@@ -8,7 +8,9 @@ RUN npm install
 
 ARG environment=${environment}
 ENV environment=${environment}
-ENV connection_string = ${connection_string}
-ENV logzio_token = ${logzio_token}
+ARG connection_string=${connection_string}
+ENV connection_string=${connection_string}
+ARG logzio_token=${logzio_token}
+ENV logzio_token=${logzio_token}
 
 RUN node index.js
