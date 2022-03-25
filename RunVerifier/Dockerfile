@@ -6,8 +6,8 @@ ENV PATH /usr/src/app/node_modules/.bin:$PATH
 COPY ./RunVerifier /usr/src/app
 RUN npm install
 
-ENV environment=${environment}
-ENV connection_string=${connection_string}
-ENV logzio_token=${logzio_token}
+ENV environment = ${environment}
+ENV connection_string = ${connection_string}
+ENV logzio_token = ${logzio_token}
 
 RUN node index.js
