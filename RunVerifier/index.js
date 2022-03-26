@@ -18,7 +18,12 @@ const startup = () => {
 
 const StartRunVerifier = async () => {
   const traceID = uuidv4();
-  while ((await VerificationOrchestrator.getAndVerifyRun({ traceID })) !== false) {}
+
+  try {
+    while ((await VerificationOrchestrator.getAndVerifyRun({ traceID })) !== false) {}
+  } catch (e) {
+    Logger.logError("StatRunVerifier", e);
+  }
 
   const nextMin = new Date();
   nextMin.setMinutes(nextMin.getMinutes() + 1);

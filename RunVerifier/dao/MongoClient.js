@@ -11,6 +11,8 @@ class Connection {
 
     const ConnectionString = process.env.connection_string;
 
+    if (ConnectionString.length === 0) throw "No connection string given";
+
     this.db = await MongoClient.connect(ConnectionString, Options);
     return this.db;
   }
