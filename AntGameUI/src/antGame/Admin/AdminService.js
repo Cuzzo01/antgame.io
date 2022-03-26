@@ -114,3 +114,7 @@ export const updateFlagDetails = async (id, fields) => {
     return res.data;
   });
 };
+
+export const markRunForVerification = async id => {
+  return axios.post("/api/admin/verifyRun", { runID: id });
+};

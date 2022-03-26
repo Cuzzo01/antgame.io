@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getRunDetails } from "../AdminService";
+import { getRunDetails, markRunForVerification } from "../AdminService";
 import styles from "./RunDetails.module.css";
 import adminStyles from "../AdminStyles.module.css";
 import { GetTimeString } from "../Helpers/FunctionHelpers";
+import { Button } from "react-bootstrap";
 
 const RunDetails = props => {
   const [details, setDetails] = useState(false);
@@ -11,10 +12,11 @@ const RunDetails = props => {
 
   useEffect(() => {
     document.title = "Run Details";
-    getRunDetails(props.id).then(details => {
-      setDetails(details);
-    });
-  }, [props.id]);
+    if (details === false)
+      getRunDetails(props.id).then(details => {
+        setDetails(details);
+      });
+  }, [props.id, details]);
 
   useEffect(() => {
     if (details.tags && details.tags.length) {
@@ -26,6 +28,10 @@ const RunDetails = props => {
       setTagList(tagList);
     }
   }, [details]);
+
+  const markForVerification = id => {
+    markRunForVerification(id).then(() => setDetails(false));
+  };
 
   return (
     <div>
@@ -77,6 +83,15 @@ const RunDetails = props => {
           <div className={adminStyles.divSection}>
             <h5 className={adminStyles.bold}>Tags</h5>
             {tagList ? tagList : "No tags"}
+          </div>
+          <div className={adminStyles.divSection}>
+            <h5>Actions</h5>
+            <Button
+              onClick={() => markForVerification(props.id)}
+              disabled={details.toVerify || details.verification}
+            >
+              Verify
+            </Button>
           </div>
         </div>
       ) : null}
