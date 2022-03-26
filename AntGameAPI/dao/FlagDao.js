@@ -8,7 +8,7 @@ const getCollection = async collection => {
 const getFlag = async name => {
   const collection = await getCollection("flags");
   const result = await collection.findOne({ name: name });
-  if (result) return result.value;
+  if (result) return { value: result.value, bypassCache: result.bypassCache };
   throw `getFlag called with non-existent flag name : ${name}`;
 };
 

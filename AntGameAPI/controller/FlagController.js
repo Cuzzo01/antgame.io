@@ -4,14 +4,14 @@ const Logger = require("../Logger");
 const getFlag = async (req, res) => {
   try {
     const name = req.params.name;
-    const value = await FlagHandler.getFlagValue(name);
+    const { value, bypassCache } = await FlagHandler.getFlagData(name);
     if (value === null) {
       res.sendStatus(404);
       return;
     }
 
     const ttl = FlagHandler.getFlagTTL(name);
-    if (ttl) {
+    if (bypassCache !== true && ttl) {
       const maxAge = await FlagHandler.getFlagValue("timeToCacheFlags");
       const age = maxAge - ttl;
       res.set("Cache-Control", `public, max-age=${maxAge}`);
