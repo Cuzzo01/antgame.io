@@ -20,42 +20,52 @@ class FlagHandler {
     const timeToCache = await Promise.resolve(this.timeToCache.getValue());
 
     if (this.resultCache.isSetAndActive(name)) {
-      const result = await Promise.resolve(this.resultCache.getValue(name));
+      const data = await Promise.resolve(this.resultCache.getValue(name));
       Logger.logCacheResult(
         "FlagHandler",
         false,
         name,
-        JSON.stringify(result),
+        JSON.stringify(data),
         new Date() - startTime
       );
-      if (result !== null) return result;
+      if (data !== null) return data.value;
       return null;
     } else {
-      let value;
+      let data;
       try {
-        value = getFlag(name);
+        data = getFlag(name);
       } catch (e) {
-        value = null;
+        data = null;
       }
-      this.resultCache.setItem(name, value, timeToCache);
-      const resolvedValue = await Promise.resolve(value);
+      this.resultCache.setItem(name, data, timeToCache);
+      const resolvedData = await Promise.resolve(data);
 
       Logger.logCacheResult(
         "FlagHandler",
         true,
         name,
-        JSON.stringify(resolvedValue),
+        JSON.stringify(resolvedData),
         new Date() - startTime
       );
-      return resolvedValue;
+      return resolvedData.value;
     }
+  }
+
+  async getFlagData(name) {
+    if (!this.resultCache.isSetAndActive(name)) await this.getFlagValue(name);
+
+    const flagData = await Promise.resolve(this.resultCache.getValue(name));
+    return {
+      value: flagData.value,
+      bypassCache: flagData.bypassCache,
+    };
   }
 
   async refreshTimeToCache() {
     const timeToCache = getFlag("timeToCacheFlags");
     this.timeToCache = new ExpiringResult(30, timeToCache);
 
-    const result = await timeToCache;
+    const result = (await timeToCache).value;
     const expireAt = new Date();
     expireAt.setSeconds(expireAt.getSeconds() + result);
     this.timeToCache = new ExpiringResult(expireAt, result);
