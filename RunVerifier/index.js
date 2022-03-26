@@ -4,6 +4,7 @@ const { scheduleJob } = require("node-schedule");
 const { VerificationOrchestrator } = require("./bll/VerificationOrchestrator");
 const Logger = require("./Logger");
 const { v4: uuidv4 } = require("uuid");
+const { GetFlag } = require("./service/AntGameApi");
 
 const startup = () => {
   StartRunVerifier();
@@ -12,7 +13,8 @@ const startup = () => {
     VerificationOrchestrator.findAndResetOrphanedRuns
   );
   Logger.logVerificationMessage({
-    message: `cron started, runs next at: ${cleanupCron.nextInvocation()}`,
+    message: `clean up cron started`,
+    nextRunTime: cleanupCron.nextInvocation(),
   });
 };
 
@@ -20,9 +22,11 @@ const StartRunVerifier = async () => {
   const traceID = uuidv4();
 
   try {
-    while ((await VerificationOrchestrator.getAndVerifyRun({ traceID })) !== false) {}
+    if (await GetFlag("enable-run-verifier"))
+      while ((await VerificationOrchestrator.getAndVerifyRun({ traceID })) !== false) {}
+    else Logger.logVerificationMessage({ message: "Skipping" });
   } catch (e) {
-    Logger.logError("StatRunVerifier", e);
+    Logger.logError("StartRunVerifier", e);
   }
 
   const nextMin = new Date();
