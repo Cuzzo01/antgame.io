@@ -52,10 +52,16 @@ const LoginPage = props => {
     setDisableSubmit(true);
     if (formState === "loading") return;
     AuthHandler.login(data.username, data.password).then(result => {
-      if (result === true) redirectOut();
-      else if (result === false) setFormState("error");
-      else if (result === "banned") setFormState("banned");
-      else if (result === "disabled") setFormState("disabled");
+      if (result.value === true) redirectOut();
+      else if (result.value === false) setFormState("error");
+      else if (result.value === "banned") setFormState("banned");
+      else if (result.value === "disabled") setFormState("disabled");
+      else if (result.value === "limited") {
+        setFormState("limited");
+        setDisabledMessage({ retryIn: result.retryIn, message: result.message });
+        setTimeout(() => setDisableSubmit(false), 10000);
+        return;
+      }
       setTimeout(() => setDisableSubmit(false), 5000);
     });
     setFormState("loading");
@@ -115,6 +121,12 @@ const LoginPage = props => {
             ) : null}
             {formState === "banned" && <div className={styles.error}>Account banned</div>}
             {formState === "disabled" && <div className={styles.error}>Login disabled</div>}
+            {formState === "limited" && (
+              <div className={styles.error}>
+                Timed Out
+                <br /> {disabledMessage.message} <br /> Retry in {disabledMessage.retryIn} seconds
+              </div>
+            )}
             <input type="submit" style={{ display: "none" }} />
             <div className={styles.buttonBar}>
               <div

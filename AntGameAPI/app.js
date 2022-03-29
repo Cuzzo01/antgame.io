@@ -3,7 +3,6 @@ if (!process.env.environment) require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const jwt = require("express-jwt");
-const rateLimit = require("express-rate-limit");
 
 const app = express();
 const port = 8080;
@@ -26,6 +25,13 @@ const Logger = require("./Logger");
 const { initializeScheduledTasks } = require("./bll/TaskScheduler");
 const SpacesService = require("./services/SpacesService");
 const MongoClient = require("./dao/MongoClient");
+const {
+  runSubmissionLimiter,
+  getSeedLimiter,
+  loginLimiter,
+  failedLoginLimiter,
+  registrationLimiter,
+} = require("./auth/RateLimiters");
 
 const UnauthenticatedRoutes = [
   "/auth/login",
@@ -78,7 +84,7 @@ app.use(
       Logger.logAuthEvent("api hit with invalid JWT", { ip: GetIpAddress(req) });
       return;
     }
-    console.log("Unknown AuthError:", err);
+    Logger.logError("App.jwtHandler", err);
     res.status(401);
     res.send("Unauthorized");
   },
@@ -113,24 +119,6 @@ app.use(
     next();
   }
 );
-
-const runSubmissionLimiter = rateLimit({
-  windowMs: 2 * 60 * 1000,
-  max: 4,
-  message: "Only 2 runs per min allowed",
-  standardHeaders: true,
-  skip: req => req.user.anon,
-  keyGenerator: req => req.user.id,
-});
-
-const getSeedLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 20,
-  message: "Only 20 seeds per min allowed",
-  standardHeaders: true,
-  skip: req => req.user.anon,
-  keyGenerator: req => req.user.id,
-});
 
 //#region Admin
 app.get("/admin/stats", RejectNotAdmin, _adminController.getStats);
@@ -171,9 +159,9 @@ app.get("/time", (req, res) => res.send({ now: Date.now() }));
 
 app.get("/map", RejectNotAdmin, _mapController.getRandomMap);
 
-app.post("/auth/login", _authController.verifyLogin);
+app.post("/auth/login", failedLoginLimiter, loginLimiter, _authController.verifyLogin);
 app.post("/auth/anonToken", _authController.getAnonymousToken);
-app.post("/auth/register", _authController.registerUser);
+app.post("/auth/register", registrationLimiter, _authController.registerUser);
 app.post("/auth/createUser", RejectNotAdmin, _authController.createUser);
 
 app.post("/challenge/artifact", runSubmissionLimiter, _challengeController.postRun);
