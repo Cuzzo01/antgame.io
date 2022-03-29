@@ -165,7 +165,8 @@ export class MapHandler {
   }
 
   setTitle(mapName) {
-    if (mapName) document.title = `${mapName} - AntGame`;
+    if (this._gameMode === "sandbox" && mapName === "AntGame") document.title = "Sandbox Mode";
+    else if (mapName) document.title = `${mapName} - AntGame`;
   }
 
   fetchAndLoadMap(path) {
