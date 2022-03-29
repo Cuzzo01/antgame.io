@@ -126,7 +126,7 @@ export class MapHandler {
     this.dirtToRespawn = [];
     this.foodToStopTime = 0;
     this.mapName = "";
-    if (this._gameMode !== "challenge") document.title = "AntGame";
+    if (this._gameMode !== "challenge") document.title = "AntGame.io";
     for (let x = 0; x < MapBounds[0]; x++) {
       this._map[x] = [];
       for (let y = 0; y < MapBounds[1]; y++) {
@@ -165,7 +165,9 @@ export class MapHandler {
   }
 
   setTitle(mapName) {
-    if (mapName) document.title = `${mapName} - AntGame`;
+    if (this._gameMode === "sandbox" && mapName === "AntGame")
+      document.title = "Sandbox Mode - AntGame";
+    else if (mapName) document.title = `${mapName} - AntGame`;
   }
 
   fetchAndLoadMap(path) {

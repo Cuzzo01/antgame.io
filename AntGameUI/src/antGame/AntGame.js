@@ -89,9 +89,10 @@ export default class AntGame extends React.Component {
       this.challengeHandler.mapHandler = this.mapHandler;
       this.challengeHandler.timerHandler = this.timerHandler;
       this.challengeHandler.antHandler = this.antHandler;
-      this.challengeHandler
-        .getConfig()
-        .then(config => (document.title = `${config.name} - AntGame`));
+      this.challengeHandler.getConfig().then(config => {
+        if (challengeID.toLowerCase() === "daily") document.title = "Daily Challenge - AntGame";
+        else document.title = `${config.name} - AntGame`;
+      });
 
       this.setState({
         showChallengeModal: false,
