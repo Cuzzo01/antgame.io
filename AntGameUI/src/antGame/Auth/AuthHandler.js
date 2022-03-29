@@ -123,12 +123,18 @@ class AuthHandler {
 
         this.checkForAndSendUnsentArtifacts();
 
-        return true;
+        return { value: true };
       })
       .catch(e => {
-        if (e.response.status === 403) return "banned";
-        if (e.response.status === 405) return "disabled";
-        return false;
+        if (e.response.status === 403) return { value: "banned" };
+        if (e.response.status === 405) return { value: "disabled" };
+        if (e.response.status === 429)
+          return {
+            value: "limited",
+            retryIn: e.response.headers["ratelimit-reset"],
+            message: e.response.data,
+          };
+        return { value: false };
       });
   }
 
