@@ -20,6 +20,7 @@ const getAuthDetailsByUsername = async username => {
     admin: result.admin,
     showOnLeaderboard: result.showOnLeaderboard,
     banned: result.banned,
+    banInfo: result.banInfo,
   };
 };
 

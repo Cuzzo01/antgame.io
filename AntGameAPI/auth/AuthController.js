@@ -41,7 +41,9 @@ async function verifyLogin(req, res) {
           ip: clientIP,
         });
         res.status(403);
-        res.send("Account banned");
+        const response = { banned: true };
+        if (authDetails.banInfo) response.message = authDetails.banInfo.message;
+        res.send(response);
         return;
       }
 
