@@ -54,8 +54,10 @@ const LoginPage = props => {
     AuthHandler.login(data.username, data.password).then(result => {
       if (result.value === true) redirectOut();
       else if (result.value === false) setFormState("error");
-      else if (result.value === "banned") setFormState("banned");
-      else if (result.value === "disabled") setFormState("disabled");
+      else if (result.value === "banned") {
+        setFormState("banned");
+        if (result.message) setDisabledMessage(result.message);
+      } else if (result.value === "disabled") setFormState("disabled");
       else if (result.value === "limited") {
         setFormState("limited");
         setDisabledMessage({ retryIn: result.retryIn, message: result.message });
@@ -119,7 +121,17 @@ const LoginPage = props => {
             {formState === "error" ? (
               <div className={styles.error}>Login failed, try again</div>
             ) : null}
-            {formState === "banned" && <div className={styles.error}>Account banned</div>}
+            {formState === "banned" && (
+              <div className={styles.error}>
+                Account banned
+                {disabledMessage && (
+                  <span>
+                    <br />
+                    Reason: {disabledMessage}
+                  </span>
+                )}
+              </div>
+            )}
             {formState === "disabled" && <div className={styles.error}>Login disabled</div>}
             {formState === "limited" && (
               <div className={styles.error}>

@@ -126,7 +126,7 @@ class AuthHandler {
         return { value: true };
       })
       .catch(e => {
-        if (e.response.status === 403) return { value: "banned" };
+        if (e.response.status === 403) return { value: "banned", message: e.response.data.message };
         if (e.response.status === 405) return { value: "disabled" };
         if (e.response.status === 429)
           return {
