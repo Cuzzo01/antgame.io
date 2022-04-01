@@ -318,6 +318,7 @@ async function patchUser(req, res) {
 
     const newBanned = request.banned;
     const newShowOnLeaderboard = request.showOnLeaderboard;
+    const newBanMessage = request.banMessage;
 
     let patchRequest = {};
     if (newBanned !== undefined) {
@@ -326,6 +327,7 @@ async function patchUser(req, res) {
         return;
       } else {
         patchRequest.banned = newBanned;
+        if (!newBanned) patchRequest.banInfo = {};
       }
     }
 
@@ -335,6 +337,15 @@ async function patchUser(req, res) {
         return;
       } else {
         patchRequest.showOnLeaderboard = newShowOnLeaderboard;
+      }
+    }
+
+    if (newBanMessage !== undefined) {
+      if (typeof newBanMessage !== "string") {
+        res.sendStatus(400);
+        return;
+      } else {
+        patchRequest.banInfo = { message: newBanMessage };
       }
     }
 

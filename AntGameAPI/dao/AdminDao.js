@@ -139,6 +139,7 @@ const UserDetailsProjection = {
   registrationData: 1,
   email: 1,
   challengeDetails: 1,
+  "banInfo.message": 1,
 };
 //#endregion Users
 

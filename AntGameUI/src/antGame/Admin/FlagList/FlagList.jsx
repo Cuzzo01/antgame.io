@@ -10,8 +10,6 @@ const FlagList = props => {
   useEffect(() => {
     document.title = "Flag List";
     getFlagList().then(flags => {
-      console.log(flags);
-
       const flagList = generateFlagList(flags);
 
       setFlagList(flagList);
@@ -49,6 +47,9 @@ const FlagListElement = props => {
       valueDisplay = flag.value ? "True" : "False";
       break;
     case "int":
+      valueDisplay = flag.value;
+      break;
+    case "string":
       valueDisplay = flag.value;
       break;
     case "object":

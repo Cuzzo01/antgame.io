@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getFlagDetails, updateFlagDetails } from "../AdminService";
 import AdminStyles from "../AdminStyles.module.css";
 import ExpandList from "../Helpers/ExpandList";
+import { BoolEdit, IntEdit, StringEdit } from "../Helpers/Inputs";
 import styles from "./FlagDetails.module.css";
 
 const FlagDetails = props => {
@@ -47,7 +48,9 @@ const FlexValueEditDisplay = props => {
     if (flagType === "bool") {
       editElement.push(<BoolEdit key={flag.id} flag={flag} editCallback={editCallback} />);
     } else if (flagType === "int") {
-      editElement.push(<IntEdit key={flag.id} flag={flag} editCallback={editCallback} />);
+      editElement.push(<IntEdit key={flag.id} value={flag.value} editCallback={editCallback} />);
+    } else if (flagType === "string") {
+      editElement.push(<StringEdit key={flag.id} value={flag.value} editCallback={editCallback} />);
     }
     setEditSection(editElement);
   }, [flag, editCallback]);
@@ -117,59 +120,4 @@ const ValueDisplay = props => {
   }, [flag]);
 
   return <span>{valueToDisplay}</span>;
-};
-
-const BoolEdit = props => {
-  const { flag, editCallback } = props;
-
-  return (
-    <div>
-      {flag.value ? (
-        <button
-          className={`${AdminStyles.divButton} ${AdminStyles.redBackground}`}
-          onClick={() => editCallback(false)}
-        >
-          Set False
-        </button>
-      ) : (
-        <button
-          className={`${AdminStyles.greenBackground} ${AdminStyles.divButton}`}
-          onClick={() => editCallback(true)}
-        >
-          Set True
-        </button>
-      )}
-    </div>
-  );
-};
-
-const IntEdit = props => {
-  const { flag, editCallback } = props;
-  const [inputValue, setInputValue] = useState(flag.value);
-
-  const saveEdit = () => {
-    editCallback(parseInt(inputValue));
-  };
-
-  return (
-    <div className={styles.intEdit}>
-      <span>Value:</span>
-      <form
-        onSubmit={e => {
-          saveEdit();
-          e.preventDefault();
-        }}
-      >
-        <input
-          type="number"
-          step="1"
-          onChange={e => setInputValue(e.target.value)}
-          value={inputValue}
-        />
-      </form>
-      <div className={`${AdminStyles.divButton} ${styles.divButton}`}>
-        <span>Save</span>
-      </div>
-    </div>
-  );
 };
