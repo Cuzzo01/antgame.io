@@ -327,7 +327,7 @@ async function patchUser(req, res) {
         return;
       } else {
         patchRequest.banned = newBanned;
-        if (!newBanned) patchRequest.banInfo = {}
+        if (!newBanned) patchRequest.banInfo = {};
       }
     }
 
