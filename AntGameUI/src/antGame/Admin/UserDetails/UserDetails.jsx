@@ -87,7 +87,7 @@ const UserDetails = props => {
           {details.banned && (
             <div className={adminStyles.divSection}>
               <StringEdit
-                value={details.banInfo.message}
+                value={details.banInfo?.message}
                 label="Ban reason"
                 editCallback={newMessage => setBanMessage(newMessage)}
               />
