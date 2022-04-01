@@ -6,6 +6,7 @@ import styles from "./UserDetails.module.css";
 import adminStyles from "../AdminStyles.module.css";
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { StringEdit } from "../Helpers/Inputs";
 
 const UserDetails = props => {
   const [details, setDetails] = useState(false);
@@ -33,6 +34,12 @@ const UserDetails = props => {
     });
   };
 
+  const setBanMessage = newMessage => {
+    patchUserDetails(props.id, { banMessage: newMessage }).then(result => {
+      setDetails(result);
+    });
+  };
+
   return (
     <div>
       {details ? (
@@ -43,6 +50,7 @@ const UserDetails = props => {
             <p>ShowOnLeaderboard: {boolToString(details.showOnLeaderboard)}</p>
             <p>Admin: {boolToString(details.admin)}</p>
             <p>Banned: {boolToString(details.banned)}</p>
+            {details.banInfo?.message && <span>Ban Reason: {details.banInfo.message}</span>}
           </div>
           <ExpandList
             title={"Challenge Details"}
@@ -76,6 +84,15 @@ const UserDetails = props => {
               {details.showOnLeaderboard ? "Hide on Leaderboard" : "Show on Leaderboard"}
             </Button>
           </div>
+          {details.banned && (
+            <div className={adminStyles.divSection}>
+              <StringEdit
+                value={details.banInfo.message}
+                label="Ban reason"
+                editCallback={newMessage => setBanMessage(newMessage)}
+              />
+            </div>
+          )}
         </div>
       ) : null}
     </div>

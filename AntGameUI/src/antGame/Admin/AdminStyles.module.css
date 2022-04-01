@@ -91,3 +91,28 @@
   border: 2px solid black;
   border-radius: 1em;
 }
+
+.textEdit {
+  display: grid;
+  grid-template-columns: 8rem auto 4rem;
+  column-gap: 1rem;
+  align-items: center;
+}
+
+.textEdit input {
+  width: 100%;
+}
+
+.saveButton {
+  padding: 0.5em;
+  margin: 0 auto;
+}
+
+.saveButton span {
+  margin: 0 0.5rem;
+}
+
+.saveButton:hover {
+  cursor: pointer;
+  background-color: grey;
+}
