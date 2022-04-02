@@ -20,7 +20,7 @@ All runs appearing on AntGame leader boards have been verified.
 
 Seeds for challenge runs are generated and controlled by the server.
 
-When a user clicks 'Play' in a challenge game, the frontend calls the API with the home locations selected. The API generates a run seed, binds it to the given home locations and user, and returns it. This seed is used to generate the run seen on the frontend. When a run is submitted, the run seed is verified. Verification only passes if the details bound to that seed (user and home locations) matches the data on the submitted run. Runs failing verification are not accepted. The seed generation endpoint is rate limited to 20 seeds per minute per user. Run submissions are further limited to just 2 per min per user. The seed limit is higher to allow users to start new runs quickly in case they're looking for a specific start. 
+When a user clicks 'Play' in a challenge game, the frontend calls the API with the home locations selected. The API generates a run seed, binds it to the given home locations and user, and returns it. This seed is used to generate the run seen on the frontend. When a run is submitted, the run seed is verified. Verification only passes if the details bound to that seed (user and home locations) matches the data on the submitted run. Runs failing verification are not accepted. The seed generation endpoint is rate limited to 20 seeds per minute per user. Run submissions are further limited to just 2 per minute per user. The seed limit is higher to allow users to start new runs quickly in case they're looking for a specific start. 
 
 This system, combined with a large seed range (1x10<sup>8</sup>), provides protection from both off- and on-line brute forcing. 
 
