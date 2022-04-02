@@ -41,7 +41,7 @@ const getRecordByChallenge = async challengeID => {
       score: result.records[0].score,
       username: result.records[0].username,
       id: result.records[0].userID,
-      runId: result.records[0].runID
+      runId: result.records[0].runID,
     };
   } else return {};
 };

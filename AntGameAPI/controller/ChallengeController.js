@@ -209,6 +209,9 @@ async function postRun(req, res) {
           runData.challengeID,
           user.id
         );
+        response.pr = (
+          await LeaderboardHandler.getLeaderboardEntryByUserID(runData.challengeID, user.id)
+        ).pb;
 
         if (isWorldRecord) {
           response.wr = {
