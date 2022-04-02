@@ -41,6 +41,7 @@ const getRecordByChallenge = async challengeID => {
       score: result.records[0].score,
       username: result.records[0].username,
       id: result.records[0].userID,
+      runId: result.records[0].runID
     };
   } else return {};
 };
@@ -169,7 +170,7 @@ const getRunHomePositionsByRunId = async id => {
   return { locations: result.details.homeLocations, amounts: result.details.food[5] };
 };
 
-const getDailyChallengesInReverseOrder = async ({ limit = 0 }) => {
+const getDailyChallengesInReverseOrder = async ({ limit = 0, skip = 0 }) => {
   const collection = await getCollection("configs");
   const result = await collection
     .find(
@@ -179,6 +180,7 @@ const getDailyChallengesInReverseOrder = async ({ limit = 0 }) => {
       { projection: { _id: 1, name: 1, championshipID: 1 } }
     )
     .sort({ _id: -1 })
+    .skip(skip)
     .limit(limit)
     .toArray();
   return result;
