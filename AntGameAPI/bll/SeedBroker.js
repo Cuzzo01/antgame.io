@@ -28,24 +28,24 @@ class SeedBroker {
     else {
       const dbResult = await getSeedData({ seed });
       if (dbResult !== null) {
-        if (dbResult.expiresAt.getTime() < new Date().getTime()) return false;
+        if (dbResult.expiresAt.getTime() < new Date().getTime()) return { isValid: false, message: "seed expired" };
         seedData = dbResult;
       }
     }
 
-    if (seedData === false) return false;
-    if (userID !== seedData.userID) return false;
-    if (homeLocations.length !== seedData.homeLocations.length) return false;
+    if (seedData === false) return { isValid: false, message: "couldn't find seed" };
+    if (userID !== seedData.userID) return { isValid: false, message: "non-matching userID" };
+    if (homeLocations.length !== seedData.homeLocations.length) return { isValid: false , message: "home count mismatch"};
     for (const index in homeLocations) {
       const givenPoint = homeLocations[index];
       const recordedPoint = seedData.homeLocations[index];
 
-      if (givenPoint[0] !== recordedPoint[0]) return false;
-      if (givenPoint[1] !== recordedPoint[1]) return false;
+      if (givenPoint[0] !== recordedPoint[0]) return { isValid: false, message: "point mismatch" };
+      if (givenPoint[1] !== recordedPoint[1]) return { isValid: false, message: "point mismatch" };
     }
 
     await deleteSeed({ seed });
-    return true;
+    return { isValid: true };
   }
 }
 const SingletonInstance = new SeedBroker();
