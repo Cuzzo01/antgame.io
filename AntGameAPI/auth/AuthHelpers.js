@@ -37,7 +37,7 @@ const ServiceEndpointAuth = async (req, res, next) => {
     return;
   }
 
-  if (!(await checkPassword(token, tokenData.tokenHash))) {
+  if (!(await checkPassword(token, tokenData.hash))) {
     res.send(401);
     res.send("Incorrect token");
     return;
