@@ -28,14 +28,16 @@ class SeedBroker {
     else {
       const dbResult = await getSeedData({ seed });
       if (dbResult !== null) {
-        if (dbResult.expiresAt.getTime() < new Date().getTime()) return { isValid: false, message: "seed expired" };
+        if (dbResult.expiresAt.getTime() < new Date().getTime())
+          return { isValid: false, message: "seed expired" };
         seedData = dbResult;
       }
     }
 
     if (seedData === false) return { isValid: false, message: "couldn't find seed" };
     if (userID !== seedData.userID) return { isValid: false, message: "non-matching userID" };
-    if (homeLocations.length !== seedData.homeLocations.length) return { isValid: false , message: "home count mismatch"};
+    if (homeLocations.length !== seedData.homeLocations.length)
+      return { isValid: false, message: "home count mismatch" };
     for (const index in homeLocations) {
       const givenPoint = homeLocations[index];
       const recordedPoint = seedData.homeLocations[index];

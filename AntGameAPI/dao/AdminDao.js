@@ -211,6 +211,13 @@ async function updateFlagByID(id, updateObject) {
 }
 //#endregion Flags
 
+//#region ServiceTokens
+async function saveNewServiceToken({ tokenHash, name, createdBy }) {
+  const collection = await getCollection("serviceTokens");
+  await collection.insertOne({ tokenHash, name, createdBy, createdOn: new Date() });
+}
+//#endregion ServiceTokens
+
 module.exports = {
   getUserLoginCount,
   getNewAccountCount,
@@ -229,6 +236,7 @@ module.exports = {
   getFlagListFromDB,
   getFlagDetailsByID,
   updateFlagByID,
+  saveNewServiceToken,
 };
 
 const TryParseObjectID = (stringID, name) => {

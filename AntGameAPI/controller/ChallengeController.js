@@ -65,14 +65,17 @@ async function postRun(req, res) {
     }
 
     if (!user.anon) {
-      const {isValid, message} = await SeedBroker.checkSeed({
+      const { isValid, message } = await SeedBroker.checkSeed({
         seed: runData.GameConfig.seed,
         userID: user.id,
         homeLocations: runData.HomeLocations,
       });
       if (!isValid) {
         verificationResult = false;
-        runTags.push({ type: "failed verification", metadata: { reason: "Invalid seed", message } });
+        runTags.push({
+          type: "failed verification",
+          metadata: { reason: "Invalid seed", message },
+        });
         saveRun = "Verify Failed";
       }
     }

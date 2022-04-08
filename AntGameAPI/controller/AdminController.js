@@ -16,6 +16,7 @@ const {
   getFlagDetailsByID,
   updateFlagByID,
   getChampionshipListFromDB,
+  saveNewServiceToken,
 } = require("../dao/AdminDao");
 const { getActiveChallenges, markRunForVerification } = require("../dao/ChallengeDao");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
@@ -26,6 +27,8 @@ const Logger = require("../Logger");
 const { getChampionshipDetailsFromDB } = require("../dao/ChampionshipDao");
 const { handleDailyChallengeChange } = require("../bll/DailyChallengeCron");
 const { GenerateSolutionImage } = require("../bll/RecordImageGenerator");
+const crypto = require("crypto");
+const { generatePasswordHash } = require("../auth/PasswordHandler");
 
 //#region stats
 async function getStats(req, res) {
@@ -543,6 +546,37 @@ async function dumpUserCache(req, res) {
 }
 //#endregion Cache
 
+//#region ServiceTokens
+async function generateNewServiceToken(req, res) {
+  try {
+    const serviceID = req.body.name;
+
+    if (!serviceID) {
+      send400(res, "No name provided");
+      return;
+    }
+
+    let newToken;
+    try {
+      const randomBytes = crypto.randomBytes(32);
+      newToken = randomBytes.toString("hex");
+    } catch (e) {
+      Logger.logError("AdminController.generateNewServiceToken", e);
+      req.sendStatus(503);
+      return;
+    }
+
+    const tokenHash = await generatePasswordHash(newToken);
+    await saveNewServiceToken({ tokenHash, name: serviceID, createdBy: req.user.username });
+
+    res.send(newToken);
+  } catch (e) {
+    Logger.logError("AuthController.generateNewServiceToken", e);
+    res.sendStatus(500);
+  }
+}
+//#endregion ServiceTokens
+
 const send400 = (res, message) => {
   res.status(400);
   res.send(message);
@@ -569,4 +603,5 @@ module.exports = {
   dumpLeaderboardCache,
   dumpUserCache,
   generateAndBindSolutionImage,
+  generateNewServiceToken,
 };

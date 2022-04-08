@@ -16,9 +16,10 @@ const _championshipController = require("./controller/ChampionshipController");
 const _reportController = require("./controller/ReportController");
 const _userController = require("./controller/UserController");
 const _seedController = require("./controller/SeedController");
+const _serviceController = require("./controller/ServiceController");
 const TokenHandler = require("./auth/WebTokenHandler");
 const TokenRevokedHandler = require("./handler/TokenRevokedHandler");
-const { RejectNotAdmin } = require("./auth/AuthHelpers");
+const { RejectNotAdmin, ServiceEndpointAuth } = require("./auth/AuthHelpers");
 const responseTime = require("response-time");
 const { GetIpAddress } = require("./helpers/IpHelper");
 const Logger = require("./Logger");
@@ -38,6 +39,7 @@ const UnauthenticatedRoutes = [
   "/auth/anonToken",
   "/auth/register",
   /\/flag\//,
+  /\/service\//,
   /\/user\/[A-z0-9]*\/badges/,
   "/health",
   "/time",
@@ -150,9 +152,12 @@ app.patch("/admin/flagData/:id", RejectNotAdmin, _adminController.patchFlagDetai
 
 app.post("/admin/dailyChallenge", RejectNotAdmin, _adminController.dailyChallengeSwap);
 app.post("/admin/solutionImage", RejectNotAdmin, _adminController.generateAndBindSolutionImage);
+app.post("/admin/serviceToken", RejectNotAdmin, _adminController.generateNewServiceToken);
 app.delete("/admin/leaderboardCache", RejectNotAdmin, _adminController.dumpLeaderboardCache);
 app.delete("/admin/userCache", RejectNotAdmin, _adminController.dumpUserCache);
 //#endregion Admin
+
+app.post("/service/rejectRun", ServiceEndpointAuth, _serviceController.rejectRun);
 
 app.get("/flag/:name", _flagController.getFlag);
 app.get("/time", (req, res) => res.send({ now: Date.now() }));
