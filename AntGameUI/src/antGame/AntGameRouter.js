@@ -6,6 +6,7 @@ import styles from "./Helpers/GenericStyles.module.css";
 import { lazy, Suspense } from "react";
 import ErrorPage from "./ErrorPage/ErrorPage";
 import AntGame from "./AntGame";
+import UserBar from "./UserBar/UserBar";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
@@ -21,7 +22,6 @@ const ChampionshipDetails = lazy(() =>
 const Footer = lazy(() => import("./Helpers/Footer"));
 const HomePage = lazy(() => import("./HomePage/HomePage"));
 const MOTD = lazy(() => import("./MOTD/Motd"));
-const UserBar = lazy(() => import("./UserBar/UserBar"));
 
 const AntGameRouter = () => {
   return (
