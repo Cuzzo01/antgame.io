@@ -5,7 +5,7 @@ import { sendRunArtifact } from "../Challenge/ChallengeService";
 import { getFlag } from "../Helpers/FlagService";
 import { v4 as uuidV4 } from "uuid";
 
-const TwoHoursInMilliseconds = 1000 * 60 * 60 * 2
+const TwoHoursInMilliseconds = 1000 * 60 * 60 * 2;
 
 class AuthHandler {
   constructor() {
@@ -144,7 +144,7 @@ class AuthHandler {
     if (localStorage.getItem("artifactToSend")) {
       // TODO: Verify clientID before sending
       // Saving user and checking that too wouldn't be a bad idea
-      const artifactToSend = JSON.parse(localStorage.getItem("artifactToSend"))
+      const artifactToSend = JSON.parse(localStorage.getItem("artifactToSend"));
       if (artifactToSend.Timing.SystemStartTime + TwoHoursInMilliseconds > new Date().getTime())
         sendRunArtifact(artifactToSend)
           .then(() => {
