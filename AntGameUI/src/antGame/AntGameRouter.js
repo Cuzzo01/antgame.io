@@ -22,7 +22,6 @@ const ChampionshipDetails = lazy(() =>
 const Footer = lazy(() => import("./Helpers/Footer"));
 const HomePage = lazy(() => import("./HomePage/HomePage"));
 const MOTD = lazy(() => import("./MOTD/Motd"));
-// const UserBar = lazy(() => import("./UserBar/UserBar"));
 
 const AntGameRouter = () => {
   return (
