@@ -54,6 +54,7 @@ const LoginPage = props => {
     AuthHandler.login(data.username, data.password).then(result => {
       if (result.value === true) redirectOut();
       else if (result.value === false) setFormState("error");
+      else if (result.value === "no user") setFormState("no user");
       else if (result.value === "banned") {
         setFormState("banned");
         if (result.message) setDisabledMessage(result.message);
@@ -120,6 +121,9 @@ const LoginPage = props => {
             </div>
             {formState === "error" ? (
               <div className={styles.error}>Login failed, try again</div>
+            ) : null}
+            {formState === "no user" ? (
+              <div className={styles.error}>No user with that name</div>
             ) : null}
             {formState === "banned" && (
               <div className={styles.error}>

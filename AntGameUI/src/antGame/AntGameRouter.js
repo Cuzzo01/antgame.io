@@ -5,11 +5,11 @@ import AuthHandler from "./Auth/AuthHandler";
 import styles from "./Helpers/GenericStyles.module.css";
 import { lazy, Suspense } from "react";
 import ErrorPage from "./ErrorPage/ErrorPage";
+import AntGame from "./AntGame";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
 
-const AntGame = lazy(() => import("./AntGame"));
 const AdminHome = lazy(() => import("./Admin/AdminHome"));
 const LoginPage = lazy(() => import("./Auth/LoginPage/LoginPage"));
 const RegistrationPage = lazy(() => import("./Auth/RegistrationPage/RegistrationPage"));

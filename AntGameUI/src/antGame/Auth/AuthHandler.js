@@ -5,6 +5,8 @@ import { sendRunArtifact } from "../Challenge/ChallengeService";
 import { getFlag } from "../Helpers/FlagService";
 import { v4 as uuidV4 } from "uuid";
 
+const TwoHoursInMilliseconds = 1000 * 60 * 60 * 2;
+
 class AuthHandler {
   constructor() {
     this._loggedIn = false;
@@ -134,23 +136,27 @@ class AuthHandler {
             retryIn: e.response.headers["ratelimit-reset"],
             message: e.response.data,
           };
+        if (e.response.status === 404) return { value: "no user" };
         return { value: false };
       });
   }
 
   async checkForAndSendUnsentArtifacts() {
     if (localStorage.getItem("artifactToSend")) {
-      // TODO: Verify at least date (recent run) and clientID before sending
+      // TODO: Verify clientID before sending
       // Saving user and checking that too wouldn't be a bad idea
-      sendRunArtifact(JSON.parse(localStorage.getItem("artifactToSend")))
-        .then(() => {
-          localStorage.removeItem("artifactToSend");
-        })
-        .catch(e => {
-          const responseCode = e.response.status;
-          if (responseCode === 418 || responseCode === 400 || responseCode === 409)
+      const artifactToSend = JSON.parse(localStorage.getItem("artifactToSend"));
+      if (artifactToSend.Timing.SystemStartTime + TwoHoursInMilliseconds > new Date().getTime())
+        sendRunArtifact(artifactToSend)
+          .then(() => {
             localStorage.removeItem("artifactToSend");
-        });
+          })
+          .catch(e => {
+            const responseCode = e.response.status;
+            if (responseCode === 418 || responseCode === 400 || responseCode === 409)
+              localStorage.removeItem("artifactToSend");
+          });
+      else localStorage.removeItem("artifactToSend");
     }
   }
 

@@ -52,7 +52,7 @@ const saveNewUser = async userObject => {
 const logLogin = async (userID, IPAddress, clientID) => {
   const userObjectID = TryParseObjectID(userID, "userID");
   const collection = await getCollection("users");
-  const result = await collection.updateOne(
+  await collection.updateOne(
     { _id: userObjectID },
     {
       $inc: { loginCount: 1 },
@@ -75,6 +75,13 @@ const logLogin = async (userID, IPAddress, clientID) => {
   );
 };
 
+const getServiceTokenData = async ({ serviceName }) => {
+  const collection = await getCollection("serviceTokens");
+  const result = await collection.findOne({ name: serviceName });
+  if (result === null) return null;
+  return { hash: result.tokenHash };
+};
+
 const TryParseObjectID = (stringID, name) => {
   try {
     return new ObjectID(stringID);
@@ -83,4 +90,10 @@ const TryParseObjectID = (stringID, name) => {
   }
 };
 
-module.exports = { getAuthDetailsByUsername, IsUsernameTaken, saveNewUser, logLogin };
+module.exports = {
+  getAuthDetailsByUsername,
+  IsUsernameTaken,
+  saveNewUser,
+  logLogin,
+  getServiceTokenData,
+};
