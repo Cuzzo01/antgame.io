@@ -136,6 +136,7 @@ class AuthHandler {
             retryIn: e.response.headers["ratelimit-reset"],
             message: e.response.data,
           };
+        if (e.response.status === 404) return { value: "no user" };
         return { value: false };
       });
   }

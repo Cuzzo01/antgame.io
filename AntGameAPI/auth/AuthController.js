@@ -28,8 +28,8 @@ async function verifyLogin(req, res) {
         username,
         ip: clientIP,
       });
-      res.status(401);
-      res.send("Invalid login");
+      res.status(404);
+      res.send("No user with that name");
       return;
     }
 
