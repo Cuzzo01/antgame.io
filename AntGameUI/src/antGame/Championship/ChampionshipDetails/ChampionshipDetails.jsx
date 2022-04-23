@@ -87,7 +87,7 @@ const ChampionshipDetails = () => {
     <div className={styles.container}>
       <div className={styles.title}>
         <h2>{title}</h2>
-        {pointMap ? <InfoButton pointMap={pointMap} /> : null}
+        <InfoButton pointMap={pointMap} />
       </div>
       <div className={styles.nav}>
         <div className={styles.navLeft}>

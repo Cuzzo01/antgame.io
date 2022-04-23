@@ -9,7 +9,7 @@ const InfoButton = ({ pointMap }) => {
   const [pointsTable, setPointsTable] = useState(false);
 
   useEffect(() => {
-    setPointsTable(buildPointTable(pointMap));
+    if (pointMap) setPointsTable(buildPointTable(pointMap));
   }, [pointMap, setPointsTable]);
 
   return (
@@ -38,9 +38,11 @@ const InfoButton = ({ pointMap }) => {
               <div className={styles.section}>
                 <h6 className={styles.bold}>Points Breakdown</h6>
                 &#8226;&nbsp;For this month, the point breakdown is:
-                <div className={styles.pointsTable}>
-                  <table>{pointsTable}</table>
-                </div>
+                {pointsTable && (
+                  <div className={styles.pointsTable}>
+                    <table>{pointsTable}</table>
+                  </div>
+                )}
                 &#8226;&nbsp;Top XX% points are only awarded to those not already receiving points
                 for their rank.
               </div>
