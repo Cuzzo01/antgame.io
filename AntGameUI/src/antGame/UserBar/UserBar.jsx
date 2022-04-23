@@ -12,7 +12,7 @@ const UserBar = ({ showRecords, showLinkToSandbox, showLinkHome }) => {
       <div className={styles.worldRecord}>
         {showRecords && <WorldRecord />}
         {showLinkHome && <Link to="/">Home</Link>}
-        {showLinkToSandbox && <Link to="/sandbox">Sandbox Mode</Link>}
+        {showLinkToSandbox && <a href="/sandbox">Sandbox Mode</a>}
       </div>
 
       <div className={styles.username}>

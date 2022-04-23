@@ -78,8 +78,10 @@ const Leaderboard = props => {
   );
 
   useEffect(() => {
-    fetchLeaderboard({ id: challengeID });
-  }, [challengeID, fetchLeaderboard]);
+    if (!AuthHandler.loggedIn)
+      history.replace(`/login?redirect=/challenge/${challengeID}/leaderboard`);
+    else fetchLeaderboard({ id: challengeID });
+  }, [challengeID, fetchLeaderboard, history]);
 
   return loading ? null : (
     <div className={styles.container}>

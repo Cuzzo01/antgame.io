@@ -17,6 +17,8 @@ const _reportController = require("./controller/ReportController");
 const _userController = require("./controller/UserController");
 const _seedController = require("./controller/SeedController");
 const _serviceController = require("./controller/ServiceController");
+const _publicController = require("./controller/PublicController");
+
 const TokenHandler = require("./auth/WebTokenHandler");
 const TokenRevokedHandler = require("./handler/TokenRevokedHandler");
 const { RejectNotAdmin, ServiceEndpointAuth } = require("./auth/AuthHelpers");
@@ -40,6 +42,7 @@ const UnauthenticatedRoutes = [
   "/auth/register",
   /\/flag\//,
   /\/service\//,
+  /\/public\//,
   /\/user\/[A-z0-9]*\/badges/,
   "/health",
   "/time",
@@ -176,6 +179,8 @@ app.get("/challenge/:id", _challengeController.getChallenge);
 app.get("/challenge/:id/pr", _challengeController.getPRHomeLocations);
 app.get("/challenges/active", _challengeController.getActiveChallenges);
 app.get("/challenge/:id/leaderboard", _challengeController.getLeaderboard);
+
+app.get("/public/activeChallenges", _publicController.getActiveChallenges);
 
 app.post("/seed", getSeedLimiter, _seedController.getSeed);
 

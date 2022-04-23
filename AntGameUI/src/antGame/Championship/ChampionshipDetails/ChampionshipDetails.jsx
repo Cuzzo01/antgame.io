@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import LeaderboardRow from "../../Helpers/LeaderboardRow";
 import { getChampionshipLeaderboard } from "../ChampionshipService";
 import styles from "./ChampionshipDetails.module.css";
@@ -12,6 +12,7 @@ import Username from "../../User/Username";
 const ChampionshipDetails = () => {
   const currentUsername = AuthHandler.username;
   const championshipID = useParams().id;
+  const history = useHistory();
 
   const [lastPoints, setLastPoints] = useState(false);
   const [title, setTitle] = useState(false);
@@ -67,14 +68,17 @@ const ChampionshipDetails = () => {
   }, []);
 
   useEffect(() => {
-    getChampionshipLeaderboard(championshipID).then(data => {
-      setTitle(data.name);
-      document.title = `${data.name} - Championship`;
-      setPointMap(data.pointMap);
-      setLastPointsAwarded(data);
-      setLeaderboard(data);
-    });
-  }, [championshipID, currentUsername, setLastPointsAwarded, setLeaderboard]);
+    if (!AuthHandler.loggedIn) history.replace(`/login?redirect=/championship/${championshipID}`);
+    else {
+      getChampionshipLeaderboard(championshipID).then(data => {
+        setTitle(data.name);
+        document.title = `${data.name} - Championship`;
+        setPointMap(data.pointMap);
+        setLastPointsAwarded(data);
+        setLeaderboard(data);
+      });
+    }
+  }, [championshipID, currentUsername, setLastPointsAwarded, setLeaderboard, history]);
 
   return (
     <div className={styles.container}>

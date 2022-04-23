@@ -79,7 +79,7 @@ class AuthHandler {
         if (error.response?.status === 401 && !onLogin) {
           this.logout();
           const pathBack = window.location.pathname;
-          window.location = `/login?redirect=${pathBack}`;
+          window.location.replace(`/login?redirect=${pathBack}`);
         } else if (Math.floor(error.response?.status / 10) === 50) {
           window.location = "/error";
         }

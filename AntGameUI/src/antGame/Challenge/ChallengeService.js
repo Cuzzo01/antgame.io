@@ -40,6 +40,18 @@ export async function getActiveChallenges() {
     });
 }
 
+export async function getPublicActiveChallenges() {
+  return axios
+    .get("/api/public/activeChallenges")
+    .then(res => {
+      return res.data;
+    })
+    .catch(error => {
+      console.log(error);
+      return [];
+    });
+}
+
 export async function getRecords(challengeID) {
   return axios
     .get(`/api/challenge/${challengeID}/records`)
