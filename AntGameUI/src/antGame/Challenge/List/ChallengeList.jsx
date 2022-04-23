@@ -69,7 +69,7 @@ const ChallengeList = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>Challenges</h2>
+        <h2>AntGame.io - Challenges</h2>
       </div>
       {dailyChallenge}
       <div className={styles.challengeGrid}>{loading ? InitialList : menuList}</div>
