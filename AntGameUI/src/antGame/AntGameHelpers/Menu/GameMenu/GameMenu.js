@@ -62,7 +62,7 @@ export default function GameMenu(props) {
           disabled={props.playState}
           text={<BackIcon />}
           handler={() => {
-            history.push({ pathname: "/challenge" });
+            history.push({ pathname: "/" });
           }}
         />
       ) : null}

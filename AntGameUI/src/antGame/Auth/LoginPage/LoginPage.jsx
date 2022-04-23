@@ -43,9 +43,9 @@ const LoginPage = props => {
     const search = location.search;
     const params = new URLSearchParams(search);
     const redirectLoc = params.get("redirect");
-    if (redirectLoc?.includes("/challenge/")) window.location = redirectLoc;
+    if (redirectLoc?.includes("/challenge/")) window.location.replace(redirectLoc);
     else if (redirectLoc) history.replace(redirectLoc);
-    else history.replace("/challenge");
+    else history.replace("/");
   }
 
   function onSubmit(data) {
@@ -55,17 +55,18 @@ const LoginPage = props => {
       if (result.value === true) redirectOut();
       else if (result.value === false) setFormState("error");
       else if (result.value === "no user") setFormState("no user");
+      else if (result.value === "disabled") setFormState("disabled");
       else if (result.value === "banned") {
         setFormState("banned");
         if (result.message) setDisabledMessage(result.message);
-      } else if (result.value === "disabled") setFormState("disabled");
-      else if (result.value === "limited") {
+      } else if (result.value === "limited") {
         setFormState("limited");
         setDisabledMessage({ retryIn: result.retryIn, message: result.message });
         setTimeout(() => setDisableSubmit(false), 10000);
         return;
+      } else {
+        setTimeout(() => setDisableSubmit(false), 5000);
       }
-      setTimeout(() => setDisableSubmit(false), 5000);
     });
     setFormState("loading");
   }

@@ -7,7 +7,7 @@ export async function sendRunArtifact(artifact) {
       return res.data;
     })
     .catch(err => {
-      if (err.response.status === 409) window.location = "/challenge";
+      if (err.response.status === 409) window.location = "/";
       else if (err.response.status === 429) return "rateLimit";
       else if (err.response.status === 418) {
         setTimeout(() => window.location.reload(), 10000);
@@ -24,7 +24,7 @@ export async function getChallengeConfig(id) {
     })
     .catch(error => {
       console.error(error);
-      window.location = "/challenge";
+      window.location = "/";
     });
 }
 
@@ -36,6 +36,18 @@ export async function getActiveChallenges() {
     })
     .catch(error => {
       console.error(error);
+      return [];
+    });
+}
+
+export async function getPublicActiveChallenges() {
+  return axios
+    .get("/api/public/activeChallenges")
+    .then(res => {
+      return res.data;
+    })
+    .catch(error => {
+      console.log(error);
       return [];
     });
 }

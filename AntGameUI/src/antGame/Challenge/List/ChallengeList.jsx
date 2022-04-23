@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./ChallengePage.module.css";
-import { getActiveChallenges } from "../../Challenge/ChallengeService";
+import { getActiveChallenges, getPublicActiveChallenges } from "../../Challenge/ChallengeService";
 import AuthHandler from "../../Auth/AuthHandler";
 import { Link, useHistory } from "react-router-dom";
 import { HomeIcon, TimeIcon } from "../../AntGameHelpers/Icons";
@@ -19,46 +19,52 @@ const ChallengeList = () => {
 
   useEffect(() => {
     document.title = "Challenge List - AntGame";
-    if (!AuthHandler.loggedIn) {
-      history.replace({ pathname: "/login", search: "?redirect=/challenge" });
-      return;
+    const thumbnailFlagPromise = getFlag("show-challenge-list-thumbnails");
+    if (AuthHandler.loggedIn) {
+      getActiveChallenges().then(challengeResponse =>
+        setData({ challengeResponse, thumbnailFlagPromise })
+      );
+    } else {
+      getPublicActiveChallenges().then(challengeResponse =>
+        setData({ challengeResponse, thumbnailFlagPromise })
+      );
     }
-    const flagPromise = getFlag("show-challenge-list-thumbnails");
-    getActiveChallenges().then(async challengeResponse => {
-      let seenDaily = false;
-      const shouldShowThumbnails = await flagPromise;
-      const records = challengeResponse.records;
-      let list = [];
-      challengeResponse.challenges.forEach(challenge => {
-        if (challenge.dailyChallenge && seenDaily === false) {
-          setDailyChallenge(
-            <DailyChallengeCard
-              challenge={challenge}
-              record={records[challenge.id]}
-              championshipID={challenge.championshipID}
-            />
-          );
-          seenDaily = true;
-        } else {
-          list.push(
-            <ChallengeCard
-              key={challenge.id}
-              name={challenge.name}
-              records={records[challenge.id]}
-              id={challenge.id}
-              time={challenge.time}
-              homes={challenge.homes}
-              showThumbnails={shouldShowThumbnails}
-              thumbnailURL={challenge.thumbnailURL}
-            />
-          );
-        }
-      });
-      if (!seenDaily) setDailyChallenge(false);
-      setMenuList(list);
-      setLoading(false);
-    });
   }, [history]);
+
+  const setData = async ({ challengeResponse, thumbnailFlagPromise }) => {
+    let seenDaily = false;
+    const shouldShowThumbnails = await thumbnailFlagPromise;
+    const records = challengeResponse.records;
+    let list = [];
+    challengeResponse.challenges.forEach(challenge => {
+      if (challenge.dailyChallenge && seenDaily === false) {
+        setDailyChallenge(
+          <DailyChallengeCard
+            challenge={challenge}
+            record={records[challenge.id]}
+            championshipID={challenge.championshipID}
+          />
+        );
+        seenDaily = true;
+      } else {
+        list.push(
+          <ChallengeCard
+            key={challenge.id}
+            name={challenge.name}
+            records={records[challenge.id]}
+            id={challenge.id}
+            time={challenge.time}
+            homes={challenge.homes}
+            showThumbnails={shouldShowThumbnails}
+            thumbnailURL={challenge.thumbnailURL}
+          />
+        );
+      }
+    });
+    if (!seenDaily) setDailyChallenge(false);
+    setMenuList(list);
+    setLoading(false);
+  };
 
   return (
     <div className={styles.container}>

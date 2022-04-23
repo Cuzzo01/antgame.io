@@ -5,13 +5,14 @@ import WorldRecord from "./WorldRecord";
 import { Link } from "react-router-dom";
 import Username from "../User/Username";
 
-const UserBar = props => {
+const UserBar = ({ showRecords, showLinkToSandbox, showLinkHome }) => {
   return (
     <div className={styles.container}>
-      <div className={styles.personalRecord}>{props.showRecords ? <PersonalRecord /> : null}</div>
+      <div className={styles.personalRecord}>{showRecords ? <PersonalRecord /> : null}</div>
       <div className={styles.worldRecord}>
-        {props.showRecords ? <WorldRecord /> : null}
-        {props.showLinkHome ? <Link to="/">Home</Link> : null}
+        {showRecords && <WorldRecord />}
+        {showLinkHome && <Link to="/">Home</Link>}
+        {showLinkToSandbox && <a href="/sandbox">Sandbox Mode</a>}
       </div>
 
       <div className={styles.username}>
@@ -40,6 +41,7 @@ const UserBar = props => {
               to="/"
               onClick={() => {
                 AuthHandler.logout();
+                if (window.location.pathname === "/") window.location.reload();
               }}
             >
               Logout
