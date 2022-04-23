@@ -14,7 +14,7 @@ const ChampionshipDetails = () => {
   const championshipID = useParams().id;
   const history = useHistory();
 
-  const [lastPoints, setLastPoints] = useState(false);
+  const [lastPoints, setLastPoints] = useState([]);
   const [title, setTitle] = useState(false);
   const [userTable, setUserTable] = useState();
   const [pointMap, setPointMap] = useState();
@@ -52,7 +52,10 @@ const ChampionshipDetails = () => {
   );
 
   const setLastPointsAwarded = useCallback(({ lastPointsAwarded, usernames }) => {
-    if (!lastPointsAwarded) return;
+    if (!lastPointsAwarded) {
+      setLastPoints(false);
+      return;
+    }
     const table = [];
     lastPointsAwarded.forEach(user => {
       table.push(
