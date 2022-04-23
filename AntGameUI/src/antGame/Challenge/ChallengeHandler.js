@@ -53,7 +53,7 @@ class ChallengeHandler {
 
   set config(config) {
     if (config.active === false && AuthHandler.isAdmin !== true) {
-      window.location = "/challenge";
+      window.location = "/";
     }
     this._config = config;
     this._mapHandler.homeCellsAllowed = config.homeLimit;

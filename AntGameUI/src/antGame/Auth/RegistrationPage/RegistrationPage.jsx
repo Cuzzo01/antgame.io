@@ -33,7 +33,7 @@ const RegistrationPage = props => {
     const params = new URLSearchParams(search);
     const redirectLoc = params.get("redirect");
     if (redirectLoc) history.replace(redirectLoc);
-    else history.replace("/challenge");
+    else history.replace("/");
   }
 
   const onSubmit = data => {

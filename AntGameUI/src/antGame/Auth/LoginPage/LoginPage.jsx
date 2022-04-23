@@ -45,7 +45,7 @@ const LoginPage = props => {
     const redirectLoc = params.get("redirect");
     if (redirectLoc?.includes("/challenge/")) window.location = redirectLoc;
     else if (redirectLoc) history.replace(redirectLoc);
-    else history.replace("/challenge");
+    else history.replace("/");
   }
 
   function onSubmit(data) {

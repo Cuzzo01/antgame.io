@@ -20,7 +20,7 @@ const ChallengeList = () => {
   useEffect(() => {
     document.title = "Challenge List - AntGame";
     if (!AuthHandler.loggedIn) {
-      history.replace({ pathname: "/login", search: "?redirect=/challenge" });
+      history.replace({ pathname: "/login", search: "?redirect=/" });
       return;
     }
     const flagPromise = getFlag("show-challenge-list-thumbnails");

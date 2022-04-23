@@ -7,6 +7,8 @@ import { lazy, Suspense } from "react";
 import ErrorPage from "./ErrorPage/ErrorPage";
 import AntGame from "./AntGame";
 import UserBar from "./UserBar/UserBar";
+import ChallengeList from "./Challenge/List/ChallengeList";
+import MOTD from "./MOTD/Motd";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
@@ -14,14 +16,11 @@ const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
 const AdminHome = lazy(() => import("./Admin/AdminHome"));
 const LoginPage = lazy(() => import("./Auth/LoginPage/LoginPage"));
 const RegistrationPage = lazy(() => import("./Auth/RegistrationPage/RegistrationPage"));
-const ChallengeList = lazy(() => import("./Challenge/List/ChallengeList"));
 const Leaderboard = lazy(() => import("./Challenge/Leaderboard/Leaderboard"));
 const ChampionshipDetails = lazy(() =>
   import("./Championship/ChampionshipDetails/ChampionshipDetails")
 );
 const Footer = lazy(() => import("./Helpers/Footer"));
-const HomePage = lazy(() => import("./HomePage/HomePage"));
-const MOTD = lazy(() => import("./MOTD/Motd"));
 
 const AntGameRouter = () => {
   return (
@@ -45,7 +44,9 @@ const AntGameRouter = () => {
                   <ErrorPage />
                 </Route>
                 <Route exact path="/">
-                  <HomePage />
+                  <MOTD />
+                  <ChallengeList />
+                  <UserBar showLinkToSandbox />
                 </Route>
                 <Route path="/admin">
                   <AdminPath />
@@ -61,11 +62,6 @@ const AntGameRouter = () => {
                   <Switch>
                     <Route path="/login">
                       <LoginPage />
-                    </Route>
-                    <Route exact path="/challenge">
-                      <MOTD />
-                      <ChallengeList />
-                      <UserBar showLinkHome />
                     </Route>
                     <Route path="/challenge/:id/leaderboard">
                       <Leaderboard />

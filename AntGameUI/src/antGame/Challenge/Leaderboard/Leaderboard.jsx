@@ -95,7 +95,7 @@ const Leaderboard = props => {
       {solutionImagePath ? <SolutionImage path={solutionImagePath} /> : null}
       <div className={styles.nav}>
         <div className={styles.navLeft}>
-          <Link to="/challenge">Menu</Link>
+          <Link to="/">Menu</Link>
         </div>
         <div className={styles.navRight}>
           {isDaily ? (
