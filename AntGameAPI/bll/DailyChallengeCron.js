@@ -20,6 +20,28 @@ const handleDailyChallengeChange = async () => {
     const newDailyChallengeID = await new ChallengeGenerator().generateDailyChallenge();
     Logger.logCronMessage(`new challenge generated : challengeID: ${newDailyChallengeID}`);
 
+    if (newDailyChallengeID) {
+      await updateConfigByID(newDailyChallengeID, { active: true });
+      DailyChallengeHandler.clearCache();
+      Logger.logCronMessage("set new map active");
+
+      if (await FlagHandler.getFlagValue("should-bind-daily-to-championship")) {
+        let currentChampionship = await ChampionshipOrchestrator.getCurrentDailyChampionship();
+        if (currentChampionship === null) {
+          currentChampionship = await ChampionshipOrchestrator.generateDailyChampionship();
+          const lastChampionship = await ChampionshipOrchestrator.getLastMonthsChampionshipID();
+          await ChampionshipOrchestrator.awardBadgesForChampionship({
+            championshipID: lastChampionship,
+          });
+        }
+        await ChampionshipOrchestrator.addConfigToChampionship(
+          currentChampionship,
+          newDailyChallengeID
+        );
+        Logger.logCronMessage("bound new config to the current championship");
+      }
+    }
+
     if (currentDailyChallenge) {
       const challengeID = currentDailyChallenge._id;
       await updateConfigByID(challengeID, { active: false, order: 0 });
@@ -44,30 +66,6 @@ const handleDailyChallengeChange = async () => {
       }
     } else {
       Logger.logCronMessage("skipping setting old map inactive");
-    }
-
-    if (newDailyChallengeID) {
-      if (await FlagHandler.getFlagValue("should-bind-daily-to-championship")) {
-        let currentChampionship = await ChampionshipOrchestrator.getCurrentDailyChampionship();
-        if (currentChampionship === null) {
-          currentChampionship = await ChampionshipOrchestrator.generateDailyChampionship();
-          const lastChampionship = await ChampionshipOrchestrator.getLastMonthsChampionshipID();
-          await ChampionshipOrchestrator.awardBadgesForChampionship({
-            championshipID: lastChampionship,
-          });
-        }
-        await ChampionshipOrchestrator.addConfigToChampionship(
-          currentChampionship,
-          newDailyChallengeID
-        );
-        Logger.logCronMessage("bound new config to the current championship");
-      }
-
-      await updateConfigByID(newDailyChallengeID, { active: true });
-      DailyChallengeHandler.clearCache();
-      Logger.logCronMessage("set new map active");
-    } else {
-      Logger.logCronMessage("could not set new map active due to no ID");
     }
   } catch (err) {
     Logger.logError("DailyChallengeCron", err);

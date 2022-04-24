@@ -128,7 +128,6 @@ const getActiveChallenges = async () => {
 const getChallengeByChallengeId = async id => {
   const challengeObjectID = TryParseObjectID(id);
   if (!challengeObjectID) {
-    console.log("Bad challenge ID passed in:", id);
     return false;
   }
   const collection = await getCollection("configs");
