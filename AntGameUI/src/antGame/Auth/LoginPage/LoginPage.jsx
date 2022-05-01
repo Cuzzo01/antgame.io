@@ -65,7 +65,7 @@ const LoginPage = props => {
         setTimeout(() => setDisableSubmit(false), 10000);
         return;
       }
-      
+
       setTimeout(() => setDisableSubmit(false), 5000);
     });
     setFormState("loading");

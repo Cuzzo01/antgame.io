@@ -68,7 +68,8 @@ const Username = ({ name, id, showBorder = true }) => {
     <span
       data-tip=""
       data-for={tooltipName}
-      data-delay-hide="500"
+      data-delay-show="250"
+      data-delay-hide="250"
       className={`${styles.baseBadge} ${styles.active}`}
       style={{ ...nameStyles }}
     >
