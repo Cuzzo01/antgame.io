@@ -20,6 +20,7 @@ const handleDailyChallengeChange = async () => {
     const newDailyChallengeID = await new ChallengeGenerator().generateDailyChallenge();
     Logger.logCronMessage(`new challenge generated : challengeID: ${newDailyChallengeID}`);
 
+    let shouldAwardBadges = false;
     if (newDailyChallengeID) {
       await updateConfigByID(newDailyChallengeID, { active: true });
       DailyChallengeHandler.clearCache();
@@ -29,10 +30,8 @@ const handleDailyChallengeChange = async () => {
         let currentChampionship = await ChampionshipOrchestrator.getCurrentDailyChampionship();
         if (currentChampionship === null) {
           currentChampionship = await ChampionshipOrchestrator.generateDailyChampionship();
-          const lastChampionship = await ChampionshipOrchestrator.getLastMonthsChampionshipID();
-          await ChampionshipOrchestrator.awardBadgesForChampionship({
-            championshipID: lastChampionship,
-          });
+          shouldAwardBadges = true;
+          Logger.logCronMessage("Generated new championship");
         }
         await ChampionshipOrchestrator.addConfigToChampionship(
           currentChampionship,
@@ -66,6 +65,14 @@ const handleDailyChallengeChange = async () => {
       }
     } else {
       Logger.logCronMessage("skipping setting old map inactive");
+    }
+
+    if (shouldAwardBadges) {
+      const lastChampionship = await ChampionshipOrchestrator.getLastMonthsChampionshipID();
+      await ChampionshipOrchestrator.awardBadgesForChampionship({
+        championshipID: lastChampionship,
+      });
+      Logger.logCronMessage("Awarded badges for last championship");
     }
   } catch (err) {
     Logger.logError("DailyChallengeCron", err);
