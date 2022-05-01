@@ -64,9 +64,9 @@ const LoginPage = props => {
         setDisabledMessage({ retryIn: result.retryIn, message: result.message });
         setTimeout(() => setDisableSubmit(false), 10000);
         return;
-      } else {
-        setTimeout(() => setDisableSubmit(false), 5000);
       }
+      
+      setTimeout(() => setDisableSubmit(false), 5000);
     });
     setFormState("loading");
   }
