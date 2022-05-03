@@ -71,6 +71,10 @@ class FlagHandler {
     this.timeToCache = new ExpiringResult(expireAt, result);
     return;
   }
+
+  async unsetAll() {
+    this.resultCache = new ResultCache();
+  }
 }
 const SingletonInstance = new FlagHandler();
 module.exports = SingletonInstance;

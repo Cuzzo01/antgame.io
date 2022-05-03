@@ -109,6 +109,7 @@ app.post("/admin/solutionImage", RejectNotAdmin, _adminController.generateAndBin
 app.post("/admin/serviceToken", RejectNotAdmin, _adminController.generateNewServiceToken);
 app.delete("/admin/leaderboardCache", RejectNotAdmin, _adminController.dumpLeaderboardCache);
 app.delete("/admin/userCache", RejectNotAdmin, _adminController.dumpUserCache);
+app.delete("/admin/flagCache", RejectNotAdmin, _adminController.dumpFlagCache);
 //#endregion Admin
 
 app.post("/service/rejectRun", ServiceEndpointAuth, _serviceController.rejectRun);
