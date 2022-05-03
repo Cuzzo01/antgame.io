@@ -18,6 +18,7 @@ const LoginPage = props => {
   const [disabledMessage, setDisabledMessage] = useState("");
   const [allowRegistration, setAllowRegistration] = useState(false);
   const [disableSubmit, setDisableSubmit] = useState(false);
+  const [allowAnon, setAllowAnon] = useState(true);
   const history = useHistory();
   const location = useLocation();
 
@@ -29,12 +30,12 @@ const LoginPage = props => {
         setDisabledMessage(await getFlag("disabled-login-message"));
       } else {
         getFlag("allowAccountRegistration")
-          .then(value => {
-            setAllowRegistration(value);
-          })
-          .catch(e => {
-            console.log(e);
-          });
+          .then(value => setAllowRegistration(value))
+          .catch(e => console.log(e));
+
+        getFlag("allow-anon-logins")
+          .then(value => setAllowAnon(value))
+          .catch(e => console.log(e));
       }
     });
   }, []);
@@ -146,12 +147,16 @@ const LoginPage = props => {
             )}
             <input type="submit" style={{ display: "none" }} />
             <div className={styles.buttonBar}>
-              <div
-                className={`${globalStyles.divButton} ${styles.skipButton}`}
-                onClick={continueWithoutLogin}
-              >
-                Skip
-              </div>
+              {allowAnon ? (
+                <div
+                  className={`${globalStyles.divButton} ${styles.skipButton}`}
+                  onClick={continueWithoutLogin}
+                >
+                  Skip
+                </div>
+              ) : (
+                <div />
+              )}
               <button className={styles.submitButton} type="submit" disabled={disableSubmit}>
                 Submit
               </button>
