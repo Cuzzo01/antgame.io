@@ -20,7 +20,7 @@ const ChallengeList = () => {
   useEffect(() => {
     document.title = "Challenge List - AntGame";
     const thumbnailFlagPromise = getFlag("show-challenge-list-thumbnails");
-    if (AuthHandler.loggedIn) {
+    if (AuthHandler.loggedIn && !AuthHandler.isAnon) {
       getActiveChallenges().then(challengeResponse =>
         setData({ challengeResponse, thumbnailFlagPromise })
       );
