@@ -89,6 +89,12 @@ async function verifyLogin(req, res) {
 
 async function getAnonymousToken(req, res) {
   try {
+    if (!(await FlagHandler.getFlagValue("allow-anon-logins"))) {
+      res.status(405);
+      res.send("Anon logins are disabled");
+      return;
+    }
+
     const data = req.body;
     const clientID = data.clientID;
     const clientIP = GetIpAddress(req);
