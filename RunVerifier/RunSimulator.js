@@ -3,6 +3,7 @@ const { GameRunner } = require("./AntEngine/GameRunner");
 const fs = require("fs");
 
 const iterationsToRun = 100;
+const SimulationName = "May09WR";
 
 const mapURL = "https://antgame.io/assets/dailyMaps/May_09_2022_424328.json";
 const homeLocations = [
@@ -25,6 +26,9 @@ const RunSimulations = async () => {
     homeLocations,
     runTime,
     scores: [],
+    timing: {
+      start: new Date().toISOString(),
+    },
   };
   for (let i = 0; i < iterationsToRun; i++) {
     const seed = Math.round(Math.random() * 1e8);
@@ -41,11 +45,11 @@ const RunSimulations = async () => {
     console.log(new Date().toISOString(), `${i + 1}/${iterationsToRun}`, score, seed);
   }
 
-  const date = new Date();
+  data.timing.end = new Date().toISOString();
 
-  const dateString = `${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}`;
-  const dateTimeString = `${dateString}_${date.getHours()}${date.getMinutes()}`;
-  const fileName = `simulationData-${dateTimeString}.json`;
+  const date = new Date();
+  const timeString = `${date.getHours()}${date.getMinutes()}`;
+  const fileName = `simulationData-${SimulationName}-${timeString}.json`;
   fs.writeFileSync(fileName, JSON.stringify(data));
 };
 
