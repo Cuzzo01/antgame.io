@@ -156,10 +156,33 @@ class Ant {
         this.takeAction(action);
         return true;
       }
+      return false;
     }
 
     if (this.dropsToSkip !== 0) return false;
     if (aheadScore === 0 && leftScore === 0 && rightScore === 0) return false;
+
+    if (aheadScore > 10500) {
+      if (!this.lockedOnTrail) this.lockedOnTrail = true;
+      if (this.missedCount) this.missedCount = 0;
+    } else if (this.lockedOnTrail === true) {
+      if (!this.missedCount) this.missedCount = 1;
+      else this.missedCount++;
+
+      let resetMissed = false;
+      if (this.missedCount > 25 && this.hasFood) {
+        resetMissed = true;
+        this.reverse();
+      } else if (this.missedCount > 15 && !this.hasFood) {
+        resetMissed = true;
+        this.abortTrip();
+      }
+      if (resetMissed) {
+        this.missedCount = 0;
+        this.lockedOnTrail = false;
+      }
+    }
+
     if (aheadScore >= leftScore && aheadScore >= rightScore) return this.takeAction("a");
     if (rightScore === leftScore) this.rng.quick() < 0.5 ? this.turnLeft() : this.turnRight();
     if (rightScore > leftScore) this.turnRight();
@@ -253,7 +276,7 @@ class Ant {
   }
 
   abortTrip() {
-    this.dropsToSkip = 20;
+    this.dropsToSkip = 10;
     this._angle = this.rng.quick() * (Math.PI * 2);
   }
 
@@ -352,6 +375,7 @@ class Ant {
     this.dropsToSkip = 0;
     this.distanceTraveled = 0;
     this.cumulativeAngle = 0;
+    if (this.lockedOnTrail) this.lockedOnTrail = false;
     this.reverse();
   }
 }
