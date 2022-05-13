@@ -18,7 +18,7 @@ const ChallengeList = () => {
   const history = useHistory();
 
   useEffect(() => {
-    document.title = "Challenge List - AntGame";
+    document.title = "AntGame.io";
     const thumbnailFlagPromise = getFlag("show-challenge-list-thumbnails");
     if (AuthHandler.loggedIn && !AuthHandler.isAnon) {
       getActiveChallenges().then(challengeResponse =>
