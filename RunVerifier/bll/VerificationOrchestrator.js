@@ -33,6 +33,7 @@ class VerificationOrchestrator {
         time: totalTime,
         result,
         traceID,
+        runID: runToVerify._id
       });
     } catch (e) {
       Logger.logError("VerifyRun", e);

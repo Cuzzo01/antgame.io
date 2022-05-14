@@ -4,6 +4,7 @@ import styles from "./ConfigList.module.css";
 import adminStyles from "../AdminStyles.module.css";
 import { Link } from "react-router-dom";
 import { GetGeneralTimeString } from "../Helpers/FunctionHelpers";
+import Username from "../../User/Username";
 
 const ConfigList = props => {
   const [orderConfigList, setOrderConfigList] = useState(false);
@@ -53,10 +54,9 @@ const generateConfigList = configs => {
   return list;
 };
 
-const ConfigListElement = props => {
-  const { config } = props;
+const ConfigListElement = ({ config, theme }) => {
   return (
-    <div className={`${adminStyles.listElement} ${styles.listElement} ${props.theme}`}>
+    <div className={`${adminStyles.listElement} ${styles.listElement} ${theme}`}>
       <div>
         <Link to={`/admin/config/${config._id}`}>
           {config.order ? `(${config.order})` : "(-)"}&nbsp;
@@ -67,7 +67,12 @@ const ConfigListElement = props => {
         <div className={adminStyles.rightAlign}>
           ({GetGeneralTimeString(config.record.time)})&nbsp;
           <Link to={`/admin/run/${config.record.runID}`}>{config.record.score}</Link> -&nbsp;
-          <Link to={`/admin/user/${config.record.userID}`}>{config.record.username}</Link>
+          <Username
+            id={config.record.userID}
+            name={config.record.username}
+            adminLink
+            showBorder={false}
+          />
         </div>
       ) : (
         <div />

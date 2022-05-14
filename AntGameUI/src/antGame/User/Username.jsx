@@ -4,8 +4,9 @@ import ReactTooltip from "react-tooltip";
 import { TrophyIcon } from "../AntGameHelpers/Icons";
 import styles from "./User.module.css";
 import BadgeService from "./BadgeService";
+import { Link } from "react-router-dom";
 
-const Username = ({ name, id, showBorder = true }) => {
+const Username = ({ name, id, showBorder = true, adminLink = false }) => {
   const [badges, setBadges] = useState(false);
   const [nameStyles, setNameStyles] = useState({});
 
@@ -61,7 +62,13 @@ const Username = ({ name, id, showBorder = true }) => {
     populateBadges();
   }, [populateBadges]);
 
-  if (badges === false) return <span className={styles.baseBadge}>{name}</span>;
+  if (badges === false) {
+    return (
+      <span className={styles.baseBadge}>
+        {adminLink ? <Link to={`/admin/user/${id}`}>{name}</Link> : name}
+      </span>
+    );
+  }
 
   const tooltipName = `${name}${Math.round(Math.random() * 1e10)}`;
   return (
@@ -73,7 +80,7 @@ const Username = ({ name, id, showBorder = true }) => {
       className={`${styles.baseBadge} ${styles.active}`}
       style={{ ...nameStyles }}
     >
-      {name}
+      {adminLink ? <Link to={`/admin/user/${id}`}>{name}</Link> : name}
       <ReactTooltip effect="solid" id={tooltipName} className={styles.tooltip}>
         {badges}
       </ReactTooltip>

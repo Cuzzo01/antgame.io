@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { getRunDetails, markRunForVerification } from "../AdminService";
 import styles from "./RunDetails.module.css";
 import adminStyles from "../AdminStyles.module.css";
 import { GetTimeString } from "../Helpers/FunctionHelpers";
 import { Button } from "react-bootstrap";
+import Username from "../../User/Username";
 
 const RunDetails = props => {
   const [details, setDetails] = useState(false);
@@ -43,7 +43,7 @@ const RunDetails = props => {
             </h5>
             <br />
             <strong>Username:</strong>&nbsp;
-            <Link to={`/admin/user/${details.userID}`}>{details.username}</Link>
+            <Username id={details.userID} name={details.username} adminLink showBorder={false} />
             <br />
             <strong>ClientID:</strong>&nbsp;{details.clientID}
           </div>

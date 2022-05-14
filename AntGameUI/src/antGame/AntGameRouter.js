@@ -43,11 +43,6 @@ const AntGameRouter = () => {
                 <Route exact path="/error">
                   <ErrorPage />
                 </Route>
-                <Route exact path="/">
-                  <MOTD />
-                  <ChallengeList />
-                  <UserBar showLinkToSandbox />
-                </Route>
                 <Route path="/admin">
                   <AdminPath />
                   <UserBar />
@@ -60,6 +55,11 @@ const AntGameRouter = () => {
                 </Route>
                 <Route>
                   <Switch>
+                    <Route exact path="/">
+                      <MOTD />
+                      <ChallengeList />
+                      <UserBar showLinkToSandbox />
+                    </Route>
                     <Route path="/login">
                       <LoginPage />
                     </Route>
