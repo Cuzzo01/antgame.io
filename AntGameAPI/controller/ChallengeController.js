@@ -82,7 +82,7 @@ async function postRun(req, res) {
 
     let currentDetails;
     let isPB = false;
-    if (runData.PB) {
+    if (!user.anon) {
       if (verificationResult === "verified" || RejectUnverifiedRuns === false) {
         currentDetails = await UserDao.getChallengeDetailsByUser(user.id, runData.challengeID);
         if (currentDetails === null) {
@@ -97,11 +97,6 @@ async function postRun(req, res) {
           runTags.push({
             type: "pr",
             metadata: { runNumber: (currentDetails ? currentDetails.runs : 0) + 1 },
-          });
-        else
-          runTags.push({
-            type: "falsely claimed pb",
-            metadata: { pb: currentDetails.pb, score: runData.Score },
           });
       }
     }

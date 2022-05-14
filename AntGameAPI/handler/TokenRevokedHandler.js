@@ -1,12 +1,10 @@
 const { isUserBanned, isUserAdmin } = require("../dao/UserDao");
-const { ResultCache } = require("../helpers/ResultCache");
 const FlagHandler = require("../handler/FlagHandler");
 const { ResultCacheWrapper } = require("./ResultCacheWrapper");
 
 class TokenRevokedHandler extends ResultCacheWrapper {
   constructor() {
     super({ name: "TokenRevokedHandler" });
-    this.resultCache = new ResultCache();
   }
 
   async isTokenValid(userID, adminClaim) {

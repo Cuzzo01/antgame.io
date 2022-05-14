@@ -1,5 +1,7 @@
 const { ServiceTokenHandler } = require("./ServiceTokenHandler");
 const { checkPassword } = require("./PasswordHandler");
+const Logger = require("../Logger");
+const { GetIpAddress } = require("../helpers/IpHelper");
 
 const RejectNotAdmin = (req, res, next) => {
   if (req.user.admin !== true) {
@@ -22,6 +24,7 @@ const RejectIfAnon = (req, res) => {
 const ServiceEndpointAuth = async (req, res, next) => {
   const token = req.get("Authorization");
   const serviceName = req.get("service-id");
+  const ip = GetIpAddress(req);
 
   if (!token || !serviceName) {
     res.status(401);
@@ -43,6 +46,7 @@ const ServiceEndpointAuth = async (req, res, next) => {
     return;
   }
 
+  Logger.logAuthEvent("service endpoint hit", { serviceName, ip, endpoint: req.originalUrl });
   next();
 };
 
