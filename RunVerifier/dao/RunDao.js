@@ -7,10 +7,17 @@ const getNewUserPB = async ({ userID, challengeID, oldPBRunID }) => {
 
   const collection = await getCollection("runs");
   const result = await collection
-    .find({ _id: { $ne: runObjectID }, userID: userObjectID, challengeID: challengeObjectID })
+    .find({
+      _id: { $ne: runObjectID },
+      userID: userObjectID,
+      challengeID: challengeObjectID,
+      "tags.type": "run verified",
+    })
     .sort({ score: -1 })
-    .limit(1);
+    .limit(1)
+    .toArray();
 
+  if (result.length === 0) return null;
   return result[0];
 };
 module.exports = { getNewUserPB };

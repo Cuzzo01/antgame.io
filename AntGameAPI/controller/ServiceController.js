@@ -1,13 +1,35 @@
 const Logger = require("../Logger");
+const ActiveChallengesHandler = require("../handler/ActiveChallengesHandler");
+const LeaderboardHandler = require("../handler/LeaderboardHandler");
 
-async function rejectRun(req, res) {
+async function dumpActiveChallengesCache(req, res) {
   try {
-    console.log(req.body.runID);
+    ActiveChallengesHandler.unsetItem();
+
     res.sendStatus(200);
   } catch (e) {
-    Logger.logError("ServiceController.rejectRun", e);
+    Logger.logError("ServiceController.dumpActiveChallengesCache", e);
     res.sendStatus(500);
   }
 }
 
-module.exports = { rejectRun };
+async function dumpLeaderboardCache(req, res) {
+  try {
+    const challengeID = req.params.id;
+
+    if (!challengeID) {
+      res.status(400);
+      res.send("Must specify challengeID");
+      return;
+    }
+
+    LeaderboardHandler.unsetItem(challengeID);
+
+    res.sendStatus(200);
+  } catch (e) {
+    Logger.logError("ServiceController.dumpActiveChallengesCache", e);
+    res.sendStatus(500);
+  }
+}
+
+module.exports = { dumpActiveChallengesCache, dumpLeaderboardCache };

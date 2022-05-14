@@ -32,4 +32,15 @@ const updateChallengePB = async ({ userID, challengeID, score, runID }) => {
     }
   );
 };
-module.exports = { getChallengeDetailsByUser, updateChallengePB };
+
+const unsetChallengeDetails = async ({ userID, challengeID }) => {
+  const userObjectID = TryParseObjectID(userID, "userId");
+  const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
+
+  const collection = await getCollection("users");
+  await collection.updateOne(
+    { _id: userObjectID },
+    { $pull: { challengeDetails: { ID: challengeObjectID } } }
+  );
+};
+module.exports = { getChallengeDetailsByUser, updateChallengePB, unsetChallengeDetails };
