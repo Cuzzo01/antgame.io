@@ -14,6 +14,7 @@
 
 .playButton svg {
   width: 1.3em;
+  pointer-events: none;
 }
 
 .justifyLeft {

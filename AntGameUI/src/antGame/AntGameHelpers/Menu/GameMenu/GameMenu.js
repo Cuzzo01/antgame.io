@@ -102,6 +102,8 @@ export default function GameMenu(props) {
 }
 
 const SettingButton = ({ handler, className, disabled, text }) => {
+  const [clickAble, setClickable] = useState(true);
+
   if (disabled) {
     return (
       <span
@@ -117,7 +119,14 @@ const SettingButton = ({ handler, className, disabled, text }) => {
     <span
       className={`${genericStyles.divButton} ${cssStyles.button} ${className}`}
       style={styles.button}
-      onClick={() => handler()}
+      onClick={() => {
+        if (clickAble) {
+          handler();
+          setClickable(false);
+          setTimeout(() => setClickable(true), 150);
+        }
+      }}
+      onTouchStart={e => e.target.click()}
     >
       {text}
     </span>
