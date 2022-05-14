@@ -8,6 +8,7 @@ import cssStyles from "./GameMenu.module.css";
 import { getFlag } from "../../../Helpers/FlagService";
 import { useHistory } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
+import genericStyles from "../../../Helpers/GenericStyles.module.css"
 
 export default function GameMenu(props) {
   const [flashReset, setFlashReset] = useState(false);
@@ -35,7 +36,7 @@ export default function GameMenu(props) {
     var isInIframe = window.self !== window.top;
     if (isInIframe) {
       sandBoxButtons.push(
-        <span data-tip="" data-for={"warning"} className={`${styles.baseBadge} ${styles.active}`}>
+        <span data-tip="" data-for={"warning"}>
           <SettingButton key="save" disabled={true} text="Save" />
           <ReactTooltip effect="solid" id={"warning"}>
             Map saving does not work on outside sites. To save maps, visit antgame.io.
@@ -55,7 +56,7 @@ export default function GameMenu(props) {
   }
 
   return (
-    <div style={styles.container} className={cssStyles.justifyLeft}>
+    <div className={cssStyles.justifyLeft}>
       {gameMode.mode === "challenge" ? (
         <SettingButton
           className={props.playState ? cssStyles.disabled : null}
@@ -101,15 +102,25 @@ export default function GameMenu(props) {
 }
 
 const SettingButton = ({ handler, className, disabled, text }) => {
+  if (disabled) {
+    return (
+      <span
+        className={`${genericStyles.divButton} ${cssStyles.buttonDisabled} ${className}`}
+        disabled={disabled}
+        style={styles.button}
+      >
+        {text}
+      </span>
+    )
+  }
   return (
-    <button
-      className={className}
-      disabled={disabled}
+    <span
+      className={`${genericStyles.divButton} ${cssStyles.button} ${className}`}
       style={styles.button}
       onClick={() => handler()}
     >
       {text}
-    </button>
+    </span>
   );
 };
 

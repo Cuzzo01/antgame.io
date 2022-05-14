@@ -86,7 +86,6 @@ function OptionPicker(props) {
           <ReactTooltip
             place="bottom"
             id={optionSymbol}
-            globalEventOff="click"
             effect="solid"
             className={styles.tooltip}
             afterShow={() => {

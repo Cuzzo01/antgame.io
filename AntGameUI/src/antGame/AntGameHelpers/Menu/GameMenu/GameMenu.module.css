@@ -19,3 +19,23 @@
 .justifyLeft {
   justify-self: flex-start;
 }
+
+.button {
+  height: 100%;
+  display: inline-block;
+  border-color: black;
+  background-color: rgb(239, 239, 239);
+}
+
+.buttonDisabled {
+  height: 100%;
+  display: inline-block;
+  border-color: grey;
+  color: grey;
+}
+
+.buttonDisabled:hover {
+  cursor: default;
+  color: grey;
+  background-color: unset;
+}
