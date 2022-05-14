@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { getRecentlyCreatedUsers, getRecentlyLoggedInUsers } from "../AdminService";
 import { GetTimeString } from "../Helpers/FunctionHelpers";
 import styles from "./UserList.module.css";
 import adminStyles from "../AdminStyles.module.css";
 import UserSelect from "./UserSelect";
+import Username from "../../User/Username";
 
 const UserList = () => {
   const [usersToDisplay, setUsersToDisplay] = useState(false);
@@ -74,15 +74,15 @@ const UserList = () => {
 };
 export default UserList;
 
-const UsersListElement = props => {
+const UsersListElement = ({ theme, user }) => {
   return (
-    <div className={`${styles.userRow} ${props.theme} ${props.user.banned ? styles.banned : null}`}>
+    <div className={`${styles.userRow} ${theme} ${user.banned ? styles.banned : null}`}>
       <span className={""}>
-        <Link to={`/admin/user/${props.user._id}`}>{props.user.username}</Link>
+        <Username id={user._id} name={user.username} adminLink />
       </span>
       <span>
-        {props.user.registrationData ? GetTimeString(props.user.registrationData.date) : null}
-        {props.user.loginRecord ? GetTimeString(props.user.loginRecord?.time) : null}
+        {user.registrationData ? GetTimeString(user.registrationData.date) : null}
+        {user.loginRecord ? GetTimeString(user.loginRecord?.time) : null}
       </span>
     </div>
   );

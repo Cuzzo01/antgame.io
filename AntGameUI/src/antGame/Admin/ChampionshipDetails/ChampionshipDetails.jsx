@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Username from "../../User/Username";
 import { getChampionshipDetails } from "../AdminService";
 import adminStyles from "../AdminStyles.module.css";
 
@@ -69,11 +70,10 @@ const PointsListEntry = props => {
   return (
     <div>
       <span>
-        <strong>#{props.rank}</strong>
-      </span>{" "}
-      -&nbsp;
-      <Link to={`/admin/user/${props.id}`}>{props.name}</Link> -&nbsp;
-      <span>{props.points}</span>pts
+        <strong>#{props.rank}</strong> -&nbsp;
+      </span>
+      <Username id={props.id} name={props.name} adminLink showBorder={false} />
+      <span> - {props.points}pts</span>
     </div>
   );
 };

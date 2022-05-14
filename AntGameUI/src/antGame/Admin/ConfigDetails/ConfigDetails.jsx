@@ -7,6 +7,7 @@ import styles from "./ConfigDetails.module.css";
 import adminStyles from "../AdminStyles.module.css";
 import OrderSection from "./OrderSection";
 import ThumbnailSection from "./ThumbnailSection";
+import Username from "../../User/Username";
 
 const ConfigDetails = props => {
   const [details, setDetails] = useState(false);
@@ -170,7 +171,7 @@ const getRecordsList = records => {
           <span title="Local time">({GetTimeString(record.time)})</span>
           &nbsp;
           <Link to={`/admin/run/${record.runID}`}>{record.score}</Link> -&nbsp;
-          <Link to={`/admin/user/${record.userID}`}>{record.username}</Link>
+          <Username id={record.userID} name={record.username} adminLink showBorder={false} />
         </div>
       );
     }
