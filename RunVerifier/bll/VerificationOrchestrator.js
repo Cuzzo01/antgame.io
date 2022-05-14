@@ -6,6 +6,7 @@ const {
   fixOrphanedRuns,
 } = require("../dao/Dao");
 const Logger = require("../Logger");
+const { RunDisqualifier } = require("./RunDisqualifier");
 
 class VerificationOrchestrator {
   static async getAndVerifyRun({ traceID }) {
@@ -33,7 +34,7 @@ class VerificationOrchestrator {
         time: totalTime,
         result,
         traceID,
-        runID: runToVerify._id
+        runID: runToVerify._id,
       });
     } catch (e) {
       Logger.logError("VerifyRun", e);
@@ -49,6 +50,7 @@ class VerificationOrchestrator {
           metadata: { reason: "simulated score did not match" },
         },
       });
+      await RunDisqualifier.handleRunDisqualification({ runID: runToVerify._id });
     }
 
     await unsetToVerifyFlagAndSetFinishTime({ runID: runToVerify._id });
