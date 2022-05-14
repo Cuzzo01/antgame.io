@@ -1,10 +1,4 @@
-const Connection = require("./MongoClient");
-const { ObjectID } = require("mongodb");
-
-const getCollection = async collection => {
-  const connection = await Connection.open();
-  return await connection.db("challenges").collection(collection);
-};
+const { getCollection, TryParseObjectID } = require("./DaoHelpers");
 
 const addMapToDB = async ({ url, name, foodCount }) => {
   const collection = await getCollection("maps");
@@ -25,14 +19,4 @@ const getMapByName = async ({ name }) => {
   const result = await collection.findOne({ name: name });
   return result;
 };
-
-const TryParseObjectID = (stringID, name) => {
-  try {
-    return new ObjectID(stringID);
-  } catch (e) {
-    console.log(e);
-    throw `Threw on ${name} parsing in UserDao: ${stringID}`;
-  }
-};
-
 module.exports = { addMapToDB, getMapByID, getMapByName };

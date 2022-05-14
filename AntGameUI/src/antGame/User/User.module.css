@@ -11,6 +11,11 @@
   border-radius: 0.25em;
 }
 
+.baseBadge a {
+  text-decoration: none;
+  color: unset;
+}
+
 .active {
   background-color: #a9cce3;
 }

@@ -7,13 +7,14 @@ import adminStyles from "../AdminStyles.module.css";
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { StringEdit } from "../Helpers/Inputs";
+import Username from "../../User/Username";
 
-const UserDetails = props => {
+const UserDetails = ({ id }) => {
   const [details, setDetails] = useState(false);
 
   useEffect(() => {
-    populateDetails(props.id);
-  }, [props.id]);
+    populateDetails(id);
+  }, [id]);
 
   const populateDetails = id => {
     getUserDetails(id).then(result => {
@@ -23,19 +24,19 @@ const UserDetails = props => {
   };
 
   const setBanned = newBanned => {
-    patchUserDetails(props.id, { banned: newBanned }).then(result => {
+    patchUserDetails(id, { banned: newBanned }).then(result => {
       setDetails(result);
     });
   };
 
   const setShowOnLeaderboard = newShowOnLeaderboard => {
-    patchUserDetails(props.id, { showOnLeaderboard: newShowOnLeaderboard }).then(result => {
+    patchUserDetails(id, { showOnLeaderboard: newShowOnLeaderboard }).then(result => {
       setDetails(result);
     });
   };
 
   const setBanMessage = newMessage => {
-    patchUserDetails(props.id, { banMessage: newMessage }).then(result => {
+    patchUserDetails(id, { banMessage: newMessage }).then(result => {
       setDetails(result);
     });
   };
@@ -44,7 +45,9 @@ const UserDetails = props => {
     <div>
       {details ? (
         <div>
-          <h4 className={styles.username}>{details.username}</h4>
+          <h4 className={styles.username}>
+            <Username id={id} name={details.username} showBorder={false} />
+          </h4>
           <div className={adminStyles.divSection}>
             <h5>Details</h5>
             <p>ShowOnLeaderboard: {boolToString(details.showOnLeaderboard)}</p>
