@@ -1,4 +1,5 @@
 const axios = require("axios");
+const Logger = require("../Logger");
 
 const GetFlag = async flagName => {
   const basePath = GetBasePath();
@@ -13,7 +14,7 @@ const ClearLeaderboard = async ({ challengeID }) => {
 
   return axios
     .delete(`${basePath}/service/clearLeaderboard/${challengeID}`, { headers })
-    .catch(e => console.error(e));
+    .catch(e => Logger.logError("AntGameAPI", e));
 };
 
 const ClearWorldRecordsCache = async () => {
@@ -21,7 +22,9 @@ const ClearWorldRecordsCache = async () => {
 
   const headers = GetAuthConfig();
 
-  return axios.delete(`${basePath}/service/clearActiveChallenges`, { headers });
+  return axios
+    .delete(`${basePath}/service/clearActiveChallenges`, { headers })
+    .catch(e => Logger.logError("AntGameAPI", e));
 };
 module.exports = { GetFlag, ClearLeaderboard, ClearWorldRecordsCache };
 
