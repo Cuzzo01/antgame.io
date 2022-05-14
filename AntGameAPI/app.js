@@ -112,7 +112,16 @@ app.delete("/admin/userCache", RejectNotAdmin, _adminController.dumpUserCache);
 app.delete("/admin/flagCache", RejectNotAdmin, _adminController.dumpFlagCache);
 //#endregion Admin
 
-app.post("/service/rejectRun", ServiceEndpointAuth, _serviceController.rejectRun);
+app.delete(
+  "/service/clearLeaderboard/:id",
+  ServiceEndpointAuth,
+  _serviceController.dumpLeaderboardCache
+);
+app.delete(
+  "/service/clearActiveChallenges",
+  ServiceEndpointAuth,
+  _serviceController.dumpActiveChallengesCache
+);
 
 app.get("/flag/:name", _flagController.getFlag);
 app.get("/time", (req, res) => res.send({ now: Date.now() }));
