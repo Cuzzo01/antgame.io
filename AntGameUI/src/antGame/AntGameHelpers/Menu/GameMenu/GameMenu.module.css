@@ -27,6 +27,10 @@
   background-color: rgb(239, 239, 239);
 }
 
+.button:hover {
+  background-color: rgb(239, 239, 239);
+}
+
 .buttonDisabled {
   height: 100%;
   display: inline-block;

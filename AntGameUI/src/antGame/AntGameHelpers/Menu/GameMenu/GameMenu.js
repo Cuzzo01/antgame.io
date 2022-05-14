@@ -8,7 +8,7 @@ import cssStyles from "./GameMenu.module.css";
 import { getFlag } from "../../../Helpers/FlagService";
 import { useHistory } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
-import genericStyles from "../../../Helpers/GenericStyles.module.css"
+import genericStyles from "../../../Helpers/GenericStyles.module.css";
 
 export default function GameMenu(props) {
   const [flashReset, setFlashReset] = useState(false);
@@ -111,7 +111,7 @@ const SettingButton = ({ handler, className, disabled, text }) => {
       >
         {text}
       </span>
-    )
+    );
   }
   return (
     <span
