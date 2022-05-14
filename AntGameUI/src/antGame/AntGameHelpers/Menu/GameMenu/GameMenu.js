@@ -123,10 +123,10 @@ const SettingButton = ({ handler, className, disabled, text }) => {
         if (clickAble) {
           setClickable(false);
           handler();
-          setTimeout(() => setClickable(true), 500);
+          setTimeout(() => setClickable(true), 100);
         }
       }}
-      onTouchStart={e => e.target.click()}
+      onTouchEnd={e => e.target.click()}
     >
       {text}
     </span>
