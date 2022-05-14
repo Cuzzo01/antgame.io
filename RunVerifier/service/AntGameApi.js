@@ -3,7 +3,7 @@ const axios = require("axios");
 const GetFlag = async flagName => {
   const basePath = GetBasePath();
 
-  return axios.get(`${basePath}/api/flag/${flagName}`).then(result => result.data);
+  return axios.get(`${basePath}/flag/${flagName}`).then(result => result.data);
 };
 
 const ClearLeaderboard = async ({ challengeID }) => {
@@ -27,7 +27,7 @@ module.exports = { GetFlag, ClearLeaderboard, ClearWorldRecordsCache };
 
 const GetBasePath = () => {
   if (process.env.environment === "PROD") return "https://antgame.io/api";
-  else return "http://localhost:8080";
+  else return "https://dev.antgame.io/api";
 };
 
 const GetAuthConfig = () => {
