@@ -4,6 +4,8 @@ const Logger = require("../Logger");
 const TestApiConnection = async () => {
   const headers = GetAuthConfig();
   try {
+    const path = `${GetBasePath()}/service/healthCheck`
+    console.log(path)
     const result = await axios
       .get(`${GetBasePath()}/service/healthCheck`, { headers })
       .then(res => res.data);
