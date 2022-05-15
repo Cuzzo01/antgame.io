@@ -46,6 +46,7 @@ const ClearWorldRecordsCache = async () => {
 module.exports = { GetFlag, ClearLeaderboard, ClearWorldRecordsCache, TestApiConnection };
 
 const GetBasePath = () => {
+  console.log("process.env.environment")
   if (process.env.environment === "PROD") return "https://antgame.io/api";
   if (process.env.environment === "DEV") return "https://antgame.io/api";
   else return "http://localhost:8080";
