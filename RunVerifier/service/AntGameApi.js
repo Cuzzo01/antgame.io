@@ -1,6 +1,20 @@
 const axios = require("axios");
 const Logger = require("../Logger");
 
+const TestApiConnection = async () => {
+  const headers = GetAuthConfig();
+  try {
+    const result = await axios
+      .get(`${GetBasePath()}/service/healthCheck`, { headers })
+      .then(res => res.data);
+
+    if (result === "OK") return true;
+  } catch (e) {
+    Logger.logError("AntGameApi.testApiConnection", e);
+    return false;
+  }
+};
+
 const GetFlag = async flagName => {
   const basePath = GetBasePath();
 
@@ -26,11 +40,12 @@ const ClearWorldRecordsCache = async () => {
     .delete(`${basePath}/service/clearActiveChallenges`, { headers })
     .catch(e => Logger.logError("AntGameAPI", e));
 };
-module.exports = { GetFlag, ClearLeaderboard, ClearWorldRecordsCache };
+module.exports = { GetFlag, ClearLeaderboard, ClearWorldRecordsCache, TestApiConnection };
 
 const GetBasePath = () => {
   if (process.env.environment === "PROD") return "https://antgame.io/api";
-  else return "https://dev.antgame.io/api";
+  if (process.env.environment === "DEV") return "https://antgame.io/api";
+  else return "http://localhost:8080";
 };
 
 const GetAuthConfig = () => {

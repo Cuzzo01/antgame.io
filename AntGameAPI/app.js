@@ -112,6 +112,7 @@ app.delete("/admin/userCache", RejectNotAdmin, _adminController.dumpUserCache);
 app.delete("/admin/flagCache", RejectNotAdmin, _adminController.dumpFlagCache);
 //#endregion Admin
 
+app.get("/service/healthCheck", ServiceEndpointAuth, _serviceController.healthCheck);
 app.delete(
   "/service/clearLeaderboard/:id",
   ServiceEndpointAuth,
