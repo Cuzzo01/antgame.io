@@ -7,8 +7,10 @@ const { v4: uuidv4 } = require("uuid");
 const { GetFlag, TestApiConnection } = require("./service/AntGameApi");
 
 const startup = async () => {
-  const CanConnectToApi = await TestApiConnection();
-  if (!CanConnectToApi) throw "No API Connection";
+  while (!(await TestApiConnection())) {
+    Logger.logError("startup", "Failed to connect to API");
+    await new Promise(resolve => setTimeout(resolve, 30000));
+  }
 
   StartRunVerifier();
   const cleanupCron = scheduleJob(
