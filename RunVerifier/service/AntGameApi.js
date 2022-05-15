@@ -10,6 +10,7 @@ const TestApiConnection = async () => {
 
     if (result === "OK") return true;
   } catch (e) {
+    console.log(e)
     Logger.logError("AntGameApi.testApiConnection", e);
     return false;
   }
