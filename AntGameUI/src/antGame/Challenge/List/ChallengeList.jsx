@@ -225,7 +225,7 @@ const PBDisplay = ({ pb, rank, runs }) => {
             #<strong>{rank}</strong>,&nbsp;
           </span>
         ) : null}
-        {runs} runs)
+        {runs} run{runs > 1 ? "s" : null})
       </span>
     );
   }

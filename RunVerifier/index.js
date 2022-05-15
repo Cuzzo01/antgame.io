@@ -4,9 +4,14 @@ const { scheduleJob } = require("node-schedule");
 const { VerificationOrchestrator } = require("./bll/VerificationOrchestrator");
 const Logger = require("./Logger");
 const { v4: uuidv4 } = require("uuid");
-const { GetFlag } = require("./service/AntGameApi");
+const { GetFlag, TestApiConnection } = require("./service/AntGameApi");
 
-const startup = () => {
+const startup = async () => {
+  while (!(await TestApiConnection())) {
+    Logger.logError("startup", "Failed to connect to API");
+    await new Promise(resolve => setTimeout(resolve, 30000));
+  }
+
   StartRunVerifier();
   const cleanupCron = scheduleJob(
     "*/10 * * * *",
