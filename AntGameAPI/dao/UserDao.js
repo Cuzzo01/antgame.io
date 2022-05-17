@@ -122,12 +122,17 @@ const getLeaderboardByChallengeId = async (id, recordCount) => {
 
   const collection = await getCollection("users");
   const aggregateArr = [
-    { $unwind: "$challengeDetails" },
     {
       $match: {
         "challengeDetails.ID": challengeObjectID,
         showOnLeaderboard: true,
         banned: { $ne: true },
+      },
+    },
+    { $unwind: "$challengeDetails" },
+    {
+      $match: {
+        "challengeDetails.ID": challengeObjectID,
       },
     },
     {
@@ -204,7 +209,7 @@ const getUserBadgesByID = async id => {
 
   const collection = await getCollection("users");
   const result = await collection.findOne({ _id: userObjectID }, { projection: { badges: 1 } });
-  if (!result.badges) return [];
+  if (!result || !result.badges) return [];
   else
     return result.badges.map(badge => {
       return {
@@ -215,6 +220,24 @@ const getUserBadgesByID = async id => {
         value: badge.value,
       };
     });
+};
+
+const getUserDetailsByID = async id => {
+  const userObjectID = TryParseObjectID(id, "UserID");
+
+  const collection = await getCollection("users");
+  const result = await collection.findOne(
+    { _id: userObjectID },
+    { projection: { username: 1, "registrationData.date": 1 } }
+  );
+
+  if (!result) return null;
+  const toReturn = {
+    username: result.username,
+  };
+  if (result.registrationData) toReturn.joinDate = result.registrationData.date;
+  else toReturn.joinDate = false;
+  return toReturn;
 };
 
 const addBadgeToUser = async (userID, badgeData) => {
@@ -256,4 +279,5 @@ module.exports = {
   shouldShowUserOnLeaderboard,
   getUserBadgesByID,
   addBadgeToUser,
+  getUserDetailsByID,
 };
