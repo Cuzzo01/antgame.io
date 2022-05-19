@@ -502,14 +502,14 @@ async function getPRHomeLocations(req, res) {
     const challengeID = req.params.id;
 
     const prRun = await LeaderboardHandler.getLeaderboardEntryByUserID(challengeID, user.id);
-    const result = await ChallengeDao.getRunHomePositionsByRunId(prRun.runID);
+    const result = await ChallengeDao.getRunDataByRunId(prRun.runID);
 
     if (!result) {
       res.status(404);
       res.send("No PR found");
       return;
     }
-    res.send({ locations: result.locations, amounts: result.amounts });
+    res.send({ locations: result.homeLocations, amounts: result.homeAmounts });
   } catch (e) {
     Logger.logError("ChallengeController.GetPRHomeLocations", e);
     res.status(500);

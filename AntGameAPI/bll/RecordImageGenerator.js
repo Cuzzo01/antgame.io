@@ -2,7 +2,7 @@ const { getConfigDetailsByID } = require("../dao/AdminDao");
 const MapHandler = require("../handler/MapHandler");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const axios = require("axios");
-const { getRunHomePositionsByRunId } = require("../dao/ChallengeDao");
+const { getRunDataByRunId } = require("../dao/ChallengeDao");
 const { CreateRecordImage } = require("../helpers/MapDrawer");
 const { CountOnMap } = require("../MapGenerator/Helpers");
 const { GenerateFoodTooltips } = require("../MapGenerator/FoodTooltipGenerator");
@@ -35,8 +35,8 @@ const GenerateSolutionImage = async ({ challengeID }) => {
 
   const mapData = mapObject.Map;
 
-  const homeLocations = await getRunHomePositionsByRunId(WR.runID);
-  homeLocations.locations.forEach(location => {
+  const runData = await getRunDataByRunId(WR.runID);
+  runData.homeLocations.forEach(location => {
     mapData[location[0]][location[1]] = "h";
   });
 
@@ -46,7 +46,7 @@ const GenerateSolutionImage = async ({ challengeID }) => {
   totalFood *= FoodPerCell;
 
   let homeAmounts = [];
-  for (const [locationString, value] of Object.entries(homeLocations.amounts)) {
+  for (const [locationString, value] of Object.entries(runData.homeAmounts)) {
     const posList = locationString.split(",").map(pos => parseInt(pos));
 
     const score = Math.round((value / totalFood) * 100000);
@@ -59,6 +59,8 @@ const GenerateSolutionImage = async ({ challengeID }) => {
 
   const wrUsername = await ObjectIDToNameHandler.getUsername(WR.userID);
   const attributeTag = `${wrUsername} - ${WR.score} (World Record)`;
+  const runNumber = runData.runNumber;
+
   let foodAmounts;
   if (mapObject.Tooltips) foodAmounts = mapObject.Tooltips;
   else foodAmounts = GenerateFoodTooltips(mapData);
@@ -70,6 +72,7 @@ const GenerateSolutionImage = async ({ challengeID }) => {
     foodAmounts,
     challengeName: challengeName,
     attributeTag,
+    runNumber,
   });
 
   const pathName = await SpacesService.uploadRecordImage(

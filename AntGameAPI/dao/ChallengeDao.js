@@ -148,7 +148,7 @@ const getChallengeByChallengeId = async id => {
   };
 };
 
-const getRunHomePositionsByRunId = async id => {
+const getRunDataByRunId = async id => {
   const runObjectID = TryParseObjectID(id);
 
   const collection = await getCollection("runs");
@@ -162,11 +162,23 @@ const getRunHomePositionsByRunId = async id => {
             $arrayElemAt: ["$details.snapshots", -1],
           },
         },
+        tags: 1,
       },
     }
   );
+
+  const prTag = result.tags.find(t => t.type === "pr");
+  let runNumber;
+  if (prTag) {
+    runNumber = prTag.metadata.runNumber;
+  }
+
   if (!result) return null;
-  return { locations: result.details.homeLocations, amounts: result.details.food[5] };
+  return {
+    homeLocations: result.details.homeLocations,
+    homeAmounts: result.details.food[5],
+    runNumber,
+  };
 };
 
 const getDailyChallengesInReverseOrder = async ({ limit = 0, skip = 0 }) => {
@@ -224,7 +236,7 @@ module.exports = {
   getRecordByChallenge,
   updateChallengeRecord,
   getRecordsByChallengeList,
-  getRunHomePositionsByRunId,
+  getRunDataByRunId,
   getDailyChallengesInReverseOrder,
   addChampionshipIDToConfig,
   markRunForVerification,

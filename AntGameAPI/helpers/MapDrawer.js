@@ -16,6 +16,7 @@ const CreateRecordImage = async ({
   homeAmounts,
   attributeTag,
   challengeName,
+  runNumber,
 }) => {
   const imgHeight = Math.round(imgWidth / 1.63);
   const pixelDensity = [
@@ -90,6 +91,12 @@ const CreateRecordImage = async ({
   if (attributeTag) {
     ctx.textBaseline = "bottom";
     ctx.fillText(attributeTag, 10, imgHeight - 10);
+  }
+
+  if (runNumber) {
+    ctx.textAlign = "right";
+    ctx.textBaseline = "bottom";
+    ctx.fillText(`${runNumber} runs`, imgWidth - 10, imgHeight - 10);
   }
 
   if (challengeName) {
