@@ -12,7 +12,7 @@ const getUserBadges = async (req, res) => {
     }
 
     const badges = await UserHandler.getBadges(userID);
-    const ttl = UserHandler.getTimeToExpire(userID);
+    const ttl = UserHandler.getBadgeTTL(userID);
 
     if (ttl) {
       const maxCacheTime = await FlagHandler.getFlagValue("time-to-cache-badges-external");
@@ -25,8 +25,34 @@ const getUserBadges = async (req, res) => {
     else res.send([]);
   } catch (e) {
     Logger.logError("UserController.getUserBadges", e);
-    res.send(500);
+    res.sendStatus(500);
   }
 };
 
-module.exports = { getUserBadges };
+const getUserDetails = async (req, res) => {
+  try {
+    const userID = req.params.id;
+
+    if (!userID) {
+      res.sendStatus(400);
+      return;
+    }
+
+    const userDetails = await UserHandler.getUserDetails(userID);
+    const ttl = UserHandler.getDetailsTTL(userID);
+
+    if (ttl) {
+      const maxCacheTime = await FlagHandler.getFlagValue("time-to-cache-user-details");
+      const age = maxCacheTime - ttl;
+      res.set(`Cache-Control`, `public, max-age=${maxCacheTime}`);
+      if (age > 0) res.set(`Age`, age);
+    }
+
+    res.send(userDetails);
+  } catch (e) {
+    Logger.logError("UserController.getUserDetails", e);
+    res.sendStatus(500);
+  }
+};
+
+module.exports = { getUserBadges, getUserDetails };

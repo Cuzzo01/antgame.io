@@ -11,6 +11,13 @@ const getGeneralizedTimeString = milliseconds => {
   return `${Math.floor(weeks)}w`;
 };
 
+const getJoinedString = joinedDateTime => {
+  const month = getShortMonthName(joinedDateTime);
+  const year = joinedDateTime.getFullYear();
+
+  return `${month} ${year}`;
+};
+
 const getGeneralizedTimeStringFromObjectID = objectID => {
   const recordTime = objectID.getTimestamp();
   const timeDelta = new Date() - recordTime;
@@ -79,4 +86,5 @@ module.exports = {
   getGeneralizedTimeStringFromObjectID,
   getTimeStringForDailyChallenge,
   getShortMonthName,
+  getJoinedString,
 };
