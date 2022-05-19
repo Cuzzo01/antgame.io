@@ -1,6 +1,7 @@
 const { getUserBadgesByID } = require("../dao/UserDao");
 const FlagHandler = require("./FlagHandler");
 const { ResultCacheWrapper } = require("./ResultCacheWrapper");
+const Logger = require("../Logger");
 
 class UserHandler extends ResultCacheWrapper {
   constructor() {
@@ -12,7 +13,14 @@ class UserHandler extends ResultCacheWrapper {
       id,
       type: "Badges",
       fetchMethod: async id => {
-        const badges = await getUserBadgesByID(id);
+        let badges;
+        try {
+          badges = await getUserBadgesByID(id);
+        } catch (e) {
+          Logger.logError("UserHandler.getBadges", e);
+          return [];
+        }
+
         badges.sort((a, b) => (a.value < b.value ? 1 : -1));
         return badges.slice(0, 5).map(badge => {
           return {
