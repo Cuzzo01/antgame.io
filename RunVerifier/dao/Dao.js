@@ -10,7 +10,8 @@ const getRunToVerify = async () => {
   const collection = await getCollection("runs");
   const result = await collection.findOneAndUpdate(
     { toVerify: true, "verification.startTime": null },
-    { $set: { "verification.startTime": new Date() } }
+    { $set: { "verification.startTime": new Date() } },
+    { sort: { "verification.priority": 1 } }
   );
   return result.value;
 };
