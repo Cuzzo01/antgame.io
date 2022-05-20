@@ -40,6 +40,13 @@ class spacesService {
     this.uploadFile(fileName, image, "image/png");
     return fileName;
   }
+
+  uploadMapThumbnail({ challengeName, image }) {
+    let fileName = `thumbnails/${challengeName.replaceAll(" ", "_")}_${getCacheString()}.png`;
+    if (process.env.environment !== "PROD") fileName = "dev/" + fileName;
+    this.uploadFile(fileName, image, "image/png");
+    return fileName;
+  }
 }
 
 const SpacesService = new spacesService();

@@ -91,7 +91,7 @@ const ChampionshipDetails = () => {
       </div>
       <div className={styles.nav}>
         <div className={styles.navLeft}>
-          <Link to="/">Menu</Link>
+          <Link to="/">Home</Link>
         </div>
         <div className={styles.navRight}>
           <a href={`/challenge/daily`}>Play Daily</a>
