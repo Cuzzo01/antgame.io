@@ -219,13 +219,13 @@ const PBDisplay = ({ pb, rank, runs }) => {
     return (
       <span>
         {pb}
-        &nbsp;(
-        {rank ? (
+        {(rank < 1000 || runs < 100) && " "}(
+        {rank && (
           <span>
             #<strong>{rank}</strong>,&nbsp;
           </span>
-        ) : null}
-        {runs} run{runs > 1 ? "s" : null})
+        )}
+        {runs} run{runs > 1 && "s"})
       </span>
     );
   }
