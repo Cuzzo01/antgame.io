@@ -108,8 +108,8 @@ const DrawMapImage = async ({
   if (challengeName) {
     let imagePath;
     const basePath = challengeName.replaceAll(" ", "_");
-    if (!isThumbnail) imagePath = `${basePath}-WR.png`;
-    else imagePath = `${basePath}-Thumbnail.png`;
+    if (isThumbnail) imagePath = `${basePath}-Thumbnail.png`;
+    else imagePath = `${basePath}-WR.png`;
     await PImage.encodePNGToStream(img1, fs.createWriteStream(imagePath));
     return imagePath;
   }
