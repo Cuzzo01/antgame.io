@@ -25,7 +25,7 @@ yarn-error.log*
 
 .vscode
 .idea
-.env
+.env*
 
 *test.json
 *-wr.png

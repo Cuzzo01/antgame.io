@@ -212,11 +212,14 @@ const addChampionshipIDToConfig = async (configID, championshipID) => {
   );
 };
 
-const markRunForVerification = async ({ runID }) => {
+const markRunForVerification = async ({ runID, priority = 10 }) => {
   const runObjectID = TryParseObjectID(runID, "RunID");
 
   const collection = await getCollection("runs");
-  await collection.updateOne({ _id: runObjectID }, { $set: { toVerify: true } });
+  await collection.updateOne(
+    { _id: runObjectID },
+    { $set: { toVerify: true, "verification.priority": priority } }
+  );
 };
 
 const TryParseObjectID = (stringID, name) => {

@@ -172,7 +172,10 @@ async function postRun(req, res) {
 
         if (isPB) {
           LeaderboardHandler.unsetItem(runData.challengeID);
-          await ChallengeDao.markRunForVerification({ runID });
+          await ChallengeDao.markRunForVerification({
+            runID,
+            priority: challengeConfig.dailyChallenge ? 1 : 5,
+          });
         }
 
         let response = {};
