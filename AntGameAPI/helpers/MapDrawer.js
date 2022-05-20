@@ -9,7 +9,7 @@ const HomeAmountColor = "#8e2a1f";
 const FoodAmountColor = "#7DCEA0";
 const BackgroundColor = "#909497";
 
-const CreateRecordImage = async ({
+const DrawMapImage = async ({
   mapData,
   imgWidth,
   foodAmounts,
@@ -17,6 +17,7 @@ const CreateRecordImage = async ({
   attributeTag,
   challengeName,
   runNumber,
+  isThumbnail,
 }) => {
   const imgHeight = Math.round(imgWidth / 1.63);
   const pixelDensity = [
@@ -57,36 +58,41 @@ const CreateRecordImage = async ({
     ctx.textBaseline = "middle";
   }
 
-  foodAmounts.forEach(amountData => {
-    const pixelX = Math.round(amountData.x * pixelDensity[0]);
-    const pixelY = Math.round(amountData.y * pixelDensity[1]);
-    drawText({
-      color: FoodAmountColor,
-      text: amountData.value.toString(),
-      x: pixelX,
-      y: pixelY,
-      context: ctx,
+  if (foodAmounts)
+    foodAmounts.forEach(amountData => {
+      const pixelX = Math.round(amountData.x * pixelDensity[0]);
+      const pixelY = Math.round(amountData.y * pixelDensity[1]);
+      drawText({
+        color: FoodAmountColor,
+        text: amountData.value.toString(),
+        x: pixelX,
+        y: pixelY,
+        context: ctx,
+      });
     });
-  });
 
-  homeAmounts.forEach(amountData => {
-    const pixelX = Math.floor(amountData.x * pixelDensity[0]);
-    const pixelY = Math.floor(amountData.y * pixelDensity[1]);
-    drawText({
-      color: HomeAmountColor,
-      text: amountData.value.toString(),
-      x: pixelX,
-      y: pixelY,
-      context: ctx,
+  if (homeAmounts)
+    homeAmounts.forEach(amountData => {
+      const pixelX = Math.floor(amountData.x * pixelDensity[0]);
+      const pixelY = Math.floor(amountData.y * pixelDensity[1]);
+      drawText({
+        color: HomeAmountColor,
+        text: amountData.value.toString(),
+        x: pixelX,
+        y: pixelY,
+        context: ctx,
+      });
     });
-  });
 
   ctx.fillStyle = "white";
   ctx.font = "25pt CourierPrime";
 
   ctx.textAlign = "left";
   ctx.textBaseline = "top";
-  ctx.fillText(`${challengeName} - AntGame.io`, 10, 10);
+
+  if (!isThumbnail) {
+    ctx.fillText(`${challengeName} - AntGame.io`, 10, 10);
+  }
 
   if (attributeTag) {
     ctx.textBaseline = "bottom";
@@ -100,14 +106,17 @@ const CreateRecordImage = async ({
   }
 
   if (challengeName) {
-    const imagePath = `${challengeName.replaceAll(" ", "_")}-WR.png`;
+    let imagePath;
+    const basePath = challengeName.replaceAll(" ", "_");
+    if (!isThumbnail) imagePath = `${basePath}-WR.png`;
+    else imagePath = `${basePath}-Thumbnail.png`;
     await PImage.encodePNGToStream(img1, fs.createWriteStream(imagePath));
     return imagePath;
   }
   throw `Falsy challenge name passed in : ${challengeName}`;
 };
 
-module.exports = { CreateRecordImage };
+module.exports = { DrawMapImage };
 
 const drawText = ({ color, text, x, y, context }) => {
   context.fillStyle = color;

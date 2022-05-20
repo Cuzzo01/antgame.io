@@ -3,7 +3,7 @@ const MapHandler = require("../handler/MapHandler");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const axios = require("axios");
 const { getRunDataByRunId } = require("../dao/ChallengeDao");
-const { CreateRecordImage } = require("../helpers/MapDrawer");
+const { DrawMapImage } = require("../helpers/MapDrawer");
 const { CountOnMap } = require("../MapGenerator/Helpers");
 const { GenerateFoodTooltips } = require("../MapGenerator/FoodTooltipGenerator");
 const SpacesService = require("../services/SpacesService");
@@ -65,7 +65,7 @@ const GenerateSolutionImage = async ({ challengeID }) => {
   if (mapObject.Tooltips) foodAmounts = mapObject.Tooltips;
   else foodAmounts = GenerateFoodTooltips(mapData);
 
-  const diskPathToImage = await CreateRecordImage({
+  const diskPathToImage = await DrawMapImage({
     mapData,
     imgWidth,
     homeAmounts,
@@ -85,4 +85,22 @@ const GenerateSolutionImage = async ({ challengeID }) => {
   return pathName;
 };
 
-module.exports = { GenerateSolutionImage };
+const GenerateMapThumbnail = async ({ mapData, challengeName }) => {
+  const diskPathToImage = await DrawMapImage({
+    imgWidth: 500,
+    mapData,
+    challengeName,
+    isThumbnail: true,
+  });
+
+  const pathName = await SpacesService.uploadMapThumbnail({
+    challengeName,
+    image: fs.readFileSync(diskPathToImage),
+  });
+
+  fs.unlinkSync(diskPathToImage);
+
+  return pathName;
+};
+
+module.exports = { GenerateSolutionImage, GenerateMapThumbnail };
