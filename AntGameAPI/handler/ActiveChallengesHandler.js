@@ -1,5 +1,6 @@
 const { getActiveChallenges, getRecordsByChallengeList } = require("../dao/ChallengeDao");
 const FlagHandler = require("./FlagHandler");
+const DailyChallengeHandler = require("./DailyChallengeHandler");
 const { ResultCacheWrapper } = require("./ResultCacheWrapper");
 
 class ActiveChallengesHandler extends ResultCacheWrapper {
@@ -17,6 +18,10 @@ class ActiveChallengesHandler extends ResultCacheWrapper {
         activeChallenges.forEach(challenge => {
           challengeIDList.push(challenge.id);
         });
+
+        const dailyIndex = activeChallenges.findIndex(c => c.dailyChallenge);
+        activeChallenges[dailyIndex].thumbnailURL =
+          await DailyChallengeHandler.getDailyChallengeThumbnail();
 
         const records = await getRecordsByChallengeList(challengeIDList);
         return { challenges: activeChallenges, worldRecords: records };

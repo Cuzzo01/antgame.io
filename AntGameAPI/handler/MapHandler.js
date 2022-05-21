@@ -16,6 +16,7 @@ class MapHandler extends ResultCacheWrapper {
           url: mapData.url,
           name: mapData.name,
           foodCount: mapData.foodCount,
+          thumbnailPath: mapData.thumbnailPath,
         };
       },
     });

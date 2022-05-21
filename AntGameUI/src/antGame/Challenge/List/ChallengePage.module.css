@@ -30,7 +30,7 @@ body {
   background-color: lightgray;
   display: grid;
   grid-template-columns: auto 17em;
-  grid-template-rows: 1.75em auto;
+  grid-template-rows: 1.75em auto auto;
 }
 
 @media screen and (max-width: 730px) {
@@ -40,6 +40,21 @@ body {
     flex-direction: column;
     row-gap: 8px;
   }
+}
+
+.dailyThumbnail {
+  grid-column: span 2;
+  margin: 0 1em;
+}
+
+.dailyThumbnail img {
+  background-color: black;
+  width: 100%;
+  height: 100%;
+  border: 2px black solid;
+  border-radius: 0.5em;
+  padding: 0.2em;
+  margin: 0.5em 0;
 }
 
 .dailyLinks {
@@ -125,18 +140,7 @@ body {
 }
 
 .thumbnail img {
-  width: 23.6rem;
-  height: 14.13rem;
-}
-
-.thumbnailContainer {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.thumbnailContainer img {
+  width: 100%;
   border-radius: 0.5rem;
   background-color: #909497;
 }
