@@ -1,5 +1,5 @@
 const { default: axios } = require("axios");
-const { getChallengeDetailsByID } = require("../dao/Dao");
+const { getChallengeDetailsByID } = require("../dao/ChallengeDao");
 const MapHandler = require("../handler/MapHandler");
 const { GameRunner } = require("./GameRunner");
 
@@ -16,12 +16,12 @@ const VerifyRun = async ({ run }) => {
 
   const mapData = (await axios.get(mapURL)).data.Map;
 
-  const simulatedScore = GameRunner.SimulateRun({
+  const { score: simulatedScore } = GameRunner.SimulateRun({
     mapData,
     homeLocations: run.details.homeLocations,
     seed: run.details.seed,
     time: challengeDetails.seconds,
   });
-  return simulatedScore === run.score;
+  return { passedVerification: simulatedScore === run.score };
 };
 module.exports = { VerifyRun };

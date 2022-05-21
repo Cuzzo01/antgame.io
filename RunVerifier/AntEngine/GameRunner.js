@@ -30,7 +30,10 @@ class GameRunner {
       }
     }
 
-    return Math.round(mapHandler.percentFoodReturned * 100000);
+    return {
+      score: Math.round(mapHandler.percentFoodReturned * 100000),
+      foodEaten: mapHandler.foodToRespawn,
+    };
   }
 }
 module.exports = { GameRunner };

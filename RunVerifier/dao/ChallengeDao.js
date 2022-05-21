@@ -25,4 +25,12 @@ const removeWorldRecord = async ({ challengeID, runID }) => {
     { $pull: { records: { runID: runObjectID } } }
   );
 };
-module.exports = { getRecordByChallenge, removeWorldRecord };
+
+const getChallengeDetailsByID = async ({ challengeID }) => {
+  const configObjectID = TryParseObjectID(challengeID, "ChallengeID");
+
+  const collection = await getCollection("configs");
+  const result = await collection.findOne({ _id: configObjectID });
+  return result;
+};
+module.exports = { getRecordByChallenge, removeWorldRecord, getChallengeDetailsByID };
