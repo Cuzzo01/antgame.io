@@ -12,11 +12,12 @@ const fs = require("fs");
 const imgWidth = 1000;
 const FoodPerCell = 20;
 
-const GenerateSolutionImage = async ({ challengeID }) => {
-  const challengeDetails = await getConfigDetailsByID(challengeID);
-  if (challengeDetails === null) throw `Unable to pull challenge by ID : ${challengeID}`;
+const GenerateSolutionImage = async ({ runID, foodEaten }) => {
+  const runData = await getRunDataByRunId(runID);
 
-  const WR = challengeDetails.records[0];
+  const challengeDetails = await getConfigDetailsByID(runData.challengeID);
+  if (challengeDetails === null) throw `Unable to pull challenge by ID : ${runData.challengeID}`;
+
   const mapID = challengeDetails.mapID;
   const configMapPath = challengeDetails.mapPath;
   const challengeName = challengeDetails.name;
@@ -24,7 +25,7 @@ const GenerateSolutionImage = async ({ challengeID }) => {
   let mapPath = "";
   if (mapID) {
     mapPath = (await MapHandler.getMapData({ mapID })).url;
-    mapPath = `https://antgame.nyc3.digitaloceanspaces.com/${mapPath}`;
+    mapPath = `https://antgame.io/assets/${mapPath}`;
   } else mapPath = configMapPath;
   const mapObject = await axios
     .get(mapPath)
@@ -35,10 +36,14 @@ const GenerateSolutionImage = async ({ challengeID }) => {
 
   const mapData = mapObject.Map;
 
-  const runData = await getRunDataByRunId(WR.runID);
   runData.homeLocations.forEach(location => {
     mapData[location[0]][location[1]] = "h";
   });
+
+  if (foodEaten)
+    foodEaten.forEach(location => {
+      mapData[location[0]][location[1]] = "fe";
+    });
 
   let totalFood;
   if (mapObject.FoodCount) totalFood = mapObject.FoodCount;
@@ -57,8 +62,8 @@ const GenerateSolutionImage = async ({ challengeID }) => {
     });
   }
 
-  const wrUsername = await ObjectIDToNameHandler.getUsername(WR.userID);
-  const attributeTag = `${wrUsername} - ${WR.score} (World Record)`;
+  const wrUsername = await ObjectIDToNameHandler.getUsername(runData.userID);
+  const attributeTag = `${wrUsername} - ${runData.score}`;
   const runNumber = runData.runNumber;
 
   let foodAmounts;
@@ -75,10 +80,12 @@ const GenerateSolutionImage = async ({ challengeID }) => {
     runNumber,
   });
 
-  const pathName = await SpacesService.uploadRecordImage(
+  const pathName = await SpacesService.uploadRecordImage({
     challengeName,
-    fs.readFileSync(diskPathToImage)
-  );
+    image: fs.readFileSync(diskPathToImage),
+    score: runData.score,
+    username: wrUsername,
+  });
 
   fs.unlinkSync(diskPathToImage);
 

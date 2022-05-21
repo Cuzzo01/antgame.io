@@ -3,9 +3,12 @@ const { ChallengeGenerator } = require("./ChallengeGenerator");
 const Logger = require("../Logger");
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const FlagHandler = require("../handler/FlagHandler");
-const { getDailyChallengesInReverseOrder } = require("../dao/ChallengeDao");
+const {
+  getDailyChallengesInReverseOrder,
+  getRunDataByRunId,
+  getRecordByChallenge,
+} = require("../dao/ChallengeDao");
 const { ChampionshipOrchestrator } = require("./ChampionshipOrchestrator");
-const { GenerateSolutionImage } = require("./RecordImageGenerator");
 
 const handleDailyChallengeChange = async () => {
   try {
@@ -57,7 +60,9 @@ const handleDailyChallengeChange = async () => {
       }
 
       try {
-        const solutionImagePath = await GenerateSolutionImage({ challengeID });
+        const wrRun = await getRecordByChallenge(challengeID);
+        const wrRunData = await getRunDataByRunId(wrRun.runId);
+        const solutionImagePath = wrRunData.solutionImage;
         await updateConfigByID(challengeID, { solutionImage: solutionImagePath });
         Logger.logCronMessage(`Generated and set solution image`);
       } catch (e) {
@@ -69,9 +74,10 @@ const handleDailyChallengeChange = async () => {
 
     if (shouldAwardBadges) {
       const lastChampionship = await ChampionshipOrchestrator.getLastMonthsChampionshipID();
-      await ChampionshipOrchestrator.awardBadgesForChampionship({
-        championshipID: lastChampionship,
-      });
+      if (lastChampionship)
+        await ChampionshipOrchestrator.awardBadgesForChampionship({
+          championshipID: lastChampionship,
+        });
       Logger.logCronMessage("Awarded badges for last championship");
     }
   } catch (err) {
