@@ -1,6 +1,5 @@
 const { getRecordByChallenge, removeWorldRecord } = require("../dao/ChallengeDao");
-const { getRunDetailsByID } = require("../dao/Dao");
-const { getNewUserPB } = require("../dao/RunDao");
+const { getNewUserPB, getRunDetailsByID } = require("../dao/RunDao");
 const {
   getChallengeDetailsByUser,
   updateChallengePB,

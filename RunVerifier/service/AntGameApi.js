@@ -40,7 +40,23 @@ const ClearWorldRecordsCache = async () => {
     .delete(`${basePath}/service/clearActiveChallenges`, { headers })
     .catch(e => Logger.logError("AntGameAPI", e));
 };
-module.exports = { GetFlag, ClearLeaderboard, ClearWorldRecordsCache, TestApiConnection };
+
+const GenerateRecordImage = async ({ runID, foodEaten }) => {
+  const basePath = GetBasePath();
+
+  const headers = GetAuthConfig();
+
+  return axios
+    .post(`${basePath}/service/recordImage`, { runID, foodEaten }, { headers })
+    .catch(e => Logger.logError("AntGameAPI", e));
+};
+module.exports = {
+  GetFlag,
+  ClearLeaderboard,
+  ClearWorldRecordsCache,
+  TestApiConnection,
+  GenerateRecordImage,
+};
 
 const GetBasePath = () => {
   if (process.env.environment === "PROD") return "https://antgame.io/api";

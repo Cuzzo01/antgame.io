@@ -34,11 +34,12 @@ class spacesService {
     return fileName;
   }
 
-  uploadRecordImage(challengeName, image) {
-    let fileName = `recordImages/${challengeName.replaceAll(" ", "_")}_WR_${getCacheString()}.png`;
-    if (process.env.environment !== "PROD") fileName = "dev/" + fileName;
-    this.uploadFile(fileName, image, "image/png");
-    return fileName;
+  uploadRecordImage({ challengeName, image, score, username }) {
+    const fileName = `${score}_${username}_WR_${getCacheString()}.png`;
+    let filePath = `recordImages/${challengeName.replaceAll(" ", "_")}/${fileName}`;
+    if (process.env.environment !== "PROD") filePath = "dev/" + filePath;
+    this.uploadFile(filePath, image, "image/png");
+    return filePath;
   }
 
   uploadMapThumbnail({ challengeName, image }) {

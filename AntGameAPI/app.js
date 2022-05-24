@@ -113,6 +113,7 @@ app.delete("/admin/flagCache", RejectNotAdmin, _adminController.dumpFlagCache);
 //#endregion Admin
 
 app.get("/service/healthCheck", ServiceEndpointAuth, _serviceController.healthCheck);
+app.post("/service/recordImage", ServiceEndpointAuth, _serviceController.generateRecordImage);
 app.delete(
   "/service/clearLeaderboard/:id",
   ServiceEndpointAuth,

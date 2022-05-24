@@ -4,7 +4,7 @@ const {
   unsetToVerifyFlagAndSetFinishTime,
   getRunToVerify,
   fixOrphanedRuns,
-} = require("../dao/Dao");
+} = require("../dao/RunDao");
 const Logger = require("../Logger");
 const { RunDisqualifier } = require("./RunDisqualifier");
 
@@ -27,7 +27,10 @@ class VerificationOrchestrator {
     let result = false;
     try {
       const startTime = new Date();
-      result = await VerifyRun({ run: runToVerify });
+
+      const { passedVerification } = await VerifyRun({ run: runToVerify });
+      result = passedVerification;
+
       const totalTime = new Date() - startTime;
       Logger.logVerificationMessage({
         message: "run verification result",

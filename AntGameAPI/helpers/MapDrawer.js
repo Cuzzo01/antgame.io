@@ -4,9 +4,10 @@ const fs = require("fs");
 const WallColor = "black";
 const HomeColor = "#f04837";
 const FoodColor = "#186A3B";
+const FoodEatenColor = "#597766";
 const DirtColor = "#40260F";
 const HomeAmountColor = "#8e2a1f";
-const FoodAmountColor = "#7DCEA0";
+const FoodAmountColor = "#A8C7B5";
 const BackgroundColor = "#909497";
 
 const DrawMapImage = async ({
@@ -41,6 +42,8 @@ const DrawMapImage = async ({
         ctx.fillStyle = FoodColor;
       } else if (cell === "d") {
         ctx.fillStyle = DirtColor;
+      } else if (cell === "fe") {
+        ctx.fillStyle = FoodEatenColor;
       } else {
         ctx.fillStyle = BackgroundColor;
       }

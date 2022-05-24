@@ -161,11 +161,16 @@ const getRunDataByRunId = async id => {
           food: {
             $arrayElemAt: ["$details.snapshots", -1],
           },
+          solutionImage: 1,
         },
         tags: 1,
+        challengeID: 1,
+        userID: 1,
+        score: 1,
       },
     }
   );
+  if (!result) return null;
 
   const prTag = result.tags.find(t => t.type === "pr");
   let runNumber;
@@ -173,10 +178,13 @@ const getRunDataByRunId = async id => {
     runNumber = prTag.metadata.runNumber;
   }
 
-  if (!result) return null;
   return {
     homeLocations: result.details.homeLocations,
     homeAmounts: result.details.food[5],
+    challengeID: result.challengeID,
+    userID: result.userID,
+    score: result.score,
+    solutionImage: result.details.solutionImage,
     runNumber,
   };
 };
@@ -222,6 +230,16 @@ const markRunForVerification = async ({ runID, priority = 10 }) => {
   );
 };
 
+const addSolutionImageToRun = async ({ runID, imagePath }) => {
+  const runObjectID = TryParseObjectID(runID, "RunID");
+
+  const collection = await getCollection("runs");
+  await collection.updateOne(
+    { _id: runObjectID },
+    { $set: { "details.solutionImage": imagePath } }
+  );
+};
+
 const TryParseObjectID = (stringID, name) => {
   try {
     return new Mongo.ObjectID(stringID);
@@ -243,4 +261,5 @@ module.exports = {
   getDailyChallengesInReverseOrder,
   addChampionshipIDToConfig,
   markRunForVerification,
+  addSolutionImageToRun,
 };
