@@ -1,5 +1,7 @@
 if (!process.env.environment) require("dotenv").config();
 
+require("./tracing");
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const jwt = require("express-jwt");
