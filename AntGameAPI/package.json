@@ -14,6 +14,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@opentelemetry/auto-instrumentations-node": "^0.28.0",
+    "@opentelemetry/exporter-trace-otlp-proto": "^0.27.0",
+    "@opentelemetry/sdk-node": "^0.27.0",
     "aws-sdk": "^2.1051.0",
     "axios": "^0.25.0",
     "bcrypt": "^5.0.1",

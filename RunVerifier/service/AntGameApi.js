@@ -28,7 +28,7 @@ const ClearLeaderboard = async ({ challengeID }) => {
 
   return axios
     .delete(`${basePath}/service/clearLeaderboard/${challengeID}`, { headers })
-    .catch(e => Logger.logError("AntGameAPI", e));
+    .catch(e => Logger.logError("AntGameAPI.ClearLeaderboard", e));
 };
 
 const ClearWorldRecordsCache = async () => {
@@ -38,7 +38,7 @@ const ClearWorldRecordsCache = async () => {
 
   return axios
     .delete(`${basePath}/service/clearActiveChallenges`, { headers })
-    .catch(e => Logger.logError("AntGameAPI", e));
+    .catch(e => Logger.logError("AntGameAPI.ClearWorldRecordsCache", e));
 };
 
 const GenerateRecordImage = async ({ runID, foodEaten }) => {
@@ -48,7 +48,7 @@ const GenerateRecordImage = async ({ runID, foodEaten }) => {
 
   return axios
     .post(`${basePath}/service/recordImage`, { runID, foodEaten }, { headers })
-    .catch(e => Logger.logError("AntGameAPI", e));
+    .catch(e => Logger.logError("AntGameAPI.GenerateRecordImage", e));
 };
 module.exports = {
   GetFlag,
