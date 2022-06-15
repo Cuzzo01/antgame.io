@@ -1,5 +1,7 @@
 const { GetIpAddress } = require("./IpHelper");
 const Logger = require("../Logger");
+const TelemAPI = require("@opentelemetry/api");
+const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 
 const TokenRevokedHandler = require("../handler/TokenRevokedHandler");
 const FlagHandler = require("../handler/FlagHandler");
@@ -36,6 +38,11 @@ const TokenVerifier = async function (req, res, next) {
     const userID = req.user.id;
     const adminToken = req.user.admin === true;
     const TokenIsValid = await TokenRevokedHandler.isTokenValid(userID, adminToken);
+
+    let activeSpan = TelemAPI.trace.getSpan(TelemAPI.context.active());
+    activeSpan.setAttribute("user.id", userID);
+    activeSpan.setAttribute("user.name", await ObjectIDToNameHandler.getUsername(userID));
+
     if (TokenIsValid === false) {
       Logger.logAuthEvent("invalid token received", {
         userID,
@@ -64,4 +71,17 @@ const TokenVerifier = async function (req, res, next) {
   next();
 };
 
-module.exports = { JwtResultHandler, TokenVerifier };
+const ResponseLogger = function (req, res, time) {
+  if (req.url !== "/health") {
+    Logger.log({
+      message: "request response",
+      method: req.method,
+      url: req.url,
+      ip: GetIpAddress(req),
+      time: Math.round(time),
+      status: res.statusCode,
+    });
+  }
+};
+
+module.exports = { JwtResultHandler, TokenVerifier, ResponseLogger };
