@@ -24,8 +24,6 @@ const _publicController = require("./controller/PublicController");
 const TokenHandler = require("./auth/WebTokenHandler");
 const { RejectNotAdmin, ServiceEndpointAuth } = require("./auth/AuthHelpers");
 const responseTime = require("response-time");
-const { GetIpAddress } = require("./helpers/IpHelper");
-const Logger = require("./Logger");
 const { initializeScheduledTasks } = require("./bll/TaskScheduler");
 const SpacesService = require("./services/SpacesService");
 const MongoClient = require("./dao/MongoClient");
@@ -36,7 +34,7 @@ const {
   failedLoginLimiter,
   registrationLimiter,
 } = require("./auth/RateLimiters");
-const { JwtResultHandler, TokenVerifier } = require("./helpers/Middleware");
+const { JwtResultHandler, TokenVerifier, ResponseLogger } = require("./helpers/Middleware");
 
 const UnauthenticatedRoutes = [
   "/auth/login",
@@ -55,20 +53,7 @@ SpacesService.initializeConnection();
 
 app.use(bodyParser.json({ extended: true, limit: "50mb" }));
 
-app.use(
-  responseTime((req, res, time) => {
-    if (req.url !== "/health") {
-      Logger.log({
-        message: "request response",
-        method: req.method,
-        url: req.url,
-        ip: GetIpAddress(req),
-        time: Math.round(time),
-        status: res.statusCode,
-      });
-    }
-  })
-);
+app.use(responseTime(ResponseLogger));
 
 app.use(
   jwt({ secret: TokenHandler.secret, algorithms: ["HS256"] }).unless({
