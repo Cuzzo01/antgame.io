@@ -2,6 +2,7 @@ const { updateConfigByID } = require("../dao/AdminDao");
 const { ChallengeGenerator } = require("./ChallengeGenerator");
 const Logger = require("../Logger");
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
+const ActiveChallengesHandler = require("../handler/ActiveChallengesHandler")
 const FlagHandler = require("../handler/FlagHandler");
 const {
   getDailyChallengesInReverseOrder,
@@ -27,6 +28,7 @@ const handleDailyChallengeChange = async () => {
     if (newDailyChallengeID) {
       await updateConfigByID(newDailyChallengeID, { active: true });
       DailyChallengeHandler.clearCache();
+      ActiveChallengesHandler.unsetItem();
       Logger.logCronMessage("set new map active");
 
       if (await FlagHandler.getFlagValue("should-bind-daily-to-championship")) {
