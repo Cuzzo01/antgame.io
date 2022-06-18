@@ -129,12 +129,19 @@ const getLeaderboardByChallengeId = async (id, recordCount) => {
         banned: { $ne: true },
       },
     },
-    { $unwind: "$challengeDetails" },
     {
-      $match: {
-        "challengeDetails.ID": challengeObjectID,
+      $project: {
+        username: 1,
+        challengeDetails: {
+          $filter: {
+            input: "$challengeDetails",
+            as: "details",
+            cond: { $eq: ["$$details.ID", challengeObjectID] },
+          },
+        },
       },
     },
+    { $unwind: "$challengeDetails" },
     {
       $group: {
         _id: "$_id",

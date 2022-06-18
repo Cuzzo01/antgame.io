@@ -2,7 +2,7 @@ const { updateConfigByID } = require("../dao/AdminDao");
 const { ChallengeGenerator } = require("./ChallengeGenerator");
 const Logger = require("../Logger");
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
-const ActiveChallengesHandler = require("../handler/ActiveChallengesHandler")
+const ActiveChallengesHandler = require("../handler/ActiveChallengesHandler");
 const FlagHandler = require("../handler/FlagHandler");
 const {
   getDailyChallengesInReverseOrder,
