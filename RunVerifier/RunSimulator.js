@@ -48,7 +48,7 @@ const RunSimulations = async () => {
     const seed = Math.round(Math.random() * 1e8);
     const mapCopy = mapData.map(line => line.slice());
 
-    const score = GameRunner.SimulateRun({
+    const { score } = GameRunner.SimulateRun({
       time: runTime,
       mapData: mapCopy,
       homeLocations,
@@ -61,9 +61,7 @@ const RunSimulations = async () => {
 
   data.timing.end = new Date().toISOString();
 
-  const date = new Date();
-  const timeString = `${date.getHours()}${date.getMinutes()}`;
-  const fileName = `simulationData-${SimulationName}-${timeString}.json`;
+  const fileName = `sim-${SimulationName}-${new Date().toISOString()}.json`;
   fs.writeFileSync(fileName, JSON.stringify(data));
 };
 
