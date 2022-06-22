@@ -1,7 +1,7 @@
 const { Config } = require("../Config");
 
 const TrailMapOverSampleRate = 3;
-const MapBounds = [
+const TrailBounds = [
   Config.MapBounds[0] * TrailMapOverSampleRate,
   Config.MapBounds[1] * TrailMapOverSampleRate,
 ];
@@ -16,9 +16,9 @@ class TrailHandler {
 
   buildTrailMap() {
     this.trailMap = [];
-    for (let x = 0; x < MapBounds[0]; x++) {
+    for (let x = 0; x < TrailBounds[0]; x++) {
       this.trailMap[x] = [];
-      for (let y = 0; y < MapBounds[1]; y++) {
+      for (let y = 0; y < TrailBounds[1]; y++) {
         this.trailMap[x][y] = 0;
       }
     }
@@ -37,7 +37,7 @@ class TrailHandler {
     for (let xOffset = -TrailMapOverSampleRate; xOffset <= TrailMapOverSampleRate; xOffset++) {
       for (let yOffset = -TrailMapOverSampleRate; yOffset <= TrailMapOverSampleRate; yOffset++) {
         const point = [intTrailXY[0] + xOffset, intTrailXY[1] + yOffset];
-        if (strength && this.mapXYInBounds(point)) {
+        if (strength && this.trailXYInBounds(point)) {
           const currentValue = this.trailMap[point[0]][point[1]];
           if (currentValue < maxValue) {
             const newValue = currentValue + strength;
@@ -49,8 +49,8 @@ class TrailHandler {
   }
 
   decayTrailMap() {
-    for (let x = 0; x < MapBounds[0]; x++) {
-      for (let y = 0; y < MapBounds[1]; y++) {
+    for (let x = 0; x < TrailBounds[0]; x++) {
+      for (let y = 0; y < TrailBounds[1]; y++) {
         if (this.trailMap[x][y] > 0) {
           this.trailMap[x][y] = Math.round(0.8 * this.trailMap[x][y]);
           if (this.trailMap[x][y] < 75) this.trailMap[x][y] = 0;
@@ -74,15 +74,18 @@ class TrailHandler {
 
     if (this.clean) return 0;
 
-    const trailXYStart = this.mapXYToTrailXY(mapStart);
-    const trailXYStop = this.mapXYToTrailXY(mapStop);
-    const pointsToWalk = getPoints(trailXYStart, trailXYStop);
-    let toReturn = 0;
-    for (let i = 0; i < pointsToWalk.length; i++) {
-      let point = pointsToWalk[i];
-      if (this.mapXYInBounds(point)) toReturn += this.trailMap[point[0]][point[1]];
+    const trailXYEnd = this.mapXYToTrailXY(mapStop);
+    if (this.trailXYInBounds(trailXYEnd)) return this.trailMap[trailXYEnd[0]][trailXYEnd[1]];
+    else {
+      const trailXYStart = this.mapXYToTrailXY(mapStart);
+      const pointsToWalk = getPoints(trailXYStart, trailXYEnd);
+      let toReturn = 0;
+      for (let i = 0; i < pointsToWalk.length; i++) {
+        let point = pointsToWalk[i];
+        if (this.trailXYInBounds(point)) toReturn += this.trailMap[point[0]][point[1]];
+      }
+      return toReturn / pointsToWalk.length;
     }
-    return toReturn;
   }
 
   clearTrails = () => {
@@ -93,9 +96,9 @@ class TrailHandler {
     return [mapXY[0] * TrailMapOverSampleRate, mapXY[1] * TrailMapOverSampleRate];
   }
 
-  mapXYInBounds(mapXY) {
-    if (mapXY[0] >= 0 && mapXY[1] >= 0)
-      if (mapXY[0] < MapBounds[0] && mapXY[1] < MapBounds[1]) return true;
+  trailXYInBounds(trailXY) {
+    if (trailXY[0] >= 0 && trailXY[1] >= 0)
+      if (trailXY[0] < TrailBounds[0] && trailXY[1] < TrailBounds[1]) return true;
     return false;
   }
 }

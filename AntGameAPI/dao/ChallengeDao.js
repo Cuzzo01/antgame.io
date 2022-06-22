@@ -62,7 +62,7 @@ const getRecordsByChallengeList = async challengeIDList => {
     .toArray();
   let records = {};
   result.forEach(challenge => {
-    if (challenge.records) {
+    if (challenge.records && challenge.records.length) {
       const record = challenge.records[0];
       const timeString = getGeneralizedTimeStringFromObjectID(record.runID);
       records[challenge._id] = {
