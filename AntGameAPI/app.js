@@ -3,7 +3,6 @@ if (!process.env.environment) require("dotenv").config();
 require("./tracing");
 
 const express = require("express");
-const bodyParser = require("body-parser");
 const jwt = require("express-jwt");
 
 const app = express();
@@ -51,7 +50,7 @@ const UnauthenticatedRoutes = [
 initializeScheduledTasks();
 SpacesService.initializeConnection();
 
-app.use(bodyParser.json({ extended: true, limit: "50mb" }));
+app.use(express.json({ limit: "50mb" }));
 
 app.use(responseTime(ResponseLogger));
 

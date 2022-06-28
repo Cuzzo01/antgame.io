@@ -201,7 +201,6 @@ const WRDisplay = ({ wr }) => {
     const usernameLength = wr.username.length;
     const scoreLength = wr.score.toString().length;
     const totalLength = usernameLength + scoreLength + 1; // one for the dash
-    console.log(totalLength, wr);
     return (
       <span>
         {wr.score}-<Username id={wr.id} name={wr.username} />
