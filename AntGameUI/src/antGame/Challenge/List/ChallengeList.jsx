@@ -198,14 +198,17 @@ const DailyChallengeCard = ({ challenge, record, championshipID }) => {
 
 const WRDisplay = ({ wr }) => {
   if (wr?.score) {
-    const wrUsernameLength = wr.username.length;
+    const usernameLength = wr.username.length;
+    const scoreLength = wr.score.toString().length;
+    const totalLength = usernameLength + scoreLength + 1; // one for the dash
+    console.log(totalLength, wr);
     return (
       <span>
         {wr.score}-<Username id={wr.id} name={wr.username} />
-        {wrUsernameLength < 8 ? (
+        {totalLength < 15 ? (
           <span className={`${styles.smallText} ${styles.age}`}>({wr.age} ago)</span>
         ) : null}
-        {wrUsernameLength >= 8 && wrUsernameLength < 12 ? (
+        {totalLength >= 15 && totalLength < 18 ? (
           <span className={`${styles.smallText} ${styles.age}`}>({wr.age})</span>
         ) : null}
       </span>
