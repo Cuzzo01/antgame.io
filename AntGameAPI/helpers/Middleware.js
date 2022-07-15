@@ -37,7 +37,8 @@ const TokenVerifier = async function (req, res, next) {
   if (!req.user.anon) {
     const userID = req.user.id;
     const adminToken = req.user.admin === true;
-    const TokenIsValid = await TokenRevokedHandler.isTokenValid(userID, adminToken);
+    const tokenIssuedAt = req.user.iat;
+    const TokenIsValid = await TokenRevokedHandler.isTokenValid(userID, adminToken, tokenIssuedAt);
 
     let activeSpan = TelemAPI.trace.getSpan(TelemAPI.context.active());
     activeSpan.setAttribute("user.id", userID);
