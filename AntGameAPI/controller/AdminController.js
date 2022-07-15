@@ -23,6 +23,7 @@ const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
 const UserHandler = require("../handler/UserHandler");
 const FlagHandler = require("../handler/FlagHandler");
+const TokenRevokedHandler = require("../handler/TokenRevokedHandler");
 const { addStatToResponse } = require("../helpers/AuthStatHelpers");
 const Logger = require("../Logger");
 const { getChampionshipDetailsFromDB } = require("../dao/ChampionshipDao");
@@ -588,6 +589,18 @@ async function generateNewServiceToken(req, res) {
 }
 //#endregion ServiceTokens
 
+//#region Auth Control
+async function revokeAllTokens(req, res) {
+  try {
+    TokenRevokedHandler.RevokeTokens();
+
+    res.send("OK");
+  } catch (e) {
+    Logger.logError("AuthController.RevokeAllTokens", e);
+    res.sendStatus(500);
+  }
+}
+
 const send400 = (res, message) => {
   res.status(400);
   res.send(message);
@@ -616,4 +629,5 @@ module.exports = {
   dumpFlagCache,
   generateAndBindSolutionImage,
   generateNewServiceToken,
+  revokeAllTokens,
 };

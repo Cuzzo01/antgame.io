@@ -96,6 +96,8 @@ app.post("/admin/serviceToken", RejectNotAdmin, _adminController.generateNewServ
 app.delete("/admin/leaderboardCache", RejectNotAdmin, _adminController.dumpLeaderboardCache);
 app.delete("/admin/userCache", RejectNotAdmin, _adminController.dumpUserCache);
 app.delete("/admin/flagCache", RejectNotAdmin, _adminController.dumpFlagCache);
+
+app.post("/admin/revokeTokens", RejectNotAdmin, _adminController.revokeAllTokens);
 //#endregion Admin
 
 app.get("/service/healthCheck", ServiceEndpointAuth, _serviceController.healthCheck);

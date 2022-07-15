@@ -1,3 +1,5 @@
+const TelemAPI = require("@opentelemetry/api");
+
 class Logger {
   constructor() {
     this.logger = require("logzio-nodejs").createLogger({
@@ -19,7 +21,9 @@ class Logger {
   log(obj) {
     if (!this.env) this.init();
     if (this.env !== "LOCAL") {
-      this.logger.log({ ...obj, env: this.env });
+      const activeSpan = TelemAPI.trace.getSpan(TelemAPI.context.active());
+      const traceID = activeSpan._spanContext.traceId;
+      this.logger.log({ ...obj, env: this.env, traceID });
     } else {
       console.log(new Date().toISOString(), JSON.stringify(obj));
     }

@@ -11,7 +11,11 @@ const traceExporter = new OTLPTraceExporter();
 
 const sdk = new NodeSDK({
   traceExporter,
-  instrumentations: [getNodeAutoInstrumentations()],
+  instrumentations: [
+    getNodeAutoInstrumentations({
+      "@opentelemetry/instrumentation-http": { ignoreIncomingPaths: ["/health"] },
+    }),
+  ],
 });
 
 sdk.start();
