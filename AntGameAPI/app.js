@@ -50,9 +50,8 @@ const UnauthenticatedRoutes = [
 initializeScheduledTasks();
 SpacesService.initializeConnection();
 
-app.use(express.json());
-
 app.use(responseTime(ResponseLogger));
+app.use(express.json());
 
 app.use(
   jwt({ secret: TokenHandler.secret, algorithms: ["HS256"] }).unless({
