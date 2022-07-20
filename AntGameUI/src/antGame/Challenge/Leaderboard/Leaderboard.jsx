@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
-import { getLeaderboard } from "../../Challenge/ChallengeService";
+import { getLeaderboard, getPublicLeaderboard } from "../../Challenge/ChallengeService";
 import styles from "./Leaderboard.module.css";
 import AuthHandler from "../../Auth/AuthHandler";
 import DailyChallengePicker from "./DailyChallengePicker";
@@ -18,6 +18,14 @@ const Leaderboard = props => {
   const [playerCount, setPlayerCount] = useState(false);
   const [isDaily, setIsDaily] = useState(false);
   const [solutionImagePath, setSolutionImagePath] = useState(false);
+
+  const setError = useCallback(() => {
+    setRunData(<h5>No records for this challenge</h5>);
+    setTitle("Error");
+    setPlayerCount(false);
+    setSolutionImagePath(false);
+    document.title = "Leaderboard";
+  }, []);
 
   const setLeaderboardData = useCallback(
     ({ daily, leaderboard, name, playerCount, solutionImage }) => {
@@ -60,17 +68,19 @@ const Leaderboard = props => {
   const fetchLeaderboard = useCallback(
     ({ id }) => {
       getLeaderboard(id).then(data => {
-        if (window.location.pathname.includes("daily")) setIsDaily(true);
-        if (data === null) {
-          setLoading(false);
-          setRunData(<h5>No records for this challenge</h5>);
-          setTitle("Error");
-          setPlayerCount(false);
-          setSolutionImagePath(false);
-          document.title = "Leaderboard";
-          return;
-        }
-        setLeaderboardData(data);
+        if (data === null) setError();
+        else setLeaderboardData(data);
+        setLoading(false);
+      });
+    },
+    [setLeaderboardData, setError]
+  );
+
+  const fetchPublicLeaderboard = useCallback(
+    ({ id }) => {
+      getPublicLeaderboard(id).then(data => {
+        if (data === null) setError();
+        else setLeaderboardData(data);
         setLoading(false);
       });
     },
@@ -78,10 +88,11 @@ const Leaderboard = props => {
   );
 
   useEffect(() => {
-    if (!AuthHandler.loggedIn)
-      history.replace(`/login?redirect=/challenge/${challengeID}/leaderboard`);
+    if (window.location.pathname.includes("daily")) setIsDaily(true);
+    
+    if (!AuthHandler.loggedIn) fetchPublicLeaderboard({ id: challengeID });
     else fetchLeaderboard({ id: challengeID });
-  }, [challengeID, fetchLeaderboard, history]);
+  }, [challengeID, fetchLeaderboard, fetchPublicLeaderboard, history]);
 
   return loading ? null : (
     <div className={styles.container}>

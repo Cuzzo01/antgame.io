@@ -124,7 +124,6 @@ app.post("/auth/createUser", RejectNotAdmin, _authController.createUser);
 
 app.post("/challenge/artifact", runSubmissionLimiter, _challengeController.postRun);
 app.get("/challenge/:id/records", _challengeController.getRecords);
-app.get("/challenge/dailyList", _challengeController.getDailyChallenges);
 app.get("/challenge/:id", _challengeController.getChallenge);
 app.get("/challenge/:id/pr", _challengeController.getPRHomeLocations);
 app.get("/challenges/active", _challengeController.getActiveChallenges);
@@ -132,6 +131,7 @@ app.get("/challenge/:id/leaderboard", _challengeController.getLeaderboard);
 
 app.get("/public/activeChallenges", _publicController.getActiveChallenges);
 app.get("/public/challengeLeaderboard/:id", _publicController.getChallengeLeaderboard);
+app.get("/public/dailyList", _publicController.getDailyChallenges);
 
 app.post("/seed", getSeedLimiter, _seedController.getSeed);
 

@@ -520,20 +520,6 @@ async function getPRHomeLocations(req, res) {
   }
 }
 
-async function getDailyChallenges(req, res) {
-  try {
-    const result = await ChallengeDao.getDailyChallengesInReverseOrder({ limit: 40 });
-    const mappedResult = result.map(config => {
-      return { id: config._id, name: config.name };
-    });
-    res.send(mappedResult);
-  } catch (e) {
-    Logger.logError("ChallengeController.GetDailyChallenges", e);
-    res.status(500);
-    res.send("Get leader board failed");
-  }
-}
-
 module.exports = {
   postRun,
   getChallenge,
@@ -541,5 +527,4 @@ module.exports = {
   getRecords,
   getLeaderboard,
   getPRHomeLocations,
-  getDailyChallenges,
 };
