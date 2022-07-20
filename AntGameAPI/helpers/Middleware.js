@@ -38,10 +38,12 @@ const TokenVerifier = async function (req, res, next) {
     const userID = req.user.id;
     const adminToken = req.user.admin === true;
     const tokenIssuedAt = req.user.iat;
+    const clientID = req.user.clientID;
     const TokenIsValid = await TokenRevokedHandler.isTokenValid(userID, adminToken, tokenIssuedAt);
 
     let activeSpan = TelemAPI.trace.getSpan(TelemAPI.context.active());
     activeSpan.setAttribute("user.id", userID);
+    activeSpan.setAttribute("user.clientID", clientID);
     activeSpan.setAttribute("user.name", await ObjectIDToNameHandler.getUsername(userID));
 
     if (TokenIsValid === false) {
