@@ -1,6 +1,7 @@
 const Logger = require("../Logger");
+const ChallengeDao = require("../dao/ChallengeDao");
 const ActiveChallengesHandler = require("../handler/ActiveChallengesHandler");
-const LeaderboardHandler = require("../handler/LeaderboardHandler");
+const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const FlagHandler = require("../handler/FlagHandler");
 const { GenerateChallengeLeaderboardData } = require("../helpers/LeaderboardHelper");
@@ -28,7 +29,6 @@ async function getActiveChallenges(req, res) {
 async function getChallengeLeaderboard(req, res) {
   try {
     let challengeID = req.params.id;
-
     const leaderboardData = await GenerateChallengeLeaderboardData({ challengeID });
 
     if (!leaderboardData) {
@@ -37,15 +37,16 @@ async function getChallengeLeaderboard(req, res) {
       return;
     }
 
+    const currentDaily = await DailyChallengeHandler.getActiveDailyChallenge();
+    if (challengeID.toLowerCase() === "daily") challengeID = currentDaily;
+
     const response = {
       name: await ObjectIDToNameHandler.getChallengeName(challengeID),
       leaderboard: leaderboardData.leaderboardRows,
       daily: leaderboardData.isDaily,
       solutionImage: leaderboardData.solutionImgPath,
+      playerCount: leaderboardData.playerCount,
     };
-
-    if (await FlagHandler.getFlagValue("show-player-count-on-leaderboard"))
-      response.playerCount = await LeaderboardHandler.getChallengePlayerCount(challengeID);
 
     const cacheTime = await FlagHandler.getFlagValue("time-to-cache-public-endpoints");
     res.set("Cache-Control", `public, max-age=${cacheTime}`);
@@ -56,4 +57,20 @@ async function getChallengeLeaderboard(req, res) {
     res.sendStatus(500);
   }
 }
-module.exports = { getActiveChallenges, getChallengeLeaderboard };
+
+async function getDailyChallenges(req, res) {
+  try {
+    const result = await ChallengeDao.getDailyChallengesInReverseOrder({ limit: 40 });
+    const mappedResult = result.map(config => {
+      return { id: config._id, name: config.name };
+    });
+
+    res.set("Cache-Control", `public, max-age=60`);
+    res.send(mappedResult);
+  } catch (e) {
+    Logger.logError("ChallengeController.GetDailyChallenges", e);
+    res.status(500);
+    res.send("Get leader board failed");
+  }
+}
+module.exports = { getActiveChallenges, getChallengeLeaderboard, getDailyChallenges };

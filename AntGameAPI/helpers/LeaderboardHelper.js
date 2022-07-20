@@ -48,6 +48,10 @@ const GenerateChallengeLeaderboardData = async ({ challengeID }) => {
     }
   }
 
-  return { leaderboardRows, solutionImgPath, isDaily };
+  let playerCount;
+  if (await FlagHandler.getFlagValue("show-player-count-on-leaderboard"))
+    playerCount = await LeaderboardHandler.getChallengePlayerCount(challengeID);
+
+  return { leaderboardRows, solutionImgPath, isDaily, playerCount };
 };
 module.exports = { GenerateChallengeLeaderboardData };
