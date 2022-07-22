@@ -47,11 +47,6 @@ export class MapGraphics {
     for(var i = 0; i < lowerCount; i++){
         lowerSizeMapIndexes.push(Math.floor(lowerCountIndexSpacing * i));
     }
-    var higherCountMapIndexes = [];
-
-    for(let i = 0; i < mapSize; i++){
-        if(!lowerSizeMapIndexes.includes(i)) higherCountMapIndexes.push(i);
-    }
 
     var mapOfPixels = {};
     var canvasLocation = 0;
@@ -165,7 +160,6 @@ export class MapGraphics {
     this._graphics.fill(color);
     this._graphics.stroke(0);
     this._graphics.strokeWeight(4);
-    console.log('text')
     this._graphics.text(
       textValue,
       BorderWeight + intMapXY[0] * this.pixelDensity[0] + this.pixelDensity[0] / 2,
