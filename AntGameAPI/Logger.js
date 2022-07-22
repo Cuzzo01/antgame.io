@@ -62,8 +62,12 @@ class Logger {
     });
   }
 
-  logDBCleanupMessage(name, deletedCount) {
-    this.log({ message: "db cleanup cron", name: name, deleted: deletedCount });
+  info({ source, infoText }) {
+    this.log({
+      message: "info",
+      source,
+      infoText,
+    });
   }
 }
 const SingletonInstance = new Logger();
