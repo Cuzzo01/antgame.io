@@ -15,7 +15,10 @@ const removeAnonAndTagLessRunsOlderThan7Days = async () => {
     tags: [],
     submissionTime: { $lt: new Date(Date.now() - sevenDaysInMilliseconds) },
   });
-  Logger.logDBCleanupMessage("removeAnonAndTagLessRunsOlderThan7Days", result.deletedCount);
+  Logger.info({
+    source: "removeAnonAndTagLessRunsOlderThan7Days",
+    infoText: `cron deleted ${result.deletedCount} records`,
+  });
 };
 
 module.exports = { removeAnonAndTagLessRunsOlderThan7Days };

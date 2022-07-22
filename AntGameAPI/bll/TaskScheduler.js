@@ -2,6 +2,7 @@ const { scheduleJob } = require("node-schedule");
 const { handleDailyChallengeChange } = require("./DailyChallengeCron");
 const Logger = require("../Logger");
 const { removeAnonAndTagLessRunsOlderThan7Days } = require("../dao/DBCleanUp");
+const { RefreshActiveChallengeCache } = require("./ActiveChallengeRefresher");
 
 const initializeScheduledTasks = () => {
   if (process.env.environment !== "LOCAL") {
@@ -11,7 +12,15 @@ const initializeScheduledTasks = () => {
       { hour: 0, minute: 0 },
       removeAnonAndTagLessRunsOlderThan7Days
     );
-    Logger.logDBCleanupMessage(`cron initialized, next run at ${dbCleanupJob.nextInvocation()}`);
+    Logger.info({
+      source: "removeAnonAndTagLessRunsOlderThan7Days",
+      infoText: `cron initialized, next run at ${dbCleanupJob.nextInvocation()}`,
+    });
+    const activeChallengeJob = scheduleJob("*/10 * * * *", RefreshActiveChallengeCache);
+    Logger.info({
+      source: "activeChallengeJob",
+      infoText: `cron initialized, next run at ${activeChallengeJob.nextInvocation()}`,
+    });
   } else {
     console.log("Skipping initializing crons");
   }
