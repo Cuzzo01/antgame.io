@@ -26,23 +26,23 @@ export class MapGraphics {
   getMixedFractionInfo(numerator, denominator) {
     var whole = 0;
     while(numerator > denominator) {
-        numerator-=denominator;
+        numerator -= denominator;
         whole ++;
     }
-    return [whole, numerator, denominator];
+    return {whole, numerator, denominator};
   }
 
   getPixelSizeInfo (mapSize, canvasSize) {
     var mixedFraction = this.getMixedFractionInfo(canvasSize, mapSize);
-    var amountShort = mixedFraction[2] - mixedFraction[1];
-    var amountLong = mixedFraction[1];
+    var amountShort = mixedFraction.denominator - mixedFraction.numerator;
+    var amountLong = mixedFraction.numerator;
     var lowerCount = amountLong < amountShort ? amountLong : amountShort;
 
     
-    var lowerCountMatchingSize = amountLong < amountShort ? mixedFraction[0] + 1 : mixedFraction[0];
-    var higherCountMatchingSize = amountLong > amountShort ? mixedFraction[0] + 1 : mixedFraction[0];
+    var lowerCountMatchingSize = amountLong < amountShort ? mixedFraction.whole + 1 : mixedFraction.whole;
+    var higherCountMatchingSize = amountLong > amountShort ? mixedFraction.whole + 1 : mixedFraction.whole;
 
-    var lowerCountIndexSpacing = mixedFraction[2] / lowerCount;
+    var lowerCountIndexSpacing = mixedFraction.denominator / lowerCount;
     var lowerSizeMapIndexes = [];
     for(var i = 0; i < lowerCount; i++){
         lowerSizeMapIndexes.push(Math.floor(lowerCountIndexSpacing * i));
@@ -165,10 +165,11 @@ export class MapGraphics {
     this._graphics.fill(color);
     this._graphics.stroke(0);
     this._graphics.strokeWeight(4);
+    console.log('text')
     this._graphics.text(
       textValue,
-      Math.floor(BorderWeight + intMapXY[0] * this.pixelDensity[0] + this.pixelDensity[0] / 2),
-      Math.floor(BorderWeight + intMapXY[1] * this.pixelDensity[1] + this.pixelDensity[1] / 2)
+      BorderWeight + intMapXY[0] * this.pixelDensity[0] + this.pixelDensity[0] / 2,
+      BorderWeight + intMapXY[1] * this.pixelDensity[1] + this.pixelDensity[1] / 2,
     );
     this.lastCell = false;
     this._graphics.strokeWeight(0);
@@ -207,12 +208,14 @@ export class MapGraphics {
     let mapY;
 
     for(const key in this.drawingInfoX){
-      if(this.drawingInfoX[key].startingPixel <= canvasXY[0] - BorderWeight && canvasXY[0] - BorderWeight <= this.drawingInfoX[key].startingPixel + this.drawingInfoX[key].weight){
+      const keyDrawingInfo = this.drawingInfoX[key];
+      if(keyDrawingInfo.startingPixel <= canvasXY[0] - BorderWeight && canvasXY[0] - BorderWeight <= keyDrawingInfo.startingPixel + keyDrawingInfo.weight){
         mapX = key;
       }
     }
     for(const key in this.drawingInfoY){
-      if(this.drawingInfoY[key].startingPixel <= canvasXY[1] - BorderWeight && canvasXY[1] - BorderWeight <= this.drawingInfoY[key].startingPixel + this.drawingInfoY[key].weight){
+      const keyDrawingInfo = this.drawingInfoY[key];
+      if(keyDrawingInfo.startingPixel <= canvasXY[1] - BorderWeight && canvasXY[1] - BorderWeight <= keyDrawingInfo.startingPixel + keyDrawingInfo.weight){
         mapY = key;
       }
     }
