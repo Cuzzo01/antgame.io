@@ -93,7 +93,9 @@ export default function GameMenu(props) {
         className={cssStyles.playButton}
         text={props.playState ? <PauseIcon /> : <PlayIcon />}
         handler={async () => {
+          setDisablePlay(true);
           const result = await props.playButtonHandler(!props.playState);
+          setDisablePlay(false);
           if (result === "reset") setFlashReset(true);
         }}
       />

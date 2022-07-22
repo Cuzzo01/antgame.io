@@ -76,6 +76,18 @@ export async function getLeaderboard(challengeID) {
     });
 }
 
+export async function getPublicLeaderboard(challengeID) {
+  return axios
+    .get(`/api/public/challengeLeaderboard/${challengeID}`)
+    .then(res => {
+      return res.data;
+    })
+    .catch(error => {
+      console.error(error);
+      return null;
+    });
+}
+
 export async function getPRInfo(challengeID) {
   return axios
     .get(`/api/challenge/${challengeID}/pr`)
@@ -90,7 +102,7 @@ export async function getPRInfo(challengeID) {
 
 export async function getDailyChallengeList() {
   return axios
-    .get(`/api/challenge/dailyList`)
+    .get(`/api/public/dailyList`)
     .then(res => {
       return res.data;
     })

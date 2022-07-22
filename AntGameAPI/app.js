@@ -50,9 +50,8 @@ const UnauthenticatedRoutes = [
 initializeScheduledTasks();
 SpacesService.initializeConnection();
 
-app.use(express.json());
-
 app.use(responseTime(ResponseLogger));
+app.use(express.json());
 
 app.use(
   jwt({ secret: TokenHandler.secret, algorithms: ["HS256"] }).unless({
@@ -96,6 +95,8 @@ app.post("/admin/serviceToken", RejectNotAdmin, _adminController.generateNewServ
 app.delete("/admin/leaderboardCache", RejectNotAdmin, _adminController.dumpLeaderboardCache);
 app.delete("/admin/userCache", RejectNotAdmin, _adminController.dumpUserCache);
 app.delete("/admin/flagCache", RejectNotAdmin, _adminController.dumpFlagCache);
+
+app.post("/admin/revokeTokens", RejectNotAdmin, _adminController.revokeAllTokens);
 //#endregion Admin
 
 app.get("/service/healthCheck", ServiceEndpointAuth, _serviceController.healthCheck);
@@ -123,13 +124,14 @@ app.post("/auth/createUser", RejectNotAdmin, _authController.createUser);
 
 app.post("/challenge/artifact", runSubmissionLimiter, _challengeController.postRun);
 app.get("/challenge/:id/records", _challengeController.getRecords);
-app.get("/challenge/dailyList", _challengeController.getDailyChallenges);
 app.get("/challenge/:id", _challengeController.getChallenge);
 app.get("/challenge/:id/pr", _challengeController.getPRHomeLocations);
 app.get("/challenges/active", _challengeController.getActiveChallenges);
 app.get("/challenge/:id/leaderboard", _challengeController.getLeaderboard);
 
 app.get("/public/activeChallenges", _publicController.getActiveChallenges);
+app.get("/public/challengeLeaderboard/:id", _publicController.getChallengeLeaderboard);
+app.get("/public/dailyList", _publicController.getDailyChallenges);
 
 app.post("/seed", getSeedLimiter, _seedController.getSeed);
 
