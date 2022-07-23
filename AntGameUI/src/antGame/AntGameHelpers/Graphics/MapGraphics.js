@@ -16,36 +16,24 @@ export class MapGraphics {
     this.pixelDensity = [];
     this.lastCell = "";
     this.brushColors = [];
-    this.mapCellPixels = [{}, {}];
+    this.cellPixelInfo = [{}, {}];
 
     this._graphics.noStroke();
     this.populateBrushColors();
   }
 
-  getMixedFraction(numerator, denominator) {
-    var whole = 0;
-    while(numerator > denominator) {
-        numerator -= denominator;
-        whole ++;
-    }
-    return {whole, numerator, denominator};
-  }
-
-  getPixelSizeInfo (mapSize, canvasSize) {
-    const mixedFraction = this.getMixedFraction(canvasSize, mapSize);
-
-    const spaceBetweenLongCells = mixedFraction.denominator / mixedFraction.numerator;
-    const longCellMapIndexes = [];
-    for(let i = 0; i < mixedFraction.numerator; i++){
-        longCellMapIndexes.push(Math.floor(spaceBetweenLongCells * i));
-    }
+  getPixelSizeInfo(mapSize, canvasSize) {
+    const nominalCellSize = Math.floor(canvasSize / mapSize);
+    const pixelsToMakeUp = canvasSize % mapSize;
+    const spaceBetweenLongCells = Math.floor(mapSize / pixelsToMakeUp);
 
     const mapToPixelInfo = {};
     let canvasLocation = 0;
-    for(let i = 0; i < mapSize; i++){
-      const weight = longCellMapIndexes.includes(i) ? mixedFraction.whole + 1 : mixedFraction.whole;
-      mapToPixelInfo[i] = {startingPixel: canvasLocation, weight: weight};
-        canvasLocation += weight;
+    for (let i = 0; i < mapSize; i++) {
+      const isLongCell = i % spaceBetweenLongCells === 0;
+      const weight = isLongCell ? nominalCellSize + 1 : nominalCellSize;
+      mapToPixelInfo[i] = { startingPixel: canvasLocation, weight };
+      canvasLocation += weight;
     }
     return mapToPixelInfo;
   }
@@ -57,10 +45,10 @@ export class MapGraphics {
       (drawableWidth / MapBounds[0]).toFixed(2),
       (drawableHeight / MapBounds[1]).toFixed(2),
     ];
-    this.mapCellPixels = [
+    this.cellPixelInfo = [
       this.getPixelSizeInfo(MapBounds[0], drawableWidth),
-      this.getPixelSizeInfo(MapBounds[1], drawableHeight)
-    ]
+      this.getPixelSizeInfo(MapBounds[1], drawableHeight),
+    ];
   }
 
   populateBrushColors() {
@@ -171,12 +159,14 @@ export class MapGraphics {
 
   drawCellColor(mapXY) {
     const intMapXY = MapXYToInt(mapXY);
+    const pixelInfoX = this.cellPixelInfo[0][intMapXY[0]];
+    const pixelInfoY = this.cellPixelInfo[1][intMapXY[1]];
     this._graphics.rect(
-      this.mapCellPixels[0][intMapXY[0]].startingPixel + BorderWeight,
-      this.mapCellPixels[1][intMapXY[1]].startingPixel + BorderWeight,
-      this.mapCellPixels[0][intMapXY[0]].weight,
-      this.mapCellPixels[1][intMapXY[1]].weight
-      );
+      pixelInfoX.startingPixel + BorderWeight,
+      pixelInfoY.startingPixel + BorderWeight,
+      pixelInfoX.weight,
+      pixelInfoY.weight
+    );
   }
 
   mapXYToCanvasXY(mapXY) {
@@ -190,26 +180,29 @@ export class MapGraphics {
     let mapX;
     let mapY;
 
-    for(const key in this.mapCellPixels[0]){
-      const keyDrawingInfo = this.mapCellPixels[0][key];
-      if(this.canvasLocationInsideRange(canvasXY[0], keyDrawingInfo)){
-        mapX = key;
-      }
-    }
-    for(const key in this.mapCellPixels[1]){
-      const keyDrawingInfo = this.mapCellPixels[1][key];
-      if(this.canvasLocationInsideRange(canvasXY[1], keyDrawingInfo)){
-        mapY = key;
+    for (const xPos in this.cellPixelInfo[0]) {
+      const keyDrawingInfo = this.cellPixelInfo[0][xPos];
+      if (this.canvasLocationInsideRange(canvasXY[0], keyDrawingInfo)) {
+        mapX = xPos;
       }
     }
 
-    return [
-      Math.floor(mapX), Math.floor(mapY)
-    ];
+    for (const yPos in this.cellPixelInfo[1]) {
+      const keyDrawingInfo = this.cellPixelInfo[1][yPos];
+      if (this.canvasLocationInsideRange(canvasXY[1], keyDrawingInfo)) {
+        mapY = yPos;
+      }
+    }
+
+    return [parseInt(mapX), parseInt(mapY)];
   }
 
   canvasLocationInsideRange(canvasLocation, drawingInfo) {
-    return drawingInfo.startingPixel <= canvasLocation - BorderWeight && canvasLocation - BorderWeight <= drawingInfo.startingPixel + drawingInfo.weight
+    const adjustedLocation = canvasLocation - BorderWeight;
+    const startingPixel = drawingInfo.startingPixel;
+    return (
+      startingPixel <= adjustedLocation && adjustedLocation <= startingPixel + drawingInfo.weight
+    );
   }
 }
 
