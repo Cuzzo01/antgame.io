@@ -50,11 +50,6 @@ export class MapGraphics {
     return mapToPixelInfo;
   }
 
-  setupDrawingInfo(drawableHeight, drawableWidth) {
-    this.mapCellPixels[0] = this.getPixelSizeInfo(MapBounds[0], drawableWidth);
-    this.mapCellPixels[1] = this.getPixelSizeInfo(MapBounds[1], drawableHeight);
-  }
-
   setupMap(canvasWidth, canvasHeight) {
     const drawableWidth = canvasWidth - BorderWeight * 2;
     const drawableHeight = canvasHeight - BorderWeight * 2;
@@ -62,7 +57,10 @@ export class MapGraphics {
       (drawableWidth / MapBounds[0]).toFixed(2),
       (drawableHeight / MapBounds[1]).toFixed(2),
     ];
-    this.setupDrawingInfo(drawableHeight, drawableWidth);
+    this.mapCellPixels = [
+      this.getPixelSizeInfo(MapBounds[0], drawableWidth),
+      this.getPixelSizeInfo(MapBounds[1], drawableHeight)
+    ]
   }
 
   populateBrushColors() {
