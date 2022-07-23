@@ -151,8 +151,8 @@ export class MapGraphics {
     this._graphics.strokeWeight(4);
     this._graphics.text(
       textValue,
-      BorderWeight + intMapXY[0] * this.pixelDensity[0] + this.pixelDensity[0] / 2,
-      BorderWeight + intMapXY[1] * this.pixelDensity[1] + this.pixelDensity[1] / 2,
+      Math.floor(BorderWeight + intMapXY[0] * this.pixelDensity[0] + this.pixelDensity[0] / 2),
+      Math.floor(BorderWeight + intMapXY[1] * this.pixelDensity[1] + this.pixelDensity[1] / 2)
     );
     this.lastCell = false;
     this._graphics.strokeWeight(0);
