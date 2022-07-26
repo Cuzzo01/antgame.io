@@ -42,6 +42,21 @@ body {
   }
 }
 
+.dailyThumbnail {
+  grid-column: span 2;
+  margin: 0 1em;
+}
+
+.dailyThumbnail img {
+  background-color: black;
+  width: 100%;
+  height: 100%;
+  border: 2px black solid;
+  border-radius: 0.5em;
+  padding: 0.2em;
+  margin: 0.5em 0;
+}
+
 .dailyLinks {
   display: grid;
   grid-template-columns: 50% auto;
@@ -125,15 +140,7 @@ body {
 }
 
 .thumbnail img {
-  width: 23.6rem;
-  height: 14.13rem;
-}
-
-.thumbnailContainer {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
 }
 
 .thumbnailContainer img {

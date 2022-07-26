@@ -2,12 +2,11 @@ import { useEffect, useState } from "react";
 import styles from "./ChallengePage.module.css";
 import { getActiveChallenges, getPublicActiveChallenges } from "../../Challenge/ChallengeService";
 import AuthHandler from "../../Auth/AuthHandler";
-import { Link, useHistory } from "react-router-dom";
-import { HomeIcon, TimeIcon } from "../../AntGameHelpers/Icons";
-import loaderGif from "../../../assets/thumbnailLoader.gif";
+import { useHistory } from "react-router-dom";
 import { getFlag } from "../../Helpers/FlagService";
-import DailyCountdown from "../DailyCountdown/DailyCountdown";
-import Username from "../../User/Username";
+import { DailyChallengeCard } from "./DailyChallengeCard";
+import { ChallengeDetails, ChallengeLink, LeaderboardLink, PBDisplay, WRDisplay } from "./Helpers";
+import { Thumbnail } from "./Thumbnail";
 
 const ChallengeList = () => {
   const InitialList = Array(12).fill(<ChallengeCard showThumbnails loading />);
@@ -43,6 +42,7 @@ const ChallengeList = () => {
             challenge={challenge}
             record={records[challenge.id]}
             championshipID={challenge.championshipID}
+            thumbnailURL={challenge.thumbnailURL}
           />
         );
         seenDaily = true;
@@ -78,16 +78,7 @@ const ChallengeList = () => {
 };
 export default ChallengeList;
 
-const ChallengeCard = ({
-  name,
-  time,
-  homes,
-  records,
-  id,
-  showThumbnails,
-  thumbnailURL,
-  loading,
-}) => {
+const ChallengeCard = ({ name, time, homes, records, id, showThumbnails, thumbnailURL }) => {
   const [thumbnailLoading, setThumbnailLoading] = useState(true);
 
   return (
@@ -116,169 +107,7 @@ const ChallengeCard = ({
           <LeaderboardLink id={id} />
         </div>
       </div>
-      {showThumbnails ? (
-        <div className={styles.thumbnail}>
-          <div
-            className={styles.thumbnailContainer}
-            style={thumbnailLoading ? { display: "none" } : null}
-          >
-            <img
-              src={thumbnailURL}
-              alt="Map thumbnail"
-              onLoad={() => setThumbnailLoading(false)}
-              onError={() => setThumbnailLoading("error")}
-            />
-          </div>
-          {thumbnailLoading ? (
-            <div className={styles.thumbnailLoader}>
-              {loading || (thumbnailURL && thumbnailLoading !== "error") ? (
-                <img src={loaderGif} alt="Loader" />
-              ) : (
-                <div>No Thumbnail</div>
-              )}
-            </div>
-          ) : null}
-        </div>
-      ) : null}
+      {showThumbnails ? <Thumbnail url={thumbnailURL} /> : null}
     </div>
   );
-};
-
-const DailyChallengeCard = ({ challenge, record, championshipID }) => {
-  const [showChampionshipLink, setShowChampionshipLink] = useState(null);
-
-  useEffect(() => {
-    const getChampionshipFlag = async () => {
-      getFlag("show-championship-link")
-        .then(flag => {
-          setShowChampionshipLink(flag);
-        })
-        .catch(() => setShowChampionshipLink(false));
-    };
-    getChampionshipFlag();
-  }, []);
-
-  return (
-    <div className={styles.dailyChallengeBox}>
-      <div className={styles.dailyTitle}>
-        <span>
-          <strong>
-            Daily Challenge - Ends in <DailyCountdown />
-          </strong>
-        </span>
-      </div>
-      <div>
-        <div className={styles.challengeInfo}>
-          <div className={styles.challengeName}>
-            <span>{challenge?.name}</span>
-          </div>
-          <ChallengeDetails time={challenge?.time} homes={challenge?.homes} />
-        </div>
-        <div className={styles.records}>
-          <div className={styles.challengeWR}>
-            WR:
-            <WRDisplay wr={record?.wr} />
-          </div>
-          <div className={styles.challengePR}>
-            PR:
-            <PBDisplay pb={record?.pb} rank={record?.rank} runs={record?.runs} />
-          </div>
-        </div>
-      </div>
-      {showChampionshipLink !== null ? (
-        <div className={styles.dailyLinks}>
-          <ChallengeLink id={"daily"} makeBig={showChampionshipLink} />
-          <LeaderboardLink id={"daily"} />
-          {showChampionshipLink ? <ChampionshipLink id={championshipID} cols /> : null}
-        </div>
-      ) : null}
-    </div>
-  );
-};
-
-const WRDisplay = ({ wr }) => {
-  if (wr?.score) {
-    const usernameLength = wr.username.length;
-    const scoreLength = wr.score.toString().length;
-    const totalLength = usernameLength + scoreLength + 1; // one for the dash
-    return (
-      <span>
-        {wr.score}-<Username id={wr.id} name={wr.username} />
-        {totalLength < 15 ? (
-          <span className={`${styles.smallText} ${styles.age}`}>({wr.age} ago)</span>
-        ) : null}
-        {totalLength >= 15 && totalLength < 18 ? (
-          <span className={`${styles.smallText} ${styles.age}`}>({wr.age})</span>
-        ) : null}
-      </span>
-    );
-  }
-  return "No record";
-};
-
-const PBDisplay = ({ pb, rank, runs }) => {
-  if (pb) {
-    return (
-      <span>
-        {pb}
-        {(rank < 1000 || runs < 100) && " "}(
-        {rank && (
-          <span>
-            #<strong>{rank}</strong>,&nbsp;
-          </span>
-        )}
-        {runs} run{runs > 1 && "s"})
-      </span>
-    );
-  }
-  return "No record";
-};
-
-const ChallengeDetails = ({ time, homes }) => {
-  return (
-    <div className={styles.challengeDetails}>
-      <div>
-        <TimeIcon />
-        &nbsp;{getDisplayTime(time)}
-      </div>
-      <div>
-        <HomeIcon />
-        &nbsp;{homes}
-      </div>
-    </div>
-  );
-};
-
-const LeaderboardLink = props => {
-  return (
-    <Link className={styles.challengeLink} to={`/challenge/${props.id}/leaderboard`}>
-      Leaderboard
-    </Link>
-  );
-};
-
-const ChampionshipLink = props => {
-  return (
-    <Link className={styles.challengeLink} to={`/championship/${props.id}`}>
-      Championship
-    </Link>
-  );
-};
-
-const ChallengeLink = ({ id, makeBig }) => {
-  let className = styles.challengeLink;
-  if (makeBig) className += ` ${styles.bigLink}`;
-  return (
-    <a href={`/challenge/${id}`} className={className}>
-      Play
-    </a>
-  );
-};
-
-const getDisplayTime = seconds => {
-  if (!seconds) return "00:00";
-  const min = Math.floor(seconds / 60);
-  let sec = seconds % 60;
-  if (sec < 10) sec = "0" + sec;
-  return `${min}:${sec}`;
 };
