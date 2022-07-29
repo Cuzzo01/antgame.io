@@ -25,12 +25,14 @@ export class MapGraphics {
   getPixelSizeInfo(mapSize, canvasSize) {
     const nominalCellSize = Math.floor(canvasSize / mapSize);
     const pixelsToMakeUp = canvasSize % mapSize;
-    const spaceBetweenLongCells = Math.floor(mapSize / pixelsToMakeUp);
+    const spaceBetweenLongCells = mapSize / pixelsToMakeUp;
 
     const mapToPixelInfo = {};
     let canvasLocation = 0;
+    let longCellTracker = spaceBetweenLongCells;
     for (let i = 0; i < mapSize; i++) {
-      const isLongCell = i % spaceBetweenLongCells === 0;
+      const isLongCell = Math.floor(longCellTracker) === i;
+      longCellTracker += isLongCell ? spaceBetweenLongCells : 0;
       const weight = isLongCell ? nominalCellSize + 1 : nominalCellSize;
       mapToPixelInfo[i] = { startingPixel: canvasLocation, weight };
       canvasLocation += weight;
