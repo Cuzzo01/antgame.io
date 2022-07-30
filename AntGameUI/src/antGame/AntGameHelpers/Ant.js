@@ -166,7 +166,7 @@ export class Ant {
     if (this.dropsToSkip !== 0) return false;
     if (aheadScore === 0 && leftScore === 0 && rightScore === 0) return false;
 
-    if (aheadScore > 1500) {
+    if (aheadScore > 1550) {
       if (!this.lockedOnTrail) this.lockedOnTrail = true;
       if (this.missedCount) this.missedCount = 0;
     } else if (this.lockedOnTrail === true) {
