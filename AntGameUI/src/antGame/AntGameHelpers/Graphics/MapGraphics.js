@@ -31,7 +31,8 @@ export class MapGraphics {
     let canvasLocation = 0;
     let longCellTracker = spaceBetweenLongCells;
     for (let i = 0; i < mapSize; i++) {
-      const isLongCell = Math.floor(longCellTracker) === i;
+      const isLongCell = Math.floor(longCellTracker) === i 
+        || (i === mapSize - 1 && canvasLocation + nominalCellSize < canvasSize);      
       longCellTracker += isLongCell ? spaceBetweenLongCells : 0;
       const weight = isLongCell ? nominalCellSize + 1 : nominalCellSize;
       mapToPixelInfo[i] = { startingPixel: canvasLocation, weight };
