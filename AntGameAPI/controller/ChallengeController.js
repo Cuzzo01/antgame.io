@@ -64,12 +64,16 @@ async function postRun(req, res) {
       saveRun = "Verify Failed";
     }
 
+    let seedCreateDate;
     if (!user.anon) {
-      const { isValid, message } = await SeedBroker.checkSeed({
+      const { isValid, message, seedCreateTime } = await SeedBroker.checkSeed({
         seed: runData.GameConfig.seed,
         userID: user.id,
         homeLocations: runData.HomeLocations,
+        minAgeSeconds: challengeConfig.seconds - 1,
       });
+      seedCreateDate = seedCreateTime;
+
       if (!isValid) {
         verificationResult = false;
         runTags.push({
@@ -121,6 +125,7 @@ async function postRun(req, res) {
           timing: runData.Timing,
           foodConsumed: runData.FoodConsumed,
           seed: runData.GameConfig.seed,
+          seedCreateDate,
         },
         tags: runTags,
       };

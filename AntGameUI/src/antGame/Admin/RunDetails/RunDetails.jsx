@@ -56,6 +56,12 @@ const RunDetails = props => {
           </div>
           <div className={adminStyles.divSection}>
             <h5 className={adminStyles.bold}>Timing</h5>
+            {details.details.seedCreateDate && (
+              <div className={styles.timeRow}>
+                <strong>Seed Create:</strong>&nbsp;
+                {GetTimeString(details.details.seedCreateDate)}
+              </div>
+            )}
             <div className={styles.timeRow}>
               <strong>Game Start:</strong>&nbsp;
               {GetTimeString(getDateFromMilliseconds(details.details.timing.SystemStartTime))}
@@ -67,18 +73,18 @@ const RunDetails = props => {
             <div className={styles.timeRow}>
               <strong>Submission Time:</strong>&nbsp;{GetTimeString(details.submissionTime)}
             </div>
-            {details.verification?.startTime ? (
+            {details.verification?.startTime && (
               <div className={styles.timeRow}>
                 <strong>Verification Start:</strong>&nbsp;
                 {GetTimeString(details.verification.startTime)}
               </div>
-            ) : null}
-            {details.verification?.finishTime ? (
+            )}
+            {details.verification?.finishTime && (
               <div className={styles.timeRow}>
                 <strong>Verification Finish:</strong>&nbsp;
                 {GetTimeString(details.verification.finishTime)}
               </div>
-            ) : null}
+            )}
           </div>
           <div className={adminStyles.divSection}>
             <h5 className={adminStyles.bold}>Tags</h5>
