@@ -29,11 +29,12 @@ export class MapGraphics {
 
     const mapToPixelInfo = {};
     let canvasLocation = 0;
-    let longCellTracker = spaceBetweenLongCells;
+    let nextLongCell = spaceBetweenLongCells;
     for (let i = 0; i < mapSize; i++) {
-      const isLongCell = Math.floor(longCellTracker) === i 
-        || (i === mapSize - 1 && canvasLocation + nominalCellSize < canvasSize);      
-      longCellTracker += isLongCell ? spaceBetweenLongCells : 0;
+      const isLastCell = i === mapSize - 1;
+      const areCellsShort = canvasLocation + nominalCellSize < canvasSize;
+      const isLongCell = Math.floor(nextLongCell) === i || (isLastCell && areCellsShort);
+      if (isLongCell) nextLongCell += spaceBetweenLongCells;
       const weight = isLongCell ? nominalCellSize + 1 : nominalCellSize;
       mapToPixelInfo[i] = { startingPixel: canvasLocation, weight };
       canvasLocation += weight;
