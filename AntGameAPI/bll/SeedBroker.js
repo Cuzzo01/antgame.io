@@ -18,11 +18,15 @@ class SeedBroker {
       seed = Math.round(Math.random() * 1e8);
       result = await saveSeed({ seed, userID, homeLocations, expiresAt });
     }
-    this.seedCache.setItem(seed, { homeLocations, userID }, ttlSec);
+    this.seedCache.setItem(
+      seed,
+      { homeLocations, userID, createdAt: new Date().getTime() },
+      ttlSec
+    );
     return seed;
   }
 
-  async checkSeed({ homeLocations, userID, seed }) {
+  async checkSeed({ homeLocations, userID, seed, minAgeSeconds }) {
     let seedData = false;
     if (this.seedCache.isSetAndActive(seed)) seedData = this.seedCache.getValue(seed);
     else {
@@ -36,6 +40,16 @@ class SeedBroker {
 
     if (seedData === false) return { isValid: false, message: "couldn't find seed" };
     if (userID !== seedData.userID) return { isValid: false, message: "non-matching userID" };
+
+    let createTime;
+    if (seedData._id) {
+      createTime = new Date(seedData._id.getTimestamp()).getTime();
+    } else if (seedData.createdAt) {
+      createTime = seedData.createdAt;
+    }
+    const age = Math.round((new Date().getTime() - createTime) / 1000);
+    if (age < minAgeSeconds) return { isValid: false, message: "seed isn't old enough" };
+
     if (homeLocations.length !== seedData.homeLocations.length)
       return { isValid: false, message: "home count mismatch" };
     for (const index in homeLocations) {
@@ -47,7 +61,8 @@ class SeedBroker {
     }
 
     await deleteSeed({ seed });
-    return { isValid: true };
+    this.seedCache.expireValue(seed);
+    return { isValid: true, seedCreateTime: new Date(createTime) };
   }
 }
 const SingletonInstance = new SeedBroker();
