@@ -7,6 +7,7 @@ import { getFlag } from "../../Helpers/FlagService";
 import { DailyChallengeCard } from "./DailyChallengeCard";
 import { ChallengeDetails, ChallengeLink, LeaderboardLink, PBDisplay, WRDisplay } from "./Helpers";
 import { Thumbnail } from "./Thumbnail";
+import { ChampionshipCard } from "./ChampionshipCard";
 
 const ChallengeList = () => {
   const InitialList = Array(12).fill(<ChallengeCard showThumbnails loading />);
@@ -14,6 +15,7 @@ const ChallengeList = () => {
   const [loading, setLoading] = useState(true);
   const [menuList, setMenuList] = useState([]);
   const [dailyChallenge, setDailyChallenge] = useState(<DailyChallengeCard />);
+  const [championshipCard, setChampionshipCard] = useState(<ChampionshipCard />);
   const history = useHistory();
 
   useEffect(() => {
@@ -71,7 +73,10 @@ const ChallengeList = () => {
       <div className={styles.header}>
         <h2>AntGame.io - Challenges</h2>
       </div>
-      {dailyChallenge}
+      <div className={styles.bigCards}>
+        <span>{dailyChallenge}</span>
+        <span>{championshipCard}</span>
+      </div>
       <div className={styles.challengeGrid}>{loading ? InitialList : menuList}</div>
     </div>
   );
@@ -79,8 +84,6 @@ const ChallengeList = () => {
 export default ChallengeList;
 
 const ChallengeCard = ({ name, time, homes, records, id, showThumbnails, thumbnailURL }) => {
-  const [thumbnailLoading, setThumbnailLoading] = useState(true);
-
   return (
     <div className={styles.challengeGridElement}>
       <div className={styles.topBar}>

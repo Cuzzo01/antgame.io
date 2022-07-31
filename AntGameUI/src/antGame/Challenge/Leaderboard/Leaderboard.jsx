@@ -89,7 +89,7 @@ const Leaderboard = props => {
 
   useEffect(() => {
     if (window.location.pathname.includes("daily")) setIsDaily(true);
-    
+
     if (!AuthHandler.loggedIn) fetchPublicLeaderboard({ id: challengeID });
     else fetchLeaderboard({ id: challengeID });
   }, [challengeID, fetchLeaderboard, fetchPublicLeaderboard, history]);

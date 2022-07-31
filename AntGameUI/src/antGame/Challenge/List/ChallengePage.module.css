@@ -21,15 +21,23 @@ body {
   font-size: 0.75rem;
 }
 
-.dailyChallengeBox {
-  width: 35rem;
+.bigCard {
+  width: 26rem;
+  height: 30em;
   border-radius: 1rem;
   border: 0.2rem black solid;
   padding: 1rem;
   margin: 1rem auto;
   background-color: lightgray;
+}
+
+.challengeDetails {
   display: grid;
-  grid-template-columns: auto 17em;
+  align-items: end;
+}
+
+.dailyChallengeBox {
+  display: grid;
   grid-template-rows: 1.75em auto;
 }
 
@@ -43,8 +51,6 @@ body {
 }
 
 .dailyThumbnail {
-  grid-column: span 2;
-  margin: 0 1em;
 }
 
 .dailyThumbnail img {
@@ -63,10 +69,11 @@ body {
 }
 
 .dailyTitle {
-  grid-column: span 2;
-  margin: 0 auto;
   display: flex;
-  align-items: center;
+}
+
+.dailyTitle span {
+  margin: 0 auto;
 }
 
 .challengeGrid {
@@ -167,4 +174,10 @@ body {
 
 .bigLink {
   grid-column: 1/3;
+}
+
+.bigCards {
+  display: flex;
+  grid-gap: 1em;
+  margin: 0 auto;
 }

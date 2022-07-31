@@ -1,9 +1,5 @@
-const {
-  getDailyChallengesInReverseOrder,
-  getChallengeByChallengeId,
-} = require("../dao/ChallengeDao");
+const { getDailyChallengesInReverseOrder } = require("../dao/ChallengeDao");
 const { ResultCacheWrapper } = require("./ResultCacheWrapper");
-const MapHandler = require("./MapHandler");
 class DailyChallengeHandler extends ResultCacheWrapper {
   constructor() {
     super({ name: "DailyChallengeHandler" });
@@ -11,7 +7,7 @@ class DailyChallengeHandler extends ResultCacheWrapper {
 
   async getActiveDailyChallenge() {
     return await this.getOrFetchValue({
-      id: "",
+      id: "active",
       getTimeToCache: () => 3600,
       logFormatter: () => "",
       fetchMethod: async () => {
@@ -20,17 +16,13 @@ class DailyChallengeHandler extends ResultCacheWrapper {
     });
   }
 
-  async getDailyChallengeThumbnail() {
+  async getYesterdaysDailyChallenge() {
     return await this.getOrFetchValue({
-      id: "thumbnail",
+      id: "last",
       getTimeToCache: () => 3600,
       logFormatter: () => "",
       fetchMethod: async () => {
-        const dailyChallenge = await this.getActiveDailyChallenge();
-        const configDetails = await getChallengeByChallengeId(dailyChallenge);
-        const mapData = await MapHandler.getMapData({ mapID: configDetails.mapID });
-
-        return `https://antgame.io/assets/${mapData.thumbnailPath}`;
+        return (await getDailyChallengesInReverseOrder({ limit: 1, skip: 1 }))[0]._id;
       },
     });
   }

@@ -13,21 +13,8 @@ import {
 import { Thumbnail } from "./Thumbnail";
 
 export const DailyChallengeCard = ({ challenge, record, championshipID, thumbnailURL }) => {
-  const [showChampionshipLink, setShowChampionshipLink] = useState(null);
-
-  useEffect(() => {
-    const getChampionshipFlag = async () => {
-      getFlag("show-championship-link")
-        .then(flag => {
-          setShowChampionshipLink(flag);
-        })
-        .catch(() => setShowChampionshipLink(false));
-    };
-    getChampionshipFlag();
-  }, []);
-
   return (
-    <div className={styles.dailyChallengeBox}>
+    <div className={`${styles.bigCard} ${styles.dailyChallengeBox}`}>
       <div className={styles.dailyTitle}>
         <span>
           <strong>
@@ -35,35 +22,31 @@ export const DailyChallengeCard = ({ challenge, record, championshipID, thumbnai
           </strong>
         </span>
       </div>
-      <div className={styles.dailyThumbnail}>
-        {/* {thumbnailURL && <img src={thumbnailURL} alt="Map thumbnail" />} */}
-        {thumbnailURL && <Thumbnail isDaily url={thumbnailURL} />}
-      </div>
-      <div>
-        <div className={styles.challengeInfo}>
-          <div className={styles.challengeName}>
-            <span>{challenge?.name}</span>
+      {thumbnailURL && <Thumbnail isDaily url={thumbnailURL} />}
+      <div className={styles.topBar}>
+        <div className={styles.infoBlock}>
+          <div className={styles.challengeInfo}>
+            <div className={styles.challengeName}>
+              <span>{challenge?.name}</span>
+            </div>
+            <ChallengeDetails time={challenge?.time} homes={challenge?.homes} />
           </div>
-          <ChallengeDetails time={challenge?.time} homes={challenge?.homes} />
+          <div className={styles.records}>
+            <div className={styles.challengeWR}>
+              WR:
+              <WRDisplay wr={record?.wr} />
+            </div>
+            <div className={styles.challengePR}>
+              PR:
+              <PBDisplay pb={record?.pb} rank={record?.rank} runs={record?.runs} />
+            </div>
+          </div>
         </div>
-        <div className={styles.records}>
-          <div className={styles.challengeWR}>
-            WR:
-            <WRDisplay wr={record?.wr} />
-          </div>
-          <div className={styles.challengePR}>
-            PR:
-            <PBDisplay pb={record?.pb} rank={record?.rank} runs={record?.runs} />
-          </div>
-        </div>
-      </div>
-      {showChampionshipLink !== null ? (
-        <div className={styles.dailyLinks}>
-          <ChallengeLink id={"daily"} makeBig={showChampionshipLink} />
+        <div className={styles.challengeButtons}>
+          <ChallengeLink id={"daily"} />
           <LeaderboardLink id={"daily"} />
-          {showChampionshipLink ? <ChampionshipLink id={championshipID} cols /> : null}
         </div>
-      ) : null}
+      </div>
     </div>
   );
 };
