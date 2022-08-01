@@ -17,6 +17,14 @@ const VerifyRun = async ({ run }) => {
 
   const mapData = (await axios.get(mapURL)).data.Map;
 
+  const homeLocations = run.details.homeLocations;
+  for (let i = 0; i < homeLocations.length; i++) {
+    const location = homeLocations[i];
+    if (mapData[location[0]][location[1]] !== " ") {
+      return { passedVerification: false, reason: "Homes placed in non-empty cells" };
+    }
+  }
+
   const { score: simulatedScore, foodEaten } = GameRunner.SimulateRun({
     mapData,
     homeLocations: run.details.homeLocations,
@@ -28,6 +36,8 @@ const VerifyRun = async ({ run }) => {
   const isDaily = challengeDetails.dailyChallenge === true;
   if (isWrRun && isDaily) GenerateRecordImage({ runID: run._id, foodEaten });
 
-  return { passedVerification: simulatedScore === run.score };
+  const passedVerification = simulatedScore === run.score;
+  if (passedVerification) return { passedVerification };
+  else return { passedVerification, reason: "simulated score did not match" };
 };
 module.exports = { VerifyRun };

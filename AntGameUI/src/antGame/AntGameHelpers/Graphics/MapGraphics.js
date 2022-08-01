@@ -16,9 +16,30 @@ export class MapGraphics {
     this.pixelDensity = [];
     this.lastCell = "";
     this.brushColors = [];
+    this.cellPixelInfo = [{}, {}];
 
     this._graphics.noStroke();
     this.populateBrushColors();
+  }
+
+  getPixelSizeInfo(mapSize, canvasSize) {
+    const nominalCellSize = Math.floor(canvasSize / mapSize);
+    const pixelsToMakeUp = canvasSize % mapSize;
+    const spaceBetweenLongCells = mapSize / pixelsToMakeUp;
+
+    const mapToPixelInfo = {};
+    let canvasLocation = 0;
+    let nextLongCell = spaceBetweenLongCells;
+    for (let i = 0; i < mapSize; i++) {
+      const isLastCell = i === mapSize - 1;
+      const areCellsShort = canvasLocation + nominalCellSize < canvasSize;
+      const isLongCell = Math.floor(nextLongCell) === i || (isLastCell && areCellsShort);
+      if (isLongCell) nextLongCell += spaceBetweenLongCells;
+      const weight = isLongCell ? nominalCellSize + 1 : nominalCellSize;
+      mapToPixelInfo[i] = { startingPixel: canvasLocation, weight };
+      canvasLocation += weight;
+    }
+    return mapToPixelInfo;
   }
 
   setupMap(canvasWidth, canvasHeight) {
@@ -27,6 +48,10 @@ export class MapGraphics {
     this.pixelDensity = [
       (drawableWidth / MapBounds[0]).toFixed(2),
       (drawableHeight / MapBounds[1]).toFixed(2),
+    ];
+    this.cellPixelInfo = [
+      this.getPixelSizeInfo(MapBounds[0], drawableWidth),
+      this.getPixelSizeInfo(MapBounds[1], drawableHeight),
     ];
   }
 
@@ -138,11 +163,13 @@ export class MapGraphics {
 
   drawCellColor(mapXY) {
     const intMapXY = MapXYToInt(mapXY);
+    const pixelInfoX = this.cellPixelInfo[0][intMapXY[0]];
+    const pixelInfoY = this.cellPixelInfo[1][intMapXY[1]];
     this._graphics.rect(
-      Math.floor(BorderWeight + intMapXY[0] * this.pixelDensity[0]),
-      Math.floor(BorderWeight + intMapXY[1] * this.pixelDensity[1]),
-      Math.ceil(this.pixelDensity[0]),
-      Math.ceil(this.pixelDensity[1])
+      pixelInfoX.startingPixel + BorderWeight,
+      pixelInfoY.startingPixel + BorderWeight,
+      pixelInfoX.weight,
+      pixelInfoY.weight
     );
   }
 
@@ -154,10 +181,32 @@ export class MapGraphics {
   }
 
   canvasXYToMapXY(canvasXY) {
-    return [
-      Math.floor((canvasXY[0] - BorderWeight) / this.pixelDensity[0]),
-      Math.floor((canvasXY[1] - BorderWeight) / this.pixelDensity[1]),
-    ];
+    let mapX;
+    let mapY;
+
+    for (const xPos in this.cellPixelInfo[0]) {
+      const keyDrawingInfo = this.cellPixelInfo[0][xPos];
+      if (this.canvasLocationInsideRange(canvasXY[0], keyDrawingInfo)) {
+        mapX = xPos;
+      }
+    }
+
+    for (const yPos in this.cellPixelInfo[1]) {
+      const keyDrawingInfo = this.cellPixelInfo[1][yPos];
+      if (this.canvasLocationInsideRange(canvasXY[1], keyDrawingInfo)) {
+        mapY = yPos;
+      }
+    }
+
+    return [parseInt(mapX), parseInt(mapY)];
+  }
+
+  canvasLocationInsideRange(canvasLocation, drawingInfo) {
+    const adjustedLocation = canvasLocation - BorderWeight;
+    const startingPixel = drawingInfo.startingPixel;
+    return (
+      startingPixel <= adjustedLocation && adjustedLocation <= startingPixel + drawingInfo.weight
+    );
   }
 }
 

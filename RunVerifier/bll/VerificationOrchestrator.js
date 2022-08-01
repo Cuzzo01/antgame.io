@@ -24,18 +24,17 @@ class VerificationOrchestrator {
       traceID,
     });
 
-    let result = false;
+    let verifyResult;
     try {
       const startTime = new Date();
 
-      const { passedVerification } = await VerifyRun({ run: runToVerify });
-      result = passedVerification;
+      verifyResult = await VerifyRun({ run: runToVerify });
 
       const totalTime = new Date() - startTime;
       Logger.logVerificationMessage({
         message: "run verification result",
         time: totalTime,
-        result,
+        result: verifyResult.passedVerification,
         traceID,
         runID: runToVerify._id,
       });
@@ -43,14 +42,14 @@ class VerificationOrchestrator {
       Logger.logError("VerifyRun", e);
     }
 
-    if (result) {
+    if (verifyResult && verifyResult.passedVerification) {
       await addTagToRun({ id: runToVerify._id, tag: { type: "run verified" } });
     } else {
       await addTagToRun({
         id: runToVerify._id,
         tag: {
           type: "failed verification",
-          metadata: { reason: "simulated score did not match" },
+          metadata: { reason: verifyResult.reason },
         },
       });
       await RunDisqualifier.handleRunDisqualification({ runID: runToVerify._id });
