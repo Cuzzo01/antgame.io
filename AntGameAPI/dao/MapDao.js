@@ -1,5 +1,5 @@
 const Connection = require("./MongoClient");
-const { ObjectID } = require("mongodb");
+const { TryParseObjectID } = require("./helpers");
 
 const getCollection = async collection => {
   const connection = await Connection.open();
@@ -13,7 +13,7 @@ const addMapToDB = async ({ url, name, foodCount, thumbnailPath }) => {
 };
 
 const getMapByID = async ({ mapID }) => {
-  const mapObjectID = TryParseObjectID(mapID, "MapID");
+  const mapObjectID = TryParseObjectID(mapID, "MapID", "MapDao");
 
   const collection = await getCollection("maps");
   const result = await collection.findOne({ _id: mapObjectID });
@@ -25,14 +25,4 @@ const getMapByName = async ({ name }) => {
   const result = await collection.findOne({ name: name });
   return result;
 };
-
-const TryParseObjectID = (stringID, name) => {
-  try {
-    return new ObjectID(stringID);
-  } catch (e) {
-    console.log(e);
-    throw `Threw on ${name} parsing in UserDao: ${stringID}`;
-  }
-};
-
 module.exports = { addMapToDB, getMapByID, getMapByName };

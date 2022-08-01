@@ -1,6 +1,7 @@
 const { ResultCache } = require("../helpers/ResultCache");
 const FlagHandler = require("../handler/FlagHandler");
-const { saveSeed, getSeedData, deleteSeed } = require("../dao/SeedDao");
+const { saveSeed, getSeedData, deleteSeed, getOutstandingSeedCount } = require("../dao/SeedDao");
+const { TryParseObjectID } = require("../dao/helpers");
 
 class SeedBroker {
   constructor() {
@@ -8,6 +9,12 @@ class SeedBroker {
   }
 
   async getSeed({ homeLocations, userID }) {
+    const outstandingSeeds = await getOutstandingSeedCount({ userID });
+    const outstandingSeedLimit = await FlagHandler.getFlagValue("maximum-outstanding-seeds");
+    if (outstandingSeeds >= outstandingSeedLimit) {
+      return { success: false };
+    }
+
     const ttlHours = await FlagHandler.getFlagValue("seed-time-to-live-hours");
     const ttlSec = ttlHours * 60 * 60;
     const expiresAt = new Date();
@@ -18,12 +25,13 @@ class SeedBroker {
       seed = Math.round(Math.random() * 1e8);
       result = await saveSeed({ seed, userID, homeLocations, expiresAt });
     }
+    const userObjectID = TryParseObjectID(userID, "UserID", "SeedBroker");
     this.seedCache.setItem(
       seed,
-      { homeLocations, userID, createdAt: new Date().getTime() },
+      { homeLocations, userID: userObjectID, createdAt: new Date().getTime() },
       ttlSec
     );
-    return seed;
+    return { seed, success: true };
   }
 
   async checkSeed({ homeLocations, userID, seed, minAgeSeconds }) {
@@ -39,7 +47,12 @@ class SeedBroker {
     }
 
     if (seedData === false) return { isValid: false, message: "couldn't find seed" };
-    if (userID !== seedData.userID) return { isValid: false, message: "non-matching userID" };
+
+    // FIXME: Can be removed 24 hours after initially deployed
+    let seedUser = seedData.userID;
+    if (typeof seedUser === "string") seedUser = TryParseObjectID(seedUser, "UserID", "SeedBroker");
+
+    if (!seedUser.equals(userID)) return { isValid: false, message: "non-matching userID" };
 
     let createTime;
     if (seedData._id) {

@@ -1,5 +1,5 @@
 const Connection = require("../dao/MongoClient");
-const { ObjectID } = require("mongodb");
+const { TryParseObjectID } = require("../dao/helpers");
 
 const getCollection = async collection => {
   const connection = await Connection.open();
@@ -50,7 +50,7 @@ const saveNewUser = async userObject => {
 };
 
 const logLogin = async (userID, IPAddress, clientID) => {
-  const userObjectID = TryParseObjectID(userID, "userID");
+  const userObjectID = TryParseObjectID(userID, "userID", "AuthDao");
   const collection = await getCollection("users");
   await collection.updateOne(
     { _id: userObjectID },
@@ -80,14 +80,6 @@ const getServiceTokenData = async ({ serviceName }) => {
   const result = await collection.findOne({ name: serviceName });
   if (result === null) return null;
   return { hash: result.tokenHash };
-};
-
-const TryParseObjectID = (stringID, name) => {
-  try {
-    return new ObjectID(stringID);
-  } catch (e) {
-    throw `Threw on ${name} parsing in AuthDao: ${stringID}`;
-  }
 };
 
 module.exports = {
