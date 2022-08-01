@@ -8,7 +8,11 @@ async function getSeed(req, res) {
 
     if (homeLocations.length === 0) res.sendStatus(400);
 
-    const seed = await SeedBroker.getSeed({ homeLocations, userID });
+    const { seed, success } = await SeedBroker.getSeed({ homeLocations, userID });
+    if (!success) {
+      res.sendStatus(425);
+      return;
+    }
 
     res.send({ seed });
   } catch (e) {
