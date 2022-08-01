@@ -1,6 +1,6 @@
 const Connection = require("./MongoClient");
-const Mongo = require("mongodb");
 const { getGeneralizedTimeStringFromObjectID } = require("../helpers/TimeHelper");
+const { TryParseObjectID } = require("./helpers");
 
 const getCollection = async collection => {
   const connection = await Connection.open();
@@ -9,12 +9,12 @@ const getCollection = async collection => {
 
 const submitRun = async runData => {
   if (runData.userID) {
-    let userObjectID = TryParseObjectID(runData.userID, "userID");
+    let userObjectID = TryParseObjectID(runData.userID, "userID", "ChallengeDao");
     runData.userID = userObjectID;
   }
 
   if (runData.challengeID) {
-    let challengeObjectID = TryParseObjectID(runData.challengeID, "challengeID");
+    let challengeObjectID = TryParseObjectID(runData.challengeID, "challengeID", "ChallengeDao");
     runData.challengeID = challengeObjectID;
   }
 
@@ -25,14 +25,14 @@ const submitRun = async runData => {
 };
 
 const addTagToRun = async (id, tag) => {
-  const runObjectID = TryParseObjectID(id, "RunID");
+  const runObjectID = TryParseObjectID(id, "RunID", "ChallengeDao");
 
   const collection = await getCollection("runs");
   await collection.updateOne({ _id: runObjectID }, { $push: { tags: { $each: [tag] } } });
 };
 
 const getRecordByChallenge = async challengeID => {
-  const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
+  const challengeObjectID = TryParseObjectID(challengeID, "challengeID", "ChallengeDao");
 
   const collection = await getCollection("configs");
   const result = await collection.findOne({ _id: challengeObjectID });
@@ -49,7 +49,7 @@ const getRecordByChallenge = async challengeID => {
 const getRecordsByChallengeList = async challengeIDList => {
   let challengeObjectIDList = [];
   challengeIDList.forEach(id => {
-    const parseResult = TryParseObjectID(id, "listChallengeID");
+    const parseResult = TryParseObjectID(id, "listChallengeID", "ChallengeDao");
     challengeObjectIDList.push(parseResult);
   });
 
@@ -79,9 +79,9 @@ const getRecordsByChallengeList = async challengeIDList => {
 };
 
 const updateChallengeRecord = async (challengeID, score, username, userID, runID) => {
-  const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
-  const userObjectID = TryParseObjectID(userID, "userID");
-  const runObjectID = TryParseObjectID(runID, "runID");
+  const challengeObjectID = TryParseObjectID(challengeID, "challengeID", "ChallengeDao");
+  const userObjectID = TryParseObjectID(userID, "userID", "ChallengeDao");
+  const runObjectID = TryParseObjectID(runID, "runID", "ChallengeDao");
 
   const collection = await getCollection("configs");
   await collection.updateOne(
@@ -126,7 +126,7 @@ const getActiveChallenges = async () => {
 };
 
 const getChallengeByChallengeId = async id => {
-  const challengeObjectID = TryParseObjectID(id);
+  const challengeObjectID = TryParseObjectID(id, "ChallengeID", "ChallengeDao");
   if (!challengeObjectID) {
     return false;
   }
@@ -149,7 +149,7 @@ const getChallengeByChallengeId = async id => {
 };
 
 const getRunDataByRunId = async id => {
-  const runObjectID = TryParseObjectID(id);
+  const runObjectID = TryParseObjectID(id, "RunID", "ChallengeDao");
 
   const collection = await getCollection("runs");
   const result = await collection.findOne(
@@ -206,8 +206,8 @@ const getDailyChallengesInReverseOrder = async ({ limit = 0, skip = 0 }) => {
 };
 
 const addChampionshipIDToConfig = async (configID, championshipID) => {
-  const configObjectID = TryParseObjectID(configID, "ConfigID");
-  const championshipObjectId = TryParseObjectID(championshipID, "ChampionshipId");
+  const configObjectID = TryParseObjectID(configID, "ConfigID", "ChallengeDao");
+  const championshipObjectId = TryParseObjectID(championshipID, "ChampionshipId", "ChallengeDao");
 
   const collection = await getCollection("configs");
   await collection.updateOne(
@@ -221,7 +221,7 @@ const addChampionshipIDToConfig = async (configID, championshipID) => {
 };
 
 const markRunForVerification = async ({ runID, priority = 10 }) => {
-  const runObjectID = TryParseObjectID(runID, "RunID");
+  const runObjectID = TryParseObjectID(runID, "RunID", "ChallengeDao");
 
   const collection = await getCollection("runs");
   await collection.updateOne(
@@ -231,22 +231,13 @@ const markRunForVerification = async ({ runID, priority = 10 }) => {
 };
 
 const addSolutionImageToRun = async ({ runID, imagePath }) => {
-  const runObjectID = TryParseObjectID(runID, "RunID");
+  const runObjectID = TryParseObjectID(runID, "RunID", "ChallengeDao");
 
   const collection = await getCollection("runs");
   await collection.updateOne(
     { _id: runObjectID },
     { $set: { "details.solutionImage": imagePath } }
   );
-};
-
-const TryParseObjectID = (stringID, name) => {
-  try {
-    return new Mongo.ObjectID(stringID);
-  } catch (e) {
-    if (name) throw `Threw on ${name} parsing in ChallengeDao: ${stringID}`;
-    else return false;
-  }
 };
 
 module.exports = {

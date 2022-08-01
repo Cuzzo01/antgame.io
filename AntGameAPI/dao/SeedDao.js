@@ -1,3 +1,4 @@
+const { TryParseObjectID } = require("./helpers");
 const Connection = require("./MongoClient");
 
 const getCollection = async collection => {
@@ -6,9 +7,11 @@ const getCollection = async collection => {
 };
 
 const saveSeed = async ({ seed, userID, homeLocations, expiresAt }) => {
+  const userObjectId = TryParseObjectID(userID, "UserID", "SeedDao");
+
   const collection = await getCollection("seeds");
   try {
-    await collection.insertOne({ seed, userID, homeLocations, expiresAt });
+    await collection.insertOne({ seed, userID: userObjectId, homeLocations, expiresAt });
     return true;
   } catch (e) {
     if (e.code === 11000) return false;
@@ -25,4 +28,11 @@ const deleteSeed = async ({ seed }) => {
   const collection = await getCollection("seeds");
   await collection.deleteOne({ seed });
 };
-module.exports = { saveSeed, getSeedData, deleteSeed };
+
+const getOutstandingSeedCount = async ({ userID }) => {
+  const userObjectId = TryParseObjectID(userID, "UserID", "SeedDao");
+
+  const collection = await getCollection("seeds");
+  return await collection.find({ userID: userObjectId }).count();
+};
+module.exports = { saveSeed, getSeedData, deleteSeed, getOutstandingSeedCount };

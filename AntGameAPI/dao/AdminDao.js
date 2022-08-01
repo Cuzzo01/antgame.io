@@ -1,5 +1,5 @@
 const Connection = require("./MongoClient");
-const Mongo = require("mongodb");
+const { TryParseObjectID } = require("./helpers");
 
 const getCollection = async collection => {
   const connection = await Connection.open();
@@ -59,7 +59,7 @@ const getConfigListFromDB = async () => {
 };
 
 const getConfigDetailsByID = async id => {
-  const configObjectID = TryParseObjectID(id, "ChallengeID");
+  const configObjectID = TryParseObjectID(id, "ChallengeID", "AdminDao");
 
   const collection = await getCollection("configs");
   const result = await collection.findOne({ _id: configObjectID });
@@ -67,7 +67,7 @@ const getConfigDetailsByID = async id => {
 };
 
 const updateConfigByID = async (id, updateObject) => {
-  const configObjectID = TryParseObjectID(id, "ChallengeID");
+  const configObjectID = TryParseObjectID(id, "ChallengeID", "AdminDao");
 
   const collection = await getCollection("configs");
   await collection.updateOne({ _id: configObjectID }, { $set: updateObject });
@@ -104,7 +104,7 @@ const getRecentlyLoggedInUsers = async count => {
 };
 
 const getUserDetailsByID = async id => {
-  const userObjectID = TryParseObjectID(id, "UserID");
+  const userObjectID = TryParseObjectID(id, "UserID", "AdminDao");
 
   const collection = await getCollection("users");
   const result = await collection.findOne(
@@ -118,7 +118,7 @@ const getUserDetailsByID = async id => {
 };
 
 const updateUserByID = async (id, updateObject) => {
-  const userObjectID = TryParseObjectID(id, "UserID");
+  const userObjectID = TryParseObjectID(id, "UserID", "AdminDao");
 
   const collection = await getCollection("users");
   const result = await collection.findOneAndUpdate(
@@ -158,7 +158,7 @@ const getRecentRuns = async count => {
 };
 
 const getRunDetailsByID = async id => {
-  const runObjectID = TryParseObjectID(id, "RunID");
+  const runObjectID = TryParseObjectID(id, "RunID", "AdminDao");
 
   const collection = await getCollection("runs");
   const result = await collection.findOne({ _id: runObjectID });
@@ -189,7 +189,7 @@ async function getFlagListFromDB() {
 }
 
 async function getFlagDetailsByID(id) {
-  const flagObjectID = TryParseObjectID(id, "FlagID");
+  const flagObjectID = TryParseObjectID(id, "FlagID", "AdminDao");
 
   const collection = await getCollection("flags");
   const result = await collection.findOne({ _id: flagObjectID });
@@ -198,7 +198,7 @@ async function getFlagDetailsByID(id) {
 }
 
 async function updateFlagByID(id, updateObject) {
-  const flagObjectID = TryParseObjectID(id, "FlagID");
+  const flagObjectID = TryParseObjectID(id, "FlagID", "AdminDao");
 
   const collection = await getCollection("flags");
   const result = await collection.findOneAndUpdate(
@@ -237,12 +237,4 @@ module.exports = {
   getFlagDetailsByID,
   updateFlagByID,
   saveNewServiceToken,
-};
-
-const TryParseObjectID = (stringID, name) => {
-  try {
-    return new Mongo.ObjectID(stringID);
-  } catch (e) {
-    throw `Threw on ${name} parsing in Admin: ${stringID}`;
-  }
 };
