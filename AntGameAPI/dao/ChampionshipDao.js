@@ -1,5 +1,5 @@
 const Connection = require("./MongoClient");
-const Mongo = require("mongodb");
+const { TryParseObjectID } = require("./helpers");
 
 const getCollection = async collection => {
   const connection = await Connection.open();
@@ -7,15 +7,19 @@ const getCollection = async collection => {
 };
 
 const getChampionshipDetailsFromDB = async id => {
-  const championshipObjectId = TryParseObjectID(id, "ChampionshipId");
+  const championshipObjectId = TryParseObjectID(id, "ChampionshipId", "ChampionshipDao");
   const collection = await getCollection("championships");
   const result = collection.findOne({ _id: championshipObjectId });
   return result;
 };
 
 const updateUserPointsTotal = async (championshipID, userID, pointsToAdd) => {
-  const championshipObjectId = TryParseObjectID(championshipID, "ChampionshipId");
-  const userObjectID = TryParseObjectID(userID, "UserID");
+  const userObjectID = TryParseObjectID(userID, "UserID", "ChampionshipDao");
+  const championshipObjectId = TryParseObjectID(
+    championshipID,
+    "ChampionshipId",
+    "ChampionshipDao"
+  );
 
   const collection = await getCollection("championships");
   await collection.updateOne(
@@ -26,8 +30,12 @@ const updateUserPointsTotal = async (championshipID, userID, pointsToAdd) => {
 };
 
 const addUserToUserPoints = async (championshipID, userID, points) => {
-  const championshipObjectId = TryParseObjectID(championshipID, "ChampionshipId");
-  const userObjectID = TryParseObjectID(userID, "UserID");
+  const userObjectID = TryParseObjectID(userID, "UserID", "ChampionshipDao");
+  const championshipObjectId = TryParseObjectID(
+    championshipID,
+    "ChampionshipId",
+    "ChampionshipDao"
+  );
 
   const collection = await getCollection("championships");
   await collection.updateOne(
@@ -45,8 +53,12 @@ const addUserToUserPoints = async (championshipID, userID, points) => {
 };
 
 const addConfigIDToChampionship = async (championshipID, configID) => {
-  const championshipObjectId = TryParseObjectID(championshipID, "ChampionshipId");
-  const configObjectID = TryParseObjectID(configID, "ConfigID");
+  const configObjectID = TryParseObjectID(configID, "ConfigID", "ChampionshipDao");
+  const championshipObjectId = TryParseObjectID(
+    championshipID,
+    "ChampionshipId",
+    "ChampionshipDao"
+  );
 
   const collection = await getCollection("championships");
   await collection.updateOne(
@@ -60,8 +72,12 @@ const addConfigIDToChampionship = async (championshipID, configID) => {
 };
 
 const setLastAwarded = async (championshipID, configID) => {
-  const championshipObjectId = TryParseObjectID(championshipID, "ChampionshipId");
-  const configObjectID = TryParseObjectID(configID, "ConfigID");
+  const configObjectID = TryParseObjectID(configID, "ConfigID", "ChampionshipDao");
+  const championshipObjectId = TryParseObjectID(
+    championshipID,
+    "ChampionshipId",
+    "ChampionshipDao"
+  );
 
   const collection = await getCollection("championships");
   await collection.updateOne(
@@ -75,7 +91,11 @@ const setLastAwarded = async (championshipID, configID) => {
 };
 
 const getLastPointsAwarded = async championshipID => {
-  const championshipObjectID = TryParseObjectID(championshipID, "ChampionshipId");
+  const championshipObjectID = TryParseObjectID(
+    championshipID,
+    "ChampionshipId",
+    "ChampionshipDao"
+  );
 
   const collection = await getCollection("championships");
   const result = await collection.findOne(
@@ -99,7 +119,7 @@ const getChampionshipIDByName = async name => {
 };
 
 const getLeaderboardByChampionshipID = async (ID, recordCount) => {
-  const championshipObjectId = TryParseObjectID(ID, "ChampionshipID");
+  const championshipObjectId = TryParseObjectID(ID, "ChampionshipID", "ChampionshipDao");
 
   const collection = await getCollection("championships");
   const aggregateArr = [
@@ -125,8 +145,12 @@ const getLeaderboardByChampionshipID = async (ID, recordCount) => {
 };
 
 const getUserPointsByUserID = async (championshipID, userID) => {
-  const championshipObjectID = TryParseObjectID(championshipID, "ChampionshipID");
-  const userObjectID = TryParseObjectID(userID, "UserID");
+  const userObjectID = TryParseObjectID(userID, "UserID", "ChampionshipDao");
+  const championshipObjectID = TryParseObjectID(
+    championshipID,
+    "ChampionshipID",
+    "ChampionshipDao"
+  );
 
   const collection = await getCollection("championships");
   const result = await collection.findOne(
@@ -147,11 +171,4 @@ module.exports = {
   getUserPointsByUserID,
   setLastAwarded,
   getLastPointsAwarded,
-};
-const TryParseObjectID = (stringID, name) => {
-  try {
-    return new Mongo.ObjectID(stringID);
-  } catch (e) {
-    throw `Threw on ${name} parsing in ChampionshipDAO: ${stringID}`;
-  }
 };

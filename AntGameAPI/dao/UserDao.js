@@ -1,4 +1,4 @@
-const { ObjectID } = require("mongodb");
+const { TryParseObjectID } = require("./helpers");
 const Connection = require("./MongoClient");
 
 const getCollection = async collection => {
@@ -7,7 +7,7 @@ const getCollection = async collection => {
 };
 
 const getUserPBs = async userID => {
-  const userObjectID = TryParseObjectID(userID, "userID");
+  const userObjectID = TryParseObjectID(userID, "userID", "UserDao");
 
   const collection = await getCollection("users");
   const result = await collection.findOne(
@@ -25,8 +25,8 @@ const getUserPBs = async userID => {
 };
 
 const getChallengeDetailsByUser = async (userID, challengeID) => {
-  const userObjectID = TryParseObjectID(userID, "userId");
-  const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
+  const userObjectID = TryParseObjectID(userID, "userId", "UserDao");
+  const challengeObjectID = TryParseObjectID(challengeID, "challengeID", "UserDao");
 
   const collection = await getCollection("users");
   const result = await collection.findOne(
@@ -38,9 +38,9 @@ const getChallengeDetailsByUser = async (userID, challengeID) => {
 };
 
 const updateChallengePBAndRunCount = async (userID, challengeID, score, runID) => {
-  const userObjectID = TryParseObjectID(userID, "userId");
-  const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
-  const runObjectID = TryParseObjectID(runID, "runID");
+  const userObjectID = TryParseObjectID(userID, "userId", "UserDao");
+  const challengeObjectID = TryParseObjectID(challengeID, "challengeID", "UserDao");
+  const runObjectID = TryParseObjectID(runID, "runID", "UserDao");
 
   const collection = await getCollection("users");
   await collection.updateOne(
@@ -59,8 +59,8 @@ const updateChallengePBAndRunCount = async (userID, challengeID, score, runID) =
 };
 
 const incrementChallengeRunCount = async (userID, challengeID) => {
-  const userObjectID = TryParseObjectID(userID, "userId");
-  const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
+  const userObjectID = TryParseObjectID(userID, "userId", "UserDao");
+  const challengeObjectID = TryParseObjectID(challengeID, "challengeID", "UserDao");
 
   const collection = await getCollection("users");
   await collection.updateOne(
@@ -75,9 +75,9 @@ const incrementChallengeRunCount = async (userID, challengeID) => {
 };
 
 const addNewChallengeDetails = async (userID, challengeID, score, runID) => {
-  const userObjectID = TryParseObjectID(userID, "userId");
-  const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
-  const runObjectID = TryParseObjectID(runID, "runID");
+  const userObjectID = TryParseObjectID(userID, "userId", "UserDao");
+  const challengeObjectID = TryParseObjectID(challengeID, "challengeID", "UserDao");
+  const runObjectID = TryParseObjectID(runID, "runID", "UserDao");
 
   const collection = await getCollection("users");
   await collection.updateOne(
@@ -96,8 +96,8 @@ const addNewChallengeDetails = async (userID, challengeID, score, runID) => {
 };
 
 const getPRRunIDByChallengeID = async (userID, challengeID) => {
-  const userObjectID = TryParseObjectID(userID, "userID");
-  const challengeObjectID = TryParseObjectID(challengeID, "challengeID");
+  const userObjectID = TryParseObjectID(userID, "userID", "UserDao");
+  const challengeObjectID = TryParseObjectID(challengeID, "challengeID", "UserDao");
 
   const collection = await getCollection("users");
   const result = await collection.findOne(
@@ -118,7 +118,7 @@ const getPRRunIDByChallengeID = async (userID, challengeID) => {
 };
 
 const getLeaderboardByChallengeId = async (id, recordCount) => {
-  const challengeObjectID = TryParseObjectID(id, "challengeID");
+  const challengeObjectID = TryParseObjectID(id, "challengeID", "UserDao");
 
   const collection = await getCollection("users");
   const aggregateArr = [
@@ -160,7 +160,7 @@ const getLeaderboardByChallengeId = async (id, recordCount) => {
 };
 
 const isUserBanned = async id => {
-  const userObjectID = TryParseObjectID(id, "UserID");
+  const userObjectID = TryParseObjectID(id, "UserID", "UserDao");
 
   const collection = await getCollection("users");
   const result = await collection.findOne({ _id: userObjectID }, { projection: { banned: 1 } });
@@ -170,7 +170,7 @@ const isUserBanned = async id => {
 };
 
 const isUserAdmin = async id => {
-  const userObjectID = TryParseObjectID(id, "UserID");
+  const userObjectID = TryParseObjectID(id, "UserID", "UserDao");
 
   const collection = await getCollection("users");
   const result = await collection.findOne({ _id: userObjectID }, { projection: { admin: 1 } });
@@ -180,7 +180,7 @@ const isUserAdmin = async id => {
 };
 
 const getUsernameByID = async id => {
-  const userObjectID = TryParseObjectID(id, "UserID");
+  const userObjectID = TryParseObjectID(id, "UserID", "UserDao");
 
   const collection = await getCollection("users");
   const result = await collection.findOne({ _id: userObjectID }, { projection: { username: 1 } });
@@ -188,7 +188,7 @@ const getUsernameByID = async id => {
 };
 
 const getPlayerCountByChallengeID = async id => {
-  const challengeObjectID = TryParseObjectID(id, "ChallengeID");
+  const challengeObjectID = TryParseObjectID(id, "ChallengeID", "UserDao");
 
   const collection = await getCollection("users");
   const result = await collection
@@ -199,7 +199,7 @@ const getPlayerCountByChallengeID = async id => {
 };
 
 const shouldShowUserOnLeaderboard = async id => {
-  const userObjectID = TryParseObjectID(id, "UserID");
+  const userObjectID = TryParseObjectID(id, "UserID", "UserDao");
 
   const collection = await getCollection("users");
   const result = await collection.findOne(
@@ -212,7 +212,7 @@ const shouldShowUserOnLeaderboard = async id => {
 };
 
 const getUserBadgesByID = async id => {
-  const userObjectID = TryParseObjectID(id, "UserID");
+  const userObjectID = TryParseObjectID(id, "UserID", "UserDao");
 
   const collection = await getCollection("users");
   const result = await collection.findOne({ _id: userObjectID }, { projection: { badges: 1 } });
@@ -230,7 +230,7 @@ const getUserBadgesByID = async id => {
 };
 
 const getUserDetailsByID = async id => {
-  const userObjectID = TryParseObjectID(id, "UserID");
+  const userObjectID = TryParseObjectID(id, "UserID", "UserDao");
 
   const collection = await getCollection("users");
   const result = await collection.findOne(
@@ -248,7 +248,7 @@ const getUserDetailsByID = async id => {
 };
 
 const addBadgeToUser = async (userID, badgeData) => {
-  const userObjectID = TryParseObjectID(userID, "UserID");
+  const userObjectID = TryParseObjectID(userID, "UserID", "UserDao");
 
   const collection = await getCollection("users");
   await collection.updateOne(
@@ -262,15 +262,6 @@ const addBadgeToUser = async (userID, badgeData) => {
     }
   );
 };
-
-const TryParseObjectID = (stringID, name) => {
-  try {
-    return new ObjectID(stringID);
-  } catch (e) {
-    throw `Threw on ${name} parsing in UserDao: ${stringID}`;
-  }
-};
-
 module.exports = {
   updateChallengePBAndRunCount,
   addNewChallengeDetails,
