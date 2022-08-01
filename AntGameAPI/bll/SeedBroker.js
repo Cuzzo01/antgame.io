@@ -48,7 +48,12 @@ class SeedBroker {
       createTime = seedData.createdAt;
     }
     const age = Math.round((new Date().getTime() - createTime) / 1000);
-    if (age < minAgeSeconds) return { isValid: false, message: "seed isn't old enough" };
+    if (age < minAgeSeconds)
+      return {
+        isValid: false,
+        message: "seed isn't old enough",
+        seedCreateTime: new Date(createTime),
+      };
 
     if (homeLocations.length !== seedData.homeLocations.length)
       return { isValid: false, message: "home count mismatch" };
