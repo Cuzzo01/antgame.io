@@ -66,11 +66,12 @@ async function postRun(req, res) {
 
     let seedCreateDate;
     if (!user.anon) {
+      const minAgeSeconds = challengeConfig.seconds - Math.ceil(challengeConfig.seconds * 0.02);
       const { isValid, message, seedCreateTime } = await SeedBroker.checkSeed({
         seed: runData.GameConfig.seed,
         userID: user.id,
         homeLocations: runData.HomeLocations,
-        minAgeSeconds: challengeConfig.seconds - 1,
+        minAgeSeconds,
       });
       seedCreateDate = seedCreateTime;
 
