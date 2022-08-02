@@ -18,6 +18,15 @@
   padding: 0.5em 1em;
 }
 
+.skinnyRow {
+  display: grid;
+  grid-template-columns: 2.5em auto 8em;
+  border: 2px grey solid;
+  border-radius: 0.5em;
+  margin: 0.3em 1em;
+  padding: 0.2em 1em;
+}
+
 .rank {
   padding-right: 0.5em;
 }

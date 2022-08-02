@@ -1,27 +1,15 @@
 import styles from "./ChallengePage.module.css";
 import DailyCountdown from "../DailyCountdown/DailyCountdown";
-import { useEffect, useState } from "react";
-import { getFlag } from "../../Helpers/FlagService";
-import {
-  ChallengeDetails,
-  ChallengeLink,
-  ChampionshipLink,
-  LeaderboardLink,
-  PBDisplay,
-  WRDisplay,
-} from "./Helpers";
+import { ChallengeDetails, ChallengeLink, LeaderboardLink, PBDisplay, WRDisplay } from "./Helpers";
 import { Thumbnail } from "./Thumbnail";
 
 export const DailyChallengeCard = ({ challenge, record, championshipID, thumbnailURL }) => {
   return (
     <div className={`${styles.bigCard} ${styles.dailyChallengeBox}`}>
-      <div className={styles.dailyTitle}>
-        <span>
-          <strong>
-            Daily Challenge - Ends in <DailyCountdown />
-          </strong>
-        </span>
-      </div>
+      <h4>Daily Challenge</h4>
+      <span>
+        Ends in <DailyCountdown />
+      </span>
       {thumbnailURL && <Thumbnail isDaily url={thumbnailURL} />}
       <div className={styles.topBar}>
         <div className={styles.infoBlock}>

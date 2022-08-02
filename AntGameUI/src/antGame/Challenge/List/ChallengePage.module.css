@@ -3,7 +3,7 @@ body {
 }
 
 .container {
-  width: 85rem;
+  min-width: 30rem;
   width: 80%;
   margin: 0 auto;
   padding-top: 3em;
@@ -21,16 +21,6 @@ body {
   font-size: 0.75rem;
 }
 
-.bigCard {
-  width: 26rem;
-  height: 30em;
-  border-radius: 1rem;
-  border: 0.2rem black solid;
-  padding: 1rem;
-  margin: 1rem auto;
-  background-color: lightgray;
-}
-
 .challengeDetails {
   display: grid;
   align-items: end;
@@ -38,7 +28,18 @@ body {
 
 .dailyChallengeBox {
   display: grid;
-  grid-template-rows: 1.75em auto;
+  grid-template-rows: 2em 1.5em auto;
+}
+
+.dailyChallengeBox h4 {
+  font-family: "Courier Prime Bold";
+  display: inline-block;
+  margin: 0 auto;
+}
+
+.dailyChallengeBox span {
+  display: inline-block;
+  margin: 0 auto;
 }
 
 @media screen and (max-width: 730px) {
@@ -47,6 +48,36 @@ body {
     display: flex;
     flex-direction: column;
     row-gap: 8px;
+  }
+}
+
+/* @media (max-width: 1120px) { */
+@media (max-width: 105rem) {
+  .championshipCard {
+    order: -2;
+  }
+
+  .dailyChallengeBox {
+    order: -3;
+  }
+
+  .yesterdaysDaily {
+    order: -1;
+  }
+}
+
+/* @media (min-width: 1120px) { */
+@media (min-width: 105rem) {
+  .championshipCard {
+    order: -1;
+  }
+
+  .dailyChallengeBox {
+    order: -2;
+  }
+
+  .yesterdaysDaily {
+    order: -3;
   }
 }
 
@@ -66,14 +97,6 @@ body {
 .dailyLinks {
   display: grid;
   grid-template-columns: 50% auto;
-}
-
-.dailyTitle {
-  display: flex;
-}
-
-.dailyTitle span {
-  margin: 0 auto;
 }
 
 .challengeGrid {
@@ -111,6 +134,10 @@ body {
   font-family: "Courier Prime Bold";
   display: flex;
   align-items: center;
+}
+
+.challengeName span {
+  margin: unset;
 }
 
 .challengeInfo {
@@ -180,4 +207,24 @@ body {
   display: flex;
   grid-gap: 1em;
   margin: 0 auto;
+}
+
+.bigCard {
+  width: 26rem;
+  height: 30em;
+  border-radius: 1rem;
+  border: 0.2rem black solid;
+  padding: 1rem;
+  margin: 1rem;
+  background-color: lightgray;
+}
+
+/* ChampionshipCard */
+.championshipCard {
+  display: inline-block;
+  text-align: center;
+}
+
+.championshipCard h4 {
+  margin: 0;
 }

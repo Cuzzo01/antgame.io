@@ -8,6 +8,7 @@ import { DailyChallengeCard } from "./DailyChallengeCard";
 import { ChallengeDetails, ChallengeLink, LeaderboardLink, PBDisplay, WRDisplay } from "./Helpers";
 import { Thumbnail } from "./Thumbnail";
 import { ChampionshipCard } from "./ChampionshipCard";
+import { YesterdaysDailyCard } from "./YesterdaysDailyCard";
 
 const ChallengeList = () => {
   const InitialList = Array(12).fill(<ChallengeCard showThumbnails loading />);
@@ -37,6 +38,13 @@ const ChallengeList = () => {
     const shouldShowThumbnails = await thumbnailFlagPromise;
     const records = challengeResponse.records;
     let list = [];
+    if (challengeResponse.championshipData) {
+      setChampionshipCard(
+        <ChampionshipCard championshipData={challengeResponse.championshipData} />
+      );
+    } else {
+      setChampionshipCard();
+    }
     challengeResponse.challenges.forEach(challenge => {
       if (challenge.dailyChallenge && seenDaily === false) {
         setDailyChallenge(
@@ -73,11 +81,12 @@ const ChallengeList = () => {
       <div className={styles.header}>
         <h2>AntGame.io - Challenges</h2>
       </div>
-      <div className={styles.bigCards}>
-        <span>{dailyChallenge}</span>
-        <span>{championshipCard}</span>
+      <div className={styles.challengeGrid}>
+        <YesterdaysDailyCard />
+        {dailyChallenge}
+        {championshipCard}
+        {loading ? InitialList : menuList}
       </div>
-      <div className={styles.challengeGrid}>{loading ? InitialList : menuList}</div>
     </div>
   );
 };
