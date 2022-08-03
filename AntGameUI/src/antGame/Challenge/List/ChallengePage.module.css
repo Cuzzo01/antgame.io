@@ -4,7 +4,7 @@ body {
 
 .container {
   min-width: 30rem;
-  width: 80%;
+  width: 90%;
   margin: 0 auto;
   padding-top: 3em;
   display: flex;
@@ -55,7 +55,7 @@ body {
   width: 100%;
 }
 
-@media (max-width: 105rem) {
+@media (max-width: 93.33rem) {
   .dailyChallengeBox {
     order: -4;
   }
@@ -73,7 +73,7 @@ body {
   }
 }
 
-@media (min-width: 105rem) {
+@media (min-width: 93.33rem) {
   .yesterdaysDaily {
     order: -3;
   }
@@ -87,7 +87,7 @@ body {
   }
 }
 
-@media (min-width: 105rem) and (max-width: 140rem) {
+@media (min-width: 93.33rem) and (max-width: 124.44rem) {
   .flexBreak {
     display: none;
   }
@@ -210,7 +210,7 @@ body {
   background-color: black;
   width: 100%;
   height: 100%;
-  border: 2px black solid;
+  border: 0.25em black solid;
   border-radius: 0.5em;
 }
 
