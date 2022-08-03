@@ -26,11 +26,12 @@ class ChallengeGenerator {
       };
 
       let mapID;
+      let thumbnailPath = false;
       const sameNameMap = await getMapByName({ name: mapName });
       if (sameNameMap) mapID = sameNameMap._id;
       else {
         const mapPath = SpacesService.uploadDailyMap(mapName, mapObject);
-        const thumbnailPath = await GenerateMapThumbnail({
+        thumbnailPath = await GenerateMapThumbnail({
           mapData,
           challengeName: getChallengeName(),
         });
@@ -50,6 +51,7 @@ class ChallengeGenerator {
         order: -1,
         dailyChallenge: true,
       };
+      if (thumbnailPath) newChallenge.thumbnailURL = `https://antgame.io/assets/${thumbnailPath}`;
       const newConfig = await addNewConfig(newChallenge);
       return newConfig._id;
     } catch (err) {

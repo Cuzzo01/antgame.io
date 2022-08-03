@@ -1,6 +1,5 @@
 const { getDailyChallengesInReverseOrder } = require("../dao/ChallengeDao");
 const { ResultCacheWrapper } = require("./ResultCacheWrapper");
-
 class DailyChallengeHandler extends ResultCacheWrapper {
   constructor() {
     super({ name: "DailyChallengeHandler" });
@@ -8,11 +7,22 @@ class DailyChallengeHandler extends ResultCacheWrapper {
 
   async getActiveDailyChallenge() {
     return await this.getOrFetchValue({
-      id: "",
+      id: "active",
       getTimeToCache: () => 3600,
       logFormatter: () => "",
       fetchMethod: async () => {
         return (await getDailyChallengesInReverseOrder({ limit: 1 }))[0]._id;
+      },
+    });
+  }
+
+  async getYesterdaysDailyChallenge() {
+    return await this.getOrFetchValue({
+      id: "last",
+      getTimeToCache: () => 3600,
+      logFormatter: () => "",
+      fetchMethod: async () => {
+        return (await getDailyChallengesInReverseOrder({ limit: 1, skip: 1 }))[0]._id;
       },
     });
   }
