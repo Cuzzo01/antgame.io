@@ -313,42 +313,42 @@ async function getActiveChallenges(req, res) {
     }
 
     let userRecords = false;
-    if (!user.anon) {
-      userRecords = await UserDao.getUserPBs(user.id);
-      const activeUserRecords = userRecords.filter(
-        record => challengeIDList.findIndex(id => id.equals(record.ID)) > -1
-      );
+    userRecords = await UserDao.getUserPBs(user.id);
+    const activeUserRecords = userRecords.filter(
+      record => challengeIDList.findIndex(id => id.equals(record.ID)) > -1
+    );
 
-      if (activeUserRecords) {
-        const shouldGetRanks = await FlagHandler.getFlagValue("show-rank-on-challenge-list");
+    if (activeUserRecords) {
+      const shouldGetRanks = await FlagHandler.getFlagValue("show-rank-on-challenge-list");
 
-        let rankPromises = [];
-        activeUserRecords.forEach(userRecord => {
-          const challengeID = userRecord.ID;
-          records[challengeID].pb = userRecord.pb;
-          records[challengeID].runs = userRecord.runs;
+      let rankPromises = [];
+      activeUserRecords.forEach(userRecord => {
+        const challengeID = userRecord.ID;
+        records[challengeID].pb = userRecord.pb;
+        records[challengeID].runs = userRecord.runs;
 
-          if (shouldGetRanks) {
-            rankPromises.push(
-              LeaderboardHandler.getChallengeRankByUserId(challengeID, user.id).then(rank => {
-                return {
-                  id: challengeID,
-                  rank: rank,
-                };
-              })
-            );
-          }
+        if (shouldGetRanks) {
+          rankPromises.push(
+            LeaderboardHandler.getChallengeRankByUserId(challengeID, user.id).then(rank => {
+              return {
+                id: challengeID,
+                rank: rank,
+              };
+            })
+          );
+        }
+      });
+
+      await Promise.all(rankPromises).then(rankResults => {
+        rankResults.forEach(rank => {
+          records[rank.id].rank = rank.rank;
         });
-
-        await Promise.all(rankPromises).then(rankResults => {
-          rankResults.forEach(rank => {
-            records[rank.id].rank = rank.rank;
-          });
-        });
-      }
+      });
     }
 
-    res.send({ challenges: activeChallenges, records: records });
+    const championshipData = await ActiveChallengesHandler.getChampionshipData();
+    const yesterdaysDailyData = await ActiveChallengesHandler.getYesterdaysDailyData();
+    res.send({ challenges: activeChallenges, championshipData, yesterdaysDailyData, records });
   } catch (e) {
     Logger.logError("ChallengeController.GetActiveChallenges", e);
     res.status(500);

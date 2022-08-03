@@ -3,7 +3,7 @@ body {
 }
 
 .container {
-  width: 85rem;
+  min-width: 30rem;
   width: 80%;
   margin: 0 auto;
   padding-top: 3em;
@@ -21,37 +21,81 @@ body {
   font-size: 0.75rem;
 }
 
-.dailyChallengeBox {
-  width: 35rem;
-  border-radius: 1rem;
-  border: 0.2rem black solid;
-  padding: 1rem;
-  margin: 1rem auto;
-  background-color: lightgray;
+.challengeDetails {
   display: grid;
-  grid-template-columns: auto 17em;
-  grid-template-rows: 1.75em auto;
+  align-items: end;
 }
 
-@media screen and (max-width: 730px) {
+.dailyChallengeBox {
+  display: grid;
+  grid-template-rows: 2em 1.5em auto;
+}
+
+.dailyChallengeBox h4 {
+  font-family: "Courier Prime Bold";
+  display: inline-block;
+  margin: 0 auto;
+}
+
+.dailyInfoBlock {
+  padding-top: 0.5em;
+}
+
+.dailyCountdown {
+  display: inline-block;
+  margin: 0 auto;
+}
+
+.dailyRecords {
+  padding-top: 1rem;
+}
+
+.flexBreak {
+  height: 1px;
+  width: 100%;
+}
+
+@media (max-width: 105rem) {
   .dailyChallengeBox {
-    width: 26rem;
-    display: flex;
-    flex-direction: column;
-    row-gap: 8px;
+    order: -4;
+  }
+
+  .flexBreak {
+    order: -3;
+  }
+
+  .yesterdaysDaily {
+    order: -2;
+  }
+
+  .championshipCard {
+    order: -1;
+  }
+}
+
+@media (min-width: 105rem) {
+  .yesterdaysDaily {
+    order: -3;
+  }
+
+  .dailyChallengeBox {
+    order: -2;
+  }
+
+  .championshipCard {
+    order: -1;
+  }
+}
+
+@media (min-width: 105rem) and (max-width: 140rem) {
+  .flexBreak {
+    display: none;
   }
 }
 
 .dailyLinks {
   display: grid;
   grid-template-columns: 50% auto;
-}
-
-.dailyTitle {
-  grid-column: span 2;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
 }
 
 .challengeGrid {
@@ -69,11 +113,18 @@ body {
   grid-template-rows: 6.5em auto;
   background-color: lightgray;
   width: 26rem;
+  height: 100%;
 }
 
 .topBar {
   display: grid;
   grid-template-columns: 15rem 8.3rem;
+}
+
+.dailyInfoBar {
+  display: grid;
+  grid-template-columns: 15rem 8.3rem;
+  padding-top: 1em;
 }
 
 .challengeButtons {
@@ -89,6 +140,10 @@ body {
   font-family: "Courier Prime Bold";
   display: flex;
   align-items: center;
+}
+
+.challengeName span {
+  margin: unset;
 }
 
 .challengeInfo {
@@ -125,15 +180,8 @@ body {
 }
 
 .thumbnail img {
-  width: 23.6rem;
   height: 14.13rem;
-}
-
-.thumbnailContainer {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 23.6rem;
 }
 
 .thumbnailContainer img {
@@ -154,10 +202,58 @@ body {
   background-color: transparent;
 }
 
+.dailyThumbnail {
+  margin-top: 1em;
+}
+
+.dailyThumbnail img {
+  background-color: black;
+  width: 100%;
+  height: 100%;
+  border: 2px black solid;
+  border-radius: 0.5em;
+}
+
 .age {
   margin-left: 0.1rem;
 }
 
 .bigLink {
   grid-column: 1/3;
+}
+
+.bigCards {
+  display: flex;
+  grid-gap: 1em;
+  margin: 0 auto;
+}
+
+.bigCard {
+  width: 26rem;
+  height: 30em;
+  border-radius: 1rem;
+  border: 0.2rem black solid;
+  padding: 1rem;
+  margin: 1rem;
+  background-color: lightgray;
+}
+
+/* ChampionshipCard */
+.championshipCard {
+  display: inline-block;
+  text-align: center;
+}
+
+.championshipCard h4 {
+  margin: 0;
+}
+
+/* YesterdaysDailyCard */
+.yesterdaysDaily {
+  display: inline-block;
+  text-align: center;
+}
+
+.yesterdaysDaily h4 {
+  margin: 0;
 }

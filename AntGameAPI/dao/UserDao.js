@@ -165,8 +165,8 @@ const isUserBanned = async id => {
   const collection = await getCollection("users");
   const result = await collection.findOne({ _id: userObjectID }, { projection: { banned: 1 } });
 
-  if (result.banned === true) return true;
-  return false;
+  if (!result) return true;
+  return result.banned;
 };
 
 const isUserAdmin = async id => {
@@ -175,8 +175,8 @@ const isUserAdmin = async id => {
   const collection = await getCollection("users");
   const result = await collection.findOne({ _id: userObjectID }, { projection: { admin: 1 } });
 
-  if (result.admin === true) return true;
-  return false;
+  if (!result) return false;
+  return result.admin;
 };
 
 const getUsernameByID = async id => {
