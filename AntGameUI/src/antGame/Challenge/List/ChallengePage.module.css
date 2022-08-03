@@ -236,6 +236,11 @@ body {
   padding: 1rem;
   margin: 1rem;
   background-color: lightgray;
+  font-family: "Courier Prime Bold";
+}
+
+.bigCard h5 {
+  margin: 0.2em 0 0.3em 0;
 }
 
 /* ChampionshipCard */
