@@ -37,61 +37,60 @@ body {
   margin: 0 auto;
 }
 
-.dailyChallengeBox span {
+.dailyInfoBlock {
+  padding-top: 0.5em;
+}
+
+.dailyCountdown {
   display: inline-block;
   margin: 0 auto;
 }
 
-@media screen and (max-width: 730px) {
-  .dailyChallengeBox {
-    width: 26rem;
-    display: flex;
-    flex-direction: column;
-    row-gap: 8px;
-  }
+.dailyRecords {
+  padding-top: 1rem;
 }
 
-/* @media (max-width: 1120px) { */
-@media (max-width: 105rem) {
-  .championshipCard {
-    order: -2;
-  }
-
-  .dailyChallengeBox {
-    order: -3;
-  }
-
-  .yesterdaysDaily {
-    order: -1;
-  }
-}
-
-/* @media (min-width: 1120px) { */
-@media (min-width: 105rem) {
-  .championshipCard {
-    order: -1;
-  }
-
-  .dailyChallengeBox {
-    order: -2;
-  }
-
-  .yesterdaysDaily {
-    order: -3;
-  }
-}
-
-.dailyThumbnail {
-}
-
-.dailyThumbnail img {
-  background-color: black;
+.flexBreak {
+  height: 1px;
   width: 100%;
-  height: 100%;
-  border: 2px black solid;
-  border-radius: 0.5em;
-  padding: 0.2em;
-  margin: 0.5em 0;
+}
+
+@media (max-width: 105rem) {
+  .dailyChallengeBox {
+    order: -4;
+  }
+
+  .flexBreak {
+    order: -3;
+  }
+
+  .yesterdaysDaily {
+    order: -2;
+  }
+
+  .championshipCard {
+    order: -1;
+  }
+}
+
+@media (min-width: 105rem) {
+  .yesterdaysDaily {
+    order: -3;
+  }
+
+  .dailyChallengeBox {
+    order: -2;
+  }
+
+  .championshipCard {
+    order: -1;
+  }
+}
+
+@media (min-width: 105rem) and (max-width: 140rem) {
+  .flexBreak {
+    display: none;
+  }
 }
 
 .dailyLinks {
@@ -114,11 +113,18 @@ body {
   grid-template-rows: 6.5em auto;
   background-color: lightgray;
   width: 26rem;
+  height: 100%;
 }
 
 .topBar {
   display: grid;
   grid-template-columns: 15rem 8.3rem;
+}
+
+.dailyInfoBar {
+  display: grid;
+  grid-template-columns: 15rem 8.3rem;
+  padding-top: 1em;
 }
 
 .challengeButtons {
@@ -174,7 +180,8 @@ body {
 }
 
 .thumbnail img {
-  width: 100%;
+  height: 14.13rem;
+  width: 23.6rem;
 }
 
 .thumbnailContainer img {
@@ -193,6 +200,18 @@ body {
   width: 32px;
   height: 32px;
   background-color: transparent;
+}
+
+.dailyThumbnail {
+  margin-top: 1em;
+}
+
+.dailyThumbnail img {
+  background-color: black;
+  width: 100%;
+  height: 100%;
+  border: 2px black solid;
+  border-radius: 0.5em;
 }
 
 .age {
@@ -226,5 +245,15 @@ body {
 }
 
 .championshipCard h4 {
+  margin: 0;
+}
+
+/* YesterdaysDailyCard */
+.yesterdaysDaily {
+  display: inline-block;
+  text-align: center;
+}
+
+.yesterdaysDaily h4 {
   margin: 0;
 }

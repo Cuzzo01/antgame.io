@@ -341,7 +341,8 @@ async function getActiveChallenges(req, res) {
     }
 
     const championshipData = await ActiveChallengesHandler.getChampionshipData();
-    res.send({ challenges: activeChallenges, championshipData, records: records });
+    const yesterdaysDailyData = await ActiveChallengesHandler.getYesterdaysDailyData();
+    res.send({ challenges: activeChallenges, championshipData, yesterdaysDailyData, records });
   } catch (e) {
     Logger.logError("ChallengeController.GetActiveChallenges", e);
     res.status(500);

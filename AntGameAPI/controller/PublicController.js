@@ -13,6 +13,7 @@ async function getActiveChallenges(req, res) {
     const worldRecords = activeChallengeData.worldRecords;
 
     const championshipData = await ActiveChallengesHandler.getChampionshipData();
+    const yesterdaysDailyData = await ActiveChallengesHandler.getYesterdaysDailyData();
 
     const records = {};
     for (const [id, wr] of Object.entries(worldRecords)) {
@@ -21,7 +22,7 @@ async function getActiveChallenges(req, res) {
 
     const cacheTime = await FlagHandler.getFlagValue("time-to-cache-public-endpoints");
     res.set("Cache-Control", `public, max-age=${cacheTime}`);
-    res.send({ challenges: activeChallenges, championshipData, records });
+    res.send({ challenges: activeChallenges, championshipData, records, yesterdaysDailyData });
   } catch (e) {
     Logger.logError("PublicController.getActiveChallenges", e);
     res.sendStatus(500);

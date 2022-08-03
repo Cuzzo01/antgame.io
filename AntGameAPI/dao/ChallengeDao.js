@@ -119,7 +119,6 @@ const getActiveChallenges = async () => {
       time: config.seconds,
       homes: config.homeLimit,
       dailyChallenge: config.dailyChallenge,
-      championshipID: config.championshipID,
     });
   });
   return challengeList;

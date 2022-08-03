@@ -11,12 +11,18 @@ import { ChampionshipCard } from "./ChampionshipCard";
 import { YesterdaysDailyCard } from "./YesterdaysDailyCard";
 
 const ChallengeList = () => {
-  const InitialList = Array(12).fill(<ChallengeCard showThumbnails loading />);
+  const InitialList = Array(12).fill(
+    <DailyChallengeCard />,
+    <ChampionshipCard />,
+    <YesterdaysDailyCard />,
+    <ChallengeCard showThumbnails loading />
+  );
 
   const [loading, setLoading] = useState(true);
   const [menuList, setMenuList] = useState([]);
   const [dailyChallenge, setDailyChallenge] = useState(<DailyChallengeCard />);
   const [championshipCard, setChampionshipCard] = useState(<ChampionshipCard />);
+  const [yesterdaysDailyCard, setYesterdaysDailyCard] = useState(<YesterdaysDailyCard />);
   const history = useHistory();
 
   useEffect(() => {
@@ -34,17 +40,20 @@ const ChallengeList = () => {
   }, [history]);
 
   const setData = async ({ challengeResponse, thumbnailFlagPromise }) => {
-    let seenDaily = false;
     const shouldShowThumbnails = await thumbnailFlagPromise;
     const records = challengeResponse.records;
+
+    const championshipData = challengeResponse.championshipData;
+    if (championshipData) setChampionshipCard(<ChampionshipCard data={championshipData} />);
+    else setChampionshipCard();
+
+    const yesterdaysDailyData = challengeResponse.yesterdaysDailyData;
+    if (yesterdaysDailyData)
+      setYesterdaysDailyCard(<YesterdaysDailyCard data={yesterdaysDailyData} />);
+    else setYesterdaysDailyCard();
+
     let list = [];
-    if (challengeResponse.championshipData) {
-      setChampionshipCard(
-        <ChampionshipCard championshipData={challengeResponse.championshipData} />
-      );
-    } else {
-      setChampionshipCard();
-    }
+    let seenDaily = false;
     challengeResponse.challenges.forEach(challenge => {
       if (challenge.dailyChallenge && seenDaily === false) {
         setDailyChallenge(
@@ -79,14 +88,19 @@ const ChallengeList = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>AntGame.io - Challenges</h2>
+        <h2>AntGame.io</h2>
       </div>
-      <div className={styles.challengeGrid}>
-        <YesterdaysDailyCard />
-        {dailyChallenge}
-        {championshipCard}
-        {loading ? InitialList : menuList}
-      </div>
+      {loading ? (
+        <div className={styles.challengeGrid}>{InitialList}</div>
+      ) : (
+        <div className={styles.challengeGrid}>
+          {dailyChallenge}
+          {yesterdaysDailyCard}
+          {championshipCard}
+          <div className={styles.flexBreak} />
+          {menuList}
+        </div>
+      )}
     </div>
   );
 };

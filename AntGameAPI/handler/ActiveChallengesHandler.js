@@ -8,6 +8,7 @@ const { ResultCacheWrapper } = require("./ResultCacheWrapper");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
+const { getTimeStringForDailyChallenge } = require("../helpers/TimeHelper");
 
 class ActiveChallengesHandler extends ResultCacheWrapper {
   constructor() {
@@ -34,7 +35,7 @@ class ActiveChallengesHandler extends ResultCacheWrapper {
 
   getChampionshipData = async () => {
     return await this.getOrFetchValue({
-      id: "",
+      id: "championship",
       fetchMethod: async () => {
         const todaysChallengeID = await DailyChallengeHandler.getActiveDailyChallenge();
         const todaysChallengeDetails = await getChallengeByChallengeId(todaysChallengeID);
@@ -50,14 +51,46 @@ class ActiveChallengesHandler extends ResultCacheWrapper {
           leaderboard = await LeaderboardHandler.getRawChampionshipLeaderboard(championshipID);
         }
 
-        if (leaderboard.length > 10) leaderboard.length = 10;
-        await populateLeaderboardNames(leaderboard);
+        const leaderboardCopy = [...leaderboard];
+        if (leaderboardCopy.length > 10) leaderboardCopy.length = 10;
+        await populateLeaderboardNames(leaderboardCopy);
 
         return {
           id: championshipID,
-          leaderboard,
+          leaderboard: leaderboardCopy,
           name: await ObjectIDToNameHandler.getChampionshipName(championshipID),
         };
+      },
+      getTimeToCache: async () => await FlagHandler.getFlagValue("time-to-cache-active-challenges"),
+    });
+  };
+
+  getYesterdaysDailyData = async () => {
+    return await this.getOrFetchValue({
+      id: "yesterdays_daily",
+      fetchMethod: async () => {
+        const yesterdaysDailyID = await DailyChallengeHandler.getYesterdaysDailyChallenge();
+        const name = await ObjectIDToNameHandler.getChallengeName(yesterdaysDailyID);
+
+        const leaderboard = await LeaderboardHandler.getChallengeLeaderboard(yesterdaysDailyID);
+        const leaderboardCopy = [...leaderboard];
+        if (leaderboardCopy.length > 10) leaderboardCopy.length = 10;
+
+        let leaderboardData = [];
+        for (let i = 0; i < leaderboardCopy.length; i++) {
+          const entry = leaderboardCopy[i];
+          const timeString = getTimeStringForDailyChallenge(entry.runID);
+
+          leaderboardData.push({
+            id: entry._id,
+            rank: i + 1,
+            username: entry.username,
+            pb: entry.pb,
+            age: timeString,
+          });
+        }
+
+        return { name, id: yesterdaysDailyID, leaderboardData };
       },
       getTimeToCache: async () => await FlagHandler.getFlagValue("time-to-cache-active-challenges"),
     });

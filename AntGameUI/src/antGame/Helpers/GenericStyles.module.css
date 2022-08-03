@@ -20,11 +20,12 @@
 
 .skinnyRow {
   display: grid;
-  grid-template-columns: 2.5em auto 8em;
-  border: 2px grey solid;
+  grid-template-columns: 2.5em auto 6em;
+  border: 2px black solid;
   border-radius: 0.5em;
   margin: 0.3em 1em;
   padding: 0.2em 1em;
+  text-align: left;
 }
 
 .rank {

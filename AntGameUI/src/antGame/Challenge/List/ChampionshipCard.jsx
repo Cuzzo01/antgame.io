@@ -3,17 +3,17 @@ import styles from "./ChallengePage.module.css";
 import AuthHandler from "../../Auth/AuthHandler";
 import { Link } from "react-router-dom";
 
-export const ChampionshipCard = ({ championshipData }) => {
-  if (!championshipData) return <div></div>;
+export const ChampionshipCard = ({ data }) => {
+  if (!data) return <div></div>;
   return (
     <div className={`${styles.bigCard} ${styles.championshipCard}`}>
       <span>
-        <Link to={`/championship/${championshipData.id}`}>
-          <h4>{championshipData.name}</h4>
+        <Link to={`/championship/${data.id}`}>
+          <h4>Championship</h4>
         </Link>
-        <h5>Championship</h5>
+        <h5>{data.name}</h5>
       </span>
-      <ChampionshipLeaderboard leaderboard={championshipData.leaderboard} />
+      <ChampionshipLeaderboard leaderboard={data.leaderboard} />
     </div>
   );
 };
@@ -25,7 +25,6 @@ const ChampionshipLeaderboard = ({ leaderboard }) => {
   let lastPoints = 0;
   for (let i = 0; i < leaderboard?.length; i++) {
     const entry = leaderboard[i];
-    console.log(entry);
 
     const isTied = lastPoints === entry.points;
     rowList.push(
