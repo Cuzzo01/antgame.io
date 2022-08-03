@@ -69,9 +69,9 @@ class ResultCacheWrapper {
     this.resultCache.expireValue(id);
   }
 
-  unsetAll = () => {
+  unsetAll() {
     this.resultCache = new ResultCache();
-  };
+  }
 
   getTimeToExpire = id => {
     if (this.resultCache.isSetAndActive(id)) {
