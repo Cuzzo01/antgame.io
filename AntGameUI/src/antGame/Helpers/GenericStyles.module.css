@@ -58,24 +58,29 @@
 
 .footerContainer {
   margin: 0 auto;
-  padding-bottom: 1.5em;
+  padding-bottom: 0.5em;
   text-align: center;
+  align-items: center;
   flex-shrink: 0;
   width: 100%;
   display: grid;
-  grid-template-columns: 3em auto 3em;
+  grid-template-columns: 3em auto 10em;
 }
 
-.githubLink {
+.links {
   display: flex;
-  justify-content: left;
+  justify-content: right;
   padding: 0.1em;
   margin: 0.1em;
   padding-right: 1em;
 }
 
-.githubLink img {
-  width: 100%;
+.links a {
+  margin: 0.5em;
+}
+
+.links img {
+  width: 2em;
 }
 
 .windowContainer {
