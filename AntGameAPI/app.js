@@ -132,6 +132,7 @@ app.get("/challenge/:id/leaderboard", _challengeController.getLeaderboard);
 app.get("/public/activeChallenges", _publicController.getActiveChallenges);
 app.get("/public/challengeLeaderboard/:id", _publicController.getChallengeLeaderboard);
 app.get("/public/dailyList", _publicController.getDailyChallenges);
+app.get("/public/gsgp", _publicController.getGsgpData);
 
 app.post("/seed", getSeedLimiter, _seedController.getSeed);
 
