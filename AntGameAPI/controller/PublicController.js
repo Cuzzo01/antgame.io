@@ -5,6 +5,7 @@ const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const FlagHandler = require("../handler/FlagHandler");
 const { GenerateChallengeLeaderboardData } = require("../helpers/LeaderboardHelper");
+const { getUserLoginCount } = require("../dao/AdminDao");
 
 async function getActiveChallenges(req, res) {
   try {
@@ -71,9 +72,34 @@ async function getDailyChallenges(req, res) {
     res.set("Cache-Control", `public, max-age=60`);
     res.send(mappedResult);
   } catch (e) {
-    Logger.logError("ChallengeController.GetDailyChallenges", e);
+    Logger.logError("PublicController.getDailyChallenges", e);
     res.status(500);
     res.send("Get leader board failed");
   }
 }
-module.exports = { getActiveChallenges, getChallengeLeaderboard, getDailyChallenges };
+
+async function getGsgpData(req, res) {
+  try {
+    const activePlayers = await getUserLoginCount(24);
+    const dailyLeaderboardData = await GenerateChallengeLeaderboardData({ challengeID: "daily" });
+
+    const leaderboardToReturn = {};
+    dailyLeaderboardData.leaderboardRows.forEach(entry => {
+      leaderboardToReturn[entry.username] = entry.pb;
+    });
+
+    res.set("Cache-Control", `public, max-age=60`);
+    res.send({
+      name: "AntGame.io",
+      active_players: activePlayers.value,
+      leaderboards: {
+        "Daily Challenge": leaderboardToReturn,
+      },
+    });
+  } catch (e) {
+    Logger.logError("PublicController.GetGsgpData", e);
+    res.status(500);
+    res.send("Get leader board failed");
+  }
+}
+module.exports = { getActiveChallenges, getChallengeLeaderboard, getDailyChallenges, getGsgpData };
