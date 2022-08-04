@@ -81,11 +81,25 @@ async function getDailyChallenges(req, res) {
 async function getGsgpData(req, res) {
   try {
     const activePlayers = await getUserLoginCount(24);
-    const dailyLeaderboardData = await GenerateChallengeLeaderboardData({ challengeID: "daily" });
 
-    const leaderboardToReturn = {};
+    const dailyChallengeID = await DailyChallengeHandler.getActiveDailyChallenge();
+    const dailyLeaderboardData = await GenerateChallengeLeaderboardData({
+      challengeID: dailyChallengeID.toString(),
+    });
+    const dailyChallengeName = await ObjectIDToNameHandler.getChallengeName(dailyChallengeID);
+    const dailyLeaderboard = {};
     dailyLeaderboardData.leaderboardRows.forEach(entry => {
-      leaderboardToReturn[entry.username] = entry.pb;
+      dailyLeaderboard[entry.username] = entry.pb;
+    });
+
+    const yesterdaysDailyID = await DailyChallengeHandler.getYesterdaysDailyChallenge();
+    const yesterdaysLeaderboardData = await GenerateChallengeLeaderboardData({
+      challengeID: yesterdaysDailyID.toString(),
+    });
+    const yesterdaysChallengeName = await ObjectIDToNameHandler.getChallengeName(yesterdaysDailyID);
+    const yesterdaysLeaderboard = {};
+    yesterdaysLeaderboardData.leaderboardRows.forEach(entry => {
+      yesterdaysLeaderboard[entry.username] = entry.pb;
     });
 
     res.set("Cache-Control", `public, max-age=60`);
@@ -93,7 +107,8 @@ async function getGsgpData(req, res) {
       name: "AntGame.io",
       active_players: activePlayers.value,
       leaderboards: {
-        "Daily Challenge": leaderboardToReturn,
+        [dailyChallengeName]: dailyLeaderboard,
+        [`${yesterdaysChallengeName} (FINAL)`]: yesterdaysLeaderboard,
       },
     });
   } catch (e) {
