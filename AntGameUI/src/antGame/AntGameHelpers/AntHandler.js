@@ -1,6 +1,5 @@
 import { Config } from "../config";
 import { Ant } from "./Ant";
-import ChallengeHandler from "../Challenge/ChallengeHandler";
 
 const Brushes = Config.brushes;
 const AntsToSpawn = Config.AntsToSpawn;

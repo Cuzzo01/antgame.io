@@ -1,7 +1,6 @@
 import { useState } from "react";
 import styles from "./ChallengePage.module.css";
 import loaderGif from "../../../assets/thumbnailLoader.gif";
-import { Link } from "react-router-dom";
 
 export const Thumbnail = ({ url, isDaily = false }) => {
   const [thumbnailLoading, setThumbnailLoading] = useState(true);
