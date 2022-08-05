@@ -84,7 +84,7 @@ const Leaderboard = props => {
         setLoading(false);
       });
     },
-    [setLeaderboardData]
+    [setLeaderboardData, setError]
   );
 
   useEffect(() => {

@@ -13,7 +13,6 @@ const Username = ({ name, id, showBorder = true, adminLink = false }) => {
   const populateBadges = useCallback(async () => {
     if (id === undefined) return;
     let badges = await BadgeService.getBadges(id);
-    while (badges === undefined) badges = await BadgeService.getBadges(id);
 
     const list = [];
     const nameStyles = {};
