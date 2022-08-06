@@ -1,32 +1,27 @@
 const Logger = require("../Logger");
 const UserHandler = require("../handler/UserHandler");
-const FlagHandler = require("../handler/FlagHandler");
 
-const getUserBadges = async (req, res) => {
+async function getUserBadges(req, res) {
   try {
-    const userID = req.params.id;
+    const userList = req.body.userList;
 
-    if (!userID) {
+    if (!userList || userList.length > 100) {
       res.sendStatus(400);
       return;
     }
 
-    const badges = await UserHandler.getBadges(userID);
-    const ttl = UserHandler.getTimeToExpire(userID);
+    let badgeResponse = {};
+    for (let i = 0; i < userList.length; i++) {
+      const userID = userList[i];
 
-    if (ttl) {
-      const maxCacheTime = await FlagHandler.getFlagValue("time-to-cache-badges-external");
-      const age = maxCacheTime - ttl;
-      res.set(`Cache-Control`, `public, max-age=${maxCacheTime}`);
-      if (age > 0) res.set(`Age`, age);
+      const badges = await UserHandler.getBadges(userID);
+      badgeResponse[userID] = badges;
     }
 
-    if (badges) res.send(badges);
-    else res.send([]);
+    res.send(badgeResponse);
   } catch (e) {
     Logger.logError("UserController.getUserBadges", e);
     res.send(500);
   }
-};
-
+}
 module.exports = { getUserBadges };

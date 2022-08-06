@@ -13,7 +13,6 @@ class ResultCacheWrapper {
 
   getOrFetchValue = async ({ id, type, fetchMethod, getTimeToCache, logFormatter }) => {
     const startTime = new Date();
-    const timeToCache = await getTimeToCache();
 
     const cacheResult = this.tryGetItemFromCache(id);
     if (cacheResult !== false) {
@@ -33,6 +32,7 @@ class ResultCacheWrapper {
     } else {
       try {
         const result = fetchMethod(id);
+        const timeToCache = await getTimeToCache();
         this.resultCache.setItem(id, result, timeToCache, new Date() - startTime);
 
         const resolvedResult = await Promise.resolve(result);
