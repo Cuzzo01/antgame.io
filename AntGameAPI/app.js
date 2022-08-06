@@ -42,7 +42,6 @@ const UnauthenticatedRoutes = [
   /\/flag\//,
   /\/service\//,
   /\/public\//,
-  /\/user\/[A-z0-9]*\/badges/,
   "/health",
   "/time",
 ];
@@ -133,12 +132,13 @@ app.get("/public/activeChallenges", _publicController.getActiveChallenges);
 app.get("/public/challengeLeaderboard/:id", _publicController.getChallengeLeaderboard);
 app.get("/public/dailyList", _publicController.getDailyChallenges);
 app.get("/public/gsgp", _publicController.getGsgpData);
+app.get("/public/badges/:id", _publicController.getUserBadges);
 
 app.post("/seed", getSeedLimiter, _seedController.getSeed);
 
 app.get("/championship/:id", _championshipController.getLeaderboard);
 
-app.get("/user/:id/badges", _userController.getUserBadges);
+app.post("/badges", _userController.getUserBadges);
 
 app.post("/report/spaces", _reportController.reportSpacesData);
 
