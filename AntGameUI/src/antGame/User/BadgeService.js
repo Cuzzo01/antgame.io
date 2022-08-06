@@ -61,7 +61,6 @@ class BadgeService {
     } else this.badgesToFetch.length = 0;
 
     const badgeResponse = await GetBatchBadges(userIDList);
-    this.badgesToFetch.length = 0;
 
     for (const [userID, badges] of Object.entries(badgeResponse)) {
       const resolveFunction = this.badgesCache.getValue(userID).resolveFunc;
