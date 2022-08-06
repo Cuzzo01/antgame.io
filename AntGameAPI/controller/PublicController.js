@@ -4,6 +4,7 @@ const ActiveChallengesHandler = require("../handler/ActiveChallengesHandler");
 const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
 const FlagHandler = require("../handler/FlagHandler");
+const UserHandler = require("../handler/UserHandler");
 const { GenerateChallengeLeaderboardData } = require("../helpers/LeaderboardHelper");
 const { getUserLoginCount } = require("../dao/AdminDao");
 
@@ -102,7 +103,7 @@ async function getGsgpData(req, res) {
       yesterdaysLeaderboard[entry.username] = entry.pb;
     });
 
-    res.set("Cache-Control", `public, max-age=60`);
+    res.set("Cache-Control", `public, max-age=600`);
     res.send({
       name: "AntGame.io",
       active_players: activePlayers.value,
@@ -117,4 +118,38 @@ async function getGsgpData(req, res) {
     res.send("Get leader board failed");
   }
 }
-module.exports = { getActiveChallenges, getChallengeLeaderboard, getDailyChallenges, getGsgpData };
+
+async function getUserBadges(req, res) {
+  try {
+    const userID = req.params.id;
+
+    if (!userID) {
+      res.sendStatus(400);
+      return;
+    }
+
+    const badges = await UserHandler.getBadges(userID);
+    const ttl = UserHandler.getTimeToExpire(userID);
+
+    if (ttl) {
+      const maxCacheTime = await FlagHandler.getFlagValue("time-to-cache-badges-external");
+      const age = maxCacheTime - ttl;
+      res.set(`Cache-Control`, `public, max-age=${maxCacheTime}`);
+      if (age > 0) res.set(`Age`, age);
+    }
+
+    if (badges) res.send(badges);
+    else res.send([]);
+  } catch (e) {
+    Logger.logError("PublicController.getUserBadges", e);
+    res.send(500);
+  }
+}
+
+module.exports = {
+  getActiveChallenges,
+  getChallengeLeaderboard,
+  getDailyChallenges,
+  getGsgpData,
+  getUserBadges,
+};
