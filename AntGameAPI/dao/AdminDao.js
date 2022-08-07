@@ -151,7 +151,20 @@ const getRecentRuns = async count => {
       {},
       { projection: { submissionTime: 1, name: 1, userID: 1, score: 1, challengeID: 1, tags: 1 } }
     )
-    .sort({ submissionTime: -1 })
+    .sort({ _id: -1 })
+    .limit(count)
+    .toArray();
+  return result;
+};
+
+const getRunsByTag = async (tag, count) => {
+  const collection = await getCollection("runs");
+  const result = await collection
+    .find(
+      { "tags.type": tag },
+      { projection: { submissionTime: 1, name: 1, userID: 1, score: 1, challengeID: 1, tags: 1 } }
+    )
+    .sort({ _id: -1 })
     .limit(count)
     .toArray();
   return result;
@@ -231,6 +244,7 @@ module.exports = {
   getUserDetailsByID,
   updateUserByID,
   getRecentRuns,
+  getRunsByTag,
   getRunDetailsByID,
   getChampionshipListFromDB,
   getFlagListFromDB,

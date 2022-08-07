@@ -53,3 +53,7 @@
   color: darkgray;
   font-style: italic;
 }
+
+.typeSelect {
+  margin-right: 0.5em;
+}

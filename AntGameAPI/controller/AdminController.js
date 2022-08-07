@@ -17,6 +17,7 @@ const {
   updateFlagByID,
   getChampionshipListFromDB,
   saveNewServiceToken,
+  getRunsByTag,
 } = require("../dao/AdminDao");
 const { getActiveChallenges, markRunForVerification } = require("../dao/ChallengeDao");
 const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
@@ -31,6 +32,7 @@ const { handleDailyChallengeChange } = require("../bll/DailyChallengeCron");
 const { GenerateSolutionImage } = require("../bll/RecordImageGenerator");
 const crypto = require("crypto");
 const { generatePasswordHash } = require("../auth/PasswordHandler");
+const { populateUsernamesOnRuns } = require("../helpers/AdminRunHelpers");
 
 //#region stats
 async function getStats(req, res) {
@@ -370,6 +372,7 @@ async function getRuns(req, res) {
     const query = req.query;
     if (query.by === "recent") {
       const count = query.count;
+
       if (!count) {
         send400(res, "Must specify count");
         return;
@@ -377,15 +380,24 @@ async function getRuns(req, res) {
         send400(res, "Count too high");
         return;
       }
-      const results = await getRecentRuns(parseInt(count));
 
-      for (let i = 0; i < results.length; i++) {
-        const result = results[i];
-        if (result.userID)
-          results[i].username = await ObjectIDToNameHandler.getUsername(result.userID);
+      const runs = await getRecentRuns(parseInt(count));
+      await populateUsernamesOnRuns({ runs });
+
+      res.send(runs);
+    } else if (query.by === "tag") {
+      const tag = query.tag;
+      const count = query.count;
+
+      if (!count || !tag || count > 50) {
+        send400(res, "Bad request");
+        return;
       }
 
-      res.send(results);
+      const runs = await getRunsByTag(tag, parseInt(count));
+      await populateUsernamesOnRuns({ runs });
+
+      res.send(runs);
     } else {
       send400(res, "Unknown by value");
       return;

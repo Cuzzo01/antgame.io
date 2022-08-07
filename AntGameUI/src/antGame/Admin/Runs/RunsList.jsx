@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getRecentRuns } from "../AdminService";
+import { getRecentRuns, getRunsByTag } from "../AdminService";
 import styles from "./RunsList.module.css";
 import adminStyles from "../AdminStyles.module.css";
 import { Link } from "react-router-dom";
@@ -7,33 +7,46 @@ import AutoRefreshButton from "./AutoRefreshButton";
 import Username from "../../User/Username";
 import { RefreshIcon } from "../../AntGameHelpers/Icons";
 import Countdown from "react-countdown";
+import { useCallback } from "react";
 
 const RunsList = () => {
   const [runsList, setRunsList] = useState(false);
   const [updateTime, setUpdateTime] = useState(false);
+  const [runType, setRunType] = useState("recent");
+
+  const setRunData = useCallback(runs => {
+    let list = [];
+    for (let i = 0; i < runs.length; i++) {
+      const run = runs[i];
+      list.push(
+        <RunsListElement
+          theme={i % 2 === 0 ? adminStyles.even : adminStyles.odd}
+          run={run}
+          key={run._id}
+        />
+      );
+    }
+    setRunsList(list);
+    setUpdateTime(new Date());
+  }, []);
+
+  const refreshData = useCallback(
+    type => {
+      if (!type) type = runType;
+
+      if (runType === "recent") getRecentRuns(15).then(runs => setRunData(runs));
+      else if (runType === "tags-pr") getRunsByTag("pr", 15).then(runs => setRunData(runs));
+      else if (runType === "tags-wr") getRunsByTag("wr", 15).then(runs => setRunData(runs));
+      else if (runType === "tags-fail")
+        getRunsByTag("failed verification", 15).then(runs => setRunData(runs));
+    },
+    [runType, setRunData]
+  );
 
   useEffect(() => {
     document.title = "Runs List";
-    getRuns();
-  }, []);
-
-  const getRuns = () => {
-    getRecentRuns(15).then(runs => {
-      let list = [];
-      for (let i = 0; i < runs.length; i++) {
-        const run = runs[i];
-        list.push(
-          <RunsListElement
-            theme={i % 2 === 0 ? adminStyles.even : adminStyles.odd}
-            run={run}
-            key={run._id}
-          />
-        );
-      }
-      setRunsList(list);
-      setUpdateTime(new Date());
-    });
-  };
+    refreshData();
+  }, [refreshData]);
 
   return (
     <div className={styles.container}>
@@ -47,8 +60,12 @@ const RunsList = () => {
           )}
         </span>
         <span>
-          <AutoRefreshButton onRefresh={getRuns} />
-          <span className={`${adminStyles.divButton} ${styles.refreshButton}`} onClick={getRuns}>
+          <TypeSelect setRunType={type => setRunType(type)} />
+          <AutoRefreshButton onRefresh={() => refreshData()} />
+          <span
+            className={`${adminStyles.divButton} ${styles.refreshButton}`}
+            onClick={() => refreshData()}
+          >
             <RefreshIcon />
           </span>
         </span>
@@ -100,6 +117,22 @@ const RunsListElement = ({ run, theme }) => {
         <Link to={`/admin/config/${run.challengeID}`}>{run.name}</Link>
       </span>
     </div>
+  );
+};
+
+const TypeSelect = ({ setRunType }) => {
+  return (
+    <span className={styles.typeSelect}>
+      By:&nbsp;
+      <select onChange={v => setRunType(v.target.value)}>
+        <option value={"recent"} defaultValue>
+          Recent
+        </option>
+        <option value={"tags-pr"}>Tags (PR)</option>
+        <option value={"tags-wr"}>Tags (WR)</option>
+        <option value={"tags-fail"}>Tags (Rejected)</option>
+      </select>
+    </span>
   );
 };
 
