@@ -79,6 +79,12 @@ export const getRecentRuns = async count => {
   });
 };
 
+export const getRunsByTag = async (tag, count) => {
+  return axios.get("/api/admin/runs", { params: { by: "tag", tag, count } }).then(res => {
+    return res.data;
+  });
+};
+
 export const getRunDetails = async id => {
   return axios.get(`/api/admin/run/${id}`).then(res => {
     return res.data;
