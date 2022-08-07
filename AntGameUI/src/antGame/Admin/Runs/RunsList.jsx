@@ -5,9 +5,12 @@ import adminStyles from "../AdminStyles.module.css";
 import { Link } from "react-router-dom";
 import AutoRefreshButton from "./AutoRefreshButton";
 import Username from "../../User/Username";
+import { RefreshIcon } from "../../AntGameHelpers/Icons";
+import Countdown from "react-countdown";
 
 const RunsList = () => {
   const [runsList, setRunsList] = useState(false);
+  const [updateTime, setUpdateTime] = useState(false);
 
   useEffect(() => {
     document.title = "Runs List";
@@ -28,14 +31,27 @@ const RunsList = () => {
         );
       }
       setRunsList(list);
+      setUpdateTime(new Date());
     });
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.titleBar}>
-        <h3>Runs</h3>
-        <AutoRefreshButton onRefresh={getRuns} />
+        <span>
+          <span className={styles.title}>Runs</span>
+          {updateTime && (
+            <span className={styles.updateTimestamp}>
+              <Countdown date={updateTime} overtime renderer={renderer} />
+            </span>
+          )}
+        </span>
+        <span>
+          <AutoRefreshButton onRefresh={getRuns} />
+          <span className={`${adminStyles.divButton} ${styles.refreshButton}`} onClick={getRuns}>
+            <RefreshIcon />
+          </span>
+        </span>
       </div>
       {runsList ? runsList : null}
     </div>
@@ -85,4 +101,10 @@ const RunsListElement = ({ run, theme }) => {
       </span>
     </div>
   );
+};
+
+const renderer = ({ hours, minutes, seconds, completed }) => {
+  if (!hours && !minutes) return `${seconds}s old`;
+  if (!hours) return `${minutes}m old`;
+  return `${hours}h old`;
 };

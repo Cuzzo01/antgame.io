@@ -44,7 +44,7 @@ const UserList = () => {
     });
   };
 
-  const buildAndSetUserList = (users, fieldToShow) => {
+  const buildAndSetUserList = users => {
     let list = [];
     for (let i = 0; i < users.length; i++) {
       const user = users[i];

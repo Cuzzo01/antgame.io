@@ -2,6 +2,11 @@
   margin: 0 0.5em;
 }
 
+.title {
+  font-family: "Courier Prime Bold";
+  font-size: 1.75em;
+}
+
 .runRow {
   margin: 0.5em 0;
   padding: 0.5em;
@@ -12,18 +17,24 @@
 }
 
 .titleBar {
-  display: grid;
-  grid-template-columns: 75% 25%;
+  display: flex;
+  justify-content: space-between;
 }
 
-.refreshButtonContainer {
-  text-align: right;
+.autoRefresh {
+  display: inline-block;
+  padding: 0.5rem 1rem;
   height: 100%;
 }
 
 .refreshButton {
   display: inline-block;
-  padding: 0.5rem 1rem;
+  height: 100%;
+  margin-left: 0.5em;
+}
+
+.refreshButton svg {
+  width: 1em;
 }
 
 .enabled {
@@ -35,4 +46,10 @@
   50% {
     background-color: #e74c3c;
   }
+}
+
+.updateTimestamp {
+  margin-left: 0.5em;
+  color: darkgray;
+  font-style: italic;
 }
