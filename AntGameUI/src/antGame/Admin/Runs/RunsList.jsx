@@ -55,7 +55,7 @@ const RunsList = () => {
           <span className={styles.title}>Runs</span>
           {updateTime && (
             <span className={styles.updateTimestamp}>
-              <Countdown date={updateTime} overtime renderer={renderer} />
+              <Countdown date={updateTime} overtime renderer={renderer} intervalDelay={10000} />
             </span>
           )}
         </span>
@@ -137,7 +137,12 @@ const TypeSelect = ({ setRunType }) => {
 };
 
 const renderer = ({ hours, minutes, seconds, completed }) => {
-  if (!hours && !minutes) return `${seconds}s old`;
+  const displaySeconds = Math.round(seconds / 10) * 10;
+
+  if (!hours && !minutes && !displaySeconds) return "Now";
+  if (!hours && !minutes) {
+    return `${displaySeconds}s old`;
+  }
   if (!hours) return `${minutes}m old`;
   return `${hours}h old`;
 };

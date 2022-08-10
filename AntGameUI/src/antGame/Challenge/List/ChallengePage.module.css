@@ -4,7 +4,7 @@ body {
 
 .container {
   min-width: 30rem;
-  width: 90%;
+  width: 99%;
   margin: 0 auto;
   padding-top: 3em;
   display: flex;
@@ -55,7 +55,7 @@ body {
   width: 100%;
 }
 
-@media (max-width: 93.33rem) {
+@media (max-width: calc(28em * 3/0.99)) {
   .dailyChallengeBox {
     order: -4;
   }
@@ -73,7 +73,7 @@ body {
   }
 }
 
-@media (min-width: 93.33rem) {
+@media (min-width: calc(28em*3/0.99)) {
   .yesterdaysDaily {
     order: -3;
   }
@@ -87,7 +87,7 @@ body {
   }
 }
 
-@media (min-width: 93.33rem) and (max-width: 124.44rem) {
+@media (min-width: calc(28em*3/0.99)) and (max-width: calc(28em*4/0.99)) {
   .flexBreak {
     display: none;
   }

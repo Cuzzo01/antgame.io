@@ -4,6 +4,7 @@ const Logger = require("../Logger");
 const { GetIpAddress } = require("../helpers/IpHelper");
 
 const RejectNotAdmin = (req, res, next) => {
+  Logger.logError("RejectNotAdmin", `illegal admin access attempt by ${req.user.username}`);
   if (req.user.admin !== true) {
     res.status(401);
     res.send("Not admin");
