@@ -55,7 +55,47 @@ body {
   width: 100%;
 }
 
-@media (max-width: calc(28em * 3/0.99)) {
+@media (max-width: calc(28em * 3/0.99)) and (min-width: calc(28em * 2/0.99)) {
+  .dailyChallengeBox {
+    width: 46em !important;
+    height: 14em !important;
+    grid-template-columns: 23.8em auto;
+    grid-template-rows: 2em 1.5em auto;
+    grid-template-areas:
+      "title pic"
+      "countdown ."
+      "info .";
+  }
+
+  .thumbnail img {
+    height: 11em !important;
+    width: 18.37em !important;
+  }
+
+  .dailyThumbnail {
+    grid-area: pic;
+    justify-self: end;
+    align-self: start;
+  }
+
+  .dailyCountdown {
+    grid-area: countdown;
+  }
+
+  .dailyTitle {
+    grid-area: title;
+    align-self: end;
+  }
+
+  .dailyInfoBar {
+    grid-area: info;
+    justify-self: center;
+    align-self: start;
+    padding-top: 0.5em !important;
+  }
+}
+
+@media (max-width: calc(28em * 3 / 0.99)) {
   .dailyChallengeBox {
     order: -4;
   }
@@ -73,7 +113,7 @@ body {
   }
 }
 
-@media (min-width: calc(28em*3/0.99)) {
+@media (min-width: calc(28em * 3 / 0.99)) {
   .yesterdaysDaily {
     order: -3;
   }
@@ -87,7 +127,7 @@ body {
   }
 }
 
-@media (min-width: calc(28em*3/0.99)) and (max-width: calc(28em*4/0.99)) {
+@media (min-width: calc(28em * 3 / 0.99)) and (max-width: calc(28em * 4 / 0.99)) {
   .flexBreak {
     display: none;
   }
@@ -202,12 +242,12 @@ body {
   background-color: transparent;
 }
 
-.dailyThumbnail img {
+.dailyThumbnail {
   background-color: black;
-  width: 100%;
-  height: 100%;
   border: 0.25em black solid;
   border-radius: 0.5em;
+  height: unset;
+  width: unset;
 }
 
 .age {
