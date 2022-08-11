@@ -60,25 +60,28 @@ body {
 
 @media (max-width: calc(28em * 3/0.99)) and (min-width: calc(28em * 2/0.99)) {
   .dailyChallengeBox {
-    width: 46em !important;
-    height: 14em !important;
-    grid-template-columns: 23.8em auto;
-    grid-template-rows: 2em 1.5em auto;
+    width: 46rem !important;
+    height: 14rem !important;
+    grid-template-columns: 23.8rem auto;
+    grid-template-rows: 2rem 1.5rem auto;
     grid-template-areas:
       "title pic"
       "countdown ."
       "info .";
   }
 
-  .thumbnail img {
-    height: 11em !important;
-    width: 18.37em !important;
+  .dailyThumbnail img {
+    height: 11rem !important;
+    width: 18.37rem !important;
   }
 
   .dailyThumbnail {
+    padding-top: 0.25rem;
     grid-area: pic;
     justify-self: end;
     align-self: start;
+    height: unset !important;
+    width: unset !important;
   }
 
   .dailyCountdown {
@@ -245,12 +248,12 @@ body {
   background-color: transparent;
 }
 
-.dailyThumbnail {
+.dailyThumbnail img {
   background-color: black;
   border: 0.25em black solid;
   border-radius: 0.5em;
-  height: unset;
-  width: unset;
+  width: 100%;
+  height: 100%;
 }
 
 .age {
