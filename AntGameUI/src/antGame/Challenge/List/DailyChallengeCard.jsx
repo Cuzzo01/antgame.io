@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 export const DailyChallengeCard = ({ challenge, record, thumbnailURL }) => {
   return (
     <div className={`${styles.bigCard} ${styles.dailyChallengeBox}`}>
-      <h4>
+      <h4 className={styles.dailyTitle}>
         <Link to="/challenge/daily">Daily Challenge</Link>
       </h4>
       <span className={styles.dailyCountdown}>
