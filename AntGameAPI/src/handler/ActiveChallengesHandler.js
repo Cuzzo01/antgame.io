@@ -5,9 +5,9 @@ const {
 } = require("../dao/ChallengeDao");
 const FlagHandler = require("./FlagHandler");
 const { ResultCacheWrapper } = require("./ResultCacheWrapper");
-const LeaderboardHandler = require("../handler/LeaderboardHandler");
-const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
-const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
+const LeaderboardHandler = require("./LeaderboardHandler");
+const DailyChallengeHandler = require("./DailyChallengeHandler");
+const ObjectIDToNameHandler = require("./ObjectIDToNameHandler");
 const { getTimeStringForDailyChallenge } = require("../helpers/TimeHelper");
 
 class ActiveChallengesHandler extends ResultCacheWrapper {

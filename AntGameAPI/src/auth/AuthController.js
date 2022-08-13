@@ -206,7 +206,7 @@ async function createUser(req, res) {
     }
 
     const hashedPassword = await PasswordHandler.generatePasswordHash(password);
-    const user = await AuthDao.saveNewUser({
+    await AuthDao.saveNewUser({
       username: username,
       passHash: hashedPassword,
       admin: admin,

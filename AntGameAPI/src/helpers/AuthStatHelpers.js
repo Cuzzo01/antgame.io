@@ -1,5 +1,3 @@
-const Logger = require("../Logger");
-
 function addStatToResponse(response, statName, values) {
   getStatDeltas(values);
   for (let i = 0; i < values.length; i++) {
@@ -17,7 +15,8 @@ module.exports = { addStatToResponse };
 
 function getStatDeltas(valuesArr) {
   const first = valuesArr[0];
-  if (first.hasOwnProperty("hours")) {
+  const hasHours = Object.prototype.hasOwnProperty.call(first, "hours")
+  if (hasHours) {
     return getStatDeltasFromHours(valuesArr);
   }
 }

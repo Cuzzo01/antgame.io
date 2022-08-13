@@ -5,7 +5,7 @@ const FlagHandler = require("../handler/FlagHandler");
 const {
   getTimeStringForDailyChallenge,
   getGeneralizedTimeStringFromObjectID,
-} = require("../helpers/TimeHelper");
+} = require("./TimeHelper");
 
 const GenerateChallengeLeaderboardData = async ({ challengeID }) => {
   const currentDaily = await DailyChallengeHandler.getActiveDailyChallenge();

@@ -1,5 +1,5 @@
 const { isUserBanned, isUserAdmin } = require("../dao/UserDao");
-const FlagHandler = require("../handler/FlagHandler");
+const FlagHandler = require("./FlagHandler");
 const { ResultCacheWrapper } = require("./ResultCacheWrapper");
 const Logger = require("../Logger");
 

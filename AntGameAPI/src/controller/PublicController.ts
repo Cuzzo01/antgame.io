@@ -1,3 +1,5 @@
+import { HomePageResponse } from "../models/HomePageResponse";
+
 const Logger = require("../Logger");
 const ChallengeDao = require("../dao/ChallengeDao");
 const ActiveChallengesHandler = require("../handler/ActiveChallengesHandler");
@@ -24,6 +26,11 @@ async function getActiveChallenges(req, res) {
 
     const cacheTime = await FlagHandler.getFlagValue("time-to-cache-public-endpoints");
     res.set("Cache-Control", `public, max-age=${cacheTime}`);
+
+    const response: HomePageResponse = {
+
+    }
+
     res.send({ challenges: activeChallenges, championshipData, records, yesterdaysDailyData });
   } catch (e) {
     Logger.logError("PublicController.getActiveChallenges", e);
