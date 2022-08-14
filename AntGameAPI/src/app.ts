@@ -1,9 +1,18 @@
-if (!process.env.environment) require("dotenv").config();
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/unbound-method */
+
+import dotenv from "dotenv";
+if (!process.env.environment) {
+  dotenv.config();
+}
+
+import express, { Request, Response } from "express";
+import jwt from "express-jwt";
+import responseTime from "response-time";
+
+import { PublicController } from "./controller/PublicController";
 
 require("./tracing");
-
-const express = require("express");
-const jwt = require("express-jwt");
 
 const app = express();
 const port = 8080;
@@ -18,11 +27,9 @@ const _reportController = require("./controller/ReportController");
 const _userController = require("./controller/UserController");
 const _seedController = require("./controller/SeedController");
 const _serviceController = require("./controller/ServiceController");
-const _publicController = require("./controller/PublicController");
 
 const TokenHandler = require("./auth/WebTokenHandler");
 const { RejectNotAdmin, ServiceEndpointAuth } = require("./auth/AuthHelpers");
-const responseTime = require("response-time");
 const { initializeScheduledTasks } = require("./bll/TaskScheduler");
 const SpacesService = require("./services/SpacesService");
 const MongoClient = require("./dao/MongoClient");
@@ -112,7 +119,7 @@ app.delete(
 );
 
 app.get("/flag/:name", _flagController.getFlag);
-app.get("/time", (req, res) => res.send({ now: Date.now() }));
+app.get("/time", (_: Request, res: Response) => res.send({ now: Date.now() }));
 
 app.get("/map", RejectNotAdmin, _mapController.getRandomMap);
 
@@ -128,11 +135,11 @@ app.get("/challenge/:id/pr", _challengeController.getPRHomeLocations);
 app.get("/challenges/active", _challengeController.getActiveChallenges);
 app.get("/challenge/:id/leaderboard", _challengeController.getLeaderboard);
 
-app.get("/public/activeChallenges", _publicController.getActiveChallenges);
-app.get("/public/challengeLeaderboard/:id", _publicController.getChallengeLeaderboard);
-app.get("/public/dailyList", _publicController.getDailyChallenges);
-app.get("/public/gsgp", _publicController.getGsgpData);
-app.get("/public/badges/:id", _publicController.getUserBadges);
+app.get("/public/activeChallenges", PublicController.getActiveChallenges);
+app.get("/public/challengeLeaderboard/:id", PublicController.getChallengeLeaderboard);
+app.get("/public/dailyList", PublicController.getDailyChallenges);
+app.get("/public/gsgp", PublicController.getGsgpData);
+app.get("/public/badges/:id", PublicController.getUserBadges);
 
 app.post("/seed", getSeedLimiter, _seedController.getSeed);
 
@@ -142,7 +149,7 @@ app.post("/badges", _userController.getUserBadges);
 
 app.post("/report/spaces", _reportController.reportSpacesData);
 
-app.get("/health", async (req, res) => {
+app.get("/health", async (_: Request, res: Response) => {
   await MongoClient.open();
   if (MongoClient.isConnected) res.sendStatus(200);
   else res.sendStatus(503);

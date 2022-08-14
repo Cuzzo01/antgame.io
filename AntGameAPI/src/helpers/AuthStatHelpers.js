@@ -15,7 +15,7 @@ module.exports = { addStatToResponse };
 
 function getStatDeltas(valuesArr) {
   const first = valuesArr[0];
-  const hasHours = Object.prototype.hasOwnProperty.call(first, "hours")
+  const hasHours = Object.prototype.hasOwnProperty.call(first, "hours");
   if (hasHours) {
     return getStatDeltasFromHours(valuesArr);
   }

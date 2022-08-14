@@ -1,10 +1,10 @@
-const ActiveChallengeHandler = require("../handler/ActiveChallengesHandler");
+const ActiveChallengesHandler = require("../handler/ActiveChallengesHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
 const Logger = require("../Logger");
 
 const RefreshActiveChallengeCache = async () => {
   const startTime = new Date();
-  const { challenges } = await ActiveChallengeHandler.getActiveChallenges();
+  const { challenges } = await ActiveChallengesHandler.getActiveChallenges();
 
   const promises = [];
   challenges.forEach(({ id }) => {
