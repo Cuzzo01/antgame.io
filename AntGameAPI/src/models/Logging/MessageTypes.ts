@@ -4,4 +4,5 @@ export enum MessageType {
   DailyCron = "Daily challenge cron",
   Info = "info",
   CacheResult = "Cache Result",
+  RequestResponse = "request response",
 }

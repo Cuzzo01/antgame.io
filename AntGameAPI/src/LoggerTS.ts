@@ -65,9 +65,7 @@ export class LoggerBase {
     this.log(logObject);
   }
 
-  logAuthEvent(event: string, eventData: AuthEventLog) {
-    // TODO: Just set this in calling class, then remove event param
-    if (event) eventData.event = event;
+  logAuthEvent(eventData: AuthEventLog) {
     eventData.message = MessageType.AuthEvent;
     this.log(eventData);
   }

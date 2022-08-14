@@ -9,8 +9,19 @@ if (!process.env.environment) {
 import express, { Request, Response } from "express";
 import jwt from "express-jwt";
 import responseTime from "response-time";
+import { RejectNotAdmin, ServiceEndpointAuth } from "./auth/AuthHelpersTS";
+import { TokenHandlerProvider } from "./auth/WebTokenHandlerTS";
+import {
+  failedLoginLimiter,
+  getSeedLimiter,
+  loginLimiter,
+  registrationLimiter,
+  runSubmissionLimiter,
+} from "./auth/RateLimiters";
 
 import { PublicController } from "./controller/PublicController";
+import { AuthController } from "./auth/AuthController";
+import { JwtResultHandler, ResponseLogger, TokenVerifier } from "./helpers/Middleware";
 
 require("./tracing");
 
@@ -18,7 +29,6 @@ const app = express();
 const port = 8080;
 
 const _challengeController = require("./controller/ChallengeController");
-const _authController = require("./auth/AuthController");
 const _adminController = require("./controller/AdminController");
 const _flagController = require("./controller/FlagController");
 const _mapController = require("./controller/MapController");
@@ -28,19 +38,11 @@ const _userController = require("./controller/UserController");
 const _seedController = require("./controller/SeedController");
 const _serviceController = require("./controller/ServiceController");
 
-const TokenHandler = require("./auth/WebTokenHandler");
-const { RejectNotAdmin, ServiceEndpointAuth } = require("./auth/AuthHelpers");
 const { initializeScheduledTasks } = require("./bll/TaskScheduler");
 const SpacesService = require("./services/SpacesService");
 const MongoClient = require("./dao/MongoClient");
-const {
-  runSubmissionLimiter,
-  getSeedLimiter,
-  loginLimiter,
-  failedLoginLimiter,
-  registrationLimiter,
-} = require("./auth/RateLimiters");
-const { JwtResultHandler, TokenVerifier, ResponseLogger } = require("./helpers/Middleware");
+
+const TokenHandler = TokenHandlerProvider.getHandler();
 
 const UnauthenticatedRoutes = [
   "/auth/login",
@@ -123,10 +125,9 @@ app.get("/time", (_: Request, res: Response) => res.send({ now: Date.now() }));
 
 app.get("/map", RejectNotAdmin, _mapController.getRandomMap);
 
-app.post("/auth/login", failedLoginLimiter, loginLimiter, _authController.verifyLogin);
-app.post("/auth/anonToken", _authController.getAnonymousToken);
-app.post("/auth/register", registrationLimiter, _authController.registerUser);
-app.post("/auth/createUser", RejectNotAdmin, _authController.createUser);
+app.post("/auth/login", failedLoginLimiter, loginLimiter, AuthController.verifyLogin);
+app.post("/auth/anonToken", AuthController.getAnonymousToken);
+app.post("/auth/register", registrationLimiter, AuthController.registerUser);
 
 app.post("/challenge/artifact", runSubmissionLimiter, _challengeController.postRun);
 app.get("/challenge/:id/records", _challengeController.getRecords);
