@@ -1,25 +1,22 @@
+import { getShortMonthName } from "../helpers/TimeHelper";
+import { LoggerProvider } from "../LoggerTS";
 import { GenerateFoodTooltips } from "../MapGenerator/FoodTooltipGeneratorTS";
-import { CountOnMap } from "../MapGenerator/HelpersTS";
+import { CountOnMap, getRandomInRange } from "../MapGenerator/HelpersTS";
 import { MapGenerator } from "../MapGenerator/MapGeneratorTS";
-import { MapData } from "../models/Maps/MapData";
 import { SpacesServiceProvider } from "../services/SpacesServiceTS";
 import { GenerateMapThumbnail } from "./RecordImageGeneratorTS";
+import { addNewConfig } from "../dao/AdminDao";
 
-const { addNewConfig } = require("../dao/AdminDao");
-const { addMapToDB, getMapByName } = require("../dao/MapDao");
-// const { getRandomInRange, CountOnMap } = require("../MapGenerator/Helpers");
-// const { generateMap } = require("../MapGenerator/MapGenerator");
-// const SpacesService = require("../services/SpacesService");
-// const Logger = require("../Logger");
-// const { GenerateFoodTooltips } = require("../MapGenerator/FoodTooltipGenerator");
-// const { getShortMonthName } = require("../helpers/TimeHelper");
-// const { GenerateMapThumbnail } = require("./RecordImageGenerator");
+import { FullChallengeConfig } from "../models/FullChallengeConfig";
+import { MapData } from "../models/Maps/MapData";
+import { addMapToDB, getMapByName } from "../dao/MapDao";
 
+const Logger = LoggerProvider.getInstance();
 const SpacesService = SpacesServiceProvider.getService();
 
 const mapWidth = 200;
 const mapHeight = 112;
-class ChallengeGenerator {
+export class ChallengeGenerator {
   async generateDailyChallenge() {
     try {
       const mapName = getChallengeName().replace(/ /g, "_");
@@ -34,8 +31,8 @@ class ChallengeGenerator {
         FoodCount: foodCount,
       };
 
-      let mapID;
-      let thumbnailPath = false;
+      let mapID: string;
+      let thumbnailPath: boolean | string = false;
       const sameNameMap = (await getMapByName({ name: mapName })) as MapData;
       if (sameNameMap) mapID = sameNameMap._id;
       else {
@@ -46,12 +43,12 @@ class ChallengeGenerator {
         });
         mapID = (
           await addMapToDB({ url: mapPath, name: mapName, foodCount: foodCount, thumbnailPath })
-        )._id;
+        )._id as string;
       }
 
       const time = Math.round(getRandomInRange(45, 120) / 5) * 5;
       const homeLimit = Math.round(getRandomInRange(2, 8));
-      const newChallenge = {
+      const newChallenge: FullChallengeConfig = {
         name: getChallengeName(),
         mapID: mapID,
         seconds: time,
@@ -61,10 +58,10 @@ class ChallengeGenerator {
         dailyChallenge: true,
       };
       if (thumbnailPath) newChallenge.thumbnailURL = `https://antgame.io/assets/${thumbnailPath}`;
-      const newConfig = await addNewConfig(newChallenge);
-      return newConfig._id;
+      const newConfig = (await addNewConfig(newChallenge))._id as string;
+      return newConfig;
     } catch (err) {
-      Logger.log({ message: "Challenge generator error", error: err });
+      Logger.logError("Challenge Generator", err as Error);
     }
   }
 }
@@ -75,5 +72,3 @@ const getChallengeName = () => {
   const month = getShortMonthName(date);
   return `${month} ${day < 10 ? `0${day}` : day} ${date.getFullYear()}`;
 };
-
-module.exports = { ChallengeGenerator };

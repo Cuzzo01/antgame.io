@@ -13,12 +13,12 @@ const BackgroundColor = "#909497";
 const DrawMapImage = async ({
   mapData,
   imgWidth,
-  foodAmounts,
-  homeAmounts,
-  attributeTag,
+  foodAmounts = [],
+  homeAmounts = [],
+  attributeTag = "",
   challengeName,
-  runNumber,
-  isThumbnail,
+  runNumber = 0,
+  isThumbnail = false,
 }) => {
   const imgHeight = Math.round(imgWidth / 1.63);
   const pixelDensity = [

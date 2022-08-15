@@ -27,40 +27,51 @@ class SpacesService {
     }
   }
 
-  uploadFile(fileName: string, fileToUpload: AWS.S3.Body, ContentType: string) {
-    this.s3.putObject(
-      {
-        Bucket: process.env.DO_SPACES_NAME,
-        Key: fileName,
-        Body: fileToUpload,
-        ACL: "public-read",
-        ContentType,
-      },
-      err => {
-        if (err) return console.log(err);
-      }
-    );
+  async uploadFile(fileName: string, fileToUpload: AWS.S3.Body, ContentType: string) {
+    return new Promise<void>((resolve, reject) => {
+      this.s3.putObject(
+        {
+          Bucket: process.env.DO_SPACES_NAME,
+          Key: fileName,
+          Body: fileToUpload,
+          ACL: "public-read",
+          ContentType,
+        },
+        err => {
+          if (err) {
+            console.log(err);
+            reject(err);
+          }
+          resolve();
+        }
+      );
+    });
   }
 
-  uploadDailyMap(mapName: string, mapFile: object) {
+  async uploadDailyMap(mapName: string, mapFile: object) {
     let fileName = `dailyMaps/${mapName}_${getCacheString()}.json`;
     if (process.env.environment !== "PROD") fileName = "dev/" + fileName;
-    this.uploadFile(fileName, JSON.stringify(mapFile), "application/json");
+    await this.uploadFile(fileName, JSON.stringify(mapFile), "application/json");
     return fileName;
   }
 
-  uploadRecordImage(p: { challengeName: string; image: Buffer; score: number; username: string }) {
+  async uploadRecordImage(p: {
+    challengeName: string;
+    image: Buffer;
+    score: number;
+    username: string;
+  }) {
     const fileName = `${p.score}_${p.username}_WR_${getCacheString()}.png`;
     let filePath = `recordImages/${p.challengeName.replaceAll(" ", "_")}/${fileName}`;
     if (process.env.environment !== "PROD") filePath = "dev/" + filePath;
-    this.uploadFile(filePath, p.image, "image/png");
+    await this.uploadFile(filePath, p.image, "image/png");
     return filePath;
   }
 
-  uploadMapThumbnail(p: { challengeName: string; image: Buffer }) {
+  async uploadMapThumbnail(p: { challengeName: string; image: Buffer }) {
     let fileName = `thumbnails/${p.challengeName.replaceAll(" ", "_")}_${getCacheString()}.png`;
     if (process.env.environment !== "PROD") fileName = "dev/" + fileName;
-    this.uploadFile(fileName, p.image, "image/png");
+    await this.uploadFile(fileName, p.image, "image/png");
     return fileName;
   }
 }

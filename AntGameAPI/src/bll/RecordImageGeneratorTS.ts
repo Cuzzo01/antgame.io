@@ -1,7 +1,10 @@
 import axios from "axios";
 import fs from "fs";
+import { getConfigDetailsByID } from "../dao/AdminDao";
+import { getRunDataByRunId } from "../dao/ChallengeDao";
 import { MapHandler } from "../handler/MapHandlerTS";
 import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandlerTS";
+import { DrawMapImage } from "../helpers/MapDrawer";
 import { GenerateFoodTooltips } from "../MapGenerator/FoodTooltipGeneratorTS";
 import { CountOnMap } from "../MapGenerator/HelpersTS";
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
@@ -9,17 +12,6 @@ import { MapFile } from "../models/Maps/MapFile";
 import { Tooltip } from "../models/Maps/Tooltip";
 import { RunData } from "../models/RunData";
 import { SpacesServiceProvider } from "../services/SpacesServiceTS";
-
-const { getConfigDetailsByID } = require("../dao/AdminDao");
-// const MapHandler = require("../handler/MapHandler");
-// const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
-// const axios = require("axios");
-const { getRunDataByRunId } = require("../dao/ChallengeDao");
-const { DrawMapImage } = require("../helpers/MapDrawer");
-// const { CountOnMap } = require("../MapGenerator/Helpers");
-// const { GenerateFoodTooltips } = require("../MapGenerator/FoodTooltipGenerator");
-// const SpacesService = require("../services/SpacesService");
-// const fs = require("fs");
 
 const imgWidth = 1000;
 const FoodPerCell = 20;
@@ -86,6 +78,7 @@ export const GenerateSolutionImage = async (p: { runID: string; foodEaten: numbe
   if (mapObject.ToolTips) foodAmounts = mapObject.ToolTips;
   else foodAmounts = GenerateFoodTooltips(mapData);
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const diskPathToImage = await DrawMapImage({
     mapData,
     imgWidth,
@@ -96,7 +89,7 @@ export const GenerateSolutionImage = async (p: { runID: string; foodEaten: numbe
     runNumber,
   });
 
-  const pathName = await SpacesServic.uploadRecordImage({
+  const pathName = await SpacesService.uploadRecordImage({
     challengeName,
     image: fs.readFileSync(diskPathToImage),
     score: runData.score,
@@ -109,6 +102,7 @@ export const GenerateSolutionImage = async (p: { runID: string; foodEaten: numbe
 };
 
 export const GenerateMapThumbnail = async (p: { mapData: string[][]; challengeName: string }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   const diskPathToImage = await DrawMapImage({
     imgWidth: 500,
     mapData: p.mapData,
