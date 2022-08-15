@@ -1,14 +1,11 @@
 import { Request, Response } from "express";
+import { GenerateSolutionImage } from "../bll/RecordImageGeneratorTS";
+import { addSolutionImageToRun } from "../dao/ChallengeDao";
 import { ActiveChallengesHandler } from "../handler/ActiveChallengesHandlerTS";
 import { LeaderboardHandler } from "../handler/LeaderboardHandlerTS";
 import { LoggerProvider } from "../LoggerTS";
-import { GenerateRecordImageRequest } from "../models/GenerateRecordImageRequest";
 
-// const Logger = require("../Logger");
-// const ActiveChallengesHandler = require("../handler/ActiveChallengesHandler");
-// const LeaderboardHandler = require("../handler/LeaderboardHandler");
-const { GenerateSolutionImage } = require("../bll/RecordImageGenerator");
-const { addSolutionImageToRun } = require("../dao/ChallengeDao");
+import { GenerateRecordImageRequest } from "../models/GenerateRecordImageRequest";
 
 const Logger = LoggerProvider.getInstance();
 const ActiveChallengesCache = ActiveChallengesHandler.getCache();

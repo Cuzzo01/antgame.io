@@ -26,8 +26,13 @@ import { AuthController } from "./auth/AuthController";
 import { SeedController } from "./controller/SeedController";
 import { ReportController } from "./controller/ReportController";
 import { UserController } from "./controller/UserController";
+import { MapController } from "./controller/MapController";
+import { ChampionshipController } from "./controller/ChampionshipController";
+import { ServiceController } from "./controller/ServiceController";
+import { InitializeTracing } from "./tracing";
+import { initializeScheduledTasks } from "./bll/TaskSchedulerTS";
 
-require("./tracing");
+InitializeTracing();
 
 const app = express();
 const port = 8080;
@@ -35,12 +40,7 @@ const port = 8080;
 const _challengeController = require("./controller/ChallengeController");
 const _adminController = require("./controller/AdminController");
 const _flagController = require("./controller/FlagController");
-const _mapController = require("./controller/MapController");
-const _championshipController = require("./controller/ChampionshipController");
-const _serviceController = require("./controller/ServiceController");
 
-const { initializeScheduledTasks } = require("./bll/TaskScheduler");
-const SpacesService = require("./services/SpacesService");
 const MongoClient = require("./dao/MongoClient");
 
 const TokenHandler = TokenHandlerProvider.getHandler();
@@ -57,7 +57,6 @@ const UnauthenticatedRoutes = [
 ];
 
 initializeScheduledTasks();
-SpacesService.initializeConnection();
 
 app.use(responseTime(ResponseLogger));
 app.use(express.json());
@@ -88,11 +87,7 @@ app.post("/admin/config", RejectNotAdmin, _adminController.postConfig);
 
 app.get("/admin/championshipList", RejectNotAdmin, _adminController.getChampionshipList);
 app.get("/admin/championship/:id", RejectNotAdmin, _adminController.getChampionshipDetails);
-app.post(
-  "/admin/championship/:id/awardPoints",
-  RejectNotAdmin,
-  _championshipController.awardPoints
-);
+app.post("/admin/championship/:id/awardPoints", RejectNotAdmin, ChampionshipController.awardPoints);
 
 app.get("/admin/flags", RejectNotAdmin, _adminController.getFlagList);
 app.get("/admin/flagData/:id", RejectNotAdmin, _adminController.getFlagDetails);
@@ -108,23 +103,23 @@ app.delete("/admin/flagCache", RejectNotAdmin, _adminController.dumpFlagCache);
 app.post("/admin/revokeTokens", RejectNotAdmin, _adminController.revokeAllTokens);
 //#endregion Admin
 
-app.get("/service/healthCheck", ServiceEndpointAuth, _serviceController.healthCheck);
-app.post("/service/recordImage", ServiceEndpointAuth, _serviceController.generateRecordImage);
+app.get("/service/healthCheck", ServiceEndpointAuth, ServiceController.healthCheck);
+app.post("/service/recordImage", ServiceEndpointAuth, ServiceController.generateRecordImage);
 app.delete(
   "/service/clearLeaderboard/:id",
   ServiceEndpointAuth,
-  _serviceController.dumpLeaderboardCache
+  ServiceController.dumpLeaderboardCache
 );
 app.delete(
   "/service/clearActiveChallenges",
   ServiceEndpointAuth,
-  _serviceController.dumpActiveChallengesCache
+  ServiceController.dumpActiveChallengesCache
 );
 
 app.get("/flag/:name", _flagController.getFlag);
 app.get("/time", (_: Request, res: Response) => res.send({ now: Date.now() }));
 
-app.get("/map", RejectNotAdmin, _mapController.getRandomMap);
+app.get("/map", RejectNotAdmin, MapController.getRandomMap);
 
 app.post("/auth/login", failedLoginLimiter, loginLimiter, AuthController.verifyLogin);
 app.post("/auth/anonToken", AuthController.getAnonymousToken);
@@ -145,7 +140,7 @@ app.get("/public/badges/:id", PublicController.getUserBadges);
 
 app.post("/seed", getSeedLimiter, SeedController.getSeed);
 
-app.get("/championship/:id", _championshipController.getLeaderboard);
+app.get("/championship/:id", ChampionshipController.getLeaderboard);
 
 app.post("/badges", UserController.getUserBadges);
 

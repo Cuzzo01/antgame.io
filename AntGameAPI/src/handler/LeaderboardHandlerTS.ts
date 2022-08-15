@@ -1,17 +1,17 @@
 import { ResultCacheWrapper } from "./ResultCacheWrapperTS";
+import { getLeaderboardByChallengeId } from "../dao/UserDao";
+import {
+  getChampionshipDetailsFromDB,
+  getLastPointsAwarded,
+  getLeaderboardByChampionshipID,
+} from "../dao/ChampionshipDao";
+import { getChallengeByChallengeId } from "../dao/ChallengeDao";
 
 import { ChampionshipResponse } from "../models/ChampionshipResponse";
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { FullChampionshipConfig } from "../models/FullChampionshipConfig";
 import { RawLeaderboardEntry } from "../models/RawLeaderboardEntry";
 
-const { getChallengeByChallengeId } = require("../dao/ChallengeDao");
-const {
-  getLeaderboardByChampionshipID,
-  getChampionshipDetailsFromDB,
-  getLastPointsAwarded,
-} = require("../dao/ChampionshipDao");
-const { getLeaderboardByChallengeId } = require("../dao/UserDao");
 const FlagHandler = require("./FlagHandler");
 
 export class LeaderboardHandler {
@@ -105,25 +105,25 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
     })) as RawLeaderboardEntry[];
   }
 
-  async getChallengeRankByUserId(challengeID, userID) {
+  async getChallengeRankByUserId(challengeID: string, userID: string) {
     const leaderboardArr = await this.getRawChallengeLeaderboard(challengeID);
     const rank = 1 + leaderboardArr.findIndex(entry => entry._id === userID);
     return rank;
   }
 
-  async getLeaderboardEntryByRank(challengeID, rank) {
+  async getLeaderboardEntryByRank(challengeID: string, rank: number) {
     const leaderboardArr = await this.getRawChallengeLeaderboard(challengeID);
     const entry = leaderboardArr[rank - 1];
     return entry;
   }
 
-  async getLeaderboardEntryByUserID(challengeID, userID) {
+  async getLeaderboardEntryByUserID(challengeID: string, userID: string) {
     const leaderboardArr = await this.getRawChallengeLeaderboard(challengeID);
     const entry = leaderboardArr.find(entry => entry._id === userID);
     return entry;
   }
 
-  async getChallengePlayerCount(challengeID) {
+  async getChallengePlayerCount(challengeID: string) {
     const leaderboardArr = await this.getRawChallengeLeaderboard(challengeID);
     return leaderboardArr.length;
   }

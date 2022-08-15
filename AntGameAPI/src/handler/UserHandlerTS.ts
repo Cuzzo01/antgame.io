@@ -1,9 +1,9 @@
+import { getUserBadgesByID } from "../dao/UserDao";
 import { LoggerProvider } from "../LoggerTS";
 import { RawUserBadge } from "../models/RawUserBadge";
 import { UserBadge } from "../models/UserBadge";
 import { ResultCacheWrapper } from "./ResultCacheWrapperTS";
 
-const { getUserBadgesByID } = require("../dao/UserDao");
 const FlagHandler = require("./FlagHandler");
 
 const Logger = LoggerProvider.getInstance();
@@ -28,7 +28,7 @@ class UserCache extends ResultCacheWrapper<UserBadge[]> {
       id,
       type: "Badges",
       fetchMethod: async id => {
-        let badges;
+        let badges: RawUserBadge[];
         try {
           badges = (await getUserBadgesByID(id)) as RawUserBadge[];
         } catch (e) {
@@ -55,7 +55,11 @@ class UserCache extends ResultCacheWrapper<UserBadge[]> {
     });
   }
 
-  public getTimeToExpire(id: string): number {
+  public getTimeToExpire(id: string) {
     return super.getTimeToExpire(id);
+  }
+
+  public unsetItem(id: string) {
+    super.unsetItem(id);
   }
 }

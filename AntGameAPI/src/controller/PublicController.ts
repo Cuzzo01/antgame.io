@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { getUserLoginCount } from "../dao/AdminDao";
 import { getDailyChallengesInReverseOrder } from "../dao/ChallengeDao";
 import { ActiveChallengesHandler } from "../handler/ActiveChallengesHandlerTS";
 import { DailyChallengeHandler } from "../handler/DailyChallengeHandlerTS";
@@ -10,7 +11,6 @@ import { LoggerProvider } from "../LoggerTS";
 import { HomePageResponse, Records, RecordsEntry } from "../models/HomePageResponse";
 
 const FlagHandler = require("../handler/FlagHandler");
-const { getUserLoginCount } = require("../dao/AdminDao");
 
 const ActiveChallengeCache = ActiveChallengesHandler.getCache();
 const DailyChallengeCache = DailyChallengeHandler.getCache();
@@ -107,7 +107,7 @@ export class PublicController {
 
   static async getGsgpData(req: Request, res: Response): Promise<void> {
     try {
-      const activePlayers = (await getUserLoginCount(24)) as { hours: number; value: number };
+      const activePlayers = await getUserLoginCount(24);
 
       const dailyChallengeID = await DailyChallengeCache.getActiveDailyChallenge();
       const dailyLeaderboardData = await GenerateChallengeLeaderboardData({
