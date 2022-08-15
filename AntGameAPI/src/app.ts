@@ -25,6 +25,7 @@ import { PublicController } from "./controller/PublicController";
 import { AuthController } from "./auth/AuthController";
 import { SeedController } from "./controller/SeedController";
 import { ReportController } from "./controller/ReportController";
+import { UserController } from "./controller/UserController";
 
 require("./tracing");
 
@@ -36,7 +37,6 @@ const _adminController = require("./controller/AdminController");
 const _flagController = require("./controller/FlagController");
 const _mapController = require("./controller/MapController");
 const _championshipController = require("./controller/ChampionshipController");
-const _userController = require("./controller/UserController");
 const _serviceController = require("./controller/ServiceController");
 
 const { initializeScheduledTasks } = require("./bll/TaskScheduler");
@@ -147,7 +147,7 @@ app.post("/seed", getSeedLimiter, SeedController.getSeed);
 
 app.get("/championship/:id", _championshipController.getLeaderboard);
 
-app.post("/badges", _userController.getUserBadges);
+app.post("/badges", UserController.getUserBadges);
 
 app.post("/report/spaces", ReportController.reportSpacesData);
 
