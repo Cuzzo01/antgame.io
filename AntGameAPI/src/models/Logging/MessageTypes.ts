@@ -5,4 +5,5 @@ export enum MessageType {
   Info = "info",
   CacheResult = "Cache Result",
   RequestResponse = "request response",
+  SpacesLoadData = "spaces load data",
 }

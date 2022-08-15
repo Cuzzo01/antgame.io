@@ -12,7 +12,7 @@ const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
 const LeaderboardHandler = require("../handler/LeaderboardHandler");
 const ActiveChallengesHandler = require("../handler/ActiveChallengesHandler");
 const MapHandler = require("../handler/MapHandler");
-const { SeedBroker } = require("../bll/SeedBroker");
+const { SeedBroker } = require("../bll/SeedBrokerTS");
 const { GetIpAddress } = require("../helpers/IpHelper");
 const Logger = require("../Logger");
 

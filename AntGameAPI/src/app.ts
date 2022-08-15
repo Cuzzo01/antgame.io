@@ -9,8 +9,10 @@ if (!process.env.environment) {
 import express, { Request, Response } from "express";
 import jwt from "express-jwt";
 import responseTime from "response-time";
+
 import { RejectNotAdmin, ServiceEndpointAuth } from "./auth/AuthHelpersTS";
 import { TokenHandlerProvider } from "./auth/WebTokenHandlerTS";
+import { JwtResultHandler, ResponseLogger, TokenVerifier } from "./helpers/Middleware";
 import {
   failedLoginLimiter,
   getSeedLimiter,
@@ -21,7 +23,8 @@ import {
 
 import { PublicController } from "./controller/PublicController";
 import { AuthController } from "./auth/AuthController";
-import { JwtResultHandler, ResponseLogger, TokenVerifier } from "./helpers/Middleware";
+import { SeedController } from "./controller/SeedController";
+import { ReportController } from "./controller/ReportController";
 
 require("./tracing");
 
@@ -33,9 +36,7 @@ const _adminController = require("./controller/AdminController");
 const _flagController = require("./controller/FlagController");
 const _mapController = require("./controller/MapController");
 const _championshipController = require("./controller/ChampionshipController");
-const _reportController = require("./controller/ReportController");
 const _userController = require("./controller/UserController");
-const _seedController = require("./controller/SeedController");
 const _serviceController = require("./controller/ServiceController");
 
 const { initializeScheduledTasks } = require("./bll/TaskScheduler");
@@ -142,13 +143,13 @@ app.get("/public/dailyList", PublicController.getDailyChallenges);
 app.get("/public/gsgp", PublicController.getGsgpData);
 app.get("/public/badges/:id", PublicController.getUserBadges);
 
-app.post("/seed", getSeedLimiter, _seedController.getSeed);
+app.post("/seed", getSeedLimiter, SeedController.getSeed);
 
 app.get("/championship/:id", _championshipController.getLeaderboard);
 
 app.post("/badges", _userController.getUserBadges);
 
-app.post("/report/spaces", _reportController.reportSpacesData);
+app.post("/report/spaces", ReportController.reportSpacesData);
 
 app.get("/health", async (_: Request, res: Response) => {
   await MongoClient.open();
