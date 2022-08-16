@@ -1,15 +1,3 @@
-// const { updateConfigByID } = require("../dao/AdminDao");
-// const { ChallengeGenerator } = require("./ChallengeGenerator");
-// const Logger = require("../Logger");
-// const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
-// const ActiveChallengesHandler = require("../handler/ActiveChallengesHandler");
-// const {
-//   getDailyChallengesInReverseOrder,
-//   getRunDataByRunId,
-//   getRecordByChallenge,
-// } = require("../dao/ChallengeDao");
-// const { ChampionshipOrchestrator } = require("./ChampionshipOrchestrator");
-
 import { updateConfigByID } from "../dao/AdminDao";
 import {
   getDailyChallengesInReverseOrder,
@@ -21,18 +9,18 @@ import { DailyChallengeHandler } from "../handler/DailyChallengeHandlerTS";
 import { LoggerProvider } from "../LoggerTS";
 import { ChallengeGenerator } from "./ChallengeGeneratorTS";
 import { ChampionshipOrchestrator } from "./ChampionshipOrchestratorTS";
+import { FlagHandler } from "../handler/FlagHandler";
 
 import { RunData } from "../models/RunData";
-
-const FlagHandler = require("../handler/FlagHandler");
 
 const Logger = LoggerProvider.getInstance();
 const ActiveChallengesCache = ActiveChallengesHandler.getCache();
 const DailyChallengeCache = DailyChallengeHandler.getCache();
+const FlagCache = FlagHandler.getCache();
 
 export const handleDailyChallengeChange = async () => {
   try {
-    if ((await FlagHandler.getFlagValue("run-daily-challenge-cron")) === false) {
+    if (!(await FlagCache.getBoolFlag("run-daily-challenge-cron"))) {
       Logger.logCronMessage("skipping daily challenge cron swap");
       return;
     }
@@ -55,7 +43,7 @@ export const handleDailyChallengeChange = async () => {
       ActiveChallengesCache.unsetItem();
       Logger.logCronMessage("set new map active");
 
-      if (await FlagHandler.getFlagValue("should-bind-daily-to-championship")) {
+      if (await FlagCache.getBoolFlag("should-bind-daily-to-championship")) {
         let currentChampionship = await ChampionshipOrchestrator.getCurrentDailyChampionship();
         if (currentChampionship === null) {
           currentChampionship = await ChampionshipOrchestrator.generateDailyChampionship();
@@ -81,7 +69,7 @@ export const handleDailyChallengeChange = async () => {
           await ChampionshipOrchestrator.awardPointsForChallenge({ championshipID, challengeID });
           Logger.logCronMessage("awarded points for yesterdays challenge");
         } catch (e) {
-          Logger.logCronMessage(`Could not award points for challenge : ${e}`);
+          Logger.logCronMessage(`Could not award points for challenge : ${e as string}`);
         }
       }
 
@@ -92,7 +80,7 @@ export const handleDailyChallengeChange = async () => {
         await updateConfigByID(challengeID, { solutionImage: solutionImagePath });
         Logger.logCronMessage(`Generated and set solution image`);
       } catch (e) {
-        Logger.logCronMessage(`Could not generate solution image : ${e}`);
+        Logger.logCronMessage(`Could not generate solution image : ${e as string}`);
       }
     } else {
       Logger.logCronMessage("skipping setting old map inactive");

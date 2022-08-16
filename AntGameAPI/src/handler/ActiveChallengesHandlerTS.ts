@@ -2,6 +2,13 @@ import { DailyChallengeHandler } from "./DailyChallengeHandlerTS";
 import { ResultCacheWrapper } from "./ResultCacheWrapperTS";
 import { LeaderboardHandler } from "./LeaderboardHandlerTS";
 import { ObjectIDToNameHandler } from "./ObjectIDToNameHandlerTS";
+import { FlagHandler } from "./FlagHandler";
+import {
+  getActiveChallenges,
+  getChallengeByChallengeId,
+  getRecordsByChallengeList,
+} from "../dao/ChallengeDao";
+import { getTimeStringForDailyChallenge } from "../helpers/TimeHelper";
 
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { RawLeaderboardEntry } from "../models/RawLeaderboardEntry";
@@ -11,17 +18,10 @@ import { ActiveChallengeData } from "../models/Handlers/ActiveChallengeData";
 import { ChampionshipData, DailyData } from "../models/HomePageResponse";
 import { RecordDetails } from "../models/RecordDetails";
 
-const {
-  getActiveChallenges,
-  getRecordsByChallengeList,
-  getChallengeByChallengeId,
-} = require("../dao/ChallengeDao");
-const FlagHandler = require("./FlagHandler");
-const { getTimeStringForDailyChallenge } = require("../helpers/TimeHelper");
-
 const DailyChallengeCache = DailyChallengeHandler.getCache();
 const LeaderboardCache = LeaderboardHandler.getCache();
 const ObjectIDToNameCache = ObjectIDToNameHandler.getCache();
+const FlagCache = FlagHandler.getCache();
 
 export class ActiveChallengesHandler {
   private static cache: ActiveChallengesCache;
@@ -58,8 +58,7 @@ class ActiveChallengesCache extends ResultCacheWrapper<
           worldRecords: records,
         };
       },
-      getTimeToCache: async () =>
-        parseInt(await FlagHandler.getFlagValue("time-to-cache-active-challenges")),
+      getTimeToCache: async () => await FlagCache.getIntFlag("time-to-cache-active-challenges"),
       logFormatter: () => "",
     })) as ActiveChallengeData;
   }
@@ -96,7 +95,7 @@ class ActiveChallengesCache extends ResultCacheWrapper<
           name: await ObjectIDToNameCache.getChampionshipName(championshipID),
         };
       },
-      getTimeToCache: async () => await FlagHandler.getFlagValue("time-to-cache-active-challenges"),
+      getTimeToCache: async () => await FlagCache.getIntFlag("time-to-cache-active-challenges"),
     })) as ChampionshipData;
   }
 
@@ -127,7 +126,7 @@ class ActiveChallengesCache extends ResultCacheWrapper<
 
         return { name, id: yesterdaysDailyID, leaderboardData };
       },
-      getTimeToCache: async () => await FlagHandler.getFlagValue("time-to-cache-active-challenges"),
+      getTimeToCache: async () => await FlagCache.getIntFlag("time-to-cache-active-challenges"),
     })) as DailyData;
   }
 

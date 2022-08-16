@@ -5,16 +5,16 @@ import { TokenRevokedHandler } from "../handler/TokenRevokedHandlerTS";
 import { LoggerProvider } from "../LoggerTS";
 import { setAttributes } from "../tracing";
 import { GetIpAddress } from "./IpHelperTS";
+import { FlagHandler } from "../handler/FlagHandler";
 
 import { AuthToken } from "../auth/models/AuthToken";
 import { MessageType } from "../models/Logging/MessageTypes";
 import { RequestLog } from "../models/Logging/RequestLog";
 
-const FlagHandler = require("../handler/FlagHandler");
-
 const Logger = LoggerProvider.getInstance();
 const TokenRevokedCache = TokenRevokedHandler.getCache();
 const ObjectIDToNameCache = ObjectIDToNameHandler.getCache();
+const FlagCache = FlagHandler.getCache();
 
 const send401 = (res: Response, message: string) => {
   res.status(401);
@@ -58,10 +58,6 @@ export const TokenVerifier = async function (req: Request, res: Response, next: 
     const clientID = user.clientID;
     const TokenIsValid = await TokenRevokedCache.isTokenValid(userID, adminToken, tokenIssuedAt);
 
-    // const activeSpan = trace.getSpan(context.active());
-    // activeSpan.setAttribute("user.id", userID);
-    // activeSpan.setAttribute("user.clientID", clientID);
-    // activeSpan.setAttribute("user.name", await ObjectIDToNameCache.getUsername(userID));
     setAttributes({ userID, clientID, username: await ObjectIDToNameCache.getUsername(userID) });
 
     if (TokenIsValid === false) {
@@ -75,7 +71,7 @@ export const TokenVerifier = async function (req: Request, res: Response, next: 
       return;
     }
   } else {
-    const AllowAnon = (await FlagHandler.getFlagValue("allow-anon-logins")) as boolean;
+    const AllowAnon = await FlagCache.getBoolFlag("allow-anon-logins");
     if (!AllowAnon) {
       Logger.logAuthEvent({ event: "received anon token when not allowed" });
       res.sendStatus(401);

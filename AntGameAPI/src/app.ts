@@ -32,13 +32,13 @@ import { MapController } from "./controller/MapController";
 import { ChampionshipController } from "./controller/ChampionshipController";
 import { ServiceController } from "./controller/ServiceController";
 import { initializeScheduledTasks } from "./bll/TaskSchedulerTS";
+import { FlagController } from "./controller/FlagController";
 
 const app = express();
 const port = 8080;
 
 const _challengeController = require("./controller/ChallengeController");
 const _adminController = require("./controller/AdminController");
-const _flagController = require("./controller/FlagController");
 
 const MongoClient = require("./dao/MongoClient");
 
@@ -115,7 +115,7 @@ app.delete(
   ServiceController.dumpActiveChallengesCache
 );
 
-app.get("/flag/:name", _flagController.getFlag);
+app.get("/flag/:name", FlagController.getFlag);
 app.get("/time", (_: Request, res: Response) => res.send({ now: Date.now() }));
 
 app.get("/map", RejectNotAdmin, MapController.getRandomMap);

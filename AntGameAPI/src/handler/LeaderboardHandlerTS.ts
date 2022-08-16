@@ -6,13 +6,14 @@ import {
   getLeaderboardByChampionshipID,
 } from "../dao/ChampionshipDao";
 import { getChallengeByChallengeId } from "../dao/ChallengeDao";
+import { FlagHandler } from "./FlagHandler";
 
 import { ChampionshipResponse } from "../models/ChampionshipResponse";
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { FullChampionshipConfig } from "../models/FullChampionshipConfig";
 import { RawLeaderboardEntry } from "../models/RawLeaderboardEntry";
 
-const FlagHandler = require("./FlagHandler");
+const FlagCache = FlagHandler.getCache();
 
 export class LeaderboardHandler {
   private static cache: LeaderboardCache;
@@ -30,7 +31,7 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
   }
 
   getTimeToCache: () => Promise<number> = async () => {
-    const maxTime = (await FlagHandler.getFlagValue("time-to-cache-leaderboards")) as number;
+    const maxTime = await FlagCache.getIntFlag("time-to-cache-leaderboards");
     return Math.round(maxTime * (1 - Math.random() * 0.2));
   };
 
@@ -81,7 +82,7 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
     })) as ChampionshipResponse;
   }
 
-  async getRawChampionshipLeaderboard(id): Promise<RawLeaderboardEntry[]> {
+  async getRawChampionshipLeaderboard(id: string): Promise<RawLeaderboardEntry[]> {
     return (await this.getOrFetchValue({
       id: `${id}-raw`,
       type: "Raw championship",

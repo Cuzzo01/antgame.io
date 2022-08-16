@@ -5,12 +5,12 @@ import { TimeHelper } from "./TimeHelperTS";
 import { ChallengeLeaderboardData } from "../models/ChallengeLeaderboardData";
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { LeaderboardEntry } from "../models/LeaderboardEntry";
-
-const ChallengeDao = require("../dao/ChallengeDao");
-const FlagHandler = require("../handler/FlagHandler");
+import { FlagHandler } from "../handler/FlagHandler";
+import { getChallengeByChallengeId } from "../dao/ChallengeDao";
 
 const DailyChallengeCache = DailyChallengeHandler.getCache();
 const LeaderboardCache = LeaderboardHandler.getCache();
+const FlagCache = FlagHandler.getCache();
 
 export const GenerateChallengeLeaderboardData = async (params: { challengeID: string }) => {
   const currentDaily = await DailyChallengeCache.getActiveDailyChallenge();
@@ -23,9 +23,7 @@ export const GenerateChallengeLeaderboardData = async (params: { challengeID: st
     return false;
   }
 
-  const details = (await ChallengeDao.getChallengeByChallengeId(
-    params.challengeID
-  )) as FullChallengeConfig;
+  const details = (await getChallengeByChallengeId(params.challengeID)) as FullChallengeConfig;
   const isDaily = details.dailyChallenge === true;
 
   const leaderboardRows: LeaderboardEntry[] = [];
@@ -46,17 +44,17 @@ export const GenerateChallengeLeaderboardData = async (params: { challengeID: st
     });
   }
 
-  let solutionImgPath;
+  let solutionImgPath: string;
   if (details.solutionImage) {
-    if (await FlagHandler.getFlagValue("use-spaces-proxy")) {
+    if (await FlagCache.getBoolFlag("use-spaces-proxy")) {
       solutionImgPath = "https://antgame.io/assets/" + details.solutionImage;
     } else {
       solutionImgPath = "https://antgame.nyc3.digitaloceanspaces.com/" + details.solutionImage;
     }
   }
 
-  let playerCount;
-  if (await FlagHandler.getFlagValue("show-player-count-on-leaderboard"))
+  let playerCount: number;
+  if (await FlagCache.getBoolFlag("show-player-count-on-leaderboard"))
     playerCount = await LeaderboardCache.getChallengePlayerCount(params.challengeID);
 
   return { leaderboardRows, solutionImgPath, isDaily, playerCount } as ChallengeLeaderboardData;

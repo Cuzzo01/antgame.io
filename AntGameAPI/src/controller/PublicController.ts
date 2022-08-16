@@ -3,6 +3,7 @@ import { getUserLoginCount } from "../dao/AdminDao";
 import { getDailyChallengesInReverseOrder } from "../dao/ChallengeDao";
 import { ActiveChallengesHandler } from "../handler/ActiveChallengesHandlerTS";
 import { DailyChallengeHandler } from "../handler/DailyChallengeHandlerTS";
+import { FlagHandler } from "../handler/FlagHandler";
 import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandlerTS";
 import { UserHandler } from "../handler/UserHandlerTS";
 import { GenerateChallengeLeaderboardData } from "../helpers/LeaderboardHelperTS";
@@ -10,14 +11,12 @@ import { LoggerProvider } from "../LoggerTS";
 
 import { HomePageResponse, Records, RecordsEntry } from "../models/HomePageResponse";
 
-const FlagHandler = require("../handler/FlagHandler");
-
+const Logger = LoggerProvider.getInstance();
 const ActiveChallengeCache = ActiveChallengesHandler.getCache();
 const DailyChallengeCache = DailyChallengeHandler.getCache();
 const ObjectIDToNameCache = ObjectIDToNameHandler.getCache();
 const UserCache = UserHandler.getCache();
-
-const Logger = LoggerProvider.getInstance();
+const FlagCache = FlagHandler.getCache();
 export class PublicController {
   static async getActiveChallenges(req: Request, res: Response): Promise<void> {
     try {
@@ -33,9 +32,7 @@ export class PublicController {
         records[id] = <RecordsEntry>{ wr: wr };
       }
 
-      const cacheTime = (await FlagHandler.getFlagValue(
-        "time-to-cache-public-endpoints"
-      )) as string;
+      const cacheTime = await FlagCache.getFlagValue("time-to-cache-public-endpoints");
       res.set("Cache-Control", `public, max-age=${cacheTime}`);
 
       const response: HomePageResponse = {
@@ -47,7 +44,7 @@ export class PublicController {
 
       res.send(response);
     } catch (e) {
-      Logger.logError("PublicController.getActiveChallenges", e);
+      Logger.logError("PublicController.getActiveChallenges", e as Error);
       res.sendStatus(500);
     }
   }
@@ -74,9 +71,7 @@ export class PublicController {
         playerCount: leaderboardData.playerCount,
       };
 
-      const cacheTime = (await FlagHandler.getFlagValue(
-        "time-to-cache-public-endpoints"
-      )) as string;
+      const cacheTime = await FlagCache.getFlagValue("time-to-cache-public-endpoints");
       res.set("Cache-Control", `public, max-age=${cacheTime}`);
 
       res.send(response);
@@ -99,7 +94,7 @@ export class PublicController {
       res.set("Cache-Control", `public, max-age=60`);
       res.send(mappedResult);
     } catch (e) {
-      Logger.logError("PublicController.getDailyChallenges", e);
+      Logger.logError("PublicController.getDailyChallenges", e as Error);
       res.status(500);
       res.send("Get leader board failed");
     }
@@ -107,7 +102,7 @@ export class PublicController {
 
   static async getGsgpData(req: Request, res: Response): Promise<void> {
     try {
-      const activePlayers = await getUserLoginCount(24);
+      const activePlayers = (await getUserLoginCount(24)) as { value: number; hours: number };
 
       const dailyChallengeID = await DailyChallengeCache.getActiveDailyChallenge();
       const dailyLeaderboardData = await GenerateChallengeLeaderboardData({
@@ -143,7 +138,7 @@ export class PublicController {
         },
       });
     } catch (e) {
-      Logger.logError("PublicController.GetGsgpData", e);
+      Logger.logError("PublicController.GetGsgpData", e as Error);
       res.status(500);
       res.send("Get leader board failed");
     }
@@ -162,7 +157,7 @@ export class PublicController {
       const ttl = UserCache.getTimeToExpire(userID);
 
       if (ttl) {
-        const maxCacheTime = await FlagHandler.getFlagValue("time-to-cache-badges-external");
+        const maxCacheTime = await FlagCache.getIntFlag("time-to-cache-badges-external");
         const age = maxCacheTime - ttl;
         res.set(`Cache-Control`, `public, max-age=${maxCacheTime}`);
         if (age > 0) res.set(`Age`, age.toString());
@@ -171,7 +166,7 @@ export class PublicController {
       if (badges) res.send(badges);
       else res.send([]);
     } catch (e) {
-      Logger.logError("PublicController.getUserBadges", e);
+      Logger.logError("PublicController.getUserBadges", e as Error);
       res.send(500);
     }
   }

@@ -4,6 +4,8 @@ import { LoggerProvider } from "../LoggerTS";
 import { PasswordHandler } from "./PasswordHandlerTS";
 import { TokenHandlerProvider } from "./WebTokenHandlerTS";
 import { IsAllowedUsername, RegistrationDataSatisfiesCriteria } from "./RegistrationHelperTS";
+import { FlagHandler } from "../handler/FlagHandler";
+import { getAuthDetailsByUsername, IsUsernameTaken, logLogin, saveNewUser } from "./AuthDao";
 
 import { AuthDetails } from "./models/AuthDetails";
 import { AuthToken } from "./models/AuthToken";
@@ -11,11 +13,9 @@ import { LoginRequest } from "./models/LoginRequest";
 import { LoginResponse } from "./models/LoginResponse";
 import { RegisterRequest } from "./models/RegisterRequest";
 
-const AuthDao = require("./AuthDao");
-const FlagHandler = require("../handler/FlagHandler");
-
 const Logger = LoggerProvider.getInstance();
 const TokenHandler = TokenHandlerProvider.getHandler();
+const FlagCache = FlagHandler.getCache();
 
 export class AuthController {
   static async verifyLogin(req: Request, res: Response): Promise<void> {
@@ -31,7 +31,7 @@ export class AuthController {
         return;
       }
 
-      const authDetails = (await AuthDao.getAuthDetailsByUsername(username)) as AuthDetails | false;
+      const authDetails = (await getAuthDetailsByUsername(username)) as AuthDetails | false;
       if (authDetails === false) {
         Logger.logAuthEvent({
           event: "login failed - no matching username",
@@ -59,7 +59,7 @@ export class AuthController {
         }
 
         if (authDetails.admin === false) {
-          const allowLogin = (await FlagHandler.getFlagValue("allow-logins")) as boolean;
+          const allowLogin = await FlagCache.getBoolFlag("allow-logins");
           if (allowLogin !== true) {
             res.status(405);
             res.send("logins are disabled");
@@ -67,7 +67,7 @@ export class AuthController {
           }
         }
 
-        await AuthDao.logLogin(authDetails.id, clientIP, clientID);
+        await logLogin(authDetails.id, clientIP, clientID);
         const tokenObject: AuthToken = {
           id: authDetails.id,
           username: authDetails.username,
@@ -94,7 +94,7 @@ export class AuthController {
       res.status(401);
       res.send("Invalid login");
     } catch (e) {
-      Logger.logError("AuthController.verifyLogin", e);
+      Logger.logError("AuthController.verifyLogin", e as Error);
       res.status(500);
       res.send("Login failed");
     }
@@ -102,7 +102,7 @@ export class AuthController {
 
   static async getAnonymousToken(req: Request, res: Response): Promise<void> {
     try {
-      if (!(await FlagHandler.getFlagValue("allow-anon-logins"))) {
+      if (!(await FlagCache.getBoolFlag("allow-anon-logins"))) {
         res.status(405);
         res.send("Anon logins are disabled");
         return;
@@ -126,7 +126,7 @@ export class AuthController {
       res.send(token);
       return;
     } catch (e) {
-      Logger.logError("AuthController.getAnonymousToken", e);
+      Logger.logError("AuthController.getAnonymousToken", e as Error);
       res.status(500);
       res.send("Login failed");
     }
@@ -146,7 +146,7 @@ export class AuthController {
         return;
       }
 
-      if ((await FlagHandler.getFlagValue("allowAccountRegistration")) === false) {
+      if (!(await FlagCache.getBoolFlag("allowAccountRegistration"))) {
         res.sendStatus(406);
         return;
       }
@@ -162,7 +162,7 @@ export class AuthController {
         return;
       }
 
-      const usernameTaken = (await AuthDao.IsUsernameTaken(username)) as boolean;
+      const usernameTaken = await IsUsernameTaken(username);
       if (usernameTaken) {
         Logger.logAuthEvent({
           event: "register attempt with already used username",
@@ -175,7 +175,7 @@ export class AuthController {
       }
 
       const hashedPassword = await PasswordHandler.generatePasswordHash(password);
-      const user = (await AuthDao.saveNewUser({
+      const user = (await saveNewUser({
         username: username,
         passHash: hashedPassword,
         admin: false,
@@ -200,7 +200,7 @@ export class AuthController {
       const token = TokenHandler.generateAccessToken(tokenObject);
       res.send(token);
     } catch (e) {
-      Logger.logError("AuthController.registerUser", e);
+      Logger.logError("AuthController.registerUser", e as Error);
       res.status(500);
       res.send("Could not create user");
     }

@@ -1,11 +1,12 @@
+import { isUserAdmin, isUserBanned } from "../dao/UserDao";
 import { LoggerProvider } from "../LoggerTS";
-import { TokenRevokedData } from "../models/TokenRevokedData";
+import { FlagHandler } from "./FlagHandler";
 import { ResultCacheWrapper } from "./ResultCacheWrapperTS";
 
-const { isUserBanned, isUserAdmin } = require("../dao/UserDao");
-const FlagHandler = require("./FlagHandler");
+import { TokenRevokedData } from "../models/TokenRevokedData";
 
 const Logger = LoggerProvider.getInstance();
+const FlagCache = FlagHandler.getCache();
 
 export class TokenRevokedHandler {
   private static cache: TokenRevokedCache;
@@ -32,7 +33,7 @@ class TokenRevokedCache extends ResultCacheWrapper<TokenRevokedData> {
 
     const result = await this.getOrFetchValue({
       id: userID,
-      getTimeToCache: async () => await FlagHandler.getFlagValue("time-between-token-checks"),
+      getTimeToCache: async () => await FlagCache.getIntFlag("time-between-token-checks"),
       fetchMethod: async () => {
         const IsBanned = (await isUserBanned(userID)) as boolean;
         let IsAdmin = false;
@@ -51,7 +52,7 @@ class TokenRevokedCache extends ResultCacheWrapper<TokenRevokedData> {
   }
 
   async AreLoginsEnabled(): Promise<boolean> {
-    return (await FlagHandler.getFlagValue("allow-logins")) === true;
+    return await FlagCache.getBoolFlag("allow-logins");
   }
 
   RevokeTokens(): void {

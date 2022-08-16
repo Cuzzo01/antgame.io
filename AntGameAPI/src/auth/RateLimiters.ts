@@ -1,9 +1,10 @@
 import rateLimit from "express-rate-limit";
+import { FlagHandler } from "../handler/FlagHandler";
 import { GetIpAddress } from "../helpers/IpHelperTS";
 import { AuthToken } from "./models/AuthToken";
 import { LoginRequest } from "./models/LoginRequest";
 
-const FlagHandler = require("../handler/FlagHandler");
+const FlagCache = FlagHandler.getCache();
 
 export const runSubmissionLimiter = rateLimit({
   windowMs: 2 * 60 * 1000,
@@ -29,7 +30,7 @@ export const loginLimiter = rateLimit({
   windowMs: 5 * 60 * 1000,
   max: 5,
   message: "Only 5 logins per user, per 5 minutes allowed",
-  skip: async () => await FlagHandler.getFlagValue("disable-successful-login-limiter"),
+  skip: async () => await FlagCache.getBoolFlag("disable-successful-login-limiter"),
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: req => (req.body as LoginRequest).user,
@@ -40,7 +41,7 @@ export const failedLoginLimiter = rateLimit({
   windowMs: 30 * 60 * 1000,
   max: 100,
   message: "Only 100 failed logins per IP, per 30 minutes allowed",
-  skip: async () => await FlagHandler.getFlagValue("disable-failed-login-limiter"),
+  skip: async () => await FlagCache.getBoolFlag("disable-failed-login-limiter"),
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: req => GetIpAddress(req),
@@ -51,7 +52,7 @@ export const registrationLimiter = rateLimit({
   windowMs: 30 * 60 * 1000,
   max: 10,
   message: "Only 10 new accounts per IP, per 30 minutes allowed",
-  skip: async () => await FlagHandler.getFlagValue("disable-account-creation-limiter"),
+  skip: async () => await FlagCache.getBoolFlag("disable-account-creation-limiter"),
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: req => GetIpAddress(req),

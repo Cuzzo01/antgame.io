@@ -2,11 +2,11 @@ import { getUserBadgesByID } from "../dao/UserDao";
 import { LoggerProvider } from "../LoggerTS";
 import { RawUserBadge } from "../models/RawUserBadge";
 import { UserBadge } from "../models/UserBadge";
+import { FlagHandler } from "./FlagHandler";
 import { ResultCacheWrapper } from "./ResultCacheWrapperTS";
 
-const FlagHandler = require("./FlagHandler");
-
 const Logger = LoggerProvider.getInstance();
+const FlagCache = FlagHandler.getCache();
 
 export class UserHandler {
   private static cache: UserCache;
@@ -47,7 +47,7 @@ class UserCache extends ResultCacheWrapper<UserBadge[]> {
         });
       },
       getTimeToCache: async () => {
-        const maxTimeToCache = await FlagHandler.getFlagValue("time-to-cache-badges-internal");
+        const maxTimeToCache = await FlagCache.getIntFlag("time-to-cache-badges-internal");
         const cacheTime = Math.round(maxTimeToCache * (1 - Math.random() * 0.2));
         return cacheTime;
       },

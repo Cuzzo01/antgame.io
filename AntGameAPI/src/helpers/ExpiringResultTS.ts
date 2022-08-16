@@ -3,7 +3,9 @@ export class ExpiringResult<T> {
   private value: T;
 
   constructor(expireAt: Date, value: T) {
-    this.expireAt = expireAt;
+    if (typeof expireAt === "number") this.expireAt = new Date(expireAt);
+    else this.expireAt = expireAt;
+
     this.value = value;
   }
 

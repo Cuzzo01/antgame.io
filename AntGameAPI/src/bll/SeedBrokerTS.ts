@@ -1,9 +1,10 @@
+import { TryParseObjectID } from "../dao/helpers";
+import { deleteSeed, getOutstandingSeedCount, getSeedData, saveSeed } from "../dao/SeedDao";
+import { FlagHandler } from "../handler/FlagHandler";
 import { ResultCache } from "../helpers/ResultCacheTS";
 import { SeedData } from "../models/SeedData";
 
-const FlagHandler = require("../handler/FlagHandler");
-const { saveSeed, getSeedData, deleteSeed, getOutstandingSeedCount } = require("../dao/SeedDao");
-const { TryParseObjectID } = require("../dao/helpers");
+const FlagCache = FlagHandler.getCache();
 
 export class SeedBrokerProvider {
   private static broker: SeedBroker;
@@ -24,19 +25,17 @@ class SeedBroker {
 
   async getSeed(params: { homeLocations: number[][]; userID: string }) {
     const outstandingSeeds = (await getOutstandingSeedCount({ userID: params.userID })) as number;
-    const outstandingSeedLimit = (await FlagHandler.getFlagValue(
-      "maximum-outstanding-seeds"
-    )) as number;
+    const outstandingSeedLimit = await FlagCache.getIntFlag("maximum-outstanding-seeds");
     if (outstandingSeeds >= outstandingSeedLimit) {
       return { success: false };
     }
 
-    const ttlHours = (await FlagHandler.getFlagValue("seed-time-to-live-hours")) as number;
+    const ttlHours = await FlagCache.getIntFlag("seed-time-to-live-hours");
     const ttlSec = ttlHours * 60 * 60;
     const expiresAt = new Date();
     expiresAt.setHours(new Date().getHours() + ttlHours);
     let result = false;
-    let seed;
+    let seed: number;
     while (result === false) {
       seed = Math.round(Math.random() * 1e8);
       result = await saveSeed({
@@ -48,7 +47,7 @@ class SeedBroker {
     }
     const userObjectID = TryParseObjectID(params.userID, "UserID", "SeedBroker") as string;
     this.seedCache.setItem(
-      seed,
+      seed.toString(),
       {
         homeLocations: params.homeLocations,
         userID: userObjectID,
@@ -82,7 +81,7 @@ class SeedBroker {
     const seedUser = seedData.userID;
     if (seedUser !== params.userID) return { isValid: false, message: "non-matching userID" };
 
-    let createTime;
+    let createTime: number;
     if (seedData._id) {
       createTime = new Date(seedData._id.getTimestamp()).getTime();
     } else if (seedData.createdAt) {
