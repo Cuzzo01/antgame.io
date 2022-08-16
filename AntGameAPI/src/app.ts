@@ -6,6 +6,8 @@ if (!process.env.environment) {
   dotenv.config();
 }
 
+import "./tracing";
+
 import express, { Request, Response } from "express";
 import jwt from "express-jwt";
 import responseTime from "response-time";
@@ -29,10 +31,7 @@ import { UserController } from "./controller/UserController";
 import { MapController } from "./controller/MapController";
 import { ChampionshipController } from "./controller/ChampionshipController";
 import { ServiceController } from "./controller/ServiceController";
-import { InitializeTracing } from "./tracing";
 import { initializeScheduledTasks } from "./bll/TaskSchedulerTS";
-
-InitializeTracing();
 
 const app = express();
 const port = 8080;

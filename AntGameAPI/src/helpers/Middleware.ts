@@ -1,13 +1,14 @@
 import { NextFunction, Request, Response } from "express";
-import TelemAPI from "@opentelemetry/api";
 
-import { AuthToken } from "../auth/models/AuthToken";
 import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandlerTS";
 import { TokenRevokedHandler } from "../handler/TokenRevokedHandlerTS";
 import { LoggerProvider } from "../LoggerTS";
+import { setAttributes } from "../tracing";
+import { GetIpAddress } from "./IpHelperTS";
+
+import { AuthToken } from "../auth/models/AuthToken";
 import { MessageType } from "../models/Logging/MessageTypes";
 import { RequestLog } from "../models/Logging/RequestLog";
-import { GetIpAddress } from "./IpHelperTS";
 
 const FlagHandler = require("../handler/FlagHandler");
 
@@ -57,10 +58,11 @@ export const TokenVerifier = async function (req: Request, res: Response, next: 
     const clientID = user.clientID;
     const TokenIsValid = await TokenRevokedCache.isTokenValid(userID, adminToken, tokenIssuedAt);
 
-    const activeSpan = TelemAPI.trace.getSpan(TelemAPI.context.active());
-    activeSpan.setAttribute("user.id", userID);
-    activeSpan.setAttribute("user.clientID", clientID);
-    activeSpan.setAttribute("user.name", await ObjectIDToNameCache.getUsername(userID));
+    // const activeSpan = trace.getSpan(context.active());
+    // activeSpan.setAttribute("user.id", userID);
+    // activeSpan.setAttribute("user.clientID", clientID);
+    // activeSpan.setAttribute("user.name", await ObjectIDToNameCache.getUsername(userID));
+    setAttributes({ userID, clientID, username: await ObjectIDToNameCache.getUsername(userID) });
 
     if (TokenIsValid === false) {
       Logger.logAuthEvent({
