@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AuthToken } from "../auth/models/AuthToken";
-import { SeedBrokerProvider } from "../bll/SeedBrokerTS";
+import { SeedBrokerProvider } from "../bll/SeedBroker";
 import { LoggerProvider } from "../LoggerTS";
 
 const Logger = LoggerProvider.getInstance();

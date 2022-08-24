@@ -12,8 +12,8 @@ import express, { Request, Response } from "express";
 import jwt from "express-jwt";
 import responseTime from "response-time";
 
-import { RejectNotAdmin, ServiceEndpointAuth } from "./auth/AuthHelpersTS";
-import { TokenHandlerProvider } from "./auth/WebTokenHandlerTS";
+import { RejectNotAdmin, ServiceEndpointAuth } from "./auth/AuthHelpers";
+import { TokenHandlerProvider } from "./auth/WebTokenHandler";
 import { JwtResultHandler, ResponseLogger, TokenVerifier } from "./helpers/Middleware";
 import {
   failedLoginLimiter,
@@ -31,7 +31,7 @@ import { UserController } from "./controller/UserController";
 import { MapController } from "./controller/MapController";
 import { ChampionshipController } from "./controller/ChampionshipController";
 import { ServiceController } from "./controller/ServiceController";
-import { initializeScheduledTasks } from "./bll/TaskSchedulerTS";
+import { initializeScheduledTasks } from "./bll/TaskScheduler";
 import { FlagController } from "./controller/FlagController";
 import { ChallengeController } from "./controller/ChallengeController";
 import { AdminController } from "./controller/AdminController";

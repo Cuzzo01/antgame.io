@@ -1,7 +1,7 @@
-import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandlerTS";
+import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandler";
 import { RunData } from "../models/Admin/RunData";
 
-const ObjectIDToNameCache = ObjectIDToNameHandler.getCache()
+const ObjectIDToNameCache = ObjectIDToNameHandler.getCache();
 
 export const populateUsernamesOnRuns = async (runs: RunData[]) => {
   for (let i = 0; i < runs.length; i++) {

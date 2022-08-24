@@ -1,4 +1,4 @@
-import { ResultCacheWrapper } from "./ResultCacheWrapperTS";
+import { ResultCacheWrapper } from "./ResultCacheWrapper";
 
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { FullChampionshipConfig } from "../models/FullChampionshipConfig";

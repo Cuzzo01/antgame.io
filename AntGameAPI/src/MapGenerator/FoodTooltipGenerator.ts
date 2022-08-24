@@ -1,5 +1,5 @@
 import { Tooltip } from "../models/Maps/Tooltip";
-import { CountGroupSize, CountOnMap } from "./HelpersTS";
+import { CountGroupSize, CountOnMap } from "./Helpers";
 
 export function GenerateFoodTooltips(mapData: string[][]): Tooltip[] {
   const foodCount = CountOnMap("f", mapData);
@@ -30,5 +30,3 @@ export function GenerateFoodTooltips(mapData: string[][]): Tooltip[] {
   }
   return tooltips;
 }
-
-module.exports = { GenerateFoodTooltips };

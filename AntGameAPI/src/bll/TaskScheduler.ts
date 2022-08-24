@@ -2,7 +2,7 @@ import { scheduleJob } from "node-schedule";
 import { removeAnonAndTagLessRunsOlderThan7Days } from "../dao/DBCleanUp";
 import { LoggerProvider } from "../LoggerTS";
 import { RefreshActiveChallengeCache } from "./ActiveChallengeRefresher";
-import { handleDailyChallengeChange } from "./DailyChallengeCronTS";
+import { handleDailyChallengeChange } from "./DailyChallengeCron";
 
 const Logger = LoggerProvider.getInstance();
 
