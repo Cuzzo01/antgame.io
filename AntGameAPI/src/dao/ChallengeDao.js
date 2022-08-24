@@ -20,8 +20,7 @@ const submitRun = async runData => {
 
   const collection = await getCollection("runs");
   const result = await collection.insertOne(runData);
-  const runID = result.ops[0]._id;
-  return runID;
+  return result.insertedId;
 };
 
 const addTagToRun = async (id, tag) => {

@@ -72,6 +72,7 @@ export class FlagCache {
 
   async getBoolFlag(name: string) {
     const value = await this.getFlagValue(name);
+    if (typeof value === "boolean") return value
     return value === "true";
   }
 

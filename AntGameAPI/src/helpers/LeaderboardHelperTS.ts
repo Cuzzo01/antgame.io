@@ -36,7 +36,7 @@ export const GenerateChallengeLeaderboardData = async (params: { challengeID: st
         : TimeHelper.getGeneralizedTimeStringFromObjectID(entry.runID) + " ago";
 
     leaderboardRows.push({
-      id: entry._id,
+      id: entry._id.toString(),
       rank: i + 1,
       username: entry.username,
       pb: entry.pb,

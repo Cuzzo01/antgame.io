@@ -1,4 +1,3 @@
-import { getShortMonthName } from "../helpers/TimeHelper";
 import { LoggerProvider } from "../LoggerTS";
 import { GenerateFoodTooltips } from "../MapGenerator/FoodTooltipGeneratorTS";
 import { CountOnMap, getRandomInRange } from "../MapGenerator/HelpersTS";
@@ -10,6 +9,7 @@ import { addNewConfig } from "../dao/AdminDao";
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { MapData } from "../models/Maps/MapData";
 import { addMapToDB, getMapByName } from "../dao/MapDao";
+import { TimeHelper } from "../helpers/TimeHelperTS";
 
 const Logger = LoggerProvider.getInstance();
 const SpacesService = SpacesServiceProvider.getService();
@@ -69,6 +69,6 @@ export class ChallengeGenerator {
 const getChallengeName = () => {
   const date = new Date();
   const day = date.getUTCDate();
-  const month = getShortMonthName(date);
+  const month = TimeHelper.getShortMonthName(date);
   return `${month} ${day < 10 ? `0${day}` : day} ${date.getFullYear()}`;
 };

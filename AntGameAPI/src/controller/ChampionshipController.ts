@@ -7,6 +7,7 @@ import { LoggerProvider } from "../LoggerTS";
 
 import { AuthToken } from "../auth/models/AuthToken";
 import { UserPointsRow } from "../models/FullChampionshipConfig";
+import { TryParseObjectID } from "../dao/helpers";
 
 const Logger = LoggerProvider.getInstance();
 const LeaderboardCache = LeaderboardHandler.getCache();
@@ -73,7 +74,7 @@ export class ChampionshipController {
           usernamePromises.set(userID, Promise.resolve({ id: userID, name: user.username }));
           leaderboard.push({
             points: userResult.points,
-            _id: userID,
+            _id: TryParseObjectID(userID, "UserID"),
             noRank: true,
           });
         }

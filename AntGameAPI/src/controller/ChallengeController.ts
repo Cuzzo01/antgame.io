@@ -55,12 +55,9 @@ import { ChallengeResponse } from "../models/ChallengeResponse";
 import { ObjectId } from "mongodb";
 import { TryParseObjectID } from "../dao/helpers";
 import { Records, RecordsEntry } from "../models/ActiveChallengeResponse";
-import {
-  getGeneralizedTimeStringFromObjectID,
-  getTimeStringForDailyChallenge,
-} from "../helpers/TimeHelper";
 import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandlerTS";
 import { RejectIfAnon } from "../auth/AuthHelpersTS";
+import { TimeHelper } from "../helpers/TimeHelperTS";
 
 const Logger = LoggerProvider.getInstance();
 const FlagCache = FlagHandler.getCache();
@@ -494,10 +491,10 @@ export class ChallengeController {
         const entry = leaderBoardEntries[i];
         const timeString =
           isDaily && !isCurrentDaily
-            ? getTimeStringForDailyChallenge(entry.runID)
-            : getGeneralizedTimeStringFromObjectID(entry.runID) + " ago";
+            ? TimeHelper.getTimeStringForDailyChallenge(entry.runID)
+            : TimeHelper.getGeneralizedTimeStringFromObjectID(entry.runID) + " ago";
 
-        if (entry._id == user.id) {
+        if (entry._id.equals(user.id)) {
           onLeaderboard = true;
         }
 
@@ -528,8 +525,8 @@ export class ChallengeController {
             );
             const timeString =
               isDaily && !isCurrentDaily
-                ? getTimeStringForDailyChallenge(entryAbove.runID)
-                : getGeneralizedTimeStringFromObjectID(entryAbove.runID) + " ago";
+                ? TimeHelper.getTimeStringForDailyChallenge(entryAbove.runID)
+                : TimeHelper.getGeneralizedTimeStringFromObjectID(entryAbove.runID) + " ago";
             leaderboardData.push({
               id: entryAbove._id,
               rank: currentUserRank - 1,
@@ -541,8 +538,8 @@ export class ChallengeController {
 
           const timeString =
             isDaily && !isCurrentDaily
-              ? getTimeStringForDailyChallenge(pr.pbRunID)
-              : getGeneralizedTimeStringFromObjectID(pr.pbRunID) + " ago";
+              ? TimeHelper.getTimeStringForDailyChallenge(pr.pbRunID)
+              : TimeHelper.getGeneralizedTimeStringFromObjectID(pr.pbRunID) + " ago";
 
           leaderboardData.push({
             id: user.id,

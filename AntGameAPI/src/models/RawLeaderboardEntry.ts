@@ -1,8 +1,10 @@
+import { ObjectId } from "mongodb";
+
 export interface RawLeaderboardEntry {
-  _id: string;
+  _id: ObjectId;
   username?: string;
   pb?: number;
-  runID?: string;
+  runID?: ObjectId;
   points: number;
   noRank?: boolean;
 }

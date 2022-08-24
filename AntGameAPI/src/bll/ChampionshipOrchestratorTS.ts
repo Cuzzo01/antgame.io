@@ -14,7 +14,7 @@ import { addBadgeToUser, getLeaderboardByChallengeId } from "../dao/UserDao";
 import { LeaderboardHandler } from "../handler/LeaderboardHandlerTS";
 import { UserHandler } from "../handler/UserHandlerTS";
 import { BadgeDataGenerator } from "../helpers/BadgeDataGenerator";
-import { getShortMonthName } from "../helpers/TimeHelper";
+import { TimeHelper } from "../helpers/TimeHelperTS";
 
 import { ChampionshipDetails } from "../models/ChampionshipDetails";
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
@@ -44,13 +44,13 @@ const pointsMap = [
 export class ChampionshipOrchestrator {
   static async generateDailyChampionship() {
     const date = new Date();
-    const name = `${getShortMonthName(date)} ${date.getFullYear()}`;
+    const name = `${TimeHelper.getShortMonthName(date)} ${date.getFullYear()}`;
     return (await createNewChampionship({ name, pointsMap })) as string;
   }
 
   static async getCurrentDailyChampionship() {
     const date = new Date();
-    const name = `${getShortMonthName(date)} ${date.getFullYear()}`;
+    const name = `${TimeHelper.getShortMonthName(date)} ${date.getFullYear()}`;
     return (await getChampionshipIDByName(name)) as string;
   }
 
@@ -65,7 +65,7 @@ export class ChampionshipOrchestrator {
       date.setMonth(11);
       date.setFullYear(date.getFullYear() - 1);
     } else date.setMonth(date.getMonth() - 1);
-    const name = `${getShortMonthName(date)} ${date.getFullYear()}`;
+    const name = `${TimeHelper.getShortMonthName(date)} ${date.getFullYear()}`;
     return (await getChampionshipIDByName(name)) as string;
   }
 
@@ -118,14 +118,14 @@ export class ChampionshipOrchestrator {
       const entry = leaderboardEntries[rank - 1];
       if (rank <= largestRank) {
         const pointObj = pointsMap.find(obj => obj.type === "rank" && obj.value === rank);
-        awardedPoints.push({ userID: entry._id, points: pointObj.points });
+        awardedPoints.push({ userID: entry._id.toString(), points: pointObj.points });
       } else {
         let currentCutoff = percentCutoffs[cutoffIndex];
         while (rank > currentCutoff.cutoff) {
           cutoffIndex++;
           currentCutoff = percentCutoffs[cutoffIndex];
         }
-        awardedPoints.push({ userID: entry._id, points: currentCutoff.points });
+        awardedPoints.push({ userID: entry._id.toString(), points: currentCutoff.points });
       }
     }
 
@@ -182,27 +182,27 @@ export class ChampionshipOrchestrator {
       const userID = leaderboardEntry._id;
       if (actualRank === 1) {
         badges.push({
-          userID: userID,
+          userID: userID.toString(),
           badgeData: BadgeDataGenerator.getFirstPlaceBadge(championshipName),
         });
       } else if (actualRank === 2) {
         badges.push({
-          userID: userID,
+          userID: userID.toString(),
           badgeData: BadgeDataGenerator.getSecondPlaceBadge(championshipName),
         });
       } else if (actualRank === 3) {
         badges.push({
-          userID: userID,
+          userID: userID.toString(),
           badgeData: BadgeDataGenerator.getThirdPlaceBadge(championshipName),
         });
       } else if (actualRank <= 10) {
         badges.push({
-          userID: userID,
+          userID: userID.toString(),
           badgeData: BadgeDataGenerator.getTopTenBadge(actualRank, championshipName),
         });
       } else {
         badges.push({
-          userID: userID,
+          userID: userID.toString(),
           badgeData: BadgeDataGenerator.getTop50Badge(actualRank, championshipName),
         });
       }

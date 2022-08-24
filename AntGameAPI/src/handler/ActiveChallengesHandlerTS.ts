@@ -8,7 +8,6 @@ import {
   getChallengeByChallengeId,
   getRecordsByChallengeList,
 } from "../dao/ChallengeDao";
-import { getTimeStringForDailyChallenge } from "../helpers/TimeHelper";
 
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { RawLeaderboardEntry } from "../models/RawLeaderboardEntry";
@@ -17,6 +16,7 @@ import { SkinnyChallengeConfig } from "../models/SkinnyChallengeConfig";
 import { ActiveChallengeData } from "../models/Handlers/ActiveChallengeData";
 import { RecordDetails } from "../models/RecordDetails";
 import { ChampionshipData, DailyData } from "../models/ActiveChallengeResponse";
+import { TimeHelper } from "../helpers/TimeHelperTS";
 
 const DailyChallengeCache = DailyChallengeHandler.getCache();
 const LeaderboardCache = LeaderboardHandler.getCache();
@@ -113,10 +113,10 @@ class ActiveChallengesCache extends ResultCacheWrapper<
         const leaderboardData: LeaderboardEntry[] = [];
         for (let i = 0; i < leaderboardCopy.length; i++) {
           const entry = leaderboardCopy[i];
-          const timeString = getTimeStringForDailyChallenge(entry.runID);
+          const timeString = TimeHelper.getTimeStringForDailyChallenge(entry.runID);
 
           leaderboardData.push({
-            id: entry._id,
+            id: entry._id.toString(),
             rank: i + 1,
             username: entry.username,
             pb: entry.pb,

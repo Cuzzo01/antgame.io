@@ -112,7 +112,7 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
 
   async getChallengeRankByUserId(challengeID: string, userID: string) {
     const leaderboardArr = await this.getRawChallengeLeaderboard(challengeID);
-    const rank = 1 + leaderboardArr.findIndex(entry => entry._id === userID);
+    const rank = 1 + leaderboardArr.findIndex(entry => entry._id.equals(userID));
     return rank;
   }
 
@@ -124,7 +124,7 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
 
   async getLeaderboardEntryByUserID(challengeID: string, userID: string) {
     const leaderboardArr = await this.getRawChallengeLeaderboard(challengeID);
-    const entry = leaderboardArr.find(entry => entry._id === userID);
+    const entry = leaderboardArr.find(entry => entry._id.equals(userID));
     return entry;
   }
 

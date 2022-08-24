@@ -1,3 +1,5 @@
+import { ObjectID } from "bson";
+
 export class TimeHelper {
   static getGeneralizedTimeString(milliseconds: number): string {
     const seconds = milliseconds / 1000;
@@ -12,15 +14,15 @@ export class TimeHelper {
     return `${Math.floor(weeks)}w`;
   }
 
-  static getGeneralizedTimeStringFromObjectID(objectID: any): string {
-    const recordTime = objectID.getTimestamp() as Date;
+  static getGeneralizedTimeStringFromObjectID(objectID: ObjectID): string {
+    const recordTime = objectID.getTimestamp();
     const timeDelta = new Date().getTime() - recordTime.getTime();
     const timeString = TimeHelper.getGeneralizedTimeString(timeDelta);
     return timeString;
   }
 
-  static getTimeStringForDailyChallenge(objectID: any): string {
-    const recordTime = objectID.getTimestamp() as Date;
+  static getTimeStringForDailyChallenge(objectID: ObjectID): string {
+    const recordTime = objectID.getTimestamp();
 
     const nextNoon = new Date(recordTime);
     if (nextNoon.getUTCHours() >= 12) nextNoon.setUTCDate(nextNoon.getUTCDate() + 1);
@@ -33,7 +35,7 @@ export class TimeHelper {
   }
 
   static getShortMonthName(date: Date): string {
-    let month;
+    let month: string;
     switch (date.getMonth()) {
       case 0:
         month = "Jan";

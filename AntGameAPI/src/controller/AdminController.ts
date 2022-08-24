@@ -16,10 +16,11 @@ import { populateUsernamesOnRuns } from "../helpers/AdminRunHelpers";
 import { addStatToResponse } from "../helpers/AuthStatHelpers";
 import { LoggerProvider } from "../LoggerTS";
 import crypto from "crypto"
-import { generatePasswordHash } from "../auth/PasswordHandler";
 import { TokenRevokedHandler } from "../handler/TokenRevokedHandlerTS";
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { AuthToken } from "../auth/models/AuthToken";
+import { PasswordHandler } from "../auth/PasswordHandlerTS";
+import { RunData } from "../models/Admin/RunData";
 
 const Logger = LoggerProvider.getInstance();
 const LeaderboardCache = LeaderboardHandler.getCache();
@@ -361,7 +362,7 @@ export class AdminController {
           return;
         }
 
-        const runs = await getRecentRuns(count);
+        const runs = await getRecentRuns(count) as RunData[];
         await populateUsernamesOnRuns({ runs });
 
         res.send(runs);
@@ -570,7 +571,7 @@ export class AdminController {
         return;
       }
 
-      const tokenHash = await generatePasswordHash(newToken);
+      const tokenHash = await PasswordHandler.generatePasswordHash(newToken);
       const user = req.user as AuthToken
       await saveNewServiceToken({ tokenHash, name: serviceID, createdBy: user.username });
 
