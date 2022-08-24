@@ -1,6 +1,7 @@
 export interface RecordDetails {
-  age: string;
+  age?: string;
   id: string;
   score: number;
-  username: string;
+  username?: string;
+  name?: string; // TODO: make this just one field
 }

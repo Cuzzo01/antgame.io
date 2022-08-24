@@ -15,8 +15,8 @@ import { RawLeaderboardEntry } from "../models/RawLeaderboardEntry";
 import { LeaderboardEntry } from "../models/LeaderboardEntry";
 import { SkinnyChallengeConfig } from "../models/SkinnyChallengeConfig";
 import { ActiveChallengeData } from "../models/Handlers/ActiveChallengeData";
-import { ChampionshipData, DailyData } from "../models/HomePageResponse";
 import { RecordDetails } from "../models/RecordDetails";
+import { ChampionshipData, DailyData } from "../models/ActiveChallengeResponse";
 
 const DailyChallengeCache = DailyChallengeHandler.getCache();
 const LeaderboardCache = LeaderboardHandler.getCache();
@@ -40,7 +40,7 @@ class ActiveChallengesCache extends ResultCacheWrapper<
     super({ name: "ActiveChallengesHandler" });
   }
 
-  async getActiveChallenges(): Promise<ActiveChallengeData> {
+  async getActiveChallenges() {
     return (await this.getOrFetchValue({
       id: "activeChallenges",
       fetchMethod: async () => {
@@ -63,7 +63,7 @@ class ActiveChallengesCache extends ResultCacheWrapper<
     })) as ActiveChallengeData;
   }
 
-  async getChampionshipData(): Promise<ChampionshipData> {
+  async getChampionshipData() {
     return (await this.getOrFetchValue({
       id: "championship",
       fetchMethod: async () => {
@@ -99,11 +99,11 @@ class ActiveChallengesCache extends ResultCacheWrapper<
     })) as ChampionshipData;
   }
 
-  async getYesterdaysDailyData(): Promise<DailyData> {
+  async getYesterdaysDailyData() {
     return (await this.getOrFetchValue({
       id: "yesterdays_daily",
       fetchMethod: async () => {
-        const yesterdaysDailyID = await DailyChallengeCache.getYesterdaysDailyChallenge();
+        const yesterdaysDailyID = (await DailyChallengeCache.getYesterdaysDailyChallenge()).toString();
         const name = await ObjectIDToNameCache.getChallengeName(yesterdaysDailyID);
 
         const leaderboard = await LeaderboardCache.getChallengeLeaderboard(yesterdaysDailyID);

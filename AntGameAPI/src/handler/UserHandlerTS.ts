@@ -23,6 +23,10 @@ class UserCache extends ResultCacheWrapper<UserBadge[]> {
     super({ name: "UserHandler" });
   }
 
+  public unsetAll() {
+    super.unsetAll();
+  }
+
   async getBadges(id: string): Promise<UserBadge[]> {
     return await this.getOrFetchValue({
       id,

@@ -3,7 +3,7 @@ import { LeaderboardEntry } from "./LeaderboardEntry";
 import { RawLeaderboardEntry } from "./RawLeaderboardEntry";
 import { RecordDetails } from "./RecordDetails";
 
-export interface HomePageResponse {
+export interface ActiveChallengeResponse {
   challenges: SkinnyChallengeConfig[];
   championshipData: ChampionshipData;
   records: Records;
@@ -27,5 +27,10 @@ export interface DailyData {
 }
 
 export interface RecordsEntry {
-  wr: RecordDetails;
+  wr?: RecordDetails;
+  pb?: number;
+  pr?: number | string; // TODO: make this just one field
+  runs?: number;
+  rank?: number;
+  playerCount?: number;
 }

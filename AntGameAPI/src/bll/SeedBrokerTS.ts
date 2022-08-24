@@ -45,7 +45,7 @@ class SeedBroker {
         expiresAt,
       });
     }
-    const userObjectID = TryParseObjectID(params.userID, "UserID", "SeedBroker") as string;
+    const userObjectID = TryParseObjectID(params.userID, "UserID", "SeedBroker");
     this.seedCache.setItem(
       seed.toString(),
       {
@@ -79,7 +79,7 @@ class SeedBroker {
     if (seedData === false) return { isValid: false, message: "couldn't find seed" };
 
     const seedUser = seedData.userID;
-    if (seedUser !== params.userID) return { isValid: false, message: "non-matching userID" };
+    if (seedUser.equals(params.userID)) return { isValid: false, message: "non-matching userID" };
 
     let createTime: number;
     if (seedData._id) {

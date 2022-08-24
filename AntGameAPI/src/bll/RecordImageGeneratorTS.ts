@@ -20,7 +20,7 @@ const MapCache = MapHandler.getCache();
 const ObjectIDToNameCache = ObjectIDToNameHandler.getCache();
 const SpacesService = SpacesServiceProvider.getService();
 
-export const GenerateSolutionImage = async (p: { runID: string; foodEaten: number[][] }) => {
+export const GenerateSolutionImage = async (p: { runID: string; foodEaten?: number[][] }) => {
   const runData = (await getRunDataByRunId(p.runID)) as RunData;
 
   const challengeDetails = (await getConfigDetailsByID(runData.challengeID)) as FullChallengeConfig;

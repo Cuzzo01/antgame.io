@@ -8,8 +8,7 @@ import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandlerTS";
 import { UserHandler } from "../handler/UserHandlerTS";
 import { GenerateChallengeLeaderboardData } from "../helpers/LeaderboardHelperTS";
 import { LoggerProvider } from "../LoggerTS";
-
-import { HomePageResponse, Records, RecordsEntry } from "../models/HomePageResponse";
+import { ActiveChallengeResponse, Records, RecordsEntry } from "../models/ActiveChallengeResponse";
 
 const Logger = LoggerProvider.getInstance();
 const ActiveChallengeCache = ActiveChallengesHandler.getCache();
@@ -35,7 +34,7 @@ export class PublicController {
       const cacheTime = await FlagCache.getFlagValue("time-to-cache-public-endpoints");
       res.set("Cache-Control", `public, max-age=${cacheTime}`);
 
-      const response: HomePageResponse = {
+      const response: ActiveChallengeResponse = {
         challenges: activeChallenges,
         championshipData,
         records,
@@ -61,7 +60,7 @@ export class PublicController {
       }
 
       const currentDaily = await DailyChallengeCache.getActiveDailyChallenge();
-      if (challengeID.toLowerCase() === "daily") challengeID = currentDaily;
+      if (challengeID.toLowerCase() === "daily") challengeID = currentDaily.toString();
 
       const response = {
         name: await ObjectIDToNameCache.getChallengeName(challengeID),
@@ -108,7 +107,7 @@ export class PublicController {
       const dailyLeaderboardData = await GenerateChallengeLeaderboardData({
         challengeID: dailyChallengeID.toString(),
       });
-      const dailyChallengeName = await ObjectIDToNameCache.getChallengeName(dailyChallengeID);
+      const dailyChallengeName = await ObjectIDToNameCache.getChallengeName(dailyChallengeID.toString());
       const dailyLeaderboard = {};
       if (dailyLeaderboardData) {
         dailyLeaderboardData.leaderboardRows.forEach(entry => {
@@ -120,7 +119,7 @@ export class PublicController {
       const yesterdaysLeaderboardData = await GenerateChallengeLeaderboardData({
         challengeID: yesterdaysDailyID.toString(),
       });
-      const yesterdaysChallengeName = await ObjectIDToNameCache.getChallengeName(yesterdaysDailyID);
+      const yesterdaysChallengeName = await ObjectIDToNameCache.getChallengeName(yesterdaysDailyID.toString());
       const yesterdaysLeaderboard = {};
       if (yesterdaysLeaderboardData) {
         yesterdaysLeaderboardData.leaderboardRows.forEach(entry => {

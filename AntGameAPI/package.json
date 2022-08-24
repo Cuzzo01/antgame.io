@@ -31,7 +31,7 @@
     "express-rate-limit": "^6.2.0",
     "jsonwebtoken": "^8.5.1",
     "logzio-nodejs": "^2.0.3",
-    "mongodb": "^3.6.9",
+    "mongodb": "^4.9.0",
     "node-schedule": "^2.1.0",
     "prettier": "^2.3.2",
     "pureimage": "^0.3.8",

@@ -1,7 +1,6 @@
 import { ResultCacheWrapper } from "../handler/ResultCacheWrapperTS";
+import { getServiceTokenData } from "./AuthDao";
 import { ServiceTokenData } from "./models/ServiceTokenData";
-
-const { getServiceTokenData } = require("./AuthDao");
 
 export class ServiceTokenHandler {
   private static handler: ServiceTokenCache;

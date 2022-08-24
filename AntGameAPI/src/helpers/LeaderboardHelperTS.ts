@@ -15,7 +15,7 @@ const FlagCache = FlagHandler.getCache();
 export const GenerateChallengeLeaderboardData = async (params: { challengeID: string }) => {
   const currentDaily = await DailyChallengeCache.getActiveDailyChallenge();
   const getCurrentDaily = params.challengeID.toLowerCase() === "daily";
-  if (getCurrentDaily) params.challengeID = currentDaily;
+  if (getCurrentDaily) params.challengeID = currentDaily.toString();
 
   const rawLeaderboardRows = await LeaderboardCache.getChallengeLeaderboard(params.challengeID);
 
@@ -27,7 +27,7 @@ export const GenerateChallengeLeaderboardData = async (params: { challengeID: st
   const isDaily = details.dailyChallenge === true;
 
   const leaderboardRows: LeaderboardEntry[] = [];
-  const isCurrentDaily = getCurrentDaily || currentDaily === params.challengeID;
+  const isCurrentDaily = getCurrentDaily || currentDaily.equals(params.challengeID);
   for (let i = 0; i < rawLeaderboardRows.length; i++) {
     const entry = rawLeaderboardRows[i];
     const timeString =

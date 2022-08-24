@@ -1,8 +1,9 @@
+import { ObjectId } from "mongodb";
+
 export interface SeedData {
-  // TODO: should be ObjectID
-  _id?: any;
+  _id?: ObjectId;
   homeLocations: number[][];
-  userID: string;
+  userID: ObjectId;
   createdAt: number;
   expiresAt?: Date;
 }

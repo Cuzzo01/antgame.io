@@ -30,6 +30,10 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
     super({ name: "LeaderboardHandler" });
   }
 
+  public unsetAll() {
+    super.unsetAll();
+  }
+
   getTimeToCache: () => Promise<number> = async () => {
     const maxTime = await FlagCache.getIntFlag("time-to-cache-leaderboards");
     return Math.round(maxTime * (1 - Math.random() * 0.2));

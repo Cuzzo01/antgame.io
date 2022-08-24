@@ -1,6 +1,9 @@
+import { ObjectId } from "mongodb";
+import { ChallengeRecord } from "./ChallengeRecord";
 import { UserPointsRow } from "./FullChampionshipConfig";
 
 export interface FullChallengeConfig {
+  _id?: ObjectId;
   id?: string;
   mapPath?: string;
   mapID: string;
@@ -14,4 +17,5 @@ export interface FullChallengeConfig {
   solutionImage?: string;
   order?: number;
   thumbnailURL?: string;
+  record?: ChallengeRecord;
 }
