@@ -18,7 +18,7 @@
 
 import { Request, Response } from "express";
 import { AuthToken } from "../auth/models/AuthToken";
-import { SeedBrokerProvider } from "../bll/SeedBrokerTS";
+import { SeedBrokerProvider } from "../bll/SeedBroker";
 import {
   addTagToRun,
   getChallengeByChallengeId,
@@ -36,12 +36,12 @@ import {
   shouldShowUserOnLeaderboard,
   updateChallengePBAndRunCount,
 } from "../dao/UserDao";
-import { ActiveChallengesHandler } from "../handler/ActiveChallengesHandlerTS";
+import { ActiveChallengesHandler } from "../handler/ActiveChallengesHandler";
 import { FlagHandler } from "../handler/FlagHandler";
-import { LeaderboardHandler } from "../handler/LeaderboardHandlerTS";
-import { MapHandler } from "../handler/MapHandlerTS";
-import { VerifyArtifact } from "../helpers/ChallengeRunHelperTS";
-import { GetIpAddress } from "../helpers/IpHelperTS";
+import { LeaderboardHandler } from "../handler/LeaderboardHandler";
+import { MapHandler } from "../handler/MapHandler";
+import { VerifyArtifact } from "../helpers/ChallengeRunHelper";
+import { GetIpAddress } from "../helpers/IpHelper";
 import { LoggerProvider } from "../LoggerTS";
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { FullRunData } from "../models/FullRunData";
@@ -50,14 +50,14 @@ import { HomeFoodAmounts, RunRequest } from "../models/RunArtifact";
 import { RunSubmissionResponse } from "../models/RunSubmissionResponse";
 import { RunTag } from "../models/RunTag";
 import { UserChallengeDetails } from "../models/UserChallengeDetails";
-import { DailyChallengeHandler } from "../handler/DailyChallengeHandlerTS";
+import { DailyChallengeHandler } from "../handler/DailyChallengeHandler";
 import { ChallengeResponse } from "../models/ChallengeResponse";
 import { ObjectId } from "mongodb";
 import { TryParseObjectID } from "../dao/helpers";
 import { Records, RecordsEntry } from "../models/ActiveChallengeResponse";
-import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandlerTS";
-import { RejectIfAnon } from "../auth/AuthHelpersTS";
-import { TimeHelper } from "../helpers/TimeHelperTS";
+import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandler";
+import { RejectIfAnon } from "../auth/AuthHelpers";
+import { TimeHelper } from "../helpers/TimeHelper";
 
 const Logger = LoggerProvider.getInstance();
 const FlagCache = FlagHandler.getCache();

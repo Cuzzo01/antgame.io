@@ -4,22 +4,42 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Request, Response } from "express";
-import { handleDailyChallengeChange } from "../bll/DailyChallengeCronTS";
-import { addNewConfig, getChampionshipListFromDB, getConfigDetailsByID, getConfigListFromDB, getFlagDetailsByID, getFlagListFromDB, getNewAccountCount, getRecentlyCreatedUsers, getRecentlyLoggedInUsers, getRecentRuns, getRunCount, getRunDetailsByID, getRunsByTag, getUserDetailsByID, getUserLoginCount, saveNewServiceToken, updateConfigByID, updateFlagByID, updateUserByID } from "../dao/AdminDao";
+import { handleDailyChallengeChange } from "../bll/DailyChallengeCron";
+import {
+  addNewConfig,
+  getChampionshipListFromDB,
+  getConfigDetailsByID,
+  getConfigListFromDB,
+  getFlagDetailsByID,
+  getFlagListFromDB,
+  getNewAccountCount,
+  getRecentlyCreatedUsers,
+  getRecentlyLoggedInUsers,
+  getRecentRuns,
+  getRunCount,
+  getRunDetailsByID,
+  getRunsByTag,
+  getUserDetailsByID,
+  getUserLoginCount,
+  saveNewServiceToken,
+  updateConfigByID,
+  updateFlagByID,
+  updateUserByID,
+} from "../dao/AdminDao";
 import { getActiveChallenges, markRunForVerification } from "../dao/ChallengeDao";
 import { getChampionshipDetailsFromDB } from "../dao/ChampionshipDao";
 import { FlagHandler } from "../handler/FlagHandler";
-import { LeaderboardHandler } from "../handler/LeaderboardHandlerTS";
-import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandlerTS";
-import { UserHandler } from "../handler/UserHandlerTS";
+import { LeaderboardHandler } from "../handler/LeaderboardHandler";
+import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandler";
+import { UserHandler } from "../handler/UserHandler";
 import { populateUsernamesOnRuns } from "../helpers/AdminRunHelpers";
 import { addStatToResponse } from "../helpers/AuthStatHelpers";
 import { LoggerProvider } from "../LoggerTS";
-import crypto from "crypto"
-import { TokenRevokedHandler } from "../handler/TokenRevokedHandlerTS";
+import crypto from "crypto";
+import { TokenRevokedHandler } from "../handler/TokenRevokedHandler";
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { AuthToken } from "../auth/models/AuthToken";
-import { PasswordHandler } from "../auth/PasswordHandlerTS";
+import { PasswordHandler } from "../auth/PasswordHandler";
 import { RunData } from "../models/Admin/RunData";
 
 const Logger = LoggerProvider.getInstance();
@@ -73,7 +93,7 @@ export class AdminController {
   //#region configs
   static async getConfigList(req: Request, res: Response) {
     try {
-      const configs = await getConfigListFromDB() as FullChallengeConfig[];
+      const configs = (await getConfigListFromDB()) as FullChallengeConfig[];
 
       const playerCountPromises = [];
       for (const [index, config] of Object.entries(configs)) {
@@ -223,7 +243,7 @@ export class AdminController {
   //#region users
   static async getUsers(req: Request, res: Response) {
     try {
-      const query = req.query as { by: string, count: string };
+      const query = req.query as { by: string; count: string };
       if (query.by === "recentlyCreated") {
         const count = parseInt(query.count);
         if (!count) {
@@ -350,7 +370,7 @@ export class AdminController {
   //#region runs
   static async getRuns(req: Request, res: Response) {
     try {
-      const query = req.query as {by: string, count: string, tag: string};
+      const query = req.query as { by: string; count: string; tag: string };
       if (query.by === "recent") {
         const count = parseInt(query.count);
 
@@ -362,8 +382,8 @@ export class AdminController {
           return;
         }
 
-        const runs = await getRecentRuns(count) as RunData[];
-        await populateUsernamesOnRuns({ runs });
+        const runs = (await getRecentRuns(count)) as RunData[];
+        await populateUsernamesOnRuns(runs);
 
         res.send(runs);
       } else if (query.by === "tag") {
@@ -376,7 +396,7 @@ export class AdminController {
         }
 
         const runs = await getRunsByTag(tag, count);
-        await populateUsernamesOnRuns({ runs });
+        await populateUsernamesOnRuns(runs);
 
         res.send(runs);
       } else {
@@ -572,7 +592,7 @@ export class AdminController {
       }
 
       const tokenHash = await PasswordHandler.generatePasswordHash(newToken);
-      const user = req.user as AuthToken
+      const user = req.user as AuthToken;
       await saveNewServiceToken({ tokenHash, name: serviceID, createdBy: user.username });
 
       res.send(newToken);
@@ -601,4 +621,3 @@ const send400 = (res, message) => {
   res.status(400);
   res.send(message);
 };
-

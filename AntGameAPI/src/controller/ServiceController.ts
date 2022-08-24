@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { GenerateSolutionImage } from "../bll/RecordImageGeneratorTS";
+import { GenerateSolutionImage } from "../bll/RecordImageGenerator";
 import { addSolutionImageToRun } from "../dao/ChallengeDao";
-import { ActiveChallengesHandler } from "../handler/ActiveChallengesHandlerTS";
-import { LeaderboardHandler } from "../handler/LeaderboardHandlerTS";
+import { ActiveChallengesHandler } from "../handler/ActiveChallengesHandler";
+import { LeaderboardHandler } from "../handler/LeaderboardHandler";
 import { LoggerProvider } from "../LoggerTS";
 
 import { GenerateRecordImageRequest } from "../models/GenerateRecordImageRequest";

@@ -1,6 +1,6 @@
 import rateLimit from "express-rate-limit";
 import { FlagHandler } from "../handler/FlagHandler";
-import { GetIpAddress } from "../helpers/IpHelperTS";
+import { GetIpAddress } from "../helpers/IpHelper";
 import { AuthToken } from "./models/AuthToken";
 import { LoginRequest } from "./models/LoginRequest";
 

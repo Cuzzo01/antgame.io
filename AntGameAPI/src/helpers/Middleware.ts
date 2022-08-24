@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 
-import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandlerTS";
-import { TokenRevokedHandler } from "../handler/TokenRevokedHandlerTS";
+import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandler";
+import { TokenRevokedHandler } from "../handler/TokenRevokedHandler";
 import { LoggerProvider } from "../LoggerTS";
 import { setAttributes } from "../tracing";
-import { GetIpAddress } from "./IpHelperTS";
+import { GetIpAddress } from "./IpHelper";
 import { FlagHandler } from "../handler/FlagHandler";
 
 import { AuthToken } from "../auth/models/AuthToken";

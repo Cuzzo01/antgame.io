@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { UserHandler } from "../handler/UserHandlerTS";
+import { UserHandler } from "../handler/UserHandler";
 import { LoggerProvider } from "../LoggerTS";
 import { BadgeRequest } from "../models/BadgeRequest";
 import { BadgeResponse } from "../models/BadgeResponse";

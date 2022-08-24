@@ -1,5 +1,5 @@
-import { ActiveChallengesHandler } from "../handler/ActiveChallengesHandlerTS";
-import { LeaderboardHandler } from "../handler/LeaderboardHandlerTS";
+import { ActiveChallengesHandler } from "../handler/ActiveChallengesHandler";
+import { LeaderboardHandler } from "../handler/LeaderboardHandler";
 import { LoggerProvider } from "../LoggerTS";
 
 const Logger = LoggerProvider.getInstance();

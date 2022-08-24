@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { GetIpAddress } from "../helpers/IpHelperTS";
+import { GetIpAddress } from "../helpers/IpHelper";
 import { LoggerProvider } from "../LoggerTS";
-import { PasswordHandler } from "./PasswordHandlerTS";
-import { TokenHandlerProvider } from "./WebTokenHandlerTS";
-import { IsAllowedUsername, RegistrationDataSatisfiesCriteria } from "./RegistrationHelperTS";
+import { PasswordHandler } from "./PasswordHandler";
+import { TokenHandlerProvider } from "./WebTokenHandler";
+import { IsAllowedUsername, RegistrationDataSatisfiesCriteria } from "./RegistrationHelper";
 import { FlagHandler } from "../handler/FlagHandler";
 import { getAuthDetailsByUsername, IsUsernameTaken, logLogin, saveNewUser } from "./AuthDao";
 

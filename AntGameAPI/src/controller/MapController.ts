@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { GenerateFoodTooltips } from "../MapGenerator/FoodTooltipGeneratorTS";
-import { MapGenerator } from "../MapGenerator/MapGeneratorTS";
+import { GenerateFoodTooltips } from "../MapGenerator/FoodTooltipGenerator";
+import { MapGenerator } from "../MapGenerator/MapGenerator";
 
 const width = 200;
 const height = 112;

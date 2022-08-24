@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { GetIpAddress } from "../helpers/IpHelperTS";
+import { GetIpAddress } from "../helpers/IpHelper";
 import { LoggerProvider } from "../LoggerTS";
 import { MessageType } from "../models/Logging/MessageTypes";
 import { SpacesLog } from "../models/Logging/SpacesLog";

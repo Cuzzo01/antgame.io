@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { ChampionshipOrchestrator } from "../bll/ChampionshipOrchestratorTS";
+import { ChampionshipOrchestrator } from "../bll/ChampionshipOrchestrator";
 import { getUserPointsByUserID } from "../dao/ChampionshipDao";
-import { LeaderboardHandler } from "../handler/LeaderboardHandlerTS";
-import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandlerTS";
+import { LeaderboardHandler } from "../handler/LeaderboardHandler";
+import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandler";
 import { LoggerProvider } from "../LoggerTS";
 
 import { AuthToken } from "../auth/models/AuthToken";

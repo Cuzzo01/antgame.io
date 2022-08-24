@@ -1,6 +1,6 @@
 import { getFlag } from "../dao/FlagDao";
-import { ExpiringResult } from "../helpers/ExpiringResultTS";
-import { ResultCache } from "../helpers/ResultCacheTS";
+import { ExpiringResult } from "../helpers/ExpiringResult";
+import { ResultCache } from "../helpers/ResultCache";
 import { LoggerProvider } from "../LoggerTS";
 import { FlagData } from "../models/FlagData";
 
@@ -72,7 +72,7 @@ export class FlagCache {
 
   async getBoolFlag(name: string) {
     const value = await this.getFlagValue(name);
-    if (typeof value === "boolean") return value
+    if (typeof value === "boolean") return value;
     return value === "true";
   }
 

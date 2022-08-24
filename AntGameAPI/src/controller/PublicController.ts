@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import { getUserLoginCount } from "../dao/AdminDao";
 import { getDailyChallengesInReverseOrder } from "../dao/ChallengeDao";
-import { ActiveChallengesHandler } from "../handler/ActiveChallengesHandlerTS";
-import { DailyChallengeHandler } from "../handler/DailyChallengeHandlerTS";
+import { ActiveChallengesHandler } from "../handler/ActiveChallengesHandler";
+import { DailyChallengeHandler } from "../handler/DailyChallengeHandler";
 import { FlagHandler } from "../handler/FlagHandler";
-import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandlerTS";
-import { UserHandler } from "../handler/UserHandlerTS";
-import { GenerateChallengeLeaderboardData } from "../helpers/LeaderboardHelperTS";
+import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandler";
+import { UserHandler } from "../handler/UserHandler";
+import { GenerateChallengeLeaderboardData } from "../helpers/LeaderboardHelper";
 import { LoggerProvider } from "../LoggerTS";
 import { ActiveChallengeResponse, Records, RecordsEntry } from "../models/ActiveChallengeResponse";
 
@@ -107,7 +107,9 @@ export class PublicController {
       const dailyLeaderboardData = await GenerateChallengeLeaderboardData({
         challengeID: dailyChallengeID.toString(),
       });
-      const dailyChallengeName = await ObjectIDToNameCache.getChallengeName(dailyChallengeID.toString());
+      const dailyChallengeName = await ObjectIDToNameCache.getChallengeName(
+        dailyChallengeID.toString()
+      );
       const dailyLeaderboard = {};
       if (dailyLeaderboardData) {
         dailyLeaderboardData.leaderboardRows.forEach(entry => {
@@ -119,7 +121,9 @@ export class PublicController {
       const yesterdaysLeaderboardData = await GenerateChallengeLeaderboardData({
         challengeID: yesterdaysDailyID.toString(),
       });
-      const yesterdaysChallengeName = await ObjectIDToNameCache.getChallengeName(yesterdaysDailyID.toString());
+      const yesterdaysChallengeName = await ObjectIDToNameCache.getChallengeName(
+        yesterdaysDailyID.toString()
+      );
       const yesterdaysLeaderboard = {};
       if (yesterdaysLeaderboardData) {
         yesterdaysLeaderboardData.leaderboardRows.forEach(entry => {
