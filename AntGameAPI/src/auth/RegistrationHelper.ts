@@ -27,6 +27,7 @@ export const IsAllowedUsername = (username: string) => {
   if (!usernameRegex.test(username)) return false;
   if (StrictCensor.isProfaneIsh(username.replace("_", " "))) return false;
   if (LaxCensor.isProfane(username.replace("_", " "))) return false;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
   if (!Blacklist.validate(username)) return false;
   return true;
 };

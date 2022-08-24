@@ -11,7 +11,7 @@ export interface FullChallengeConfig {
   homeLimit: number;
   name: string;
   active: boolean;
-  championshipID?: string;
+  championshipID?: ObjectId;
   pointsAwarded?: UserPointsRow[];
   dailyChallenge: boolean;
   solutionImage?: string;

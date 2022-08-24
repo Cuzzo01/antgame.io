@@ -2,10 +2,10 @@ import { ResultCacheWrapper } from "./ResultCacheWrapper";
 
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { FullChampionshipConfig } from "../models/FullChampionshipConfig";
-
-const { getChallengeByChallengeId } = require("../dao/ChallengeDao");
-const { getChampionshipDetailsFromDB } = require("../dao/ChampionshipDao");
-const { getUsernameByID } = require("../dao/UserDao");
+import { getChallengeByChallengeId } from "../dao/ChallengeDao";
+import { getUsernameByID } from "../dao/UserDao";
+import { getChampionshipDetailsFromDB } from "../dao/ChampionshipDao";
+import { ObjectId } from "mongodb";
 
 export class ObjectIDToNameHandler {
   private static cache: ObjectIDtoNameCache;
@@ -26,9 +26,9 @@ class ObjectIDtoNameCache extends ResultCacheWrapper<string> {
     return Math.round(43200 * (1 - Math.random() * 0.1));
   }
 
-  async getChallengeName(id: string): Promise<string> {
+  async getChallengeName(id: ObjectId | string): Promise<string> {
     return await this.getOrFetchValue({
-      id,
+      id: id.toString(),
       type: "Challenge",
       getTimeToCache: () => this.timeToCache,
       fetchMethod: async () => {
@@ -38,9 +38,9 @@ class ObjectIDtoNameCache extends ResultCacheWrapper<string> {
     });
   }
 
-  async getUsername(id): Promise<string> {
+  async getUsername(id: ObjectId | string): Promise<string> {
     return await this.getOrFetchValue({
-      id,
+      id: id.toString(),
       type: "Username",
       getTimeToCache: () => this.timeToCache,
       fetchMethod: async () => {
@@ -49,9 +49,9 @@ class ObjectIDtoNameCache extends ResultCacheWrapper<string> {
     });
   }
 
-  async getChampionshipName(id): Promise<string> {
+  async getChampionshipName(id: ObjectId | string): Promise<string> {
     return await this.getOrFetchValue({
-      id,
+      id: id.toString(),
       type: "Championship",
       getTimeToCache: () => this.timeToCache,
       fetchMethod: async () => {

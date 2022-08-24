@@ -41,6 +41,7 @@ export class ChallengeGenerator {
           mapData,
           challengeName: getChallengeName(),
         });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         mapID = (
           await addMapToDB({ url: mapPath, name: mapName, foodCount: foodCount, thumbnailPath })
         )._id as string;
@@ -58,6 +59,7 @@ export class ChallengeGenerator {
         dailyChallenge: true,
       };
       if (thumbnailPath) newChallenge.thumbnailURL = `https://antgame.io/assets/${thumbnailPath}`;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const newConfig = (await addNewConfig(newChallenge))._id as string;
       return newConfig;
     } catch (err) {

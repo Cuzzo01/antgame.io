@@ -18,7 +18,7 @@ export class ChampionshipController {
     try {
       const championshipID = req.params.id;
       const request = req.body as { challengeID: string };
-      const challengeID = request.challengeID;
+      const challengeID = TryParseObjectID(request.challengeID, championshipID);
 
       if (!challengeID) {
         send400(res, "ChallengeID required");

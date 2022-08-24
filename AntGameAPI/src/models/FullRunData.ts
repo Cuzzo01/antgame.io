@@ -15,7 +15,7 @@ export interface FullRunData {
     foodConsumed: number;
     seed: number;
     seedCreateDate: Date;
-    snapshots?: any;
+    snapshots?: unknown;
   };
   tags: RunTag[];
   IP?: string;

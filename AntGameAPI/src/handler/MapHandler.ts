@@ -1,7 +1,6 @@
+import { getMapByID } from "../dao/MapDao";
 import { MapData } from "../models/Maps/MapData";
 import { ResultCacheWrapper } from "./ResultCacheWrapper";
-
-const { getMapByID } = require("../dao/MapDao");
 
 export class MapHandler {
   private static cache: MapCache;

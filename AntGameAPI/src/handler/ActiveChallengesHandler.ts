@@ -73,7 +73,9 @@ class ActiveChallengesCache extends ResultCacheWrapper<
         )) as FullChallengeConfig;
 
         let championshipID = todaysChallengeDetails.championshipID;
-        let leaderboard = await LeaderboardCache.getRawChampionshipLeaderboard(championshipID);
+        let leaderboard = await LeaderboardCache.getRawChampionshipLeaderboard(
+          championshipID.toString()
+        );
 
         if (!leaderboard.length) {
           const yesterdaysChallengeID = await DailyChallengeCache.getYesterdaysDailyChallenge();
@@ -82,7 +84,9 @@ class ActiveChallengesCache extends ResultCacheWrapper<
           )) as FullChallengeConfig;
           championshipID = yesterdaysChallengeDetails.championshipID;
 
-          leaderboard = await LeaderboardCache.getRawChampionshipLeaderboard(championshipID);
+          leaderboard = await LeaderboardCache.getRawChampionshipLeaderboard(
+            championshipID.toString()
+          );
         }
 
         const leaderboardCopy = [...leaderboard];
@@ -90,7 +94,7 @@ class ActiveChallengesCache extends ResultCacheWrapper<
         await populateLeaderboardNames(leaderboardCopy);
 
         return {
-          id: championshipID,
+          id: championshipID.toString(),
           leaderboard: leaderboardCopy,
           name: await ObjectIDToNameCache.getChampionshipName(championshipID),
         };

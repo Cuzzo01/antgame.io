@@ -27,7 +27,7 @@ export class ServiceController {
 
       res.sendStatus(200);
     } catch (e) {
-      Logger.logError("ServiceController.dumpActiveChallengesCache", e);
+      Logger.logError("ServiceController.dumpActiveChallengesCache", e as Error);
       res.sendStatus(500);
     }
   }
@@ -46,7 +46,7 @@ export class ServiceController {
 
       res.sendStatus(200);
     } catch (e) {
-      Logger.logError("ServiceController.dumpActiveChallengesCache", e);
+      Logger.logError("ServiceController.dumpActiveChallengesCache", e as Error);
       res.sendStatus(500);
     }
   }
@@ -62,7 +62,7 @@ export class ServiceController {
       await addSolutionImageToRun({ runID, imagePath });
       res.sendStatus(200);
     } catch (e) {
-      Logger.logError("ServiceController.dumpActiveChallengesCache", e);
+      Logger.logError("ServiceController.dumpActiveChallengesCache", e as Error);
       res.sendStatus(500);
     }
   }

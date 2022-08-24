@@ -12,6 +12,7 @@ import { ChampionshipOrchestrator } from "./ChampionshipOrchestrator";
 import { FlagHandler } from "../handler/FlagHandler";
 
 import { RunData } from "../models/RunData";
+import { ObjectId } from "mongodb";
 
 const Logger = LoggerProvider.getInstance();
 const ActiveChallengesCache = ActiveChallengesHandler.getCache();
@@ -26,12 +27,12 @@ export const handleDailyChallengeChange = async () => {
     }
     Logger.logCronMessage("starting daily challenge swap");
     const currentDailyChallengeList = (await getDailyChallengesInReverseOrder({ limit: 1 })) as {
-      _id: string;
+      _id: ObjectId;
       name: string;
       championshipID: string;
     }[];
     const currentDailyChallenge = currentDailyChallengeList[0];
-    Logger.logCronMessage(`current challenge is ${currentDailyChallenge._id}`);
+    Logger.logCronMessage(`current challenge is ${currentDailyChallenge._id.toString()}`);
 
     const newDailyChallengeID = await new ChallengeGenerator().generateDailyChallenge();
     Logger.logCronMessage(`new challenge generated : challengeID: ${newDailyChallengeID}`);
@@ -69,6 +70,7 @@ export const handleDailyChallengeChange = async () => {
           await ChampionshipOrchestrator.awardPointsForChallenge({ championshipID, challengeID });
           Logger.logCronMessage("awarded points for yesterdays challenge");
         } catch (e) {
+          Logger.logError("DailyChallengeCron", e as Error);
           Logger.logCronMessage(`Could not award points for challenge : ${e as string}`);
         }
       }
@@ -80,6 +82,7 @@ export const handleDailyChallengeChange = async () => {
         await updateConfigByID(challengeID, { solutionImage: solutionImagePath });
         Logger.logCronMessage(`Generated and set solution image`);
       } catch (e) {
+        Logger.logError("DailyChallengeCron", e as Error);
         Logger.logCronMessage(`Could not generate solution image : ${e as string}`);
       }
     } else {

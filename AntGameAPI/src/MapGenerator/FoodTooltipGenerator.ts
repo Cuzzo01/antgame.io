@@ -4,7 +4,7 @@ import { CountGroupSize, CountOnMap } from "./Helpers";
 export function GenerateFoodTooltips(mapData: string[][]): Tooltip[] {
   const foodCount = CountOnMap("f", mapData);
   const tooltips: Tooltip[] = [];
-  const seenList = [];
+  const seenList: string[] = [];
   for (let x = 0; x < mapData.length; x++) {
     for (let y = 0; y < mapData[x].length; y++) {
       if (mapData[x][y] === "f" && !seenList.includes(`${x}, ${y}`)) {

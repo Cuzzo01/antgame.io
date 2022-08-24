@@ -9,6 +9,7 @@ const SeedBroker = SeedBrokerProvider.getBroker();
 export class SeedController {
   static async getSeed(req: Request, res: Response) {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const homeLocations = req.body.homeLocations as number[][];
       const userID = (req.user as AuthToken).id;
 
@@ -22,7 +23,7 @@ export class SeedController {
 
       res.send({ seed });
     } catch (e) {
-      Logger.logError("SeedController.getSeed", e);
+      Logger.logError("SeedController.getSeed", e as Error);
       res.sendStatus(500);
     }
   }

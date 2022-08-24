@@ -1,4 +1,4 @@
 export interface RunTag {
   type: string;
-  metadata?: any;
+  metadata?: unknown;
 }

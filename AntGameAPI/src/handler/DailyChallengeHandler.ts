@@ -23,7 +23,8 @@ class DailyChallengeCache extends ResultCacheWrapper<ObjectId> {
       getTimeToCache: () => 3600,
       logFormatter: () => "",
       fetchMethod: async () => {
-        return (await getDailyChallengesInReverseOrder({ limit: 1 }))[0]._id;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        return (await getDailyChallengesInReverseOrder({ limit: 1 }))[0]._id as ObjectId;
       },
     });
   }
@@ -34,7 +35,8 @@ class DailyChallengeCache extends ResultCacheWrapper<ObjectId> {
       getTimeToCache: () => 3600,
       logFormatter: () => "",
       fetchMethod: async () => {
-        return (await getDailyChallengesInReverseOrder({ limit: 1, skip: 1 }))[0]._id;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        return (await getDailyChallengesInReverseOrder({ limit: 1, skip: 1 }))[0]._id as ObjectId;
       },
     });
   }

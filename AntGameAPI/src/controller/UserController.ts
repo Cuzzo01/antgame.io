@@ -28,7 +28,7 @@ export class UserController {
 
       res.send(badgeResponse);
     } catch (e) {
-      Logger.logError("UserController.getUserBadges", e);
+      Logger.logError("UserController.getUserBadges", e as Error);
       res.send(500);
     }
   }

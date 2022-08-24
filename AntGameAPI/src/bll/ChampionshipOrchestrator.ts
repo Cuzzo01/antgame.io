@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { updateConfigByID } from "../dao/AdminDao";
 import { addChampionshipIDToConfig, getChallengeByChallengeId } from "../dao/ChallengeDao";
 import {
@@ -45,13 +46,13 @@ export class ChampionshipOrchestrator {
   static async generateDailyChampionship() {
     const date = new Date();
     const name = `${TimeHelper.getShortMonthName(date)} ${date.getFullYear()}`;
-    return (await createNewChampionship({ name, pointsMap })) as string;
+    return (await createNewChampionship({ name, pointsMap })) as ObjectId;
   }
 
   static async getCurrentDailyChampionship() {
     const date = new Date();
     const name = `${TimeHelper.getShortMonthName(date)} ${date.getFullYear()}`;
-    return (await getChampionshipIDByName(name)) as string;
+    return (await getChampionshipIDByName(name)) as ObjectId;
   }
 
   static async addConfigToChampionship(championshipID, configID) {
@@ -66,10 +67,10 @@ export class ChampionshipOrchestrator {
       date.setFullYear(date.getFullYear() - 1);
     } else date.setMonth(date.getMonth() - 1);
     const name = `${TimeHelper.getShortMonthName(date)} ${date.getFullYear()}`;
-    return (await getChampionshipIDByName(name)) as string;
+    return (await getChampionshipIDByName(name)) as ObjectId;
   }
 
-  static async awardPointsForChallenge(p: { championshipID: string; challengeID: string }) {
+  static async awardPointsForChallenge(p: { championshipID: string; challengeID: ObjectId }) {
     const challengeConfig = (await getChallengeByChallengeId(p.challengeID)) as FullChallengeConfig;
     const championshipDetails = (await getChampionshipDetailsFromDB(
       p.championshipID
@@ -77,14 +78,14 @@ export class ChampionshipOrchestrator {
     if (challengeConfig.active !== false) {
       throw "Challenge is active";
     }
-    if (challengeConfig.championshipID !== p.championshipID) {
+    if (challengeConfig.championshipID.equals(p.championshipID)) {
       throw "ChampionshipID mismatch";
     }
     if (challengeConfig.pointsAwarded !== undefined) {
       throw "Points already awarded";
     }
 
-    const playerCount = await LeaderboardCache.getChallengePlayerCount(p.challengeID);
+    const playerCount = await LeaderboardCache.getChallengePlayerCount(p.challengeID.toString());
     if (playerCount === 0) {
       throw "Challenge has no users";
     }
