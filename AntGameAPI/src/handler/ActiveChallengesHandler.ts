@@ -16,7 +16,7 @@ import { SkinnyChallengeConfig } from "../models/SkinnyChallengeConfig";
 import { ActiveChallengeData } from "../models/Handlers/ActiveChallengeData";
 import { RecordDetails } from "../models/RecordDetails";
 import { ChampionshipData, DailyData } from "../models/ActiveChallengeResponse";
-import { TimeHelper } from "../helpers/TimeHelper";
+import { TimeHelper } from "../helpers/TimeHelperTS";
 
 const DailyChallengeCache = DailyChallengeHandler.getCache();
 const LeaderboardCache = LeaderboardHandler.getCache();

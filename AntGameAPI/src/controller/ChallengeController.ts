@@ -57,7 +57,7 @@ import { TryParseObjectID } from "../dao/helpers";
 import { Records, RecordsEntry } from "../models/ActiveChallengeResponse";
 import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandler";
 import { RejectIfAnon } from "../auth/AuthHelpers";
-import { TimeHelper } from "../helpers/TimeHelper";
+import { TimeHelper } from "../helpers/TimeHelperTS";
 
 const Logger = LoggerProvider.getInstance();
 const FlagCache = FlagHandler.getCache();

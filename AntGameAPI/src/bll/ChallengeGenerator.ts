@@ -9,7 +9,7 @@ import { addNewConfig } from "../dao/AdminDao";
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { MapData } from "../models/Maps/MapData";
 import { addMapToDB, getMapByName } from "../dao/MapDao";
-import { TimeHelper } from "../helpers/TimeHelper";
+import { TimeHelper } from "../helpers/TimeHelperTS";
 
 const Logger = LoggerProvider.getInstance();
 const SpacesService = SpacesServiceProvider.getService();

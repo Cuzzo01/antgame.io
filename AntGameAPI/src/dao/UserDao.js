@@ -193,7 +193,7 @@ const getPlayerCountByChallengeID = async id => {
   const collection = await getCollection("users");
   const result = await collection
     .find({ "challengeDetails.ID": challengeObjectID, showOnLeaderboard: true })
-    .count();
+    .countDocuments();
 
   return result;
 };

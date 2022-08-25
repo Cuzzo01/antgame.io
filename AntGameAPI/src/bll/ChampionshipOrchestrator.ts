@@ -15,7 +15,7 @@ import { addBadgeToUser, getLeaderboardByChallengeId } from "../dao/UserDao";
 import { LeaderboardHandler } from "../handler/LeaderboardHandler";
 import { UserHandler } from "../handler/UserHandler";
 import { BadgeDataGenerator } from "../helpers/BadgeDataGenerator";
-import { TimeHelper } from "../helpers/TimeHelper";
+import { TimeHelper } from "../helpers/TimeHelperTS";
 
 import { ChampionshipDetails } from "../models/ChampionshipDetails";
 import { FullChallengeConfig } from "../models/FullChallengeConfig";

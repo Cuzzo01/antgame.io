@@ -1,6 +1,6 @@
 import { DailyChallengeHandler } from "../handler/DailyChallengeHandler";
 import { LeaderboardHandler } from "../handler/LeaderboardHandler";
-import { TimeHelper } from "./TimeHelper";
+import { TimeHelper } from "./TimeHelperTS";
 
 import { ChallengeLeaderboardData } from "../models/ChallengeLeaderboardData";
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
