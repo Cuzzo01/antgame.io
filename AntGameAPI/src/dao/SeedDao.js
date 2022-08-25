@@ -33,6 +33,6 @@ const getOutstandingSeedCount = async ({ userID }) => {
   const userObjectId = TryParseObjectID(userID, "UserID", "SeedDao");
 
   const collection = await getCollection("seeds");
-  return await collection.find({ userID: userObjectId }).countDocuments();
+  return await collection.countDocuments({ userID: userObjectId });
 };
 module.exports = { saveSeed, getSeedData, deleteSeed, getOutstandingSeedCount };

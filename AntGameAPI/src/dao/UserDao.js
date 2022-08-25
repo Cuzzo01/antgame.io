@@ -191,9 +191,10 @@ const getPlayerCountByChallengeID = async id => {
   const challengeObjectID = TryParseObjectID(id, "ChallengeID", "UserDao");
 
   const collection = await getCollection("users");
-  const result = await collection
-    .find({ "challengeDetails.ID": challengeObjectID, showOnLeaderboard: true })
-    .countDocuments();
+  const result = await collection.countDocuments({
+    "challengeDetails.ID": challengeObjectID,
+    showOnLeaderboard: true,
+  });
 
   return result;
 };
