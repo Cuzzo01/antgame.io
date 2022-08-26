@@ -74,7 +74,7 @@ const updateConfigByID = async (id, updateObject) => {
 const addNewConfig = async config => {
   const collection = await getCollection("configs");
   const result = await collection.insertOne(config);
-  return result.ops[0];
+  return result.insertedId;
 };
 //#endregion Configs
 

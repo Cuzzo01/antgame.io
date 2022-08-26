@@ -46,7 +46,7 @@ const saveNewUser = async userObject => {
   };
   if (userObject.email.length > 0) newUser.email = userObject.email;
   const result = await collection.insertOne(newUser);
-  return result.ops[0];
+  return result.insertedId;
 };
 
 const logLogin = async (userID, IPAddress, clientID) => {

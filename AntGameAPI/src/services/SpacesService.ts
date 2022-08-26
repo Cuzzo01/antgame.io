@@ -48,7 +48,7 @@ class SpacesService {
     });
   }
 
-  async uploadDailyMap(mapName: string, mapFile: object) {
+  async uploadDailyMap(mapName: string, mapFile: object): Promise<string> {
     let fileName = `dailyMaps/${mapName}_${getCacheString()}.json`;
     if (process.env.environment !== "PROD") fileName = "dev/" + fileName;
     await this.uploadFile(fileName, JSON.stringify(mapFile), "application/json");

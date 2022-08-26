@@ -44,49 +44,53 @@ export const JwtResultHandler = function (
 };
 
 export const TokenVerifier = async function (req: Request, res: Response, next: NextFunction) {
-  if (!req.user) {
+  try {
+    if (!req.user) {
+      next();
+      return;
+    }
+
+    const user = req.user as AuthToken;
+
+    if (!user.anon) {
+      const userID = user.id;
+      const adminToken = user.admin === true;
+      const tokenIssuedAt = user.iat;
+      const clientID = user.clientID;
+      const TokenIsValid = await TokenRevokedCache.isTokenValid(userID, adminToken, tokenIssuedAt);
+
+      setAttributes({ userID, clientID, username: await ObjectIDToNameCache.getUsername(userID) });
+
+      if (TokenIsValid === false) {
+        Logger.logAuthEvent({
+          event: "invalid token received",
+          userID,
+          adminToken,
+          username: user.username,
+        });
+        res.sendStatus(401);
+        return;
+      }
+    } else {
+      const AllowAnon = await FlagCache.getBoolFlag("allow-anon-logins");
+      if (!AllowAnon) {
+        Logger.logAuthEvent({ event: "received anon token when not allowed" });
+        res.sendStatus(401);
+        return;
+      }
+    }
+
+    if (user.admin !== true) {
+      const LoginsEnabled = await TokenRevokedCache.AreLoginsEnabled();
+      if (!LoginsEnabled) {
+        res.sendStatus(401);
+        return;
+      }
+    }
     next();
-    return;
+  } catch (e) {
+    Logger.logError("TokenVerifier", e as Error);
   }
-
-  const user = req.user as AuthToken;
-
-  if (!user.anon) {
-    const userID = user.id;
-    const adminToken = user.admin === true;
-    const tokenIssuedAt = user.iat;
-    const clientID = user.clientID;
-    const TokenIsValid = await TokenRevokedCache.isTokenValid(userID, adminToken, tokenIssuedAt);
-
-    setAttributes({ userID, clientID, username: await ObjectIDToNameCache.getUsername(userID) });
-
-    if (TokenIsValid === false) {
-      Logger.logAuthEvent({
-        event: "invalid token received",
-        userID,
-        adminToken,
-        username: user.username,
-      });
-      res.sendStatus(401);
-      return;
-    }
-  } else {
-    const AllowAnon = await FlagCache.getBoolFlag("allow-anon-logins");
-    if (!AllowAnon) {
-      Logger.logAuthEvent({ event: "received anon token when not allowed" });
-      res.sendStatus(401);
-      return;
-    }
-  }
-
-  if (user.admin !== true) {
-    const LoginsEnabled = await TokenRevokedCache.AreLoginsEnabled();
-    if (!LoginsEnabled) {
-      res.sendStatus(401);
-      return;
-    }
-  }
-  next();
 };
 
 export const ResponseLogger = function (req: Request, res: Response, time: number) {

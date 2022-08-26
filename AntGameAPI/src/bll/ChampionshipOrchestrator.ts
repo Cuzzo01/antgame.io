@@ -78,7 +78,7 @@ export class ChampionshipOrchestrator {
     if (challengeConfig.active !== false) {
       throw "Challenge is active";
     }
-    if (challengeConfig.championshipID.equals(p.championshipID)) {
+    if (!challengeConfig.championshipID.equals(p.championshipID)) {
       throw "ChampionshipID mismatch";
     }
     if (challengeConfig.pointsAwarded !== undefined) {

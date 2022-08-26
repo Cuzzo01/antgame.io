@@ -9,7 +9,7 @@ const getCollection = async collection => {
 const addMapToDB = async ({ url, name, foodCount, thumbnailPath }) => {
   const collection = await getCollection("maps");
   const result = await collection.insertOne({ url, name, foodCount, thumbnailPath });
-  return result.ops[0];
+  return result.insertedId;
 };
 
 const getMapByID = async ({ mapID }) => {

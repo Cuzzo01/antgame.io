@@ -1,5 +1,7 @@
+import { ObjectId } from "mongodb";
+
 export interface MapData {
-  _id?: string;
+  _id?: ObjectId;
   url: string;
   name: string;
   foodCount: number;

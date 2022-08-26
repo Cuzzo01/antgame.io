@@ -6,7 +6,7 @@ export interface FullChallengeConfig {
   _id?: ObjectId;
   id?: string;
   mapPath?: string;
-  mapID: string;
+  mapID: ObjectId;
   seconds: number;
   homeLimit: number;
   name: string;

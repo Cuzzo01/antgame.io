@@ -32,7 +32,7 @@ export const GenerateSolutionImage = async (p: { runID: string; foodEaten?: numb
 
   let mapPath = "";
   if (mapID) {
-    mapPath = (await MapCache.getMapData({ mapID })).url;
+    mapPath = (await MapCache.getMapData({ mapID: mapID.toString() })).url;
     mapPath = `https://antgame.io/assets/${mapPath}`;
   } else mapPath = configMapPath;
   const mapObject = await axios

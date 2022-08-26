@@ -13,7 +13,8 @@
     "start": "node ./dist/app.js",
     "tsc": "tsc",
     "postinstall": "npm run tsc",
-    "dev": "ts-node-dev --respawn --transpile-only src/app.ts"
+    "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
+    "build": "npm run lint && npm run tsc"
   },
   "author": "",
   "license": "ISC",

@@ -175,7 +175,7 @@ export class AuthController {
       }
 
       const hashedPassword = await PasswordHandler.generatePasswordHash(password);
-      const user = (await saveNewUser({
+      await saveNewUser({
         username: username,
         passHash: hashedPassword,
         admin: false,
@@ -187,12 +187,12 @@ export class AuthController {
           IP: clientIP,
           date: new Date(),
         },
-      })) as AuthDetails;
-
+      });
       Logger.logAuthEvent({ event: "registered new user", username, ip: clientIP, clientID });
 
+      const user = (await getAuthDetailsByUsername(username)) as AuthDetails;
       const tokenObject: AuthToken = {
-        id: user._id,
+        id: user.id,
         username: user.username,
         admin: user.admin,
         clientID: clientID,

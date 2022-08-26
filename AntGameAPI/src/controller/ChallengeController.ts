@@ -109,7 +109,7 @@ export class ChallengeController {
       try {
         let mapPath: string;
         if (challengeConfig.mapID)
-          mapPath = (await MapCache.getMapData({ mapID: challengeConfig.mapID })).url;
+          mapPath = (await MapCache.getMapData({ mapID: challengeConfig.mapID.toString() })).url;
 
         verificationResult = VerifyArtifact({
           runData,

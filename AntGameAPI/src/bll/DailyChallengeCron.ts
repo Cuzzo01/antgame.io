@@ -35,10 +35,11 @@ export const handleDailyChallengeChange = async () => {
     Logger.logCronMessage(`current challenge is ${currentDailyChallenge._id.toString()}`);
 
     const newDailyChallengeID = await new ChallengeGenerator().generateDailyChallenge();
-    Logger.logCronMessage(`new challenge generated : challengeID: ${newDailyChallengeID}`);
-
     let shouldAwardBadges = false;
     if (newDailyChallengeID) {
+      Logger.logCronMessage(
+        `new challenge generated : challengeID: ${newDailyChallengeID.toString()}`
+      );
       await updateConfigByID(newDailyChallengeID, { active: true });
       DailyChallengeCache.clearCache();
       ActiveChallengesCache.unsetItem();
@@ -57,6 +58,8 @@ export const handleDailyChallengeChange = async () => {
         );
         Logger.logCronMessage("bound new config to the current championship");
       }
+    } else {
+      Logger.logCronMessage("Failed to generate new daily challenge");
     }
 
     if (currentDailyChallenge) {
@@ -78,12 +81,16 @@ export const handleDailyChallengeChange = async () => {
       try {
         const wrRun = await getRecordByChallenge(challengeID);
         const wrRunData = (await getRunDataByRunId(wrRun.runId)) as RunData;
-        const solutionImagePath = wrRunData.solutionImage;
-        await updateConfigByID(challengeID, { solutionImage: solutionImagePath });
-        Logger.logCronMessage(`Generated and set solution image`);
+        if (wrRunData?.solutionImage) {
+          const solutionImagePath = wrRunData.solutionImage;
+          await updateConfigByID(challengeID, { solutionImage: solutionImagePath });
+          Logger.logCronMessage(`Set solution image path`);
+        } else {
+          Logger.logCronMessage("WR run had no solution image");
+        }
       } catch (e) {
         Logger.logError("DailyChallengeCron", e as Error);
-        Logger.logCronMessage(`Could not generate solution image : ${e as string}`);
+        Logger.logCronMessage(`Could not set solution image : ${e as string}`);
       }
     } else {
       Logger.logCronMessage("skipping setting old map inactive");

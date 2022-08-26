@@ -170,8 +170,8 @@ export class AdminController {
         active: false,
       };
 
-      const result = await addNewConfig(newConfig);
-      res.send(result._id);
+      const resultID = await addNewConfig(newConfig);
+      res.send(resultID);
     } catch (e) {
       Logger.logError("AdminController.postConfig", e as Error);
       res.sendStatus(500);
