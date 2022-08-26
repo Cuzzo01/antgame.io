@@ -7,9 +7,15 @@
   "description": "AntGame backend",
   "main": "app.js",
   "scripts": {
-    "prettier": "prettier --write . --print-width 100 --arrow-parens avoid",
+    "prettier": "prettier --write ./src --print-width 100 --arrow-parens avoid",
+    "prettierCheck": "prettier --check ./src --print-width 100 --arrow-parens avoid",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "eslint": "eslint . --max-warnings=0"
+    "lint": "eslint . --max-warnings=0",
+    "start": "node ./dist/app.js",
+    "tsc": "tsc",
+    "postinstall": "npm run tsc",
+    "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
+    "build": "npm run lint && npm run prettierCheck && npm run tsc"
   },
   "author": "",
   "license": "ISC",
@@ -27,7 +33,7 @@
     "express-rate-limit": "^6.2.0",
     "jsonwebtoken": "^8.5.1",
     "logzio-nodejs": "^2.0.3",
-    "mongodb": "^3.6.9",
+    "mongodb": "^4.9.0",
     "node-schedule": "^2.1.0",
     "prettier": "^2.3.2",
     "pureimage": "^0.3.8",
@@ -36,7 +42,21 @@
     "the-big-username-blacklist": "^1.5.2"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.13",
+    "@types/express-jwt": "^6.0.4",
+    "@types/jest": "^28.1.6",
+    "@types/jsonwebtoken": "^8.5.8",
+    "@types/node": "^18.7.3",
+    "@types/node-schedule": "^2.1.0",
+    "@types/response-time": "^2.3.5",
+    "@typescript-eslint/eslint-plugin": "^5.33.0",
+    "@typescript-eslint/parser": "^5.33.0",
     "dotenv": "^10.0.0",
-    "eslint": "^8.7.0"
+    "eslint": "^8.7.0",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.7.4"
   }
 }
