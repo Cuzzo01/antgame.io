@@ -14,11 +14,6 @@ jobs:
 
     runs-on: ubuntu-latest
     
-    defaults:
-      run:
-        working-directory: ./AntGameAPI
-
-
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js 16.x
@@ -26,5 +21,8 @@ jobs:
       with:
         node-version: 16.x
         cache: 'npm'
+        
     - run: npm ci
+      working-directory: AntGameAPI
     - run: npm run build
+      working-directory: AntGameAPI
