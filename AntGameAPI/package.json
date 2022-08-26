@@ -13,7 +13,6 @@
     "lint": "eslint . --max-warnings=0",
     "start": "node ./dist/app.js",
     "tsc": "tsc",
-    "postinstall": "npm run tsc",
     "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
     "build": "npm run lint && npm run prettierCheck && npm run tsc"
   },
