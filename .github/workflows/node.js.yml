@@ -21,6 +21,7 @@ jobs:
       with:
         node-version: 16.x
         cache: 'npm'
+        cache-dependency-path: AntGameAPI/package-lock.json
         
     - run: npm ci
       working-directory: AntGameAPI
