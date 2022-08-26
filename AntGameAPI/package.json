@@ -8,13 +8,14 @@
   "main": "app.js",
   "scripts": {
     "prettier": "prettier --write ./src --print-width 100 --arrow-parens avoid",
+    "prettierCheck": "prettier --check ./src --print-width 100 --arrow-parens avoid",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --max-warnings=0",
     "start": "node ./dist/app.js",
     "tsc": "tsc",
     "postinstall": "npm run tsc",
     "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
-    "build": "npm run lint && npm run tsc"
+    "build": "npm run lint && npm run prettierCheck && npm run tsc"
   },
   "author": "",
   "license": "ISC",
