@@ -1,4 +1,4 @@
-import { ObjectID } from "bson";
+import { ObjectId } from "mongodb";
 
 export class TimeHelper {
   static getGeneralizedTimeString(milliseconds: number): string {
@@ -14,14 +14,14 @@ export class TimeHelper {
     return `${Math.floor(weeks)}w`;
   }
 
-  static getGeneralizedTimeStringFromObjectID(objectID: ObjectID): string {
+  static getGeneralizedTimeStringFromObjectID(objectID: ObjectId): string {
     const recordTime = objectID.getTimestamp();
     const timeDelta = new Date().getTime() - recordTime.getTime();
     const timeString = TimeHelper.getGeneralizedTimeString(timeDelta);
     return timeString;
   }
 
-  static getTimeStringForDailyChallenge(objectID: ObjectID): string {
+  static getTimeStringForDailyChallenge(objectID: ObjectId): string {
     const recordTime = objectID.getTimestamp();
 
     const nextNoon = new Date(recordTime);
@@ -75,5 +75,12 @@ export class TimeHelper {
         break;
     }
     return month;
+  }
+
+  static getJoinDateDisplay(joinDate: Date) {
+    const month = this.getShortMonthName(joinDate);
+    const year = joinDate.getFullYear();
+
+    return `${month} ${year}`;
   }
 }

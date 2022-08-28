@@ -132,6 +132,7 @@ app.get("/public/challengeLeaderboard/:id", PublicController.getChallengeLeaderb
 app.get("/public/dailyList", PublicController.getDailyChallenges);
 app.get("/public/gsgp", PublicController.getGsgpData);
 app.get("/public/badges/:id", PublicController.getUserBadges);
+app.get("/public/user/:username", PublicController.getUserInfo);
 
 app.post("/seed", getSeedLimiter, SeedController.getSeed);
 
