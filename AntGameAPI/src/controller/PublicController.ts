@@ -178,7 +178,7 @@ export class PublicController {
     try {
       const username = req.params.username;
 
-      const userDetails = await UserCache.getInfo(username);
+      const userDetails = await UserCache.getInfo(username.toLowerCase());
 
       userDetails.username = await ObjectIDToNameCache.getUsername(userDetails.id);
 

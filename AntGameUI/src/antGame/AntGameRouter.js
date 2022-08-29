@@ -8,6 +8,7 @@ import ErrorPage from "./ErrorPage/ErrorPage";
 import UserBar from "./UserBar/UserBar";
 import ChallengeList from "./Challenge/List/ChallengeList";
 import MOTD from "./MOTD/Motd";
+import { UserPage } from "./User/UserPage/UserPage";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
@@ -71,6 +72,10 @@ const AntGameRouter = () => {
                       <ChampionshipDetails />
                       <UserBar />
                     </Route>
+                    <Route exact path="/user/:username">
+                      <UserPageRoute />
+                      <UserBar />
+                    </Route>
                     <Route path="/">
                       <Redirect to="/" />
                     </Route>
@@ -118,5 +123,12 @@ const LoadMapFromParams = () => {
     );
   return <Redirect to="/" />;
 };
+
+const UserPageRoute = () => {
+  let {username} = useParams();
+  return (
+    <UserPage username={username} />
+  )
+}
 
 export default AntGameRouter;
