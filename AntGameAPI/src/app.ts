@@ -125,10 +125,10 @@ app.get("/challenge/:id/records", ChallengeController.getRecords);
 app.get("/challenge/:id", ChallengeController.getChallenge);
 app.get("/challenge/:id/pr", ChallengeController.getPRHomeLocations);
 app.get("/challenges/active", ChallengeController.getActiveChallenges);
-app.get("/challenge/:id/leaderboard", ChallengeController.getLeaderboard);
+app.get("/challenge/:id/leaderboard/:page", ChallengeController.getLeaderboard);
 
 app.get("/public/activeChallenges", PublicController.getActiveChallenges);
-app.get("/public/challengeLeaderboard/:id", PublicController.getChallengeLeaderboard);
+app.get("/public/challengeLeaderboard/:id/:page", PublicController.getChallengeLeaderboard);
 app.get("/public/dailyList", PublicController.getDailyChallenges);
 app.get("/public/gsgp", PublicController.getGsgpData);
 app.get("/public/badges/:id", PublicController.getUserBadges);

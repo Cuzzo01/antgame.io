@@ -12,22 +12,25 @@ const DailyChallengeCache = DailyChallengeHandler.getCache();
 const LeaderboardCache = LeaderboardHandler.getCache();
 const FlagCache = FlagHandler.getCache();
 
-export const GenerateChallengeLeaderboardData = async (params: { challengeID: string }) => {
+export const GenerateChallengeLeaderboardData = async (challengeID: string, page = 1) => {
   const currentDaily = await DailyChallengeCache.getActiveDailyChallenge();
-  const getCurrentDaily = params.challengeID.toLowerCase() === "daily";
-  if (getCurrentDaily) params.challengeID = currentDaily.toString();
+  const getCurrentDaily = challengeID.toLowerCase() === "daily";
+  if (getCurrentDaily) challengeID = currentDaily.toString();
 
-  const rawLeaderboardRows = await LeaderboardCache.getChallengeLeaderboard(params.challengeID);
+  let rawLeaderboardRows = await LeaderboardCache.getRawChallengeLeaderboard(challengeID);
+  const pageLength = await FlagCache.getIntFlag("leaderboard-length");
+  const startIndex = pageLength * (page - 1);
+  rawLeaderboardRows = rawLeaderboardRows.slice(startIndex, startIndex + pageLength);
 
   if (!rawLeaderboardRows || rawLeaderboardRows.length === 0) {
     return false;
   }
 
-  const details = (await getChallengeByChallengeId(params.challengeID)) as FullChallengeConfig;
+  const details = (await getChallengeByChallengeId(challengeID)) as FullChallengeConfig;
   const isDaily = details.dailyChallenge === true;
 
   const leaderboardRows: LeaderboardEntry[] = [];
-  const isCurrentDaily = getCurrentDaily || currentDaily.equals(params.challengeID);
+  const isCurrentDaily = getCurrentDaily || currentDaily.equals(challengeID);
   for (let i = 0; i < rawLeaderboardRows.length; i++) {
     const entry = rawLeaderboardRows[i];
     const timeString =
@@ -37,7 +40,7 @@ export const GenerateChallengeLeaderboardData = async (params: { challengeID: st
 
     leaderboardRows.push({
       id: entry._id.toString(),
-      rank: i + 1,
+      rank: startIndex + i + 1,
       username: entry.username,
       pb: entry.pb,
       age: timeString,
@@ -55,7 +58,7 @@ export const GenerateChallengeLeaderboardData = async (params: { challengeID: st
 
   let playerCount: number;
   if (await FlagCache.getBoolFlag("show-player-count-on-leaderboard"))
-    playerCount = await LeaderboardCache.getChallengePlayerCount(params.challengeID);
+    playerCount = await LeaderboardCache.getChallengePlayerCount(challengeID);
 
   return { leaderboardRows, solutionImgPath, isDaily, playerCount } as ChallengeLeaderboardData;
 };
