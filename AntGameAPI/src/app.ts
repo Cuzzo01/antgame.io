@@ -35,6 +35,7 @@ import { initializeScheduledTasks } from "./bll/TaskScheduler";
 import { FlagController } from "./controller/FlagController";
 import { ChallengeController } from "./controller/ChallengeController";
 import { AdminController } from "./controller/AdminController";
+import { RunHistoryController } from "./controller/RunHistoryController";
 
 const app = express();
 const port = 8080;
@@ -140,6 +141,8 @@ app.get("/championship/:id", ChampionshipController.getLeaderboard);
 app.post("/badges", UserController.getUserBadges);
 
 app.post("/report/spaces", ReportController.reportSpacesData);
+
+app.post("/runs", RunHistoryController.getLastRuns);
 
 app.get("/health", (_: Request, res: Response) => {
   res.sendStatus(200);
