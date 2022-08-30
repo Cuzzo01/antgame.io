@@ -13,7 +13,10 @@ export class SeedController {
       const homeLocations = req.body.homeLocations as number[][];
       const userID = (req.user as AuthToken).id;
 
-      if (homeLocations.length === 0) res.sendStatus(400);
+      if (!homeLocations || homeLocations.length === 0) {
+        res.sendStatus(400);
+        return;
+      }
 
       const { seed, success } = await SeedBroker.getSeed({ homeLocations, userID });
       if (!success) {
