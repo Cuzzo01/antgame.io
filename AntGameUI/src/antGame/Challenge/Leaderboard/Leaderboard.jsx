@@ -18,6 +18,8 @@ const Leaderboard = props => {
   const [playerCount, setPlayerCount] = useState(false);
   const [isDaily, setIsDaily] = useState(false);
   const [solutionImagePath, setSolutionImagePath] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [morePages, setMorePages] = useState(false);
 
   const setError = useCallback(() => {
     setRunData(<h5>No records for this challenge</h5>);
@@ -28,7 +30,7 @@ const Leaderboard = props => {
   }, []);
 
   const setLeaderboardData = useCallback(
-    ({ daily, leaderboard, name, playerCount, solutionImage }) => {
+    ({ daily, leaderboard, name, playerCount, solutionImage, pageLength }) => {
       const currentUsername = AuthHandler.username;
 
       if (solutionImage) setSolutionImagePath(solutionImage);
@@ -41,25 +43,32 @@ const Leaderboard = props => {
       let table = [];
       let lastRank = 0;
       leaderboard.forEach(data => {
-        if (data.rank !== lastRank + 1) {
-          table.push(<div className={styles.hr} />);
-        }
+        if (data.extra && table.length) table.push(<div className={styles.hr} />);
         lastRank = data.rank;
+        let rankLink, personalPage;
+        if (data.extra) {
+          personalPage = Math.floor(data.rank / (pageLength + 1)) + 1;
+          rankLink = data.extra ? () => setPageNumber(personalPage) : undefined;
+        }
         table.push(
           <LeaderboardRow
             ownRow={data.username === currentUsername}
-            key={data.username}
+            key={data.username + personalPage}
             rank={data.rank}
             name={data.username}
             id={data.id}
             pb={data.pb}
             age={data.age}
+            rankLink={rankLink}
           />
         );
+        if (data.extra && table.length === 1) table.push(<div className={styles.hr} key="hr" />);
       });
       setRunData(table);
       setTitle(name);
-      if (playerCount) setPlayerCount(playerCount);
+      setPlayerCount(playerCount);
+      setMorePages(lastRank !== playerCount);
+
       document.title = `${name} - Leaderboard`;
     },
     []
@@ -67,32 +76,37 @@ const Leaderboard = props => {
 
   const fetchLeaderboard = useCallback(
     ({ id }) => {
-      getLeaderboard(id).then(data => {
+      getLeaderboard(id, pageNumber).then(data => {
         if (data === null) setError();
         else setLeaderboardData(data);
         setLoading(false);
       });
     },
-    [setLeaderboardData, setError]
+    [setLeaderboardData, setError, pageNumber]
   );
 
   const fetchPublicLeaderboard = useCallback(
     ({ id }) => {
-      getPublicLeaderboard(id).then(data => {
-        if (data === null) setError();
+      getPublicLeaderboard(id, pageNumber).then(data => {
+        if (data === null && pageNumber !== 1) setPageNumber(1);
+        else if (data === null) setError();
         else setLeaderboardData(data);
         setLoading(false);
       });
     },
-    [setLeaderboardData, setError]
+    [setLeaderboardData, setError, pageNumber]
   );
+
+  const refreshLeaderboard = useCallback(() => {
+    if (!AuthHandler.loggedIn) fetchPublicLeaderboard({ id: challengeID });
+    else fetchLeaderboard({ id: challengeID });
+  }, [challengeID, fetchLeaderboard, fetchPublicLeaderboard]);
 
   useEffect(() => {
     if (window.location.pathname.includes("daily")) setIsDaily(true);
 
-    if (!AuthHandler.loggedIn) fetchPublicLeaderboard({ id: challengeID });
-    else fetchLeaderboard({ id: challengeID });
-  }, [challengeID, fetchLeaderboard, fetchPublicLeaderboard, history]);
+    refreshLeaderboard();
+  }, [history, refreshLeaderboard]);
 
   return loading ? null : (
     <div className={styles.container}>
@@ -119,6 +133,23 @@ const Leaderboard = props => {
         </div>
       </div>
       {runTable}
+      <div className={styles.pageNav}>
+        {pageNumber !== 1 ? (
+          <span className={styles.link} onClick={() => setPageNumber(pageNumber - 1)}>
+            &lt;&lt;
+          </span>
+        ) : (
+          <span>&nbsp;&nbsp;</span>
+        )}
+        <span>{pageNumber}</span>
+        {morePages ? (
+          <span className={styles.link} onClick={() => setPageNumber(pageNumber + 1)}>
+            &gt;&gt;
+          </span>
+        ) : (
+          <span>&nbsp;&nbsp;</span>
+        )}
+      </div>
       {playerCount ? (
         <div>
           <div className={styles.hr} />

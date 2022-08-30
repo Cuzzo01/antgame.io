@@ -64,9 +64,9 @@ export async function getRecords(challengeID) {
     });
 }
 
-export async function getLeaderboard(challengeID) {
+export async function getLeaderboard(challengeID, pageNumber) {
   return axios
-    .get(`/api/challenge/${challengeID}/leaderboard`)
+    .get(`/api/challenge/${challengeID}/leaderboard/${pageNumber}`)
     .then(res => {
       return res.data;
     })
@@ -76,9 +76,9 @@ export async function getLeaderboard(challengeID) {
     });
 }
 
-export async function getPublicLeaderboard(challengeID) {
+export async function getPublicLeaderboard(challengeID, pageNumber) {
   return axios
-    .get(`/api/public/challengeLeaderboard/${challengeID}`)
+    .get(`/api/public/challengeLeaderboard/${challengeID}/${pageNumber}`)
     .then(res => {
       return res.data;
     })

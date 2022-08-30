@@ -111,3 +111,9 @@
 .modalClose {
   padding: 0.25em 0.5em;
 }
+
+.link {
+  text-decoration: underline;
+  color: blue;
+  cursor: pointer;
+}
