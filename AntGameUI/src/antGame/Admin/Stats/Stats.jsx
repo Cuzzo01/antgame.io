@@ -3,12 +3,12 @@ import { getStats } from "../AdminService";
 import styles from "./Stats.module.css";
 import adminStyles from "../AdminStyles.module.css";
 
-const Stats = props => {
+const Stats = (props) => {
   const [stats, setStats] = useState(false);
 
   useEffect(() => {
     document.title = "Stats";
-    getStats().then(stats => {
+    getStats().then((stats) => {
       setStats(stats);
     });
   }, []);
@@ -22,7 +22,7 @@ const Stats = props => {
             <StatsDisplay data={stats} />
           </div>
           <div className={adminStyles.divSection}>
-            <CacheDisplay data={stats.cacheSizeStats} />
+            <CacheDisplay data={stats.serviceCounts} />
           </div>
         </div>
       ) : null}
@@ -54,28 +54,39 @@ const StatsDisplay = ({ data }) => {
 };
 
 const CacheDisplay = ({ data }) => {
+  const seedPercentage = data.seedsOutstanding / 1e8;
+
   return (
     <div>
-      <h5>Cache Sizes</h5>
+      <h5>Counts</h5>
       <span className={styles.cacheRow}>
-        <h6>TokenRevoked</h6>
+        <h6>TokenRevoked Cache</h6>
         <div className={adminStyles.rightAlign}>{data.token}</div>
       </span>
       <span className={styles.cacheRow}>
-        <h6>Flags</h6>
+        <h6>Flag Cache</h6>
         <div className={adminStyles.rightAlign}>{data.flag}</div>
       </span>
       <span className={styles.cacheRow}>
-        <h6>Leaderboard</h6>
+        <h6>Leaderboard Cache</h6>
         <div className={adminStyles.rightAlign}>{data.leaderboard}</div>
       </span>
       <span className={styles.cacheRow}>
-        <h6>ObjectIdToName</h6>
+        <h6>ObjectIdToName Cache</h6>
         <div className={adminStyles.rightAlign}>{data.objectIdToName}</div>
       </span>
       <span className={styles.cacheRow}>
-        <h6>User</h6>
+        <h6>User Cache</h6>
         <div className={adminStyles.rightAlign}>{data.user}</div>
+      </span>
+      <span className={styles.cacheRow}>
+        <h6>Outstanding Seeds</h6>
+        <div className={adminStyles.rightAlign}>
+          {seedPercentage > 0.01 ? (
+            <span>({data.seedsOutstanding / 1e8}%)&nbsp;</span>
+          ) : null}
+          {data.seedsOutstanding}
+        </div>
       </span>
     </div>
   );
@@ -83,16 +94,23 @@ const CacheDisplay = ({ data }) => {
 
 export default Stats;
 
-const getStatsRow = stats => {
+const getStatsRow = (stats) => {
   let statsRow = [];
   for (const [label, value] of Object.entries(stats)) {
-    statsRow.push(<StatCell key={label} label={label} value={value.value} delta={value.delta} />);
+    statsRow.push(
+      <StatCell
+        key={label}
+        label={label}
+        value={value.value}
+        delta={value.delta}
+      />
+    );
   }
 
   return statsRow;
 };
 
-const StatCell = props => {
+const StatCell = (props) => {
   const [value, setValue] = useState(props.value);
   const [delta, setDelta] = useState(props.delta);
 
@@ -103,13 +121,15 @@ const StatCell = props => {
 
   return (
     <div className={adminStyles.rightAlign}>
-      {delta ? <span className={getDeltaLabelClassString(delta)}>{delta}%&nbsp;</span> : null}
+      {delta ? (
+        <span className={getDeltaLabelClassString(delta)}>{delta}%&nbsp;</span>
+      ) : null}
       {props.label}:<span className={adminStyles.bold}>{value}</span>
     </div>
   );
 };
 
-const getDeltaLabelClassString = delta => {
+const getDeltaLabelClassString = (delta) => {
   let labelClassString = styles.deltaLabel;
   if (delta !== undefined)
     labelClassString += " " + (delta > 0 ? adminStyles.green : adminStyles.red);
