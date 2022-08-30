@@ -4,4 +4,5 @@ export interface LeaderboardEntry {
   pb: number;
   rank: number;
   username: string;
+  extra?: boolean;
 }

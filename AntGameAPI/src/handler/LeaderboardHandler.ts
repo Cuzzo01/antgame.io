@@ -57,6 +57,18 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
     })) as RawLeaderboardEntry[];
   }
 
+  async getRawChallengeLeaderboard(id: string): Promise<RawLeaderboardEntry[]> {
+    return (await this.getOrFetchValue({
+      id: `${id}-raw`,
+      type: "Raw challenge",
+      fetchMethod: async () => {
+        return (await getLeaderboardByChallengeId(id)) as RawLeaderboardEntry[];
+      },
+      getTimeToCache: this.getTimeToCache,
+      logFormatter: value => (Array.isArray(value) ? `Length: ${value.length}` : ""),
+    })) as RawLeaderboardEntry[];
+  }
+
   async getChampionshipLeaderboardData(id: string): Promise<ChampionshipResponse> {
     return (await this.getOrFetchValue({
       id,
@@ -92,18 +104,6 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
       type: "Raw championship",
       fetchMethod: async () => {
         return (await getLeaderboardByChampionshipID(id)) as RawLeaderboardEntry[];
-      },
-      getTimeToCache: this.getTimeToCache,
-      logFormatter: value => (Array.isArray(value) ? `Length: ${value.length}` : ""),
-    })) as RawLeaderboardEntry[];
-  }
-
-  async getRawChallengeLeaderboard(id: string): Promise<RawLeaderboardEntry[]> {
-    return (await this.getOrFetchValue({
-      id: `${id}-raw`,
-      type: "Raw challenge",
-      fetchMethod: async () => {
-        return (await getLeaderboardByChallengeId(id)) as RawLeaderboardEntry[];
       },
       getTimeToCache: this.getTimeToCache,
       logFormatter: value => (Array.isArray(value) ? `Length: ${value.length}` : ""),

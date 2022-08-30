@@ -58,6 +58,8 @@ import { Records, RecordsEntry } from "../models/ActiveChallengeResponse";
 import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandler";
 import { RejectIfAnon } from "../auth/AuthHelpers";
 import { TimeHelper } from "../helpers/TimeHelperTS";
+import { GenerateChallengeLeaderboardData } from "../helpers/LeaderboardHelper";
+import { LeaderboardEntry } from "../models/LeaderboardEntry";
 
 const Logger = LoggerProvider.getInstance();
 const FlagCache = FlagHandler.getCache();
@@ -468,45 +470,33 @@ export class ChallengeController {
     try {
       const user = req.user as AuthToken;
       let challengeID: string = req.params.id;
+      let page: number;
+      try {
+        page = parseInt(req.params.page);
+      } catch (e) {
+        res.sendStatus(400);
+        return;
+      }
 
       const currentDaily = await DailyChallengeCache.getActiveDailyChallenge();
       const getCurrentDaily = challengeID.toLowerCase() === "daily";
       if (getCurrentDaily) challengeID = currentDaily.toString();
 
-      const leaderBoardEntries = await LeaderboardCache.getChallengeLeaderboard(challengeID);
+      const leaderboardData = await GenerateChallengeLeaderboardData(challengeID, page);
 
-      if (leaderBoardEntries.length === 0) {
+      if (leaderboardData === false) {
         res.status(404);
-        res.send("Found no records for that challengeID");
+        res.send("Found no records for that challengeID and page");
         return;
       }
 
       const details = (await getChallengeByChallengeId(challengeID)) as FullChallengeConfig;
       const isDaily = details.dailyChallenge === true;
 
-      const leaderboardData = [];
-      let onLeaderboard = false;
+      const leaderboardRows = leaderboardData.leaderboardRows;
+      const onLeaderboard = leaderboardRows.find(r => r.id === user.id) !== undefined;
+
       const isCurrentDaily = getCurrentDaily || currentDaily.equals(challengeID);
-      for (let i = 0; i < leaderBoardEntries.length; i++) {
-        const entry = leaderBoardEntries[i];
-        const timeString =
-          isDaily && !isCurrentDaily
-            ? TimeHelper.getTimeStringForDailyChallenge(entry.runID)
-            : TimeHelper.getGeneralizedTimeStringFromObjectID(entry.runID) + " ago";
-
-        if (entry._id.equals(user.id)) {
-          onLeaderboard = true;
-        }
-
-        leaderboardData.push({
-          id: entry._id,
-          rank: i + 1,
-          username: entry.username,
-          pb: entry.pb,
-          age: timeString,
-        });
-      }
-
       if (!onLeaderboard) {
         const pr = (await getChallengeDetailsByUser(user.id, challengeID)) as {
           pb: number;
@@ -518,36 +508,22 @@ export class ChallengeController {
             user.id
           );
 
-          if (currentUserRank > leaderboardData.length + 1) {
-            const entryAbove = await LeaderboardCache.getLeaderboardEntryByRank(
-              challengeID,
-              currentUserRank - 1
-            );
-            const timeString =
-              isDaily && !isCurrentDaily
-                ? TimeHelper.getTimeStringForDailyChallenge(entryAbove.runID)
-                : TimeHelper.getGeneralizedTimeStringFromObjectID(entryAbove.runID) + " ago";
-            leaderboardData.push({
-              id: entryAbove._id,
-              rank: currentUserRank - 1,
-              username: entryAbove.username,
-              pb: entryAbove.pb,
-              age: timeString,
-            });
-          }
-
           const timeString =
             isDaily && !isCurrentDaily
               ? TimeHelper.getTimeStringForDailyChallenge(pr.pbRunID)
               : TimeHelper.getGeneralizedTimeStringFromObjectID(pr.pbRunID) + " ago";
 
-          leaderboardData.push({
+          const personalEntry: LeaderboardEntry = {
             id: user.id,
             rank: currentUserRank,
             username: user.username,
             pb: pr.pb,
             age: timeString,
-          });
+            extra: true,
+          };
+
+          if (currentUserRank < leaderboardRows[0].rank) leaderboardRows.unshift(personalEntry);
+          else leaderboardRows.push(personalEntry);
         }
       }
 
@@ -562,10 +538,11 @@ export class ChallengeController {
 
       const response = {
         name: await ObjectIDToNameCache.getChallengeName(challengeID),
-        leaderboard: leaderboardData,
+        leaderboard: leaderboardRows,
         daily: isDaily,
         solutionImage: solutionImgPath,
         playerCount: await LeaderboardCache.getChallengePlayerCount(challengeID),
+        pageLength: await FlagCache.getIntFlag("leaderboard-length"),
       };
 
       res.send(response);
