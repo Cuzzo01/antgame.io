@@ -16,19 +16,24 @@ const Stats = props => {
   return (
     <div>
       <h3>Stats</h3>
-      <div className={adminStyles.divSection}>
-        {stats !== false ? <StatsDisplay data={stats} /> : null}
-      </div>
+      {stats !== false ? (
+        <div>
+          <div className={adminStyles.divSection}>
+            <StatsDisplay data={stats} />
+          </div>
+          <div className={adminStyles.divSection}>
+            <CacheDisplay data={stats.cacheSizeStats} />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };
 
-const StatsDisplay = props => {
-  const stats = props.data;
-
-  const uniqueUserStats = getStatsRow(stats.uniqueUserStats);
-  const newAccountStats = getStatsRow(stats.newAccountStats);
-  const runCountStats = getStatsRow(stats.runCountStats);
+const StatsDisplay = ({ data }) => {
+  const uniqueUserStats = getStatsRow(data.uniqueUserStats);
+  const newAccountStats = getStatsRow(data.newAccountStats);
+  const runCountStats = getStatsRow(data.runCountStats);
 
   return (
     <div>
@@ -44,6 +49,34 @@ const StatsDisplay = props => {
         <h6>Runs Submitted</h6>
         {runCountStats}
       </div>
+    </div>
+  );
+};
+
+const CacheDisplay = ({ data }) => {
+  return (
+    <div>
+      <h5>Cache Sizes</h5>
+      <span className={styles.cacheRow}>
+        <h6>TokenRevoked</h6>
+        <div className={adminStyles.rightAlign}>{data.token}</div>
+      </span>
+      <span className={styles.cacheRow}>
+        <h6>Flags</h6>
+        <div className={adminStyles.rightAlign}>{data.flag}</div>
+      </span>
+      <span className={styles.cacheRow}>
+        <h6>Leaderboard</h6>
+        <div className={adminStyles.rightAlign}>{data.leaderboard}</div>
+      </span>
+      <span className={styles.cacheRow}>
+        <h6>ObjectIdToName</h6>
+        <div className={adminStyles.rightAlign}>{data.objectIdToName}</div>
+      </span>
+      <span className={styles.cacheRow}>
+        <h6>User</h6>
+        <div className={adminStyles.rightAlign}>{data.user}</div>
+      </span>
     </div>
   );
 };

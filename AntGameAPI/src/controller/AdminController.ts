@@ -78,7 +78,7 @@ export class AdminController {
     response.cacheSizeStats["objectIdToName"] = ObjectIDToNameCache.size;
     response.cacheSizeStats["user"] = UserCache.size;
     response.cacheSizeStats["flag"] = FlagCache.size;
-    response.cacheSizeStats["Token"] = TokenRevokedCache.size;
+    response.cacheSizeStats["token"] = TokenRevokedCache.size;
 
     await Promise.all(loginStatPromises).then(values => {
       addStatToResponse(response, "uniqueUserStats", values);
