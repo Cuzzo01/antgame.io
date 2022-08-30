@@ -22,6 +22,10 @@ class ObjectIDtoNameCache extends ResultCacheWrapper<string> {
     super({ name: "ObjectIDToNameHandler" });
   }
 
+  get size() {
+    return super.getSize();
+  }
+
   get timeToCache() {
     return Math.round(43200 * (1 - Math.random() * 0.1));
   }

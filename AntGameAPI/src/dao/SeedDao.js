@@ -29,10 +29,13 @@ const deleteSeed = async ({ seed }) => {
   await collection.deleteOne({ seed });
 };
 
-const getOutstandingSeedCount = async ({ userID }) => {
-  const userObjectId = TryParseObjectID(userID, "UserID", "SeedDao");
-
+const getOutstandingSeedCount = async userID => {
   const collection = await getCollection("seeds");
-  return await collection.countDocuments({ userID: userObjectId });
+  if (userID) {
+    const userObjectId = TryParseObjectID(userID, "UserID", "SeedDao");
+    return await collection.countDocuments({ userID: userObjectId });
+  } else {
+    return await collection.countDocuments();
+  }
 };
 module.exports = { saveSeed, getSeedData, deleteSeed, getOutstandingSeedCount };
