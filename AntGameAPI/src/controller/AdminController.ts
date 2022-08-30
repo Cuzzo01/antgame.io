@@ -56,6 +56,7 @@ export class AdminController {
       uniqueUserStats: {},
       newAccountStats: {},
       runCountStats: {},
+      cacheSizeStats: {},
     };
 
     const loginStatPromises = [];
@@ -72,6 +73,12 @@ export class AdminController {
     runCountStatPromises.push(getRunCount(24));
     runCountStatPromises.push(getRunCount(72));
     runCountStatPromises.push(getRunCount(168));
+
+    response.cacheSizeStats["leaderboard"] = LeaderboardCache.size;
+    response.cacheSizeStats["objectIdToName"] = ObjectIDToNameCache.size;
+    response.cacheSizeStats["user"] = UserCache.size;
+    response.cacheSizeStats["flag"] = FlagCache.size;
+    response.cacheSizeStats["Token"] = TokenRevokedCache.size;
 
     await Promise.all(loginStatPromises).then(values => {
       addStatToResponse(response, "uniqueUserStats", values);

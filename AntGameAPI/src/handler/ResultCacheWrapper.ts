@@ -12,6 +12,10 @@ export class ResultCacheWrapper<T> {
     this.name = options.name;
   }
 
+  protected getSize() {
+    return this.resultCache.getCount();
+  }
+
   protected itemIsSet(id: string): boolean {
     return this.resultCache.isSetAndActive(id);
   }

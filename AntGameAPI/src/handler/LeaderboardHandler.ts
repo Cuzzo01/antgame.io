@@ -30,6 +30,10 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
     super({ name: "LeaderboardHandler" });
   }
 
+  get size() {
+    return super.getSize();
+  }
+
   public unsetAll() {
     super.unsetAll();
   }
