@@ -75,7 +75,7 @@ export const GenerateSolutionImage = async (p: { runID: string; foodEaten?: numb
   const runNumber = runData.runNumber;
 
   let foodAmounts: Tooltip[];
-  if (mapObject.ToolTips) foodAmounts = mapObject.ToolTips;
+  if (mapObject.Tooltips) foodAmounts = mapObject.Tooltips;
   else foodAmounts = GenerateFoodTooltips(mapData);
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call

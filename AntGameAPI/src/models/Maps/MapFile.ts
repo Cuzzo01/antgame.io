@@ -5,5 +5,5 @@ export interface MapFile {
   Map: string[][];
   MapName: string;
   MapVersion: number;
-  ToolTips: Tooltip[];
+  Tooltips: Tooltip[];
 }
