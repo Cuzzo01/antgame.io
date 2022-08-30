@@ -76,6 +76,7 @@ export class PublicController {
         daily: leaderboardData.isDaily,
         solutionImage: leaderboardData.solutionImgPath,
         playerCount: leaderboardData.playerCount,
+        pageLength: await FlagCache.getIntFlag("leaderboard-length"),
       };
 
       const cacheTime = await FlagCache.getFlagValue("time-to-cache-public-endpoints");

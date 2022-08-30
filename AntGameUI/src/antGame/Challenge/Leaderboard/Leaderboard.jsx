@@ -49,6 +49,7 @@ const Leaderboard = props => {
         if (data.extra) {
           personalPage = Math.floor(data.rank / (pageLength + 1)) + 1;
           rankLink = data.extra ? () => setPageNumber(personalPage) : undefined;
+          lastRank = 0;
         }
         table.push(
           <LeaderboardRow
@@ -67,7 +68,7 @@ const Leaderboard = props => {
       setRunData(table);
       setTitle(name);
       setPlayerCount(playerCount);
-      setMorePages(lastRank !== playerCount);
+      setMorePages(playerCount > pageLength && lastRank !== playerCount);
 
       document.title = `${name} - Leaderboard`;
     },
