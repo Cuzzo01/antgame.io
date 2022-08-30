@@ -1,4 +1,4 @@
-// const Logger = require("../Logger");
+const Logger = require("../Logger");
 import { Request, Response } from "express";
 import { RejectIfAnon } from '../auth/AuthHelpers';
 import { AuthToken } from "../auth/models/AuthToken";
@@ -6,7 +6,7 @@ import { getRunsByUserIdAndChallengeId } from '../dao/RunHistoryDao';
 
 export class RunHistoryController {
 
-    static async getLastRuns(req: Request, res: Response) {
+    static async getRunHistory(req: Request, res: Response) {
         try {
             if (RejectIfAnon(req, res)) return;
 
@@ -20,7 +20,7 @@ export class RunHistoryController {
             res.send(result);
     
       } catch (e) {
-        // Logger.logError("UserController.getUserBadges", e);
+        Logger.logError("RunHistoryController.getRunHistory", e);
         res.send(500);
       }
     }

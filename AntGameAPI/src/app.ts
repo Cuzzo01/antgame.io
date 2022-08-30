@@ -142,7 +142,7 @@ app.post("/badges", UserController.getUserBadges);
 
 app.post("/report/spaces", ReportController.reportSpacesData);
 
-app.post("/runs", RunHistoryController.getLastRuns);
+app.post("/runs", RunHistoryController.getRunHistory);
 
 app.get("/health", (_: Request, res: Response) => {
   res.sendStatus(200);
