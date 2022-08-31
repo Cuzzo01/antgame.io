@@ -188,6 +188,14 @@ export class PublicController {
       const username = req.params.username;
 
       const userDetails = await UserCache.getInfo(username.toLowerCase());
+      const ttl = UserCache.getTimeToExpire(username);
+
+      if (ttl) {
+        const maxCacheTime = await FlagCache.getIntFlag("time-to-cache-badges-external");
+        const age = maxCacheTime - ttl;
+        res.set(`Cache-Control`, `public, max-age=${maxCacheTime}`);
+        if (age > 0) res.set(`Age`, age.toString());
+      }
 
       userDetails.username = await ObjectIDToNameCache.getUsername(userDetails.id);
 
