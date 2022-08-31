@@ -64,7 +64,9 @@ const Username = ({ name, id, showBorder = true, adminLink = false }) => {
   if (badges === false) {
     return (
       <span className={styles.baseBadge}>
-        {adminLink ? <Link to={`/admin/user/${id}`}>{name}</Link> : name}
+        <Link className={styles.link} to={adminLink ? `/admin/user/${id}` : `/user/${name}`}>
+          {name}
+        </Link>
       </span>
     );
   }
@@ -72,17 +74,19 @@ const Username = ({ name, id, showBorder = true, adminLink = false }) => {
   const tooltipName = `${name}${Math.round(Math.random() * 1e10)}`;
   return (
     <span
+      className={`${styles.baseBadge} ${styles.active}`}
+      style={{ ...nameStyles }}
       data-tip=""
       data-for={tooltipName}
       data-delay-show="250"
       data-delay-hide="250"
-      className={`${styles.baseBadge} ${styles.active}`}
-      style={{ ...nameStyles }}
     >
-      {adminLink ? <Link to={`/admin/user/${id}`}>{name}</Link> : name}
-      <ReactTooltip effect="solid" id={tooltipName} className={styles.tooltip}>
-        {badges}
-      </ReactTooltip>
+      <Link className={styles.link} to={adminLink ? `/admin/user/${id}` : `/user/${name}`}>
+        {name}
+        <ReactTooltip effect="solid" id={tooltipName} className={styles.tooltip}>
+          {badges}
+        </ReactTooltip>
+      </Link>
     </span>
   );
 };

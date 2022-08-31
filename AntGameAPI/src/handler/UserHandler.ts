@@ -1,7 +1,10 @@
-import { getUserBadgesByID } from "../dao/UserDao";
+import { ObjectId } from "mongodb";
+import { getUserBadgesByID, getUserDetailsByUsername } from "../dao/UserDao";
+import { TimeHelper } from "../helpers/TimeHelperTS";
 import { LoggerProvider } from "../LoggerTS";
 import { RawUserBadge } from "../models/RawUserBadge";
 import { UserBadge } from "../models/UserBadge";
+import { UserInfoResponse } from "../models/UserController/UserInfoResponse";
 import { FlagHandler } from "./FlagHandler";
 import { ResultCacheWrapper } from "./ResultCacheWrapper";
 
@@ -18,7 +21,7 @@ export class UserHandler {
   }
 }
 
-class UserCache extends ResultCacheWrapper<UserBadge[]> {
+class UserCache extends ResultCacheWrapper<UserBadge[] | UserInfoResponse> {
   constructor() {
     super({ name: "UserHandler" });
   }
@@ -32,7 +35,7 @@ class UserCache extends ResultCacheWrapper<UserBadge[]> {
   }
 
   async getBadges(id: string): Promise<UserBadge[]> {
-    return await this.getOrFetchValue({
+    return (await this.getOrFetchValue({
       id,
       type: "Badges",
       fetchMethod: async id => {
@@ -60,7 +63,41 @@ class UserCache extends ResultCacheWrapper<UserBadge[]> {
         return cacheTime;
       },
       logFormatter: () => "",
-    });
+    })) as UserBadge[];
+  }
+
+  async getInfo(username: string): Promise<UserInfoResponse> {
+    return (await this.getOrFetchValue({
+      id: username,
+      type: "Info",
+      fetchMethod: async username => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        const result = (await getUserDetailsByUsername(username)) as {
+          _id: ObjectId;
+          username: string;
+          joinDate: Date | false;
+          badges: UserBadge[];
+        };
+
+        let joinDate: string;
+        if (result.joinDate) joinDate = TimeHelper.getJoinDateDisplay(result.joinDate);
+        else joinDate = "OG";
+
+        if (result.badges) result.badges.sort((a, b) => (a.value < b.value ? 1 : -1));
+
+        return <UserInfoResponse>{
+          id: result._id.toString(),
+          joinDate,
+          badges: result.badges,
+        };
+      },
+      getTimeToCache: async () => {
+        const maxTimeToCache = await FlagCache.getIntFlag("cache-time.user-info");
+        const cacheTime = Math.round(maxTimeToCache * (1 - Math.random() * 0.2));
+        return cacheTime;
+      },
+      logFormatter: () => "",
+    })) as UserInfoResponse;
   }
 
   public getTimeToExpire(id: string) {

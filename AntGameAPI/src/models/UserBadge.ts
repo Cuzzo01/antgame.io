@@ -5,4 +5,5 @@ export interface UserBadge {
   color: string;
   icon: BadgeIcons;
   backgroundColor: string;
+  value?: number;
 }
