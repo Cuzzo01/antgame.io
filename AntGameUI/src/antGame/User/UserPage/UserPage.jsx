@@ -56,8 +56,6 @@ const BadgesDisplay = ({ badges }) => {
 
 const BadgeRow = ({ badge }) => {
   const inlineStyles = {};
-  if (badge.color === "white") inlineStyles["color"] = "white";
-
   if (badge.backgroundColor === "gold") inlineStyles["backgroundColor"] = "#d6af36";
   else if (badge.backgroundColor === "silver") inlineStyles["backgroundColor"] = "#a7a7ad";
   else if (badge.backgroundColor === "bronze") inlineStyles["backgroundColor"] = "#a77044";
