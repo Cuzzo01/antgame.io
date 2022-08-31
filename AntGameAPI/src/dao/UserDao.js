@@ -230,18 +230,18 @@ const getUserBadgesByID = async id => {
     });
 };
 
-const getUserDetailsByID = async id => {
-  const userObjectID = TryParseObjectID(id, "UserID", "UserDao");
-
+const getUserDetailsByUsername = async username => {
   const collection = await getCollection("users");
   const result = await collection.findOne(
-    { _id: userObjectID },
-    { projection: { username: 1, "registrationData.date": 1 } }
+    { username_lower: username },
+    { projection: { _id: 1, username: 1, "registrationData.date": 1, badges: 1 } }
   );
 
   if (!result) return null;
   const toReturn = {
+    _id: result._id,
     username: result.username,
+    badges: result.badges,
   };
   if (result.registrationData) toReturn.joinDate = result.registrationData.date;
   else toReturn.joinDate = false;
@@ -278,5 +278,5 @@ module.exports = {
   shouldShowUserOnLeaderboard,
   getUserBadgesByID,
   addBadgeToUser,
-  getUserDetailsByID,
+  getUserDetailsByUsername,
 };

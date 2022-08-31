@@ -1,21 +1,3 @@
-// const { RejectIfAnon } = require("../auth/AuthHelpers");
-// const ChallengeDao = require("../dao/ChallengeDao");
-// const UserDao = require("../dao/UserDao");
-// const { VerifyArtifact } = require("../helpers/ChallengeRunHelper");
-// const {
-//   getGeneralizedTimeStringFromObjectID,
-//   getTimeStringForDailyChallenge,
-// } = require("../helpers/TimeHelper");
-// const FlagHandler = require("../handler/FlagHandler");
-// const ObjectIDToNameHandler = require("../handler/ObjectIDToNameHandler");
-// const DailyChallengeHandler = require("../handler/DailyChallengeHandler");
-// const LeaderboardHandler = require("../handler/LeaderboardHandler");
-// const ActiveChallengesHandler = require("../handler/ActiveChallengesHandler");
-// const MapHandler = require("../handler/MapHandler");
-// const { SeedBroker } = require("../bll/SeedBrokerTS");
-// const { GetIpAddress } = require("../helpers/IpHelper");
-// const Logger = require("../Logger");
-
 import { Request, Response } from "express";
 import { AuthToken } from "../auth/models/AuthToken";
 import { SeedBrokerProvider } from "../bll/SeedBroker";

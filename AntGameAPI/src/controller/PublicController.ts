@@ -182,4 +182,19 @@ export class PublicController {
       res.send(500);
     }
   }
+
+  static async getUserInfo(req: Request, res: Response) {
+    try {
+      const username = req.params.username;
+
+      const userDetails = await UserCache.getInfo(username.toLowerCase());
+
+      userDetails.username = await ObjectIDToNameCache.getUsername(userDetails.id);
+
+      res.send(userDetails);
+    } catch (e) {
+      Logger.logError("UserController.getUserInfo", e as Error);
+      res.send(500);
+    }
+  }
 }
