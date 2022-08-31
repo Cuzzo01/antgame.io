@@ -8,7 +8,10 @@ export const UserPage = ({ username }) => {
   const [userDetails, setUserDetails] = useState(false);
 
   useEffect(() => {
-    GetUserDetails(username).then(userDetails => setUserDetails(userDetails));
+    GetUserDetails(username).then((userDetails) => {
+      document.title = `${userDetails.username} - AntGame.io`;
+      setUserDetails(userDetails);
+    });
   }, [username]);
 
   if (!userDetails) return <div />;
@@ -45,7 +48,7 @@ const BadgesDisplay = ({ badges }) => {
   useEffect(() => {
     const rows = [];
     if (badges)
-      badges.forEach(badge => {
+      badges.forEach((badge) => {
         rows.push(<BadgeRow badge={badge} key={badge.name} />);
       });
     setBadgeRows(rows);
@@ -56,12 +59,18 @@ const BadgesDisplay = ({ badges }) => {
 
 const BadgeRow = ({ badge }) => {
   const inlineStyles = {};
-  if (badge.backgroundColor === "gold") inlineStyles["backgroundColor"] = "#d6af36";
-  else if (badge.backgroundColor === "silver") inlineStyles["backgroundColor"] = "#a7a7ad";
-  else if (badge.backgroundColor === "bronze") inlineStyles["backgroundColor"] = "#a77044";
-  else if (badge.backgroundColor === "red") inlineStyles["backgroundColor"] = "#e74c3c";
-  else if (badge.backgroundColor === "green") inlineStyles["backgroundColor"] = "#7dcea0";
-  else if (badge.backgroundColor) inlineStyles["backgroundColor"] = badge.backgroundColor;
+  if (badge.backgroundColor === "gold")
+    inlineStyles["backgroundColor"] = "#d6af36";
+  else if (badge.backgroundColor === "silver")
+    inlineStyles["backgroundColor"] = "#a7a7ad";
+  else if (badge.backgroundColor === "bronze")
+    inlineStyles["backgroundColor"] = "#a77044";
+  else if (badge.backgroundColor === "red")
+    inlineStyles["backgroundColor"] = "#e74c3c";
+  else if (badge.backgroundColor === "green")
+    inlineStyles["backgroundColor"] = "#7dcea0";
+  else if (badge.backgroundColor)
+    inlineStyles["backgroundColor"] = badge.backgroundColor;
 
   let icon = false;
   if (badge.icon === "trophy") icon = <TrophyIcon />;
