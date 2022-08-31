@@ -1,0 +1,67 @@
+.container {
+  width: 25rem;
+  padding-top: 3rem;
+  margin: 0 auto;
+}
+
+.hr {
+  display: block;
+  background-color: black;
+  height: 0.1rem;
+  margin: 0.25rem 0 1rem 0;
+}
+
+.section {
+  padding-bottom: 1rem;
+}
+
+.section h5 {
+  margin-left: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.titleRow {
+  padding: 0 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.titleRow > h2 {
+  margin: 0;
+}
+
+.titleRow > h6 {
+  margin-bottom: 0.3rem;
+}
+
+.titleRow :last-child {
+  text-align: right;
+}
+
+.badgeRows {
+  margin: 0 3rem;
+}
+
+.badgeRow svg {
+  height: 1.1rem;
+  padding-right: 0.2rem;
+}
+
+.badgeRow {
+  padding: 0.1rem 0.4rem;
+  margin: 0.25rem 0;
+  border-radius: 0.25rem;
+  color: black;
+  font-size: 0.9em;
+  font-weight: unset;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}

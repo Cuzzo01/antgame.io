@@ -79,7 +79,7 @@ class UserCache extends ResultCacheWrapper<UserBadge[] | UserInfoResponse> {
         if (result.joinDate) joinDate = TimeHelper.getJoinDateDisplay(result.joinDate);
         else joinDate = "OG";
 
-        result.badges.sort((a, b) => (a.value < b.value ? 1 : -1));
+        if (result.badges) result.badges.sort((a, b) => (a.value < b.value ? 1 : -1));
 
         return <UserInfoResponse>{
           id: result._id.toString(),

@@ -125,10 +125,8 @@ const LoadMapFromParams = () => {
 };
 
 const UserPageRoute = () => {
-  let {username} = useParams();
-  return (
-    <UserPage username={username} />
-  )
-}
+  let { username } = useParams();
+  return <UserPage username={username} />;
+};
 
 export default AntGameRouter;

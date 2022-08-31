@@ -5,8 +5,8 @@ export const GetUserBadges = async id => {
 };
 
 export const GetUserDetails = async username => {
-  return await axios.get(`/api/public/user/${username}`).then(res => res.data)
-}
+  return await axios.get(`/api/public/user/${username}`).then(res => res.data);
+};
 
 export const GetBatchBadges = async userList => {
   return await axios.post(`/api/badges`, { userList }).then(res => res.data);
