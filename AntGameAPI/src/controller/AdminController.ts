@@ -41,6 +41,7 @@ import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { AuthToken } from "../auth/models/AuthToken";
 import { PasswordHandler } from "../auth/PasswordHandler";
 import { RunData } from "../models/Admin/RunData";
+import { getOutstandingSeedCount } from "../dao/SeedDao";
 
 const Logger = LoggerProvider.getInstance();
 const LeaderboardCache = LeaderboardHandler.getCache();
@@ -56,6 +57,7 @@ export class AdminController {
       uniqueUserStats: {},
       newAccountStats: {},
       runCountStats: {},
+      serviceCounts: {},
     };
 
     const loginStatPromises = [];
@@ -72,6 +74,13 @@ export class AdminController {
     runCountStatPromises.push(getRunCount(24));
     runCountStatPromises.push(getRunCount(72));
     runCountStatPromises.push(getRunCount(168));
+
+    response.serviceCounts["leaderboard"] = LeaderboardCache.size;
+    response.serviceCounts["objectIdToName"] = ObjectIDToNameCache.size;
+    response.serviceCounts["user"] = UserCache.size;
+    response.serviceCounts["flag"] = FlagCache.size;
+    response.serviceCounts["token"] = TokenRevokedCache.size;
+    response.serviceCounts["seedsOutstanding"] = await getOutstandingSeedCount();
 
     await Promise.all(loginStatPromises).then(values => {
       addStatToResponse(response, "uniqueUserStats", values);

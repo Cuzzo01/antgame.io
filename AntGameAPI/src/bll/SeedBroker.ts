@@ -24,7 +24,7 @@ class SeedBroker {
   }
 
   async getSeed(params: { homeLocations: number[][]; userID: string }) {
-    const outstandingSeeds = (await getOutstandingSeedCount({ userID: params.userID })) as number;
+    const outstandingSeeds = (await getOutstandingSeedCount(params.userID)) as number;
     const outstandingSeedLimit = await FlagCache.getIntFlag("maximum-outstanding-seeds");
     if (outstandingSeeds >= outstandingSeedLimit) {
       return { success: false };

@@ -64,3 +64,23 @@
 .solutionImage img {
   width: 100%;
 }
+
+.pageNav {
+  margin-top: 1em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.pageNav :first-child {
+  margin-left: 1.5em;
+}
+
+.link {
+  text-decoration: underline;
+  color: blue;
+  cursor: pointer;
+}
+
+.pageNav :last-child {
+  margin-right: 1.5em;
+}

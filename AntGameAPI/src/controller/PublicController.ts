@@ -51,7 +51,15 @@ export class PublicController {
   static async getChallengeLeaderboard(req: Request, res: Response): Promise<void> {
     try {
       let challengeID = req.params.id;
-      const leaderboardData = await GenerateChallengeLeaderboardData({ challengeID });
+      let page: number;
+      try {
+        page = parseInt(req.params.page);
+      } catch (_) {
+        res.sendStatus(400);
+        return;
+      }
+
+      const leaderboardData = await GenerateChallengeLeaderboardData(challengeID, page);
 
       if (!leaderboardData) {
         res.status(404);
@@ -68,6 +76,7 @@ export class PublicController {
         daily: leaderboardData.isDaily,
         solutionImage: leaderboardData.solutionImgPath,
         playerCount: leaderboardData.playerCount,
+        pageLength: await FlagCache.getIntFlag("leaderboard-length"),
       };
 
       const cacheTime = await FlagCache.getFlagValue("time-to-cache-public-endpoints");
@@ -104,9 +113,9 @@ export class PublicController {
       const activePlayers = (await getUserLoginCount(24)) as { value: number; hours: number };
 
       const dailyChallengeID = await DailyChallengeCache.getActiveDailyChallenge();
-      const dailyLeaderboardData = await GenerateChallengeLeaderboardData({
-        challengeID: dailyChallengeID.toString(),
-      });
+      const dailyLeaderboardData = await GenerateChallengeLeaderboardData(
+        dailyChallengeID.toString()
+      );
       const dailyChallengeName = await ObjectIDToNameCache.getChallengeName(
         dailyChallengeID.toString()
       );
@@ -118,9 +127,9 @@ export class PublicController {
       }
 
       const yesterdaysDailyID = await DailyChallengeCache.getYesterdaysDailyChallenge();
-      const yesterdaysLeaderboardData = await GenerateChallengeLeaderboardData({
-        challengeID: yesterdaysDailyID.toString(),
-      });
+      const yesterdaysLeaderboardData = await GenerateChallengeLeaderboardData(
+        yesterdaysDailyID.toString()
+      );
       const yesterdaysChallengeName = await ObjectIDToNameCache.getChallengeName(
         yesterdaysDailyID.toString()
       );

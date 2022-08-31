@@ -7,6 +7,10 @@ interface Cache<T> {
 export class ResultCache<T> {
   private cache: Cache<T> = {};
 
+  getCount() {
+    return Object.keys(this.cache).length;
+  }
+
   getValue(name: string) {
     const eResult = this.cache[name];
     if (eResult) return eResult.getValue();

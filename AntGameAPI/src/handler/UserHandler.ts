@@ -26,6 +26,10 @@ class UserCache extends ResultCacheWrapper<UserBadge[] | UserInfoResponse> {
     super({ name: "UserHandler" });
   }
 
+  get size() {
+    return super.getSize();
+  }
+
   public unsetAll() {
     super.unsetAll();
   }

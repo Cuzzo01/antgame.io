@@ -25,6 +25,10 @@ class TokenRevokedCache extends ResultCacheWrapper<TokenRevokedData> {
     super({ name: "TokenRevokedHandler" });
   }
 
+  get size() {
+    return super.getSize();
+  }
+
   async isTokenValid(userID: string, adminClaim: boolean, issuedAt: number): Promise<boolean> {
     if (this.tokenRevokedTime && this.tokenRevokedTime > issuedAt) {
       Logger.logError("TokenRevokedHandler", "Rejecting revoked token");
