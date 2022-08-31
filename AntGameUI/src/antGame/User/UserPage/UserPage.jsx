@@ -27,7 +27,7 @@ export const UserPage = ({ username }) => {
           </div>
         ) : (
           <div className={styles.center}>
-            <h5>No Badges</h5>
+            <h4>No Badges</h4>
           </div>
         )}
       </div>

@@ -39,6 +39,10 @@
   flex-wrap: nowrap;
 }
 
+.badgeRow > span {
+  margin-top: 0.15em;
+}
+
 .link,
 .link:hover {
   color: inherit;

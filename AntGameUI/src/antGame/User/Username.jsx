@@ -64,7 +64,9 @@ const Username = ({ name, id, showBorder = true, adminLink = false }) => {
   if (badges === false) {
     return (
       <span className={styles.baseBadge}>
-        {adminLink ? <Link to={`/admin/user/${id}`}>{name}</Link> : name}
+        <Link className={styles.link} to={adminLink ? `/admin/user/${id}` : `/user/${name}`}>
+          {name}
+        </Link>
       </span>
     );
   }
