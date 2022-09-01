@@ -3,6 +3,7 @@ import styles from "./ChallengeModal.module.css";
 import ChallengeHandler from "../../Challenge/ChallengeHandler";
 import AuthHandler from "../../Auth/AuthHandler";
 import GenericModal from "../../Helpers/GenericModal";
+import "./GameAds";
 
 const ChallengeModal = props => {
   const [isWrRun, setIsWrRun] = useState(false);
@@ -11,15 +12,18 @@ const ChallengeModal = props => {
   const [showRejectedMessage, setShowRejectedMessage] = useState(false);
 
   useEffect(() => {
-    const runResponseId = ChallengeHandler.addRunResponseListener(response =>
-      handleRunResponse(response)
-    );
-    const recordID = ChallengeHandler.addRecordListener(records => setRecords(records));
-    return () => {
-      ChallengeHandler.removeRunResponseListener(runResponseId);
-      ChallengeHandler.removeRecordListener(recordID);
-    };
-  }, []);
+    if (props.show) {
+      const runResponseId = ChallengeHandler.addRunResponseListener(response =>
+        handleRunResponse(response)
+      );
+      const recordID = ChallengeHandler.addRecordListener(records => setRecords(records));
+      window.GameAdsRenew("gameadsbanner");
+      return () => {
+        ChallengeHandler.removeRunResponseListener(runResponseId);
+        ChallengeHandler.removeRecordListener(recordID);
+      };
+    }
+  }, [props.show]);
 
   const handleRunResponse = response => {
     if (response === false) {
@@ -86,6 +90,10 @@ const ChallengeModal = props => {
               </div>
               <h5 className={styles.score}>Score</h5>
               <h5>{props.challengeHandler?.score}</h5>
+              <div>
+                <div id="gameadsbanner"></div>
+                <script type="text/javascript" src="./GameAds"></script>
+              </div>
             </div>
           }
         />
