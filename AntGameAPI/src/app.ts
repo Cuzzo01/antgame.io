@@ -20,6 +20,7 @@ import {
   getSeedLimiter,
   loginLimiter,
   registrationLimiter,
+  reportLimiter,
   runSubmissionLimiter,
 } from "./auth/RateLimiters";
 
@@ -140,7 +141,7 @@ app.get("/championship/:id", ChampionshipController.getLeaderboard);
 
 app.post("/badges", UserController.getUserBadges);
 
-app.post("/report/spaces", ReportController.reportSpacesData);
+app.post("/report/assets", reportLimiter, ReportController.reportAssetLoad);
 
 app.get("/health", (_: Request, res: Response) => {
   res.sendStatus(200);
