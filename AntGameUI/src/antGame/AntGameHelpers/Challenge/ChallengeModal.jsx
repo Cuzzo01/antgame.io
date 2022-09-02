@@ -4,6 +4,7 @@ import ChallengeHandler from "../../Challenge/ChallengeHandler";
 import AuthHandler from "../../Auth/AuthHandler";
 import GenericModal from "../../Helpers/GenericModal";
 import { getFlag } from "../../Helpers/FlagService";
+import "./GameAds.js";
 
 const ChallengeModal = props => {
   const [isWrRun, setIsWrRun] = useState(false);
@@ -14,11 +15,6 @@ const ChallengeModal = props => {
 
   useEffect(() => {
     if (props.show) {
-      const runResponseId = ChallengeHandler.addRunResponseListener(response =>
-        handleRunResponse(response)
-      );
-      const recordID = ChallengeHandler.addRecordListener(records => setRecords(records));
-
       const shouldShowAd = !props.challengeHandler?.isPB && window.loadGameAds !== undefined;
       if (shouldShowAd)
         getFlag("enable.results-modal-ads").then(value => {
@@ -29,12 +25,17 @@ const ChallengeModal = props => {
           } else setShowAd(false);
         });
       else setShowAd(false);
-
-      return () => {
-        ChallengeHandler.removeRunResponseListener(runResponseId);
-        ChallengeHandler.removeRecordListener(recordID);
-      };
     }
+
+    const runResponseId = ChallengeHandler.addRunResponseListener(response =>
+      handleRunResponse(response)
+    );
+    const recordID = ChallengeHandler.addRecordListener(records => setRecords(records));
+
+    return () => {
+      ChallengeHandler.removeRunResponseListener(runResponseId);
+      ChallengeHandler.removeRecordListener(recordID);
+    };
   }, [props.show, props.challengeHandler?.isPB]);
 
   const handleRunResponse = response => {

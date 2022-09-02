@@ -21,11 +21,11 @@ const loadAds = (g, a, m, e, A, d, s) => {
       "&rfunc=" +
       A +
       "&fromhost=" +
-      "antgame.io" +
+      g.location.hostname +
       "&refr=" +
       encodeURIComponent(a.referrer) +
       "&fromurl=" +
-      encodeURIComponent("https://antgame.io/challenge/daily") +
+      encodeURIComponent(g.location.href) +
       ""),
     s.parentNode.insertBefore(d, s);
 };
