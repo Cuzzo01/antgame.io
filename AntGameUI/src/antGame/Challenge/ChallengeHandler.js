@@ -74,7 +74,7 @@ class ChallengeHandler {
       if (this.prInfo === null) return;
       this.prInfo = info;
     }
-    this._mapHandler.setPRInfo(this.prInfo);
+    this._mapHandler.setLocationInfo(this.prInfo);
   }
 
   clearConfig() {
