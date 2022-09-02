@@ -4,7 +4,6 @@ import ChallengeHandler from "../../Challenge/ChallengeHandler";
 import AuthHandler from "../../Auth/AuthHandler";
 import GenericModal from "../../Helpers/GenericModal";
 import { getFlag } from "../../Helpers/FlagService";
-import "./GameAds.js";
 
 const ChallengeModal = props => {
   const [isWrRun, setIsWrRun] = useState(false);
