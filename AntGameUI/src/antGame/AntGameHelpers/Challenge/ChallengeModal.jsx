@@ -3,13 +3,14 @@ import styles from "./ChallengeModal.module.css";
 import ChallengeHandler from "../../Challenge/ChallengeHandler";
 import AuthHandler from "../../Auth/AuthHandler";
 import GenericModal from "../../Helpers/GenericModal";
-import "./GameAds";
+import { getFlag } from "../../Helpers/FlagService";
 
 const ChallengeModal = props => {
   const [isWrRun, setIsWrRun] = useState(false);
   const [records, setRecords] = useState();
   const [showRateLimitMessage, setShowRateLimitMessage] = useState(false);
   const [showRejectedMessage, setShowRejectedMessage] = useState(false);
+  const [showAd, setShowAd] = useState(false);
 
   useEffect(() => {
     if (props.show) {
@@ -17,13 +18,24 @@ const ChallengeModal = props => {
         handleRunResponse(response)
       );
       const recordID = ChallengeHandler.addRecordListener(records => setRecords(records));
-      window.GameAdsRenew("gameadsbanner");
+
+      const shouldShowAd = !props.challengeHandler?.isPB && window.loadGameAds !== undefined;
+      if (shouldShowAd)
+        getFlag("enable.results-modal-ads").then(value => {
+          if (value) {
+            setShowAd(true);
+            if (!window.GameAdsRenew) window.loadGameAds();
+            window.GameAdsRenew("gameadsbanner");
+          } else setShowAd(false);
+        });
+      else setShowAd(false);
+
       return () => {
         ChallengeHandler.removeRunResponseListener(runResponseId);
         ChallengeHandler.removeRecordListener(recordID);
       };
     }
-  }, [props.show]);
+  }, [props.show, props.challengeHandler?.isPB]);
 
   const handleRunResponse = response => {
     if (response === false) {
@@ -90,10 +102,12 @@ const ChallengeModal = props => {
               </div>
               <h5 className={styles.score}>Score</h5>
               <h5>{props.challengeHandler?.score}</h5>
-              <div>
-                <div id="gameadsbanner"></div>
-                <script type="text/javascript" src="./GameAds"></script>
-              </div>
+              {showAd ? (
+                <div className={styles.ad}>
+                  <p>Advertisement</p>
+                  <div id="gameadsbanner" />
+                </div>
+              ) : null}
             </div>
           }
         />
