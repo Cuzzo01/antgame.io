@@ -31,4 +31,3 @@ const loadAds = (g, a, m, e, A, d, s) => {
 };
 window.loadGameAds = () =>
   loadAds(window, document, "gameadsbanner", "https://n.gameads.io/getcode", "GameAdsRenew");
-//please renew banner at every Game Over. to do this call GameAdsRenew("gameadsbanner")
