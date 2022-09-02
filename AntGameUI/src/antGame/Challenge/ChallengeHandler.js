@@ -1,6 +1,7 @@
 import { Config } from "../config";
 import {
   getChallengeConfig,
+  getPreviousRunData,
   getPRInfo,
   getRecords,
   getReplayConfig,
@@ -19,6 +20,10 @@ class ChallengeHandler {
     this.runResponseListeners = [];
     this.prInfo = false;
     this.lastSeenUpdateCount = 0;
+
+    this.latestRunHistoryTime = new Date();
+    this.previousRuns = [];
+    this.itemsToGrab = 10;
   }
 
   set mapHandler(mapHandler) {
@@ -115,6 +120,18 @@ class ChallengeHandler {
     }
   }
 
+  async loadHistoricalRun({index}) {
+    this._mapHandler.clearMap();
+    if (this.previousRuns.length < index + 1) {
+      await this.getPreviousRuns(index - this.getPreviousRuns.length + 1);
+      if (this.previousRuns.length < index + 1) {
+        return;
+      }
+    }
+    let run = this.previousRuns[index];
+    this._mapHandler.setLocationInfo({locations: run.homeLocations, amounts: run.homeAmounts});
+  }
+
   clearConfig() {
     this._config = null;
     this.records = false;
@@ -182,6 +199,19 @@ class ChallengeHandler {
         this.records = records;
         this.notifyRecordsListeners();
         return records;
+      });
+    }
+  }
+
+  async getPreviousRuns(itemsToGrab = 10 ) {
+  if (this.loadingPreviousRuns) return this.previousRunsPromise;
+    else {
+      this.loadingPreviousRuns = true;
+      this.previousRunsPromise = getPreviousRunData({challengeId: this._challengeID, timeBefore: this.latestRunHistoryTime, itemsToGrab }).then(locationHistory => {
+        this.loadingPreviousRuns = false;
+        this.previousRuns = this.previousRuns.concat(...locationHistory);
+        this.latestRunHistoryTime = new Date(this.previousRuns[this.previousRuns.length - 1].submissionTime);
+        return this.loadingPreviousRuns;
       });
     }
   }
