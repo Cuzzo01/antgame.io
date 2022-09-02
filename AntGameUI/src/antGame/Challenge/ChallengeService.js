@@ -118,3 +118,10 @@ export async function getSeed({ homeLocations }) {
     .then(res => res.data.seed)
     .catch(() => false);
 }
+
+export async function getPreviousRunData({ challengeId, timeBefore, itemsToGrab }) {
+  return axios
+    .post("/api/runs", { challengeId, timeBefore, itemsToGrab })
+    .then(res => res.data)
+    .catch(() => []);
+}

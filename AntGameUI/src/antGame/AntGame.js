@@ -478,6 +478,11 @@ export default class AntGame extends React.Component {
     ChallengeHandler.loadPRRun().then(result => {
       if (result !== false && this.state.emptyMap) this.setState({ emptyMap: false });
     });
+
+    ChallengeHandler.getPreviousRuns().then(result => {
+      //TODO: this is needing to be done twice, maybe bc caching copy?
+      console.log(ChallengeHandler.previousRuns);
+    })
   };
 
   render() {
