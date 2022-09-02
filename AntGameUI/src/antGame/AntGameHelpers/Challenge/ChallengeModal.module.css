@@ -28,3 +28,12 @@
 .leaderboardRank {
   font-size: 1.1em;
 }
+
+.ad {
+  margin-top: 1.5em;
+}
+
+.ad p {
+  margin-bottom: 0em;
+  font-size: 0.75em;
+}
