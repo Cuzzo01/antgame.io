@@ -491,9 +491,12 @@ export default class AntGame extends React.Component {
     ChallengeHandler.loadRun(type).then(result => {
       if (result !== false && this.state.emptyMap) this.setState({ emptyMap: false });
     });
-    if (this.gamemode === "replay") {
-      this.setState({ replayLabel: ChallengeHandler.replayLabel });
-    }
+
+    console.log(ChallengeHandler.hasGrabbedAllValidPrevRuns);
+    ChallengeHandler.addPreviousRuns().then(() => {
+      console.log(ChallengeHandler.previousRuns);
+      console.log(ChallengeHandler.hasGrabbedAllValidPrevRuns);
+    })
   };
 
   render() {
