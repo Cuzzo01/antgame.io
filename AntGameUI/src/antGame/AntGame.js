@@ -19,6 +19,7 @@ import { DrawAnts } from "./AntGameHelpers/Graphics/AntGraphics";
 import { MapGraphics } from "./AntGameHelpers/Graphics/MapGraphics";
 import { TrailGraphics } from "./AntGameHelpers/Graphics/TrailGraphics";
 import AuthHandler from "./Auth/AuthHandler";
+import RunHistoryTab from "./AntGameHelpers/RunHistory/RunHistoryTab";
 
 let canvasW, canvasH;
 
@@ -33,10 +34,10 @@ const FrameRate = Config.FrameRate;
 const PreloadMap = Config.PreloadMap;
 
 export default class AntGame extends React.Component {
-  static contextType = GameModeContext;
+	static contextType = GameModeContext;
 
-  constructor(props) {
-    super(props);
+	constructor(props) {
+		super(props);
 
     this.brushSize = BrushSizeDefault;
     this.brushType = DefaultBrush.value;
@@ -49,27 +50,29 @@ export default class AntGame extends React.Component {
 
     this.timerHandler = new TimerHandler(this.handleChallengeTimeout, this.setTime);
 
-    this.mapHandler = new MapHandler(this.toggleTimer);
-    this.antHandler = new AntHandler();
+		this.mapHandler = new MapHandler(this.toggleTimer);
+		this.antHandler = new AntHandler();
 
-    let emptyMap = true;
-    if (PreloadMap && props.mapToLoad) {
-      this.mapHandler.preloadMap(props.mapToLoad);
-      emptyMap = false;
-    }
+		let emptyMap = true;
+		if (PreloadMap && props.mapToLoad) {
+			this.mapHandler.preloadMap(props.mapToLoad);
+			emptyMap = false;
+		}
 
-    this.state = {
-      emptyMap: emptyMap,
-      playState: false,
-      time: {
-        min: "00",
-        sec: "00",
-      },
-      timerActive: false,
-      foodReturned: 0,
-      homeOnMap: 0,
+    this.showHistoryTab = false;
+
+		this.state = {
+			emptyMap: emptyMap,
+			playState: false,
+			time: {
+				min: "00",
+				sec: "00",
+			},
+			timerActive: false,
+			foodReturned: 0,
+			homeOnMap: 0,
       speed: this.gameSpeed,
-    };
+		};
 
     const homeColor = Brushes.find(brush => brush.value === HomeValue).color;
     this.homeTrailDrawer = new TrailGraphics(homeColor);
@@ -80,8 +83,8 @@ export default class AntGame extends React.Component {
     this.foodTrailHandler = new TrailHandler(this.mapHandler, this.foodTrailDrawer);
   }
 
-  componentDidMount() {
-    this.setMapUiUpdate(100);
+	componentDidMount() {
+		this.setMapUiUpdate(100);
 
     this.gamemode = this.context.mode;
     if (this.gamemode === "challenge" || this.gamemode === "replay") {
@@ -89,13 +92,13 @@ export default class AntGame extends React.Component {
       this.challengeHandler = ChallengeHandler;
       this.challengeHandler.gamemode = this.gamemode;
       this.challengeHandler.challengeID = challengeID;
-      this.challengeHandler.mapHandler = this.mapHandler;
-      this.challengeHandler.timerHandler = this.timerHandler;
-      this.challengeHandler.antHandler = this.antHandler;
+			this.challengeHandler.mapHandler = this.mapHandler;
+			this.challengeHandler.timerHandler = this.timerHandler;
+			this.challengeHandler.antHandler = this.antHandler;
       this.challengeHandler.getConfig().then(config => {
         if (challengeID.toLowerCase() === "daily") document.title = "Daily Challenge - AntGame";
-        else document.title = `${config.name} - AntGame`;
-      });
+				else document.title = `${config.name} - AntGame`;
+			});
 
       this.setState({
         showChallengeModal: false,
@@ -106,33 +109,33 @@ export default class AntGame extends React.Component {
     this.timerHandler.gameMode = this.gamemode;
     this.timerHandler.updateTimeDisplay(this.setTime);
 
-    for (let element of document.getElementsByClassName("react-p5")) {
+		for (let element of document.getElementsByClassName("react-p5")) {
       element.addEventListener("contextmenu", e => e.preventDefault());
-    }
+		}
 
-    let bodyElement = document.querySelector("body");
-    disableBodyScroll(bodyElement);
-  }
+		let bodyElement = document.querySelector("body");
+		disableBodyScroll(bodyElement);
+	}
 
-  componentWillUnmount() {
-    clearInterval(this.mapUiUpdateInterval);
-    clearInterval(this.challengeSnapshotInterval);
-    clearInterval(this.gameLoopInterval);
+	componentWillUnmount() {
+		clearInterval(this.mapUiUpdateInterval);
+		clearInterval(this.challengeSnapshotInterval);
+		clearInterval(this.gameLoopInterval);
 
-    let bodyElement = document.querySelector("body");
-    this.challengeHandler?.clearConfig();
-    enableBodyScroll(bodyElement);
-  }
+		let bodyElement = document.querySelector("body");
+		this.challengeHandler?.clearConfig();
+		enableBodyScroll(bodyElement);
+	}
 
   setMapUiUpdate = mili => {
-    if (this.mapUiUpdateInterval) clearInterval(this.mapUiUpdateInterval);
-    this.mapUiUpdateInterval = setInterval(() => {
-      this.setState({
-        foodReturned: this.mapHandler.percentFoodReturned,
-        homeOnMap: this.mapHandler.homeCellCount,
-      });
-    }, mili);
-  };
+		if (this.mapUiUpdateInterval) clearInterval(this.mapUiUpdateInterval);
+		this.mapUiUpdateInterval = setInterval(() => {
+			this.setState({
+				foodReturned: this.mapHandler.percentFoodReturned,
+				homeOnMap: this.mapHandler.homeCellCount,
+			});
+		}, mili);
+	};
 
   handleChallengeTimeout = () => {
     this.updatePlayState(false);
@@ -140,78 +143,78 @@ export default class AntGame extends React.Component {
     if (this.gamemode === "challenge") this.setState({ showChallengeModal: true });
   };
 
-  setup = (p5, parentRef) => {
-    this.parentRef = parentRef;
+	setup = (p5, parentRef) => {
+		this.parentRef = parentRef;
 
-    this.antImage = p5.loadImage(AntSmol);
-    this.antFoodImage = p5.loadImage(AntFoodSmol);
+		this.antImage = p5.loadImage(AntSmol);
+		this.antFoodImage = p5.loadImage(AntFoodSmol);
 
-    this.setCanvasBounds(p5);
+		this.setCanvasBounds(p5);
 
-    this.antGraphic = p5.createGraphics(canvasW, canvasH);
-    this.mapGraphic = p5.createGraphics(canvasW, canvasH);
-    this.homeTrailGraphic = p5.createGraphics(canvasW, canvasH);
-    this.foodTrailGraphic = p5.createGraphics(canvasW, canvasH);
+		this.antGraphic = p5.createGraphics(canvasW, canvasH);
+		this.mapGraphic = p5.createGraphics(canvasW, canvasH);
+		this.homeTrailGraphic = p5.createGraphics(canvasW, canvasH);
+		this.foodTrailGraphic = p5.createGraphics(canvasW, canvasH);
 
-    this.mapDrawer = new MapGraphics(this.mapGraphic);
+		this.mapDrawer = new MapGraphics(this.mapGraphic);
 
-    this.setupAndInitialize();
+		this.setupAndInitialize();
 
-    this.homeTrailDrawer.graphics = this.homeTrailGraphic;
-    this.foodTrailDrawer.graphics = this.foodTrailGraphic;
+		this.homeTrailDrawer.graphics = this.homeTrailGraphic;
+		this.foodTrailDrawer.graphics = this.foodTrailGraphic;
 
-    p5.createCanvas(canvasW, canvasH).parent(parentRef);
+		p5.createCanvas(canvasW, canvasH).parent(parentRef);
 
-    if (!this.mapHandler.mapSetup) this.mapHandler.generateMap();
+		if (!this.mapHandler.mapSetup) this.mapHandler.generateMap();
 
-    p5.frameRate(FrameRate);
-  };
+		p5.frameRate(FrameRate);
+	};
 
   setCanvasBounds = p5 => {
-    this.windowSize = [p5.windowWidth, p5.windowHeight];
-    canvasW = p5.windowWidth - this.parentRef.offsetLeft * 2;
-    canvasH = p5.windowHeight - this.parentRef.offsetTop - 20;
-  };
+		this.windowSize = [p5.windowWidth, p5.windowHeight];
+		canvasW = p5.windowWidth - this.parentRef.offsetLeft * 2;
+		canvasH = p5.windowHeight - this.parentRef.offsetTop - 20;
+	};
 
-  setupAndInitialize = () => {
-    this.mapDrawer.setupMap(canvasW, canvasH);
-    this.mapHandler.redrawMap = true;
-  };
+	setupAndInitialize = () => {
+		this.mapDrawer.setupMap(canvasW, canvasH);
+		this.mapHandler.redrawMap = true;
+	};
 
   draw = p5 => {
-    if (this.imageToSave !== "") this.handleImageSave(p5);
+		if (this.imageToSave !== "") this.handleImageSave(p5);
 
     if (p5.windowWidth !== this.windowSize[0] || p5.windowHeight !== this.windowSize[1]) {
-      this.resizeCanvas(p5);
-      this.containerRef.current.style.height = this.windowSize[1];
-      this.mapDrawer.drawFullMap({ map: this.mapHandler.map });
-      this.homeTrailDrawer.refreshSize();
-      this.foodTrailDrawer.refreshSize();
-    }
+			this.resizeCanvas(p5);
+			this.containerRef.current.style.height = this.windowSize[1];
+			this.mapDrawer.drawFullMap({ map: this.mapHandler.map });
+			this.homeTrailDrawer.refreshSize();
+			this.foodTrailDrawer.refreshSize();
+		}
 
     if (p5.mouseIsPressed) this.handleClick(p5);
 
-    if (this.mapHandler.redrawFullMap) {
-      this.mapDrawer.drawFullMap({ map: this.mapHandler.map });
-      this.mapHandler.redrawFullMap = false;
+		if (this.mapHandler.redrawFullMap) {
+			this.mapDrawer.drawFullMap({ map: this.mapHandler.map });
+			this.mapHandler.redrawFullMap = false;
 
       if (this.mapHandler.shouldDrawFoodAmounts && this.mapHandler.foodAmounts)
         this.mapDrawer.drawFoodAmounts({ foodAmounts: this.mapHandler.foodAmounts });
 
-      if (this.mapHandler.shouldDrawHomeAmounts) {
-        this.mapDrawer.drawHomeAmounts({
-          homeAmounts: this.mapHandler.homeAmounts,
-          totalFood: this.mapHandler.totalFood,
-        });
-        this.mapHandler.homeAmountsDrawn = true;
-      }
-    } else if (this.mapHandler.redrawMap) {
-      this.mapDrawer.drawMap({
-        cellsToDraw: this.mapHandler.cellsToDraw,
-        map: this.mapHandler.map,
-      });
-      this.mapHandler.cellsToDraw = [];
-      this.mapHandler.redrawMap = false;
+			if (this.mapHandler.shouldDrawHomeAmounts) {
+				this.mapDrawer.drawHomeAmounts({
+					homeAmounts: this.mapHandler.homeAmounts,
+					totalFood: this.mapHandler.totalFood,
+				});
+				this.mapHandler.homeAmountsDrawn = true;
+			}
+		} else if (this.mapHandler.redrawMap) {
+			this.mapDrawer.drawMap({
+				cellsToDraw: this.mapHandler.cellsToDraw,
+				map: this.mapHandler.map,
+			});
+			this.mapHandler.cellsToDraw = [];
+			this.mapHandler.redrawMap = false;
 
       if (this.mapHandler.shouldDrawFoodAmounts && this.mapHandler.foodAmounts)
         this.mapDrawer.drawFoodAmounts({ foodAmounts: this.mapHandler.foodAmounts });
@@ -228,58 +231,58 @@ export default class AntGame extends React.Component {
       }
     }
 
-    if (this.antHandler.redrawAnts) {
-      const ants = this.antHandler.ants;
-      DrawAnts({
-        graphics: this.antGraphic,
-        ants,
+		if (this.antHandler.redrawAnts) {
+			const ants = this.antHandler.ants;
+			DrawAnts({
+				graphics: this.antGraphic,
+				ants,
         mapXYToCanvasXY: this.mapDrawer.mapXYToCanvasXY.bind(this.mapDrawer),
-        antNoFoodImage: this.antImage,
-        antFoodImage: this.antFoodImage,
-      });
-      this.antHandler.redrawAnts = false;
-    }
+				antNoFoodImage: this.antImage,
+				antFoodImage: this.antFoodImage,
+			});
+			this.antHandler.redrawAnts = false;
+		}
 
     if (this.homeTrailDrawer.hasPointsToDraw) this.homeTrailDrawer.drawPoints();
     if (this.foodTrailDrawer.hasPointsToDraw) this.foodTrailDrawer.drawPoints();
 
-    StaticElements.background(p5);
-    p5.image(this.homeTrailGraphic, 0, 0);
-    p5.image(this.foodTrailGraphic, 0, 0);
-    p5.image(this.antGraphic, 0, 0);
-    p5.image(this.mapGraphic, 0, 0);
-    StaticElements.border(p5, BorderWeight, 0);
-  };
+		StaticElements.background(p5);
+		p5.image(this.homeTrailGraphic, 0, 0);
+		p5.image(this.foodTrailGraphic, 0, 0);
+		p5.image(this.antGraphic, 0, 0);
+		p5.image(this.mapGraphic, 0, 0);
+		StaticElements.border(p5, BorderWeight, 0);
+	};
 
   handleImageSave = p5 => {
-    if (this.imageToSave === "trail") {
-      p5.clear();
-      p5.image(this.foodTrailGraphic, 0, 0);
-      p5.image(this.homeTrailGraphic, 0, 0);
-      p5.saveCanvas("trails");
-    } else if (this.imageToSave === "map") {
-      p5.clear();
-      p5.image(this.mapGraphic, 0, 0);
-      p5.saveCanvas("map");
-    } else if (this.imageToSave === "map&trail") {
-      p5.clear();
-      p5.image(this.foodTrailGraphic, 0, 0);
-      p5.image(this.homeTrailGraphic, 0, 0);
-      p5.image(this.mapGraphic, 0, 0);
-      p5.saveCanvas("map&trails");
-    }
-    this.imageToSave = "";
-  };
+		if (this.imageToSave === "trail") {
+			p5.clear();
+			p5.image(this.foodTrailGraphic, 0, 0);
+			p5.image(this.homeTrailGraphic, 0, 0);
+			p5.saveCanvas("trails");
+		} else if (this.imageToSave === "map") {
+			p5.clear();
+			p5.image(this.mapGraphic, 0, 0);
+			p5.saveCanvas("map");
+		} else if (this.imageToSave === "map&trail") {
+			p5.clear();
+			p5.image(this.foodTrailGraphic, 0, 0);
+			p5.image(this.homeTrailGraphic, 0, 0);
+			p5.image(this.mapGraphic, 0, 0);
+			p5.saveCanvas("map&trails");
+		}
+		this.imageToSave = "";
+	};
 
   resizeCanvas = p5 => {
-    this.setCanvasBounds(p5);
-    this.setupAndInitialize();
-    p5.resizeCanvas(canvasW, canvasH);
-    this.antGraphic.resizeCanvas(canvasW, canvasH);
-    this.mapGraphic.resizeCanvas(canvasW, canvasH);
-    this.foodTrailGraphic.resizeCanvas(canvasW, canvasH);
-    this.homeTrailGraphic.resizeCanvas(canvasW, canvasH);
-  };
+		this.setCanvasBounds(p5);
+		this.setupAndInitialize();
+		p5.resizeCanvas(canvasW, canvasH);
+		this.antGraphic.resizeCanvas(canvasW, canvasH);
+		this.mapGraphic.resizeCanvas(canvasW, canvasH);
+		this.foodTrailGraphic.resizeCanvas(canvasW, canvasH);
+		this.homeTrailGraphic.resizeCanvas(canvasW, canvasH);
+	};
 
   handleClick = p5 => {
     if (this.gamemode === "replay") return;
@@ -287,25 +290,25 @@ export default class AntGame extends React.Component {
     if (this.blockDrawing) return;
     if (this.gamemode === "challenge" && this.updateCount !== 0) return;
 
-    let mousePos = this.mapDrawer.canvasXYToMapXY([p5.mouseX, p5.mouseY]);
+		let mousePos = this.mapDrawer.canvasXYToMapXY([p5.mouseX, p5.mouseY]);
 
-    if (this.mapHandler.mapXYInBounds(mousePos)) {
-      if (p5.mouseButton === "right") {
-        this.mapHandler.paintOnMap(mousePos, this.brushSize, " ");
-        return;
-      }
+		if (this.mapHandler.mapXYInBounds(mousePos)) {
+			if (p5.mouseButton === "right") {
+				this.mapHandler.paintOnMap(mousePos, this.brushSize, " ");
+				return;
+			}
       this.mapHandler.paintOnMap(mousePos, this.brushSize, this.brushType);
-      if (this.state.emptyMap) this.setState({ emptyMap: false });
-    }
-  };
+			if (this.state.emptyMap) this.setState({ emptyMap: false });
+		}
+	};
 
   updateBrushSize = size => {
-    this.brushSize = size;
-  };
+		this.brushSize = size;
+	};
 
   updateBrushType = type => {
-    this.brushType = type;
-  };
+		this.brushType = type;
+	};
 
   updatePlayState = async state => {
     const IsChallenge = this.gamemode === "challenge";
@@ -332,32 +335,30 @@ export default class AntGame extends React.Component {
             this.challengeHandler._runSeed = seed;
           }
           this.challengeHandler.handleStart(this.mapHandler.homeLocations);
-        } else if (IsReplay) {
-          seed = this.challengeHandler._runSeed;
-        }
-        this.antHandler.spawnAnts({
-          homeTrailHandler: this.homeTrailHandler,
-          foodTrailHandler: this.foodTrailHandler,
-          mapHandler: this.mapHandler,
-          seed,
-        });
-      } else {
-        this.mapHandler.findNewDecayableBlocks();
-        this.mapHandler.calculateFoodToStopTime();
-      }
+				}
+				this.antHandler.spawnAnts({
+					homeTrailHandler: this.homeTrailHandler,
+					foodTrailHandler: this.foodTrailHandler,
+					mapHandler: this.mapHandler,
+					seed,
+				});
+			} else {
+				this.mapHandler.findNewDecayableBlocks();
+				this.mapHandler.calculateFoodToStopTime();
+			}
 
-      this.setMapUiUpdate(500);
-      this.toggleTimer(true);
+			this.setMapUiUpdate(500);
+			this.toggleTimer(true);
 
-      const ticksPerSecond = FrameRate * 1.5;
-      const updateRate = Math.round(1000 / ticksPerSecond);
-      clearInterval(this.gameLoopInterval);
-      this.lastGameUpdateRunTime = new Date();
-      let catchUpUpdates = 0;
-      let keepGoing = true;
-      this.gameLoopInterval = setInterval(() => {
+			const ticksPerSecond = FrameRate * 1.5;
+			const updateRate = Math.round(1000 / ticksPerSecond);
+			clearInterval(this.gameLoopInterval);
+			this.lastGameUpdateRunTime = new Date();
+			let catchUpUpdates = 0;
+			let keepGoing = true;
+			this.gameLoopInterval = setInterval(() => {
         const timeSinceLastRun = new Date().getTime() - this.lastGameUpdateRunTime.getTime();
-        if (timeSinceLastRun > 200 && this.gamemode === "challenge") {
+				if (timeSinceLastRun > 200 && this.gamemode === "challenge") {
           const missedUpdates = Math.floor(timeSinceLastRun / updateRate);
           catchUpUpdates += missedUpdates;
         } else {
@@ -378,51 +379,57 @@ export default class AntGame extends React.Component {
             if (this.state.timerActive && this.updateCount % ticksPerSecond === 0) {
               if (this.challengeHandler) this.challengeHandler.updateCount = this.updateCount;
               if (!this.timerHandler.tickTime()) keepGoing = false;
-            }
-          }
-        }
-        this.lastGameUpdateRunTime = new Date();
-      }, updateRate);
-    } else {
-      clearInterval(this.challengeSnapshotInterval);
-      clearInterval(this.gameLoopInterval);
-      this.setMapUiUpdate(100);
-      this.toggleTimer(false);
-    }
-    this.setState({ playState: state });
-  };
+						}
+					}
+				}
+				this.lastGameUpdateRunTime = new Date();
+			}, updateRate);
+		} else {
+			clearInterval(this.challengeSnapshotInterval);
+			clearInterval(this.gameLoopInterval);
+			this.setMapUiUpdate(100);
+			this.toggleTimer(false);
+		}
+		this.setState({ playState: state });
+	};
 
   determineUpdateCount = catchUpUpdates => {
-    if (catchUpUpdates > 900) return 10;
-    else if (catchUpUpdates > 800) return 9;
-    else if (catchUpUpdates > 700) return 8;
-    else if (catchUpUpdates > 600) return 7;
-    else if (catchUpUpdates > 500) return 6;
-    else if (catchUpUpdates > 400) return 5;
-    else if (catchUpUpdates > 300) return 4;
-    else if (catchUpUpdates > 200) return 3;
-    else if (catchUpUpdates > 100) return 2;
-    else return 1;
-  };
+		if (catchUpUpdates > 900) return 10;
+		else if (catchUpUpdates > 800) return 9;
+		else if (catchUpUpdates > 700) return 8;
+		else if (catchUpUpdates > 600) return 7;
+		else if (catchUpUpdates > 500) return 6;
+		else if (catchUpUpdates > 400) return 5;
+		else if (catchUpUpdates > 300) return 4;
+		else if (catchUpUpdates > 200) return 3;
+		else if (catchUpUpdates > 100) return 2;
+		else return 1;
+	};
 
   toggleTimer = state => {
-    if (state) {
-      this.setState({ timerActive: true });
-    } else {
-      this.setState({
-        timerActive: false,
-        foodReturned: this.mapHandler.percentFoodReturned,
-      });
-    }
-  };
+		if (state) {
+			this.setState({ timerActive: true });
+		} else {
+			this.setState({
+				timerActive: false,
+				foodReturned: this.mapHandler.percentFoodReturned,
+			});
+		}
+	};
 
-  setTime = time => {
-    this.setState({ time: time });
-  };
+  toggleShowHistoryTab= () => {
+    this.showHistoryTab = !this.showHistoryTab;
+	// this.windowSize = [0,0];
+	// window.resizeBy(1,1);
+	};
+
+	setTime = time => {
+		this.setState({ time: time });
+	};
 
   setMapName = mapName => {
-    this.mapHandler.name = mapName;
-  };
+		this.mapHandler.name = mapName;
+	};
 
   setGameSpeed = speed => {
     this.gameSpeed = speed;
@@ -435,123 +442,135 @@ export default class AntGame extends React.Component {
     this.reset();
   };
 
-  saveMapHandler = () => {
-    this.mapHandler.saveMap();
-  };
+	saveMapHandler = () => {
+		this.mapHandler.saveMap();
+	};
 
   loadMapHandler = map => {
-    if (this.mapHandler.loadMap(map)) this.setState({ emptyMap: false });
-  };
+		if (this.mapHandler.loadMap(map)) this.setState({ emptyMap: false });
+	};
 
-  reset = () => {
-    this.antHandler.clearAnts();
-    this.foodTrailHandler.clearTrails();
-    this.foodTrailDrawer.clear();
-    this.homeTrailHandler.clearTrails();
-    this.homeTrailDrawer.clear();
-    this.timerHandler.resetTime();
-    this.mapHandler.handleReset();
-    this.updateCount = 0;
-    this.setState({
-      foodReturned: 0,
-    });
-    this.timerHandler.updateTimeDisplay(this.setTime);
-    this.mapHandler.shouldDrawFoodAmounts = true;
-  };
+	reset = () => {
+		this.antHandler.clearAnts();
+		this.foodTrailHandler.clearTrails();
+		this.foodTrailDrawer.clear();
+		this.homeTrailHandler.clearTrails();
+		this.homeTrailDrawer.clear();
+		this.timerHandler.resetTime();
+		this.mapHandler.handleReset();
+		this.updateCount = 0;
+		this.setState({
+			foodReturned: 0,
+		});
+		this.timerHandler.updateTimeDisplay(this.setTime);
+		this.mapHandler.shouldDrawFoodAmounts = true;
+	};
 
-  resetHandler = () => {
-    this.reset();
-  };
+	resetHandler = () => {
+		this.reset();
+	};
 
   saveImageHandler = imageToSave => {
-    this.imageToSave = imageToSave;
-  };
+		this.imageToSave = imageToSave;
+	};
 
   setBlockDraw = blockDrawing => {
-    this.blockDrawing = blockDrawing;
-  };
+		this.blockDrawing = blockDrawing;
+	};
 
   loadMap = type => {
-    if (type === "sample") {
+		if (type === "sample") {
       this.mapHandler.loadSampleMap().then(_ => this.reset());
-    } else if (type === "generated") {
-      this.mapHandler.fetchAndLoadMap("/api/map");
-    } else {
-      this.mapHandler.loadMap(type);
-    }
-    if (this.state.emptyMap) this.setState({ emptyMap: false });
-  };
+		} else if (type === "generated") {
+			this.mapHandler.fetchAndLoadMap("/api/map");
+		} else {
+			this.mapHandler.loadMap(type);
+		}
+		if (this.state.emptyMap) this.setState({ emptyMap: false });
+	};
 
-  closeChallengeModal = () => {
-    this.setState({ showChallengeModal: false });
-  };
+	closeChallengeModal = () => {
+		this.setState({ showChallengeModal: false });
+	};
 
   loadRunHandler = type => {
     this.reset();
     ChallengeHandler.loadRun(type).then(result => {
       if (result !== false && this.state.emptyMap) this.setState({ emptyMap: false });
-    });
+		});
+	}
 
-    console.log(ChallengeHandler.hasGrabbedAllValidPrevRuns);
-    ChallengeHandler.addPreviousRuns().then(() => {
-      console.log(ChallengeHandler.previousRuns);
-      console.log(ChallengeHandler.hasGrabbedAllValidPrevRuns);
-    })
-  };
+  loadHistoricalHomeLocations = (index) => {
+		this.reset();
+		ChallengeHandler.loadHistoricalRun(index).then((result) => {
+			if (result !== false && this.state.emptyMap)
+				this.setState({ emptyMap: false });
+		});
+	};
 
-  render() {
-    return (
-      <div className={cssStyles.container} ref={this.containerRef}>
-        <ChallengeModal
-          challengeHandler={this.challengeHandler}
-          show={this.state.showChallengeModal}
-          closeModal={() => this.closeChallengeModal()}
-        />
-        <div style={styles.centered}>
-          <div style={styles.header}>
-            <MenuBar
-              time={this.state.time}
-              timerActive={this.state.timerActive}
-              playState={this.state.playState}
-              playButtonHandler={this.updatePlayState}
-              resetHandler={this.resetHandler}
-              clearMapHandler={this.clearMap}
-              saveMapHandler={this.saveMapHandler}
-              mapClear={this.state.emptyMap}
-              brushSizeHandler={this.updateBrushSize}
-              brushTypeHandler={this.updateBrushType}
-              blockDrawHandler={this.setBlockDraw}
-              saveImageHandler={this.saveImageHandler}
-              loadMapHandler={this.loadMap}
-              setMapNameHandler={this.setMapName}
-              getMapName={() => this.mapHandler.mapName}
-              foodReturned={this.state.foodReturned}
-              homeOnMap={this.state.homeOnMap}
-              loadPRHandler={this.loadRunHandler}
-              replayLabel={this.state.replayLabel}
-              speed={this.state.speed}
-              setSpeed={this.setGameSpeed}
-            />
-          </div>
-          <Sketch setup={this.setup} draw={this.draw} />
-        </div>
-      </div>
-    );
-  }
+	render() {
+		return (
+			<div className={cssStyles.container} ref={this.containerRef}>
+				<ChallengeModal
+					challengeHandler={this.challengeHandler}
+					show={this.state.showChallengeModal}
+					closeModal={() => this.closeChallengeModal()}
+				/>
+				<div style={styles.centered}>
+					<div style={styles.header}>
+						<MenuBar
+							time={this.state.time}
+							timerActive={this.state.timerActive}
+							playState={this.state.playState}
+							playButtonHandler={this.updatePlayState}
+							resetHandler={this.resetHandler}
+							clearMapHandler={this.clearMap}
+							saveMapHandler={this.saveMapHandler}
+							mapClear={this.state.emptyMap}
+							brushSizeHandler={this.updateBrushSize}
+							brushTypeHandler={this.updateBrushType}
+							blockDrawHandler={this.setBlockDraw}
+							saveImageHandler={this.saveImageHandler}
+							loadMapHandler={this.loadMap}
+							setMapNameHandler={this.setMapName}
+							getMapName={() => this.mapHandler.mapName}
+							foodReturned={this.state.foodReturned}
+							homeOnMap={this.state.homeOnMap}
+							loadPRHandler={this.loadPRHomeLocations}
+							toggleShowHistory={this.toggleShowHistoryTab}
+						/>
+					</div>
+					<div className={cssStyles.innerWindow}>	
+						{this.showHistoryTab ? (
+							<RunHistoryTab
+								challengeID={this.context.challengeID}
+								loadRunHandler={(run) =>
+									this.loadHistoricalHomeLocations({ run })
+								}
+							></RunHistoryTab>
+						) : (
+							<></>
+						)}
+						<Sketch setup={this.setup} draw={this.draw} />
+					</div>
+				</div>
+			</div>
+		);
+	}
 }
 
 const styles = {
-  header: {
-    paddingBottom: "5px",
-  },
-  resizeButton: {
-    justifySelf: "left",
-  },
-  TimeCounter: {
-    justifySelf: "right",
-    paddingRight: "1em",
-  },
-  centered: {
-    textAlign: "center",
-  },
+	header: {
+		paddingBottom: "5px",
+	},
+	resizeButton: {
+		justifySelf: "left",
+	},
+	TimeCounter: {
+		justifySelf: "right",
+		paddingRight: "1em",
+	},
+	centered: {
+		textAlign: "center",
+	},
 };

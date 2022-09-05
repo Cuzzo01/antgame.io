@@ -54,6 +54,7 @@ export default function MenuBar({
         loadMapHandler={loadMapHandler}
         saveMapHandler={saveMapHandler}
         loadPRHandler={loadPRHandler}
+        toggleShowHistory={props.toggleShowHistory}
         speed={speed}
         setSpeed={setSpeed}
       />
