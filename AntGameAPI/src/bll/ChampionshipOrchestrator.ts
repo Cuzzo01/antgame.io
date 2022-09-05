@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import { updateConfigByID } from "../dao/AdminDao";
 import { addChampionshipIDToConfig, getChallengeByChallengeId } from "../dao/ChallengeDao";
+import { ChallengeRecordDao } from "../dao/ChallengeRecordDao";
 import {
   addConfigIDToChampionship,
   addUserToUserPoints,
@@ -11,7 +12,8 @@ import {
   setLastAwarded,
   updateUserPointsTotal,
 } from "../dao/ChampionshipDao";
-import { addBadgeToUser, getLeaderboardByChallengeId } from "../dao/UserDao";
+import { TryParseObjectID } from "../dao/helpers";
+import { addBadgeToUser } from "../dao/UserDao";
 import { LeaderboardHandler } from "../handler/LeaderboardHandler";
 import { UserHandler } from "../handler/UserHandler";
 import { BadgeDataGenerator } from "../helpers/BadgeDataGenerator";
@@ -25,6 +27,8 @@ import { RawUserBadge } from "../models/RawUserBadge";
 
 const LeaderboardCache = LeaderboardHandler.getCache();
 const UserCache = UserHandler.getCache();
+
+const _challengeRecordDao = new ChallengeRecordDao();
 
 const pointsMap = [
   { type: "rank", value: 1, points: 50 },
@@ -108,10 +112,15 @@ export class ChampionshipOrchestrator {
     const percentCount = Math.round(playerCount * largestPercent);
     const usersToGet = percentCount > largestRank ? percentCount : largestRank;
 
-    const leaderboardEntries = (await getLeaderboardByChallengeId(
-      challengeConfig.id,
+    // const leaderboardEntries = (await getLeaderboardByChallengeId(
+    //   challengeConfig.id,
+    //   usersToGet
+    // )) as RawLeaderboardEntry[];
+    const challengeObjectId = TryParseObjectID(challengeConfig.id, "ChallengeId");
+    const leaderboardEntries = await _challengeRecordDao.getChallengeLeaderboard(
+      challengeObjectId,
       usersToGet
-    )) as RawLeaderboardEntry[];
+    );
 
     const awardedPoints: UserPointsRow[] = [];
     let cutoffIndex = 0;
@@ -119,14 +128,14 @@ export class ChampionshipOrchestrator {
       const entry = leaderboardEntries[rank - 1];
       if (rank <= largestRank) {
         const pointObj = pointsMap.find(obj => obj.type === "rank" && obj.value === rank);
-        awardedPoints.push({ userID: entry._id.toString(), points: pointObj.points });
+        awardedPoints.push({ userID: entry.userId.toString(), points: pointObj.points });
       } else {
         let currentCutoff = percentCutoffs[cutoffIndex];
         while (rank > currentCutoff.cutoff) {
           cutoffIndex++;
           currentCutoff = percentCutoffs[cutoffIndex];
         }
-        awardedPoints.push({ userID: entry._id.toString(), points: currentCutoff.points });
+        awardedPoints.push({ userID: entry.userId.toString(), points: currentCutoff.points });
       }
     }
 

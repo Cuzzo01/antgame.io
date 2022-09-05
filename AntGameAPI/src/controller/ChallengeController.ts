@@ -10,14 +10,7 @@ import {
   submitRun,
   updateChallengeRecord,
 } from "../dao/ChallengeDao";
-import {
-  addNewChallengeDetails,
-  getChallengeDetailsByUser,
-  getUserPBs,
-  incrementChallengeRunCount,
-  shouldShowUserOnLeaderboard,
-  updateChallengePBAndRunCount,
-} from "../dao/UserDao";
+import { shouldShowUserOnLeaderboard } from "../dao/UserDao";
 import { ActiveChallengesHandler } from "../handler/ActiveChallengesHandler";
 import { FlagHandler } from "../handler/FlagHandler";
 import { LeaderboardHandler } from "../handler/LeaderboardHandler";
@@ -42,6 +35,8 @@ import { RejectIfAnon } from "../auth/AuthHelpers";
 import { TimeHelper } from "../helpers/TimeHelperTS";
 import { GenerateChallengeLeaderboardData } from "../helpers/LeaderboardHelper";
 import { LeaderboardEntry } from "../models/LeaderboardEntry";
+import { ChallengeRecordDao } from "../dao/ChallengeRecordDao";
+import { ChallengeRecordEntity } from "../dao/entities/ChallengeRecordEntity";
 
 const Logger = LoggerProvider.getInstance();
 const FlagCache = FlagHandler.getCache();
@@ -51,6 +46,8 @@ const LeaderboardCache = LeaderboardHandler.getCache();
 const ActiveChallengesCache = ActiveChallengesHandler.getCache();
 const DailyChallengeCache = DailyChallengeHandler.getCache();
 const ObjectIDToNameCache = ObjectIDToNameHandler.getCache();
+
+const _challengeRecordDao = new ChallengeRecordDao();
 
 export class ChallengeController {
   static async postRun(req: Request, res: Response) {
@@ -133,18 +130,21 @@ export class ChallengeController {
         }
       }
 
-      let currentDetails: UserChallengeDetails;
+      const challengeObjectId = TryParseObjectID(runData.challengeID, "ChallengeId");
+      const userObjectId = TryParseObjectID(user.id, "UserId");
+      let currentRecord: ChallengeRecordEntity;
       let isPB = false;
       if (!user.anon) {
         if (verificationResult === "verified" || RejectUnverifiedRuns === false) {
-          currentDetails = (await getChallengeDetailsByUser(
-            user.id,
-            runData.challengeID
-          )) as UserChallengeDetails;
-          if (currentDetails === null) {
+          // currentDetails = (await getChallengeDetailsByUser(
+          //   user.id,
+          //   runData.challengeID
+          // )) as UserChallengeDetails;
+          currentRecord = await _challengeRecordDao.getRecord(challengeObjectId, userObjectId);
+          if (currentRecord === null) {
             isPB = true;
             saveRun = "New challenge";
-          } else if (currentDetails.pb < runData.Score) {
+          } else if (currentRecord.score < runData.Score) {
             isPB = true;
             saveRun = "New PB";
           }
@@ -152,7 +152,7 @@ export class ChallengeController {
           if (isPB)
             runTags.push({
               type: "pr",
-              metadata: { runNumber: (currentDetails ? currentDetails.runs : 0) + 1 },
+              metadata: { runNumber: (currentRecord ? currentRecord.runs : 0) + 1 },
             });
         }
       }
@@ -163,7 +163,7 @@ export class ChallengeController {
         saveRun = true;
       }
 
-      let runID: string;
+      let runID: ObjectId;
       if (saveRun) {
         const runRecord: FullRunData = {
           score: runData.Score,
@@ -206,7 +206,7 @@ export class ChallengeController {
           runRecord.userID = false;
           runRecord.IP = GetIpAddress(req);
         }
-        runID = (await submitRun(runRecord)) as string;
+        runID = (await submitRun(runRecord)) as ObjectId;
 
         if (RejectUnverifiedRuns && verificationResult !== "verified") {
           res.sendStatus(418);
@@ -214,12 +214,25 @@ export class ChallengeController {
         }
 
         if (!user.anon) {
-          if (isPB && currentDetails === null) {
-            await addNewChallengeDetails(user.id, runData.challengeID, runData.Score, runID);
-          } else if (isPB && currentDetails.pb) {
-            await updateChallengePBAndRunCount(user.id, runData.challengeID, runData.Score, runID);
+          if (isPB && currentRecord === null) {
+            // await addNewChallengeDetails(user.id, runData.challengeID, runData.Score, runID);
+            await _challengeRecordDao.addNewRecord(
+              challengeObjectId,
+              userObjectId,
+              runData.Score,
+              runID
+            );
+          } else if (isPB) {
+            // await updateChallengePBAndRunCount(user.id, runData.challengeID, runData.Score, runID);
+            await _challengeRecordDao.updateRecord(
+              challengeObjectId,
+              userObjectId,
+              runData.Score,
+              runID
+            );
           } else {
-            await incrementChallengeRunCount(user.id, runData.challengeID);
+            // await incrementChallengeRunCount(user.id, runData.challengeID);
+            await _challengeRecordDao.incrementRunCount(challengeObjectId, userObjectId);
           }
 
           if (isPB) {
@@ -362,10 +375,13 @@ export class ChallengeController {
         records[id] = { wr: wr };
       }
 
-      let userRecords: UserChallengeDetails[] | false = false;
-      userRecords = (await getUserPBs(user.id)) as UserChallengeDetails[];
-      const activeUserRecords = userRecords.filter(
-        record => challengeIDList.findIndex(id => id.equals(record.ID)) > -1
+      // TODO: get records with challengeIDList
+      // let userRecords: UserChallengeDetails[] | false = false;
+      // userRecords = (await getUserPBs(user.id)) as UserChallengeDetails[];
+      const userObjectId = TryParseObjectID(user.id, "UserId");
+      const activeUserRecords = await _challengeRecordDao.getUserRecords(
+        userObjectId,
+        challengeIDList
       );
 
       if (activeUserRecords) {
@@ -373,8 +389,8 @@ export class ChallengeController {
 
         const rankPromises: Promise<{ id: string; rank: number }>[] = [];
         activeUserRecords.forEach(userRecord => {
-          const challengeID = userRecord.ID;
-          records[challengeID].pb = userRecord.pb;
+          const challengeID = userRecord.challengeId.toString();
+          records[challengeID].pb = userRecord.score;
           records[challengeID].runs = userRecord.runs;
 
           if (shouldGetRanks) {
@@ -425,12 +441,18 @@ export class ChallengeController {
         };
 
       if (!user.anon) {
-        const challengeDetails = (await getChallengeDetailsByUser(user.id, challengeID)) as {
-          pb: string;
-        };
+        // const challengeDetails = (await getChallengeDetailsByUser(user.id, challengeID)) as {
+        //   pb: string;
+        // };
+        const challengeObjectId = TryParseObjectID(challengeID, "ChallengeId");
+        const userObjectId = TryParseObjectID(user.id, "UserId");
+        const challengeDetails = await _challengeRecordDao.getRecord(
+          challengeObjectId,
+          userObjectId
+        );
         if (challengeDetails !== null) {
           const rank = await LeaderboardCache.getChallengeRankByUserId(challengeID, user.id);
-          response.pr = challengeDetails.pb;
+          response.pr = challengeDetails.score;
           response.rank = rank;
         }
       }
@@ -480,10 +502,13 @@ export class ChallengeController {
 
       const isCurrentDaily = getCurrentDaily || currentDaily.equals(challengeID);
       if (!onLeaderboard) {
-        const pr = (await getChallengeDetailsByUser(user.id, challengeID)) as {
-          pb: number;
-          pbRunID: ObjectId;
-        };
+        // const pr = (await getChallengeDetailsByUser(user.id, challengeID)) as {
+        //   pb: number;
+        //   pbRunID: ObjectId;
+        // };
+        const challengeObjectId = TryParseObjectID(challengeID, "ChallengeId");
+        const userObjectId = TryParseObjectID(user.id, "UserId");
+        const pr = await _challengeRecordDao.getRecord(challengeObjectId, userObjectId);
         if (pr) {
           const currentUserRank = await LeaderboardCache.getChallengeRankByUserId(
             challengeID,
@@ -492,14 +517,14 @@ export class ChallengeController {
 
           const timeString =
             isDaily && !isCurrentDaily
-              ? TimeHelper.getTimeStringForDailyChallenge(pr.pbRunID)
-              : TimeHelper.getGeneralizedTimeStringFromObjectID(pr.pbRunID) + " ago";
+              ? TimeHelper.getTimeStringForDailyChallenge(pr.runId)
+              : TimeHelper.getGeneralizedTimeStringFromObjectID(pr.runId) + " ago";
 
           const personalEntry: LeaderboardEntry = {
             id: user.id,
             rank: currentUserRank,
             username: user.username,
-            pb: pr.pb,
+            pb: pr.score,
             age: timeString,
             extra: true,
           };
