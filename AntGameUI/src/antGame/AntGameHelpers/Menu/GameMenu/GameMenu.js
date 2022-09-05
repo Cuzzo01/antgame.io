@@ -81,6 +81,12 @@ export default function GameMenu(props) {
           disabled={props.playState}
         />
       ) : null}
+            <SettingButton
+        className={flashReset ? cssStyles.flashing : ""}
+        text={"Toggle Show History"}
+        handler={props.toggleShowHistory}
+        disabled={props.playState}
+      />
       <SettingButton
         className={flashReset ? cssStyles.flashing : ""}
         text={"Reset"}
