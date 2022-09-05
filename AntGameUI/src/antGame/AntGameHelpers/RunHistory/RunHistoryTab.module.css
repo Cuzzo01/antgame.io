@@ -1,30 +1,54 @@
-.body {
-  text-align: center;
+.container {
+  min-width: 300px;
+  width: 20%;
+  margin-right: 10px;
+  max-height: 100%;
+  height: inherit;
+  justify-items: center;
+  background-color: lightgray;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: hidden;
 }
 
-.score {
-  border-bottom: 2px solid black;
-  margin: 0.5em 35%;
+.runsList {
+  display: block;
+  width: 100%;
+  /* max-height: min-content; */
+  height: 100%;
+  /* height: 100%; */
+  /* overflow-y: scroll; */
+}
+
+.title {
   font-family: "Courier Prime Bold";
+  margin: 5px;
+  height: max-content;
 }
 
-.newPB {
-  font-family: "Courier Prime Bold";
+
+.runEntryRow {
+  width: 90%;
+  height: 50;
+  display: grid;
+  background-color: white;
+  margin: 2.5px 5px;
+  grid-template-areas: 
+  "date score"
+  "time tags";
 }
 
-.newWR {
-  font-family: "Courier Prime Bold";
-  color: green;
+.date{
+  grid-area: date;
 }
 
-.runInfo {
-  margin-bottom: 2em;
+.time{
+  grid-area: time;
 }
-
-.playerCount {
-  font-size: 0.75em;
+.score{
+  grid-area: score;
 }
-
-.leaderboardRank {
-  font-size: 1.1em;
+.tags{
+  grid-area: tags;
 }
