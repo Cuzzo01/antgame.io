@@ -132,7 +132,6 @@ export async function getSeed({ homeLocations }) {
 }
 
 export async function getPreviousRunData({ challengeId, timeBefore, itemsToGrab }) {
-  console.log(challengeId, timeBefore, itemsToGrab);
   return axios
     .post("/api/runs", { challengeId, timeBefore, itemsToGrab })
     .then(res => res.data)

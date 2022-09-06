@@ -10,4 +10,6 @@ html {
 .innerWindow {
   display: flex;
   flex-direction: row;
+  overflow: clip;
+  /* height: 100%; */
 }
