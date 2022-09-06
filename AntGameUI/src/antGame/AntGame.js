@@ -59,7 +59,7 @@ export default class AntGame extends React.Component {
 			emptyMap = false;
 		}
 
-    this.showHistoryTab = true;
+    this.showHistoryTab = false;
 
 		this.state = {
 			emptyMap: emptyMap,
@@ -96,7 +96,9 @@ export default class AntGame extends React.Component {
 			this.challengeHandler.timerHandler = this.timerHandler;
 			this.challengeHandler.antHandler = this.antHandler;
       this.challengeHandler.getConfig().then(config => {
-        if (challengeID.toLowerCase() === "daily") document.title = "Daily Challenge - AntGame";
+        if (challengeID.toLowerCase() === "daily") {
+			document.title = "Daily Challenge - AntGame";
+		this.dailyChallengeId = config.id}
 				else document.title = `${config.name} - AntGame`;
 			});
 
@@ -172,8 +174,10 @@ export default class AntGame extends React.Component {
 
   setCanvasBounds = p5 => {
 		this.windowSize = [p5.windowWidth, p5.windowHeight];
-		canvasW = p5.windowWidth - this.parentRef.offsetLeft * 2;
+		//TODO: THIS...
+		canvasW = p5.windowWidth - this.parentRef.offsetLeft * (this.showHistoryTab ? 1 : 2);
 		canvasH = p5.windowHeight - this.parentRef.offsetTop - 20;
+		console.log(canvasW, this.parentRef.offsetLeft);
 	};
 
 	setupAndInitialize = () => {
@@ -543,7 +547,7 @@ export default class AntGame extends React.Component {
 					<div className={cssStyles.innerWindow}>	
 						{this.showHistoryTab ? (
 							<RunHistoryTab
-								challengeID={this.context.challengeID}
+								challengeID={this.dailyChallengeId ?? this.context.challengeID}
 								loadRunHandler={(run) =>
 									this.loadHistoricalHomeLocations({ run })
 								}
