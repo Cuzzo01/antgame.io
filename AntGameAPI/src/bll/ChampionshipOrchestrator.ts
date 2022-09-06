@@ -112,10 +112,6 @@ export class ChampionshipOrchestrator {
     const percentCount = Math.round(playerCount * largestPercent);
     const usersToGet = percentCount > largestRank ? percentCount : largestRank;
 
-    // const leaderboardEntries = (await getLeaderboardByChallengeId(
-    //   challengeConfig.id,
-    //   usersToGet
-    // )) as RawLeaderboardEntry[];
     const challengeObjectId = TryParseObjectID(challengeConfig.id, "ChallengeId");
     const leaderboardEntries = await _challengeRecordDao.getChallengeLeaderboard(
       challengeObjectId,

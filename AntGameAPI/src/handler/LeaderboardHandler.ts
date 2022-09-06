@@ -1,5 +1,4 @@
 import { ResultCacheWrapper } from "./ResultCacheWrapper";
-// import { getLeaderboardByChallengeId } from "../dao/UserDao";
 import {
   getChampionshipDetailsFromDB,
   getLastPointsAwarded,
@@ -61,7 +60,6 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
       id,
       type: "Challenge",
       fetchMethod: async id => {
-        // return (await getLeaderboardByChallengeId(id, 15)) as RawLeaderboardEntry[];
         const rawLeaderboard = await this.getRawChallengeLeaderboard(id);
         return rawLeaderboard.slice(0, 15);
       },
@@ -89,7 +87,6 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
           });
         }
         return toReturn;
-        // return (await getLeaderboardByChallengeId(id)) as RawLeaderboardEntry[];
       },
       getTimeToCache: this.getTimeToCache,
       logFormatter: value => (Array.isArray(value) ? `Length: ${value.length}` : ""),

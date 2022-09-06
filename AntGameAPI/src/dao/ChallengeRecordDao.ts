@@ -41,7 +41,7 @@ export class ChallengeRecordDao {
     runId: ObjectId
   ) {
     const collection = await this.getCollection();
-    await collection.updateOne({ challengeId, userId }, { runId, $inc: { runs: 1 }, score });
+    await collection.updateOne({ challengeId, userId }, { $set: { runId, score }, $inc: { runs: 1 } });
   }
 
   public async incrementRunCount(challengeId: ObjectId, userId: ObjectId) {
@@ -59,5 +59,8 @@ export class ChallengeRecordDao {
     return await collection.find({ userId, challengeId: { $in: challengeIdList } }).toArray();
   }
 
-  // public async getRecordRunID() { }
+  public async deleteRecord(challengeId: ObjectId, userId: ObjectId) {
+    const collection = await this.getCollection();
+    await collection.deleteOne({ challengeId, userId })
+  }
 }
