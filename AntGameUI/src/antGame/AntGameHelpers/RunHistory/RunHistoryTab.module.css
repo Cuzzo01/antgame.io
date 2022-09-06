@@ -2,34 +2,61 @@
   min-width: 300px;
   width: 20%;
   margin-right: 10px;
-  max-height: 100%;
+  padding:5px;
   height: inherit;
+  overflow: hidden;
   justify-items: center;
   background-color: lightgray;
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow-y: hidden;
 }
 
 .runsList {
-  display: block;
+  display: flex;
   width: 100%;
-  /* max-height: min-content; */
-  height: 100%;
-  /* height: 100%; */
-  /* overflow-y: scroll; */
+  flex-direction: column;
+  height: calc(100vh - 145px); /* top of list ~127 pxs down*/
+  overflow-y: auto;
+  align-content: center;
+}
+
+.runsList::-webkit-scrollbar {
+  width: 10px; 
+  background-color: lightgray;
+  padding-right: 5px;
+  direction: rtl;
+}
+
+.runsList::-webkit-scrollbar-thumb {
+  /* width: 25px; */
+  /* background-color: aqua; */
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.473);
+  max-height: 10px !important;
+}
+.runsList::-webkit-scrollbar-track {
+  /* width: 25px; */
+  /* background-color: aqua; */
+  border-radius: 30px;
+  /* background: yellow; */
+  /* height: 10px; */
 }
 
 .title {
   font-family: "Courier Prime Bold";
   margin: 5px;
   height: max-content;
+  max-height: 40px;
+}
+
+.bottombar {
+  height: 10px;
 }
 
 
 .runEntryRow {
-  width: 90%;
+  width: 95%;
   height: 50;
   display: grid;
   background-color: white;

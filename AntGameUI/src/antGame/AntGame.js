@@ -58,7 +58,7 @@ export default class AntGame extends React.Component {
 			emptyMap = false;
 		}
 
-    this.showHistoryTab = false;
+    this.showHistoryTab = true;
 
 		this.state = {
 			emptyMap: emptyMap,
@@ -343,6 +343,7 @@ export default class AntGame extends React.Component {
 
 			this.setMapUiUpdate(500);
 			this.toggleTimer(true);
+			this.showHistoryTab = false;
 
 			const ticksPerSecond = FrameRate * 1.5;
 			const updateRate = Math.round(1000 / ticksPerSecond);
@@ -411,10 +412,8 @@ export default class AntGame extends React.Component {
 		}
 	};
 
-  toggleShowHistoryTab= () => {
+  toggleShowHistoryTab = () => {
     this.showHistoryTab = !this.showHistoryTab;
-	// this.windowSize = [0,0];
-	// window.resizeBy(1,1);
 	};
 
 	setTime = time => {
@@ -489,9 +488,10 @@ export default class AntGame extends React.Component {
 		});
 	}
 
-  loadHistoricalHomeLocations = (index) => {
+  loadHistoricalHomeLocations = (run) => {
+	console.log("load historical run", run)
 		this.reset();
-		ChallengeHandler.loadHistoricalRun(index).then((result) => {
+		ChallengeHandler.loadHistoricalRun(run).then((result) => {
 			if (result !== false && this.state.emptyMap)
 				this.setState({ emptyMap: false });
 		});
