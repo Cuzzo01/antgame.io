@@ -24,6 +24,10 @@ export class FlagCache {
     this.resultCache = new ResultCache();
   }
 
+  get size() {
+    return this.resultCache.getCount();
+  }
+
   getFlagTTL(name: string) {
     if (this.resultCache.isSetAndActive(name)) return this.resultCache.getTimeToExpire(name);
     else return false;

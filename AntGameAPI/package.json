@@ -7,8 +7,8 @@
   "description": "AntGame backend",
   "main": "app.js",
   "scripts": {
-    "prettier": "prettier --write ./src --print-width 100 --arrow-parens avoid",
-    "prettierCheck": "prettier --check ./src --print-width 100 --arrow-parens avoid",
+    "prettier": "prettier --write ./src ",
+    "prettierCheck": "prettier --check ./src",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --max-warnings=0",
     "start": "node ./dist/app.js",

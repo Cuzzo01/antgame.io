@@ -20,6 +20,7 @@ import {
   getSeedLimiter,
   loginLimiter,
   registrationLimiter,
+  reportLimiter,
   runSubmissionLimiter,
 } from "./auth/RateLimiters";
 
@@ -126,13 +127,14 @@ app.get("/challenge/:id/records", ChallengeController.getRecords);
 app.get("/challenge/:id", ChallengeController.getChallenge);
 app.get("/challenge/:id/pr", ChallengeController.getPRHomeLocations);
 app.get("/challenges/active", ChallengeController.getActiveChallenges);
-app.get("/challenge/:id/leaderboard", ChallengeController.getLeaderboard);
+app.get("/challenge/:id/leaderboard/:page", ChallengeController.getLeaderboard);
 
 app.get("/public/activeChallenges", PublicController.getActiveChallenges);
-app.get("/public/challengeLeaderboard/:id", PublicController.getChallengeLeaderboard);
+app.get("/public/challengeLeaderboard/:id/:page", PublicController.getChallengeLeaderboard);
 app.get("/public/dailyList", PublicController.getDailyChallenges);
 app.get("/public/gsgp", PublicController.getGsgpData);
 app.get("/public/badges/:id", PublicController.getUserBadges);
+app.get("/public/user/:username", PublicController.getUserInfo);
 
 app.post("/seed", getSeedLimiter, SeedController.getSeed);
 
@@ -140,7 +142,7 @@ app.get("/championship/:id", ChampionshipController.getLeaderboard);
 
 app.post("/badges", UserController.getUserBadges);
 
-app.post("/report/spaces", ReportController.reportSpacesData);
+app.post("/report/assets", reportLimiter, ReportController.reportAssetLoad);
 
 app.post("/runs", RunHistoryController.getRunHistory);
 

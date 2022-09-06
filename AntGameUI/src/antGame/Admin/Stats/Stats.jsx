@@ -16,19 +16,24 @@ const Stats = props => {
   return (
     <div>
       <h3>Stats</h3>
-      <div className={adminStyles.divSection}>
-        {stats !== false ? <StatsDisplay data={stats} /> : null}
-      </div>
+      {stats !== false ? (
+        <div>
+          <div className={adminStyles.divSection}>
+            <StatsDisplay data={stats} />
+          </div>
+          <div className={adminStyles.divSection}>
+            <CacheDisplay data={stats.serviceCounts} />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };
 
-const StatsDisplay = props => {
-  const stats = props.data;
-
-  const uniqueUserStats = getStatsRow(stats.uniqueUserStats);
-  const newAccountStats = getStatsRow(stats.newAccountStats);
-  const runCountStats = getStatsRow(stats.runCountStats);
+const StatsDisplay = ({ data }) => {
+  const uniqueUserStats = getStatsRow(data.uniqueUserStats);
+  const newAccountStats = getStatsRow(data.newAccountStats);
+  const runCountStats = getStatsRow(data.runCountStats);
 
   return (
     <div>
@@ -44,6 +49,43 @@ const StatsDisplay = props => {
         <h6>Runs Submitted</h6>
         {runCountStats}
       </div>
+    </div>
+  );
+};
+
+const CacheDisplay = ({ data }) => {
+  const seedPercentage = data.seedsOutstanding / 1e8;
+
+  return (
+    <div>
+      <h5>Counts</h5>
+      <span className={styles.cacheRow}>
+        <h6>TokenRevoked Cache</h6>
+        <div className={adminStyles.rightAlign}>{data.token}</div>
+      </span>
+      <span className={styles.cacheRow}>
+        <h6>Flag Cache</h6>
+        <div className={adminStyles.rightAlign}>{data.flag}</div>
+      </span>
+      <span className={styles.cacheRow}>
+        <h6>Leaderboard Cache</h6>
+        <div className={adminStyles.rightAlign}>{data.leaderboard}</div>
+      </span>
+      <span className={styles.cacheRow}>
+        <h6>ObjectIdToName Cache</h6>
+        <div className={adminStyles.rightAlign}>{data.objectIdToName}</div>
+      </span>
+      <span className={styles.cacheRow}>
+        <h6>User Cache</h6>
+        <div className={adminStyles.rightAlign}>{data.user}</div>
+      </span>
+      <span className={styles.cacheRow}>
+        <h6>Outstanding Seeds</h6>
+        <div className={adminStyles.rightAlign}>
+          {seedPercentage > 0.01 ? <span>({data.seedsOutstanding / 1e8}%)&nbsp;</span> : null}
+          {data.seedsOutstanding}
+        </div>
+      </span>
     </div>
   );
 };

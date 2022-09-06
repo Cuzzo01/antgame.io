@@ -85,10 +85,17 @@ const ChallengeList = () => {
     setLoading(false);
   };
 
+  var isInIframe = window.self !== window.top;
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2>AntGame.io</h2>
+        {isInIframe ? (
+          <a href="https://antgame.io?ref=iframe-linkout" target="_blank" rel="noreferrer">
+            <h2>AntGame.io</h2>
+          </a>
+        ) : (
+          <h2>AntGame.io</h2>
+        )}
       </div>
       {loading ? (
         <div className={styles.challengeGrid}>{InitialList}</div>
