@@ -4,76 +4,44 @@ import { useCallback } from "react";
 import { getPreviousRunData } from "../../Challenge/ChallengeService";
 import styles from "./RunHistoryTab.module.css";
 
-const heightOfRowPlusMargin = 55;
 
 const RunHistoryTab = props => {
 
-  const listRef = useRef();
   var challengeId = props.challengeID;
 
   const [latestRunHistoryTime, setLatestRunHistoryTime] = useState(new Date());
   const [hasGrabbedAllValidPrevRuns, setHasGrabbedAllValidPrevRuns] = useState(false);
   const [previousRuns, setPreviousRuns] = useState([]);
-
-  const [itemsPerPage, setItemsPerPage] = useState(15);
-  const [loading, setLoading] = useState(false);
-
-const updateItemsToGrab = useCallback(() => {
-  var amountToLoad = Math.floor(listRef.current?.clientHeight / heightOfRowPlusMargin);
-  console.log(listRef.current?.offsetTop)
-  var nextLowMultOf5 = amountToLoad - (amountToLoad % 5);
-
-  console.log(amountToLoad, nextLowMultOf5);
-  setItemsPerPage(nextLowMultOf5);
-return amountToLoad}, []);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log(challengeId);
-    updateItemsToGrab();
-    addRuns();
+    addRuns(15).then(() => setLoading(false)); //todo: this doesn't work
   }, [challengeId]);
 
-  const addRuns = useCallback(async() => {
+  const addRuns = useCallback(async(itemsToGrab) => {
     if(!hasGrabbedAllValidPrevRuns){
-      getPreviousRunData({challengeId, timeBefore: latestRunHistoryTime, itemsToGrab: itemsPerPage}).then(result => {
+      getPreviousRunData({challengeId, timeBefore: latestRunHistoryTime, itemsToGrab: itemsToGrab}).then(result => {
+        setHasGrabbedAllValidPrevRuns(result.length < itemsToGrab); //todo: when no runs, the "load more" button will flash b4 this completes
         setPreviousRuns([...previousRuns, ...result]);
-        if(result.length < itemsPerPage) setHasGrabbedAllValidPrevRuns(true);
         if(result.length > 0) setLatestRunHistoryTime(new Date(result[result.length-1]?.submissionTime));
       })
     }
   });
 
-  useEffect(() => {
-    console.log("added length");
-  }, [previousRuns.length]);
-
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Last {previousRuns.length} Runs</h2>
-      {/* <div className={styles.runsList}>
-        {previousRuns.map((value, index) => (<RunEntry run={value} key={index} action={(run) => props.loadRunHandler(run)}/>))}
-      </div> */}
-      <div ref={listRef} className={styles.runsList}>
-      {!loading ? 
-      previousRuns.map((value, index) => (<RunEntry run={value} key={index} action={(run) => props.loadRunHandler(run)}/>)) 
-      // <RunList loadRunHandler={props.loadRunHandler} previousRuns={previousRuns}></RunList>
-      : <></>}
-
-        {!hasGrabbedAllValidPrevRuns ? <div onClick={addRuns}>Load More{">>"}</div> : <div>All Loadable Runs Loaded</div>}
+      {(!loading) ? 
+      (<><h2 className={styles.title}>Last {previousRuns.length} Runs</h2>
+      <div className={styles.runsList}>
+        {previousRuns.map((value, index) => (<RunEntry run={value} key={index} action={(run) => props.loadRunHandler(run)}/>))} 
+        {(!hasGrabbedAllValidPrevRuns) ? <div className={styles.loadMore} onClick={() => addRuns(10)}>Load More{">>"}</div> : <div>All Loadable Runs Loaded</div>}
       </div>
-      <div className={styles.bottombar}></div>
+      <div className={styles.bottombar}/></>) : <></>}
     </div>
-  );
+  )
 };
 
-const RunList = props => {
-  return (
-    <div className={styles.innerList}>
 
-      {props.previousRuns.map((value, index) => (<RunEntry run={value} key={index} action={(run) => props.loadRunHandler(run)}/>))}
-    </div>
-      )
-}
 
 const RunEntry = props => {
   const run = props.run;
