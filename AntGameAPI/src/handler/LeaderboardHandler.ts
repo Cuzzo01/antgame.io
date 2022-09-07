@@ -12,7 +12,6 @@ import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { FullChampionshipConfig } from "../models/FullChampionshipConfig";
 import { RawLeaderboardEntry } from "../models/RawLeaderboardEntry";
 import { ChallengeRecordDao } from "../dao/ChallengeRecordDao";
-import { TryParseObjectID } from "../dao/helpers";
 import { ObjectIDToNameHandler } from "./ObjectIDToNameHandler";
 
 const FlagCache = FlagHandler.getCache();
@@ -73,10 +72,7 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
       id: `${id}-raw`,
       type: "Raw challenge",
       fetchMethod: async () => {
-        const challengeObjectId = TryParseObjectID(id, "ChallengeId");
-        const rawLeaderboard = await this._challengeRecordDao.getChallengeLeaderboard(
-          challengeObjectId
-        );
+        const rawLeaderboard = await this._challengeRecordDao.getChallengeLeaderboard(id);
         const toReturn: RawLeaderboardEntry[] = [];
         for (const entry of rawLeaderboard) {
           toReturn.push({

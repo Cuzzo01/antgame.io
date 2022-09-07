@@ -12,7 +12,6 @@ import {
   setLastAwarded,
   updateUserPointsTotal,
 } from "../dao/ChampionshipDao";
-import { TryParseObjectID } from "../dao/helpers";
 import { addBadgeToUser } from "../dao/UserDao";
 import { LeaderboardHandler } from "../handler/LeaderboardHandler";
 import { UserHandler } from "../handler/UserHandler";
@@ -112,9 +111,8 @@ export class ChampionshipOrchestrator {
     const percentCount = Math.round(playerCount * largestPercent);
     const usersToGet = percentCount > largestRank ? percentCount : largestRank;
 
-    const challengeObjectId = TryParseObjectID(challengeConfig.id, "ChallengeId");
     const leaderboardEntries = await _challengeRecordDao.getChallengeLeaderboard(
-      challengeObjectId,
+      challengeConfig.id,
       usersToGet
     );
 

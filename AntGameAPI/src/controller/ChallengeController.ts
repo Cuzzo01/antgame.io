@@ -24,7 +24,6 @@ import { ChallengeRecord } from "../models/ChallengeRecord";
 import { HomeFoodAmounts, RunRequest } from "../models/RunArtifact";
 import { RunSubmissionResponse } from "../models/RunSubmissionResponse";
 import { RunTag } from "../models/RunTag";
-import { UserChallengeDetails } from "../models/UserChallengeDetails";
 import { DailyChallengeHandler } from "../handler/DailyChallengeHandler";
 import { ChallengeResponse } from "../models/ChallengeResponse";
 import { ObjectId } from "mongodb";
@@ -130,13 +129,11 @@ export class ChallengeController {
         }
       }
 
-      const challengeObjectId = TryParseObjectID(runData.challengeID, "ChallengeId");
-      const userObjectId = TryParseObjectID(user.id, "UserId");
       let currentRecord: ChallengeRecordEntity;
       let isPB = false;
       if (!user.anon) {
         if (verificationResult === "verified" || RejectUnverifiedRuns === false) {
-          currentRecord = await _challengeRecordDao.getRecord(challengeObjectId, userObjectId);
+          currentRecord = await _challengeRecordDao.getRecord(runData.challengeID, user.id);
           if (currentRecord === null) {
             isPB = true;
             saveRun = "New challenge";
@@ -212,20 +209,20 @@ export class ChallengeController {
         if (!user.anon) {
           if (isPB && currentRecord === null) {
             await _challengeRecordDao.addNewRecord(
-              challengeObjectId,
-              userObjectId,
+              runData.challengeID,
+              user.id,
               runData.Score,
               runID
             );
           } else if (isPB) {
             await _challengeRecordDao.updateRecord(
-              challengeObjectId,
-              userObjectId,
+              runData.challengeID,
+              user.id,
               runData.Score,
               runID
             );
           } else {
-            await _challengeRecordDao.incrementRunCount(challengeObjectId, userObjectId);
+            await _challengeRecordDao.incrementRunCount(runData.challengeID, user.id);
           }
 
           if (isPB) {
@@ -368,11 +365,7 @@ export class ChallengeController {
         records[id] = { wr: wr };
       }
 
-      const userObjectId = TryParseObjectID(user.id, "UserId");
-      const activeUserRecords = await _challengeRecordDao.getUserRecords(
-        userObjectId,
-        challengeIDList
-      );
+      const activeUserRecords = await _challengeRecordDao.getUserRecords(user.id, challengeIDList);
 
       if (activeUserRecords) {
         const shouldGetRanks = await FlagCache.getFlagValue("show-rank-on-challenge-list");
@@ -431,12 +424,7 @@ export class ChallengeController {
         };
 
       if (!user.anon) {
-        const challengeObjectId = TryParseObjectID(challengeID, "ChallengeId");
-        const userObjectId = TryParseObjectID(user.id, "UserId");
-        const challengeDetails = await _challengeRecordDao.getRecord(
-          challengeObjectId,
-          userObjectId
-        );
+        const challengeDetails = await _challengeRecordDao.getRecord(challengeID, user.id);
         if (challengeDetails !== null) {
           const rank = await LeaderboardCache.getChallengeRankByUserId(challengeID, user.id);
           response.pr = challengeDetails.score;
@@ -489,9 +477,7 @@ export class ChallengeController {
 
       const isCurrentDaily = getCurrentDaily || currentDaily.equals(challengeID);
       if (!onLeaderboard) {
-        const challengeObjectId = TryParseObjectID(challengeID, "ChallengeId");
-        const userObjectId = TryParseObjectID(user.id, "UserId");
-        const pr = await _challengeRecordDao.getRecord(challengeObjectId, userObjectId);
+        const pr = await _challengeRecordDao.getRecord(challengeID, user.id);
         if (pr) {
           const currentUserRank = await LeaderboardCache.getChallengeRankByUserId(
             challengeID,

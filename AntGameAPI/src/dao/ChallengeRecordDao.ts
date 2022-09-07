@@ -1,5 +1,6 @@
 import { Collection, ObjectId } from "mongodb";
 import { ChallengeRecordEntity } from "./entities/ChallengeRecordEntity";
+import { TryParseObjectID } from "./helpers";
 import { MongoConnection } from "./MongoClientTS";
 
 export class ChallengeRecordDao {
@@ -13,17 +14,23 @@ export class ChallengeRecordDao {
     return this._collection;
   }
 
-  public async getChallengeLeaderboard(challengeId: ObjectId, recordCount = 0) {
+  public async getChallengeLeaderboard(challengeId: ObjectId | string, recordCount = 0) {
+    if (typeof challengeId === "string") challengeId = TryParseObjectID(challengeId, "ChallengeId");
+
     const collection = await this.getCollection();
     return await collection.find({ challengeId }).sort({ score: -1 }).limit(recordCount).toArray();
   }
 
   public async addNewRecord(
-    challengeId: ObjectId,
-    userId: ObjectId,
+    challengeId: ObjectId | string,
+    userId: ObjectId | string,
     score: number,
-    runId: ObjectId
+    runId: ObjectId | string
   ) {
+    if (typeof challengeId === "string") challengeId = TryParseObjectID(challengeId, "ChallengeId");
+    if (typeof userId === "string") userId = TryParseObjectID(userId, "userId");
+    if (typeof runId === "string") runId = TryParseObjectID(runId, "ChallengeId");
+
     const collection = await this.getCollection();
     await collection.insertOne({
       challengeId,
@@ -35,32 +42,50 @@ export class ChallengeRecordDao {
   }
 
   public async updateRecord(
-    challengeId: ObjectId,
-    userId: ObjectId,
+    challengeId: ObjectId | string,
+    userId: ObjectId | string,
     score: number,
-    runId: ObjectId
+    runId: ObjectId | string
   ) {
+    if (typeof challengeId === "string") challengeId = TryParseObjectID(challengeId, "ChallengeId");
+    if (typeof userId === "string") userId = TryParseObjectID(userId, "userId");
+    if (typeof runId === "string") runId = TryParseObjectID(runId, "ChallengeId");
+
     const collection = await this.getCollection();
-    await collection.updateOne({ challengeId, userId }, { $set: { runId, score }, $inc: { runs: 1 } });
+    await collection.updateOne(
+      { challengeId, userId },
+      { $set: { runId, score }, $inc: { runs: 1 } }
+    );
   }
 
-  public async incrementRunCount(challengeId: ObjectId, userId: ObjectId) {
+  public async incrementRunCount(challengeId: ObjectId | string, userId: ObjectId | string) {
+    if (typeof challengeId === "string") challengeId = TryParseObjectID(challengeId, "ChallengeId");
+    if (typeof userId === "string") userId = TryParseObjectID(userId, "userId");
+
     const collection = await this.getCollection();
     await collection.updateOne({ challengeId, userId }, { $inc: { runs: 1 } });
   }
 
-  public async getRecord(challengeId: ObjectId, userId: ObjectId) {
+  public async getRecord(challengeId: ObjectId | string, userId: ObjectId | string) {
+    if (typeof challengeId === "string") challengeId = TryParseObjectID(challengeId, "ChallengeId");
+    if (typeof userId === "string") userId = TryParseObjectID(userId, "userId");
+
     const collection = await this.getCollection();
     return await collection.findOne({ challengeId, userId });
   }
 
-  public async getUserRecords(userId: ObjectId, challengeIdList: ObjectId[]) {
+  public async getUserRecords(userId: ObjectId | string, challengeIdList: ObjectId[]) {
+    if (typeof userId === "string") userId = TryParseObjectID(userId, "userId");
+
     const collection = await this.getCollection();
     return await collection.find({ userId, challengeId: { $in: challengeIdList } }).toArray();
   }
 
-  public async deleteRecord(challengeId: ObjectId, userId: ObjectId) {
+  public async deleteRecord(challengeId: ObjectId | string, userId: ObjectId | string) {
+    if (typeof challengeId === "string") challengeId = TryParseObjectID(challengeId, "ChallengeId");
+    if (typeof userId === "string") userId = TryParseObjectID(userId, "userId");
+
     const collection = await this.getCollection();
-    await collection.deleteOne({ challengeId, userId })
+    await collection.deleteOne({ challengeId, userId });
   }
 }
