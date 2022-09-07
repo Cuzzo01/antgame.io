@@ -1,7 +1,6 @@
 import { Config } from "../config";
 import {
   getChallengeConfig,
-  // getPreviousRunData,
   getPRInfo,
   getRecords,
   getSeed,
@@ -19,11 +18,6 @@ class ChallengeHandler {
     this.runResponseListeners = [];
     this.prInfo = false;
     this.lastSeenUpdateCount = 0;
-
-    // this.latestRunHistoryTime = new Date();
-    // this.previousRuns = [];
-    // this.itemsToGrab = 10;
-    // this.hasGrabbedAllValidPrevRuns = false;
   }
 
   set mapHandler(mapHandler) {
@@ -42,11 +36,6 @@ class ChallengeHandler {
   get isPB() {
     return this.artifact?.PB === true;
   }
-
-  // get previousRuns() {
-  //   return this.previousRuns;
-  // }
-
 
   set timerHandler(timerHandler) {
     this._timerHandler = timerHandler;
@@ -90,13 +79,6 @@ class ChallengeHandler {
 
   async loadHistoricalRun({run}) {
     this._mapHandler.clearMap();
-    // if (this.previousRuns.length < index + 1) {
-    //   await this.addPreviousRuns(index - this.addPreviousRuns.length + 1);
-    //   if (this.previousRuns.length < index + 1) {
-    //     return;
-    //   }
-    // }
-    // let run = this.previousRuns[index];s
     this._mapHandler.setLocationInfo({locations: run.homeLocations, amounts: run.homeAmounts});
   }
 
@@ -161,16 +143,6 @@ class ChallengeHandler {
       });
     }
   }
-
-  // async addPreviousRuns(itemsToGrab = 10 ) {
-  //   if(!this.hasGrabbedAllValidPrevRuns) {
-  //     return getPreviousRunData({challengeId: this._challengeID, timeBefore: this.latestRunHistoryTime, itemsToGrab }).then(locationHistory => {
-  //       this.previousRuns = this.previousRuns.concat(...locationHistory);
-  //       this.latestRunHistoryTime = new Date(this.previousRuns[this.previousRuns.length - 1].submissionTime);
-  //       if (locationHistory.length < itemsToGrab) this.hasGrabbedAllValidPrevRuns = true;
-  //     });
-  //   }
-  // }
 
   setEnv() {
     this.env = "PROD";
