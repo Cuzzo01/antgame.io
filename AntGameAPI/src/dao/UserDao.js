@@ -6,159 +6,6 @@ const getCollection = async collection => {
   return await connection.db("challenges").collection(collection);
 };
 
-const getUserPBs = async userID => {
-  const userObjectID = TryParseObjectID(userID, "userID", "UserDao");
-
-  const collection = await getCollection("users");
-  const result = await collection.findOne(
-    { _id: userObjectID },
-    {
-      projection: {
-        "challengeDetails.ID": 1,
-        "challengeDetails.pb": 1,
-        "challengeDetails.runs": 1,
-      },
-    }
-  );
-  if (!result) return null;
-  return result.challengeDetails;
-};
-
-const getChallengeDetailsByUser = async (userID, challengeID) => {
-  const userObjectID = TryParseObjectID(userID, "userId", "UserDao");
-  const challengeObjectID = TryParseObjectID(challengeID, "challengeID", "UserDao");
-
-  const collection = await getCollection("users");
-  const result = await collection.findOne(
-    { _id: userObjectID, "challengeDetails.ID": challengeObjectID },
-    { projection: { "challengeDetails.$": 1 } }
-  );
-  if (result === null) return null;
-  return result.challengeDetails[0];
-};
-
-const updateChallengePBAndRunCount = async (userID, challengeID, score, runID) => {
-  const userObjectID = TryParseObjectID(userID, "userId", "UserDao");
-  const challengeObjectID = TryParseObjectID(challengeID, "challengeID", "UserDao");
-  const runObjectID = TryParseObjectID(runID, "runID", "UserDao");
-
-  const collection = await getCollection("users");
-  await collection.updateOne(
-    { _id: userObjectID },
-    {
-      $set: {
-        "challengeDetails.$[challenge].pb": score,
-        "challengeDetails.$[challenge].pbRunID": runObjectID,
-      },
-      $inc: { "challengeDetails.$[challenge].runs": 1 },
-    },
-    {
-      arrayFilters: [{ "challenge.ID": challengeObjectID }],
-    }
-  );
-};
-
-const incrementChallengeRunCount = async (userID, challengeID) => {
-  const userObjectID = TryParseObjectID(userID, "userId", "UserDao");
-  const challengeObjectID = TryParseObjectID(challengeID, "challengeID", "UserDao");
-
-  const collection = await getCollection("users");
-  await collection.updateOne(
-    { _id: userObjectID },
-    {
-      $inc: { "challengeDetails.$[challenge].runs": 1 },
-    },
-    {
-      arrayFilters: [{ "challenge.ID": challengeObjectID }],
-    }
-  );
-};
-
-const addNewChallengeDetails = async (userID, challengeID, score, runID) => {
-  const userObjectID = TryParseObjectID(userID, "userId", "UserDao");
-  const challengeObjectID = TryParseObjectID(challengeID, "challengeID", "UserDao");
-  const runObjectID = TryParseObjectID(runID, "runID", "UserDao");
-
-  const collection = await getCollection("users");
-  await collection.updateOne(
-    { _id: userObjectID },
-    {
-      $push: {
-        challengeDetails: {
-          ID: challengeObjectID,
-          pb: score,
-          runs: 1,
-          pbRunID: runObjectID,
-        },
-      },
-    }
-  );
-};
-
-const getPRRunIDByChallengeID = async (userID, challengeID) => {
-  const userObjectID = TryParseObjectID(userID, "userID", "UserDao");
-  const challengeObjectID = TryParseObjectID(challengeID, "challengeID", "UserDao");
-
-  const collection = await getCollection("users");
-  const result = await collection.findOne(
-    {
-      _id: userObjectID,
-      "challengeDetails.ID": challengeObjectID,
-    },
-    {
-      projection: {
-        challengeDetails: {
-          $elemMatch: { ID: challengeObjectID },
-        },
-      },
-    }
-  );
-  if (!result) return null;
-  return result.challengeDetails[0].pbRunID;
-};
-
-const getLeaderboardByChallengeId = async (id, recordCount) => {
-  const challengeObjectID = TryParseObjectID(id, "challengeID", "UserDao");
-
-  const collection = await getCollection("users");
-  const aggregateArr = [
-    {
-      $match: {
-        "challengeDetails.ID": challengeObjectID,
-        showOnLeaderboard: true,
-        banned: { $ne: true },
-      },
-    },
-    {
-      $project: {
-        username: 1,
-        challengeDetails: {
-          $filter: {
-            input: "$challengeDetails",
-            as: "details",
-            cond: { $eq: ["$$details.ID", challengeObjectID] },
-          },
-        },
-      },
-    },
-    { $unwind: "$challengeDetails" },
-    {
-      $group: {
-        _id: "$_id",
-        username: { $first: "$username" },
-        pb: { $first: "$challengeDetails.pb" },
-        runID: { $first: "$challengeDetails.pbRunID" },
-      },
-    },
-    { $sort: { pb: -1, runID: 1 } },
-  ];
-  if (recordCount) aggregateArr.push({ $limit: recordCount });
-
-  const result = await collection.aggregate(aggregateArr).toArray();
-
-  return result;
-};
-
 const isUserBanned = async id => {
   const userObjectID = TryParseObjectID(id, "UserID", "UserDao");
 
@@ -185,18 +32,6 @@ const getUsernameByID = async id => {
   const collection = await getCollection("users");
   const result = await collection.findOne({ _id: userObjectID }, { projection: { username: 1 } });
   return result.username;
-};
-
-const getPlayerCountByChallengeID = async id => {
-  const challengeObjectID = TryParseObjectID(id, "ChallengeID", "UserDao");
-
-  const collection = await getCollection("users");
-  const result = await collection.countDocuments({
-    "challengeDetails.ID": challengeObjectID,
-    showOnLeaderboard: true,
-  });
-
-  return result;
 };
 
 const shouldShowUserOnLeaderboard = async id => {
@@ -263,18 +98,11 @@ const addBadgeToUser = async (userID, badgeData) => {
     }
   );
 };
+
 module.exports = {
-  updateChallengePBAndRunCount,
-  addNewChallengeDetails,
-  getChallengeDetailsByUser,
-  incrementChallengeRunCount,
-  getUserPBs,
-  getPRRunIDByChallengeID,
-  getLeaderboardByChallengeId,
   isUserBanned,
   isUserAdmin,
   getUsernameByID,
-  getPlayerCountByChallengeID,
   shouldShowUserOnLeaderboard,
   getUserBadgesByID,
   addBadgeToUser,
