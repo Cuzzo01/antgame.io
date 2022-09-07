@@ -18,7 +18,11 @@ export class ChallengeRecordDao {
     if (typeof challengeId === "string") challengeId = TryParseObjectID(challengeId, "ChallengeId");
 
     const collection = await this.getCollection();
-    return await collection.find({ challengeId }).sort({ score: -1 }).limit(recordCount).toArray();
+    return await collection
+      .find({ challengeId })
+      .sort({ score: -1, runId: 1 })
+      .limit(recordCount)
+      .toArray();
   }
 
   public async addNewRecord(
