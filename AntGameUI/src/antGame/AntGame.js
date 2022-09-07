@@ -38,7 +38,9 @@ export default class AntGame extends React.Component {
 
 	constructor(props) {
 		super(props);
-
+		
+		this.sideRef = React.createRef();
+		
     this.brushSize = BrushSizeDefault;
     this.brushType = DefaultBrush.value;
     this.windowSize = [];
@@ -48,7 +50,7 @@ export default class AntGame extends React.Component {
     this.gameSpeed = 1;
     this.containerRef = createRef();
 
-    this.timerHandler = new TimerHandler(this.handleChallengeTimeout, this.setTime);
+    	this.timerHandler = new TimerHandler(this.handleChallengeTimeout, this.setTime);
 
 		this.mapHandler = new MapHandler(this.toggleTimer);
 		this.antHandler = new AntHandler();
@@ -60,6 +62,7 @@ export default class AntGame extends React.Component {
 		}
 
     this.showHistoryTab = false;
+    this.showHistoryTabSwitched = false;
 
 		this.state = {
 			emptyMap: emptyMap,
@@ -174,10 +177,23 @@ export default class AntGame extends React.Component {
 
   setCanvasBounds = p5 => {
 		this.windowSize = [p5.windowWidth, p5.windowHeight];
+		let amtToSubtract;
+		if(this.showHistoryTab){
+			amtToSubtract = this.sideRef.current.offsetLeft + this.sideRef.current.offsetWidth + 10;
+			if(amtToSubtract < 100) return;
+		} else {
+			amtToSubtract = this.parentRef.offsetLeft;
+			if(amtToSubtract > 100) return;
+		}
+		console.log(amtToSubtract);
+		canvasW =  p5.windowWidth - amtToSubtract;
 		//TODO: THIS...
-		canvasW = p5.windowWidth - this.parentRef.offsetLeft * (this.showHistoryTab ? 1 : 2);
+		// canvasW = p5.windowWidth - this.parentRef.offsetLeft * (this.showHistoryTab ? 1 : 2);
+		// canvasW = p5.windowWidth - this.parentRef.offsetLeft;
 		canvasH = p5.windowHeight - this.parentRef.offsetTop - 20;
-		console.log(canvasW, this.parentRef.offsetLeft);
+		console.log(canvasW, this.parentRef.offsetLeft, this.sideRef);
+		console.log(this.windowSize, canvasW, canvasH);
+		this.showHistoryTabSwitched = false;
 	};
 
 	setupAndInitialize = () => {
@@ -188,7 +204,7 @@ export default class AntGame extends React.Component {
   draw = p5 => {
 		if (this.imageToSave !== "") this.handleImageSave(p5);
 
-    if (p5.windowWidth !== this.windowSize[0] || p5.windowHeight !== this.windowSize[1]) {
+    	if (p5.windowWidth !== this.windowSize[0] || p5.windowHeight !== this.windowSize[1] || this.showHistoryTabSwitched) {
 			this.resizeCanvas(p5);
 			this.containerRef.current.style.height = this.windowSize[1];
 			this.mapDrawer.drawFullMap({ map: this.mapHandler.map });
@@ -279,6 +295,7 @@ export default class AntGame extends React.Component {
 	};
 
   resizeCanvas = p5 => {
+	console.log('resize')
 		this.setCanvasBounds(p5);
 		this.setupAndInitialize();
 		p5.resizeCanvas(canvasW, canvasH);
@@ -424,6 +441,8 @@ export default class AntGame extends React.Component {
 
   toggleShowHistoryTab = () => {
     this.showHistoryTab = !this.showHistoryTab;
+	this.showHistoryTabSwitched = true;
+	console.log(this.showHistoryTab, this.showHistoryTabSwitched);
 	};
 
 	setTime = time => {
@@ -514,52 +533,58 @@ export default class AntGame extends React.Component {
 
 	render() {
 		return (
-			<div className={cssStyles.container} ref={this.containerRef}>
-				<ChallengeModal
-					challengeHandler={this.challengeHandler}
-					show={this.state.showChallengeModal}
-					closeModal={() => this.closeChallengeModal()}
-				/>
-				<div style={styles.centered}>
-					<div style={styles.header}>
-						<MenuBar
-							time={this.state.time}
-							timerActive={this.state.timerActive}
-							playState={this.state.playState}
-							playButtonHandler={this.updatePlayState}
-							resetHandler={this.resetHandler}
-							clearMapHandler={this.clearMap}
-							saveMapHandler={this.saveMapHandler}
-							mapClear={this.state.emptyMap}
-							brushSizeHandler={this.updateBrushSize}
-							brushTypeHandler={this.updateBrushType}
-							blockDrawHandler={this.setBlockDraw}
-							saveImageHandler={this.saveImageHandler}
-							loadMapHandler={this.loadMap}
-							setMapNameHandler={this.setMapName}
-							getMapName={() => this.mapHandler.mapName}
-							foodReturned={this.state.foodReturned}
-							homeOnMap={this.state.homeOnMap}
-							loadPRHandler={this.loadPRHomeLocations}
-							toggleShowHistory={this.toggleShowHistoryTab}
-						/>
-					</div>
-					<div className={cssStyles.innerWindow}>	
-						{this.showHistoryTab ? (
-							<RunHistoryTab
-								challengeID={this.dailyChallengeId ?? this.context.challengeID}
-								loadRunHandler={(run) =>
-									this.loadHistoricalHomeLocations({ run })
-								}
-							></RunHistoryTab>
-						) : (
-							<></>
-						)}
-						<Sketch setup={this.setup} draw={this.draw} />
-					</div>
-				</div>
-			</div>
-		);
+      <div className={cssStyles.container} ref={this.containerRef}>
+        <ChallengeModal
+          challengeHandler={this.challengeHandler}
+          show={this.state.showChallengeModal}
+          closeModal={() => this.closeChallengeModal()}
+        />
+        <div style={styles.centered}>
+          <div style={styles.header}>
+            <MenuBar
+              time={this.state.time}
+              timerActive={this.state.timerActive}
+              playState={this.state.playState}
+              playButtonHandler={this.updatePlayState}
+              resetHandler={this.resetHandler}
+              clearMapHandler={this.clearMap}
+              saveMapHandler={this.saveMapHandler}
+              mapClear={this.state.emptyMap}
+              brushSizeHandler={this.updateBrushSize}
+              brushTypeHandler={this.updateBrushType}
+              blockDrawHandler={this.setBlockDraw}
+              saveImageHandler={this.saveImageHandler}
+              loadMapHandler={this.loadMap}
+              setMapNameHandler={this.setMapName}
+              getMapName={() => this.mapHandler.mapName}
+              foodReturned={this.state.foodReturned}
+              homeOnMap={this.state.homeOnMap}
+              loadPRHandler={this.loadPRHomeLocations}
+              // toggleShowHistory={this.toggleShowHistoryTab}
+            />
+          </div>
+          <div className={cssStyles.innerWindow}>
+            <div ref={this.sideRef} style={{ display: "flex", flexDirection: "row" }}>
+              {this.showHistoryTab && !AuthHandler.isAnon ? (
+                <RunHistoryTab 
+                  challengeID={this.dailyChallengeId ?? this.context.challengeID}
+                  loadRunHandler={run => this.loadHistoricalHomeLocations({ run })}
+                ></RunHistoryTab>
+              ) : (
+                <></>
+              )}
+              <div
+                style={{ margin: "10px", backgroundColor: "green" }}
+                onClick={this.toggleShowHistoryTab}
+              >
+                h<br />i<br />s<br />t<br />o<br />r<br />y
+              </div>
+            </div>
+            <Sketch setup={this.setup} draw={this.draw} />
+          </div>
+        </div>
+      </div>
+    );
 	}
 }
 
