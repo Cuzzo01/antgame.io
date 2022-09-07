@@ -5,6 +5,6 @@ export interface RawLeaderboardEntry {
   username?: string;
   pb?: number;
   runID?: ObjectId;
-  points: number;
+  points?: number;
   noRank?: boolean;
 }

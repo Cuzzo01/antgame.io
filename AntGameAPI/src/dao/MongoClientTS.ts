@@ -1,9 +1,6 @@
 import { MongoClient, MongoClientOptions } from "mongodb";
 
-const Options: MongoClientOptions = {
-  // useNewUrlParser: true,
-  // useUnifiedTopology: true,
-};
+const Options: MongoClientOptions = {};
 
 export class MongoConnection {
   private static db: MongoClient;

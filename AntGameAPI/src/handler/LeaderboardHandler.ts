@@ -1,5 +1,4 @@
 import { ResultCacheWrapper } from "./ResultCacheWrapper";
-import { getLeaderboardByChallengeId } from "../dao/UserDao";
 import {
   getChampionshipDetailsFromDB,
   getLastPointsAwarded,
@@ -12,8 +11,11 @@ import { ChampionshipResponse } from "../models/ChampionshipResponse";
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { FullChampionshipConfig } from "../models/FullChampionshipConfig";
 import { RawLeaderboardEntry } from "../models/RawLeaderboardEntry";
+import { ChallengeRecordDao } from "../dao/ChallengeRecordDao";
+import { ObjectIDToNameHandler } from "./ObjectIDToNameHandler";
 
 const FlagCache = FlagHandler.getCache();
+const ObjectIDToNameCache = ObjectIDToNameHandler.getCache();
 
 export class LeaderboardHandler {
   private static cache: LeaderboardCache;
@@ -26,8 +28,11 @@ export class LeaderboardHandler {
 }
 
 class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | ChampionshipResponse> {
+  private _challengeRecordDao: ChallengeRecordDao;
+
   constructor() {
     super({ name: "LeaderboardHandler" });
+    this._challengeRecordDao = new ChallengeRecordDao();
   }
 
   get size() {
@@ -54,7 +59,8 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
       id,
       type: "Challenge",
       fetchMethod: async id => {
-        return (await getLeaderboardByChallengeId(id, 15)) as RawLeaderboardEntry[];
+        const rawLeaderboard = await this.getRawChallengeLeaderboard(id);
+        return rawLeaderboard.slice(0, 15);
       },
       getTimeToCache: this.getTimeToCache,
       logFormatter: () => "",
@@ -66,7 +72,17 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
       id: `${id}-raw`,
       type: "Raw challenge",
       fetchMethod: async () => {
-        return (await getLeaderboardByChallengeId(id)) as RawLeaderboardEntry[];
+        const rawLeaderboard = await this._challengeRecordDao.getChallengeLeaderboard(id);
+        const toReturn: RawLeaderboardEntry[] = [];
+        for (const entry of rawLeaderboard) {
+          toReturn.push({
+            _id: entry.userId,
+            username: await ObjectIDToNameCache.getUsername(entry.userId),
+            pb: entry.score,
+            runID: entry.runId,
+          });
+        }
+        return toReturn;
       },
       getTimeToCache: this.getTimeToCache,
       logFormatter: value => (Array.isArray(value) ? `Length: ${value.length}` : ""),
