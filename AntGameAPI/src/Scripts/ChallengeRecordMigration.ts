@@ -35,6 +35,10 @@ export const CleanUpMigrationFlag = async () => {
 
 const MigrateUser = async (userId: ObjectId) => {
   const records = await getUserRecords(userId);
+  if (!records) {
+    console.log(`Could not migrate user ${userId.toString()}`);
+    return;
+  }
   for (const record of records) {
     const challengeObjectId = TryParseObjectID(record.ID, "ChallengeId");
     const runObjectId = TryParseObjectID(record.pbRunID, "RunId");
