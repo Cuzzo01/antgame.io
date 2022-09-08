@@ -7,10 +7,12 @@ import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { LeaderboardEntry } from "../models/LeaderboardEntry";
 import { FlagHandler } from "../handler/FlagHandler";
 import { getChallengeByChallengeId } from "../dao/ChallengeDao";
+import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandler";
 
 const DailyChallengeCache = DailyChallengeHandler.getCache();
 const LeaderboardCache = LeaderboardHandler.getCache();
 const FlagCache = FlagHandler.getCache();
+const ObjectIDToNameCache = ObjectIDToNameHandler.getCache();
 
 export const GenerateChallengeLeaderboardData = async (challengeID: string, page = 1) => {
   const currentDaily = await DailyChallengeCache.getActiveDailyChallenge();
@@ -38,10 +40,11 @@ export const GenerateChallengeLeaderboardData = async (challengeID: string, page
         ? TimeHelper.getTimeStringForDailyChallenge(entry.runID)
         : TimeHelper.getGeneralizedTimeStringFromObjectID(entry.runID) + " ago";
 
+    const username = await ObjectIDToNameCache.getUsername(entry._id);
     leaderboardRows.push({
       id: entry._id.toString(),
       rank: startIndex + i + 1,
-      username: entry.username,
+      username: username,
       pb: entry.pb,
       age: timeString,
     });
