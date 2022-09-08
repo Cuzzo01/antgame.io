@@ -4,14 +4,17 @@ import AuthHandler from "../../Auth/AuthHandler";
 import LeaderboardRow from "../../Helpers/LeaderboardRow";
 
 export const YesterdaysDailyCard = ({ data }) => {
-  if (!data) return <div></div>;
   return (
     <div className={`${styles.bigCard} ${styles.yesterdaysDaily}`}>
-      <Link to={`/challenge/${data.id}/leaderboard`}>
-        <h4>Yesterday's Daily</h4>
-      </Link>
-      <h5>{data.name}</h5>
-      <ChallengeLeaderboard leaderboard={data.leaderboardData} />
+      {data && (
+        <span>
+          <Link to={`/challenge/${data.id}/leaderboard`}>
+            <h4>Yesterday's Daily</h4>
+          </Link>
+          <h5>{data.name}</h5>
+          <ChallengeLeaderboard leaderboard={data.leaderboardData} />
+        </span>
+      )}
     </div>
   );
 };

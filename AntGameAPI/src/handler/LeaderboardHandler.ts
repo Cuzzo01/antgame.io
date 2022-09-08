@@ -12,10 +12,8 @@ import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { FullChampionshipConfig } from "../models/FullChampionshipConfig";
 import { RawLeaderboardEntry } from "../models/RawLeaderboardEntry";
 import { ChallengeRecordDao } from "../dao/ChallengeRecordDao";
-import { ObjectIDToNameHandler } from "./ObjectIDToNameHandler";
 
 const FlagCache = FlagHandler.getCache();
-const ObjectIDToNameCache = ObjectIDToNameHandler.getCache();
 
 export class LeaderboardHandler {
   private static cache: LeaderboardCache;
@@ -77,7 +75,6 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
         for (const entry of rawLeaderboard) {
           toReturn.push({
             _id: entry.userId,
-            username: await ObjectIDToNameCache.getUsername(entry.userId),
             pb: entry.score,
             runID: entry.runId,
           });

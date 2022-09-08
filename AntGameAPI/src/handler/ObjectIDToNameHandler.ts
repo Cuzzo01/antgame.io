@@ -39,6 +39,7 @@ class ObjectIDtoNameCache extends ResultCacheWrapper<string> {
         const config = (await getChallengeByChallengeId(id)) as FullChallengeConfig;
         return config.name;
       },
+      logFormatter: result => result,
     });
   }
 
@@ -50,6 +51,7 @@ class ObjectIDtoNameCache extends ResultCacheWrapper<string> {
       fetchMethod: async () => {
         return (await getUsernameByID(id)) as string;
       },
+      logFormatter: result => result,
     });
   }
 
@@ -62,6 +64,7 @@ class ObjectIDtoNameCache extends ResultCacheWrapper<string> {
         const championship = (await getChampionshipDetailsFromDB(id)) as FullChampionshipConfig;
         return championship.name;
       },
+      logFormatter: result => result,
     });
   }
 }

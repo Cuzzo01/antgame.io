@@ -11,12 +11,13 @@ import { ChampionshipCard } from "./ChampionshipCard";
 import { YesterdaysDailyCard } from "./YesterdaysDailyCard";
 
 const ChallengeList = () => {
-  const InitialList = Array(12).fill(
+  const InitialList = [
     <DailyChallengeCard />,
-    <ChampionshipCard />,
     <YesterdaysDailyCard />,
-    <ChallengeCard showThumbnails loading />
-  );
+    <ChampionshipCard />,
+    <div className={styles.flexBreak} />,
+  ];
+  InitialList.push(...Array(12).fill(<ChallengeCard showThumbnails loading />));
 
   const [loading, setLoading] = useState(true);
   const [menuList, setMenuList] = useState([]);
