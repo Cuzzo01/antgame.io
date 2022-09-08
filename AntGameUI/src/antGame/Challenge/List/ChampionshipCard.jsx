@@ -4,16 +4,17 @@ import AuthHandler from "../../Auth/AuthHandler";
 import { Link } from "react-router-dom";
 
 export const ChampionshipCard = ({ data }) => {
-  if (!data) return <div></div>;
   return (
     <div className={`${styles.bigCard} ${styles.championshipCard}`}>
-      <span>
-        <Link to={`/championship/${data.id}`}>
-          <h4>Championship</h4>
-        </Link>
-        <h5>{data.name}</h5>
-      </span>
-      <ChampionshipLeaderboard leaderboard={data.leaderboard} />
+      {data && (
+        <span>
+          <Link to={`/championship/${data.id}`}>
+            <h4>Championship</h4>
+          </Link>
+          <h5>{data.name}</h5>
+          <ChampionshipLeaderboard leaderboard={data.leaderboard} />
+        </span>
+      )}
     </div>
   );
 };
