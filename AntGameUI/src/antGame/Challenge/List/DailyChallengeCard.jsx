@@ -37,7 +37,7 @@ export const DailyChallengeCard = ({ challenge, record, thumbnailURL }) => {
           <LeaderboardLink id={"daily"} />
         </div>
       </div>
-      {thumbnailURL && <Thumbnail isDaily url={thumbnailURL} />}
+      <Thumbnail isDaily url={thumbnailURL} />
     </div>
   );
 };
