@@ -295,10 +295,10 @@ export class AdminController {
       const result = await getUserDetailsByID(id);
       const activeChallenges = await getActiveChallenges();
 
-      const challengeIdList = activeChallenges.map(config => config.id)
+      const challengeIdList = activeChallenges.map(config => config.id);
       const rankPromises = [];
       result.activeChallengeDetails = {};
-      const userRecords = await _challengeRecordDao.getUserRecords(id, challengeIdList)
+      const userRecords = await _challengeRecordDao.getUserRecords(id, challengeIdList);
       if (userRecords) {
         for (const challenge of activeChallenges) {
           const userDetails = userRecords.find(details => details.challengeId.equals(challenge.id));
@@ -314,7 +314,7 @@ export class AdminController {
               name: challenge.name,
               runs: userDetails.runs,
               runTime: userDetails.runId.getTimestamp(),
-              playerCount: await LeaderboardCache.getChallengePlayerCount(challenge.id)
+              playerCount: await LeaderboardCache.getChallengePlayerCount(challenge.id),
             };
           }
         }
