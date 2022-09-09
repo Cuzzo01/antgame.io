@@ -42,6 +42,7 @@ import { AuthToken } from "../auth/models/AuthToken";
 import { PasswordHandler } from "../auth/PasswordHandler";
 import { RunData } from "../models/Admin/RunData";
 import { getOutstandingSeedCount } from "../dao/SeedDao";
+import { ChallengeRecordDao } from "../dao/ChallengeRecordDao";
 
 const Logger = LoggerProvider.getInstance();
 const LeaderboardCache = LeaderboardHandler.getCache();
@@ -49,6 +50,8 @@ const ObjectIDToNameCache = ObjectIDToNameHandler.getCache();
 const UserCache = UserHandler.getCache();
 const FlagCache = FlagHandler.getCache();
 const TokenRevokedCache = TokenRevokedHandler.getCache();
+
+const _challengeRecordDao = new ChallengeRecordDao();
 
 export class AdminController {
   //#region stats
@@ -292,12 +295,13 @@ export class AdminController {
       const result = await getUserDetailsByID(id);
       const activeChallenges = await getActiveChallenges();
 
+      const challengeIdList = activeChallenges.map(config => config.id)
       const rankPromises = [];
       result.activeChallengeDetails = {};
-      const userChallengeDetails = result.challengeDetails;
-      if (userChallengeDetails) {
-        activeChallenges.forEach(challenge => {
-          const userDetails = userChallengeDetails.find(details => details.ID.equals(challenge.id));
+      const userRecords = await _challengeRecordDao.getUserRecords(id, challengeIdList)
+      if (userRecords) {
+        for (const challenge of activeChallenges) {
+          const userDetails = userRecords.find(details => details.challengeId.equals(challenge.id));
           if (userDetails) {
             rankPromises.push(
               LeaderboardCache.getChallengeRankByUserId(challenge.id, id).then(rank => {
@@ -305,14 +309,15 @@ export class AdminController {
               })
             );
             result.activeChallengeDetails[challenge.id] = {
-              score: userDetails.pb,
-              runID: userDetails.pbRunID,
+              score: userDetails.score,
+              runID: userDetails.runId,
               name: challenge.name,
               runs: userDetails.runs,
-              runTime: userDetails.pbRunID.getTimestamp(),
+              runTime: userDetails.runId.getTimestamp(),
+              playerCount: await LeaderboardCache.getChallengePlayerCount(challenge.id)
             };
           }
-        });
+        }
 
         await Promise.all(rankPromises).then(ranks => {
           ranks.forEach(rank => (result.activeChallengeDetails[rank.id].rank = rank.rank));
