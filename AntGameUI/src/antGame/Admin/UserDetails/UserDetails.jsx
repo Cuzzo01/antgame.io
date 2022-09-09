@@ -134,6 +134,7 @@ const getDetailsList = challengeRecords => {
           ({GetGeneralTimeString(challengeDetails.runTime)} ago)
         </span>
         <span className={styles.alignCenter}>#{challengeDetails.rank}</span>
+        <span className={styles.playerCount}>/{challengeDetails.playerCount}&nbsp;</span>
         <span className={styles.alignCenter}>
           <Link to={`/admin/run/${challengeDetails.runID}`}>{challengeDetails.score}</Link>
         </span>
