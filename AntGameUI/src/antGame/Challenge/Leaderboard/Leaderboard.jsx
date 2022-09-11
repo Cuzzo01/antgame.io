@@ -8,8 +8,9 @@ import { useCallback } from "react";
 import LeaderboardRow from "../../Helpers/LeaderboardRow";
 import SolutionImage from "./SolutionImage";
 
-const Leaderboard = props => {
-  const challengeID = useParams().id;
+const Leaderboard = () => {
+  const { id, page } = useParams();
+  const parsedPage = parseInt(page);
   const history = useHistory();
 
   const [loading, setLoading] = useState(true);
@@ -18,8 +19,17 @@ const Leaderboard = props => {
   const [playerCount, setPlayerCount] = useState(false);
   const [isDaily, setIsDaily] = useState(false);
   const [solutionImagePath, setSolutionImagePath] = useState(false);
-  const [pageNumber, setPageNumber] = useState(1);
+  const [pageNumber, setPageNumber] = useState(parsedPage ? parsedPage : 1);
   const [morePages, setMorePages] = useState(false);
+
+  const goToPage = useCallback(
+    page => {
+      if (page === 1) history.push(`/challenge/${id}/leaderboard`);
+      else history.push(`/challenge/${id}/leaderboard/${page}`);
+      setPageNumber(page);
+    },
+    [history, id]
+  );
 
   const setError = useCallback(() => {
     setRunData(<h5>No records for this challenge</h5>);
@@ -48,7 +58,7 @@ const Leaderboard = props => {
         let rankLink, personalPage;
         if (data.extra) {
           personalPage = Math.floor(data.rank / (pageLength + 1)) + 1;
-          rankLink = data.extra ? () => setPageNumber(personalPage) : undefined;
+          rankLink = data.extra ? () => goToPage(personalPage) : undefined;
           lastRank = 0;
         }
         table.push(
@@ -72,7 +82,7 @@ const Leaderboard = props => {
 
       document.title = `${name} - Leaderboard`;
     },
-    []
+    [goToPage]
   );
 
   const fetchLeaderboard = useCallback(
@@ -89,19 +99,19 @@ const Leaderboard = props => {
   const fetchPublicLeaderboard = useCallback(
     ({ id }) => {
       getPublicLeaderboard(id, pageNumber).then(data => {
-        if (data === null && pageNumber !== 1) setPageNumber(1);
+        if (data === null && pageNumber !== 1) goToPage(1);
         else if (data === null) setError();
         else setLeaderboardData(data);
         setLoading(false);
       });
     },
-    [setLeaderboardData, setError, pageNumber]
+    [setLeaderboardData, setError, pageNumber, goToPage]
   );
 
   const refreshLeaderboard = useCallback(() => {
-    if (!AuthHandler.loggedIn) fetchPublicLeaderboard({ id: challengeID });
-    else fetchLeaderboard({ id: challengeID });
-  }, [challengeID, fetchLeaderboard, fetchPublicLeaderboard]);
+    if (!AuthHandler.loggedIn) fetchPublicLeaderboard({ id });
+    else fetchLeaderboard({ id });
+  }, [id, fetchLeaderboard, fetchPublicLeaderboard]);
 
   useEffect(() => {
     if (window.location.pathname.includes("daily")) setIsDaily(true);
@@ -117,7 +127,7 @@ const Leaderboard = props => {
       {isDaily ? (
         <DailyChallengePicker
           callback={newId => history.push(`/challenge/${newId}/leaderboard`)}
-          currentID={challengeID}
+          currentID={id}
         />
       ) : null}
       {solutionImagePath ? <SolutionImage path={solutionImagePath} /> : null}
@@ -129,14 +139,14 @@ const Leaderboard = props => {
           {isDaily ? (
             <a href="/challenge/daily">Play Daily</a>
           ) : (
-            <a href={`/challenge/${challengeID}`}>Play Challenge</a>
+            <a href={`/challenge/${id}`}>Play Challenge</a>
           )}
         </div>
       </div>
       {runTable}
       <div className={styles.pageNav}>
         {pageNumber !== 1 ? (
-          <span className={styles.link} onClick={() => setPageNumber(pageNumber - 1)}>
+          <span className={styles.link} onClick={() => goToPage(pageNumber - 1)}>
             &lt;&lt;
           </span>
         ) : (
@@ -144,7 +154,7 @@ const Leaderboard = props => {
         )}
         <span>{pageNumber}</span>
         {morePages ? (
-          <span className={styles.link} onClick={() => setPageNumber(pageNumber + 1)}>
+          <span className={styles.link} onClick={() => goToPage(pageNumber + 1)}>
             &gt;&gt;
           </span>
         ) : (

@@ -64,7 +64,7 @@ const AntGameRouter = () => {
                     <Route path="/login">
                       <LoginPage />
                     </Route>
-                    <Route path="/challenge/:id/leaderboard">
+                    <Route path="/challenge/:id/leaderboard/:page?">
                       <Leaderboard />
                       <UserBar />
                     </Route>
