@@ -25,8 +25,6 @@ const DailyChallengePicker = ({ callback, currentID }) => {
     callback(event.target.value);
   };
 
-  if (!selectOptions) return <div />;
-
   return (
     <div className={styles.dailyPicker}>
       <span>Other daily challenges:</span>

@@ -10,7 +10,6 @@ import SolutionImage from "./SolutionImage";
 
 const Leaderboard = () => {
   const { id, page } = useParams();
-  const parsedPage = parseInt(page);
   const history = useHistory();
 
   const [loading, setLoading] = useState(true);
@@ -19,7 +18,7 @@ const Leaderboard = () => {
   const [playerCount, setPlayerCount] = useState(false);
   const [isDaily, setIsDaily] = useState(false);
   const [solutionImagePath, setSolutionImagePath] = useState(false);
-  const [pageNumber, setPageNumber] = useState(parsedPage ? parsedPage : 1);
+  const [pageNumber, setPageNumber] = useState(false);
   const [morePages, setMorePages] = useState(false);
 
   const goToPage = useCallback(
@@ -86,18 +85,18 @@ const Leaderboard = () => {
   );
 
   const fetchLeaderboard = useCallback(
-    ({ id }) => {
+    (id, pageNumber) => {
       getLeaderboard(id, pageNumber).then(data => {
         if (data === null) setError();
         else setLeaderboardData(data);
         setLoading(false);
       });
     },
-    [setLeaderboardData, setError, pageNumber]
+    [setLeaderboardData, setError]
   );
 
   const fetchPublicLeaderboard = useCallback(
-    ({ id }) => {
+    (id, pageNumber) => {
       getPublicLeaderboard(id, pageNumber).then(data => {
         if (data === null && pageNumber !== 1) goToPage(1);
         else if (data === null) setError();
@@ -105,19 +104,27 @@ const Leaderboard = () => {
         setLoading(false);
       });
     },
-    [setLeaderboardData, setError, pageNumber, goToPage]
+    [setLeaderboardData, setError, goToPage]
   );
 
-  const refreshLeaderboard = useCallback(() => {
-    if (!AuthHandler.loggedIn) fetchPublicLeaderboard({ id });
-    else fetchLeaderboard({ id });
-  }, [id, fetchLeaderboard, fetchPublicLeaderboard]);
+  const refreshLeaderboard = useCallback(
+    (id, pageNumber) => {
+      if (!AuthHandler.loggedIn) fetchPublicLeaderboard(id, pageNumber);
+      else fetchLeaderboard(id, pageNumber);
+    },
+    [fetchLeaderboard, fetchPublicLeaderboard]
+  );
 
   useEffect(() => {
     if (window.location.pathname.includes("daily")) setIsDaily(true);
 
-    refreshLeaderboard();
-  }, [history, refreshLeaderboard]);
+    let parsedPage;
+    if (page) parsedPage = parseInt(page);
+    else parsedPage = 1;
+
+    setPageNumber(parsedPage);
+    refreshLeaderboard(id, parsedPage);
+  }, [id, history, page, refreshLeaderboard]);
 
   return loading ? null : (
     <div className={styles.container}>
