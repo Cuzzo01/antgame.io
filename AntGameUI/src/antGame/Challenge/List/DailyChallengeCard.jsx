@@ -2,13 +2,12 @@ import styles from "./ChallengePage.module.css";
 import DailyCountdown from "../DailyCountdown/DailyCountdown";
 import { ChallengeDetails, ChallengeLink, LeaderboardLink, PBDisplay, WRDisplay } from "./Helpers";
 import { Thumbnail } from "./Thumbnail";
-import { Link } from "react-router-dom";
 
 export const DailyChallengeCard = ({ challenge, record, thumbnailURL }) => {
   return (
     <div className={`${styles.bigCard} ${styles.dailyChallengeBox}`}>
       <h4 className={styles.dailyTitle}>
-        <Link to="/challenge/daily">Daily Challenge</Link>
+        <a href="/challenge/daily">Daily Challenge</a>
       </h4>
       <span className={styles.dailyCountdown}>
         Ends in <DailyCountdown />
