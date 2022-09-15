@@ -1,9 +1,17 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getDailyChallengeList } from "../ChallengeService";
 import styles from "./Leaderboard.module.css";
 
 const DailyChallengePicker = ({ callback, currentID }) => {
   const [selectOptions, setSelectOptions] = useState(false);
+
+  const handleChange = useCallback(
+    event => {
+      event.preventDefault();
+      callback(event.target.value);
+    },
+    [callback]
+  );
 
   useEffect(() => {
     getDailyChallengeList().then(list => {
@@ -16,21 +24,18 @@ const DailyChallengePicker = ({ callback, currentID }) => {
           </option>
         );
       });
-      setSelectOptions(options);
+      setSelectOptions(
+        <select onChange={handleChange} defaultValue={currentID}>
+          {options}
+        </select>
+      );
     });
-  }, []);
-
-  const handleChange = event => {
-    event.preventDefault();
-    callback(event.target.value);
-  };
+  }, [currentID, handleChange]);
 
   return (
     <div className={styles.dailyPicker}>
       <span>Other daily challenges:</span>
-      <select onChange={handleChange} defaultValue={currentID}>
-        {selectOptions}
-      </select>
+      {selectOptions ? selectOptions : <div />}
     </div>
   );
 };
