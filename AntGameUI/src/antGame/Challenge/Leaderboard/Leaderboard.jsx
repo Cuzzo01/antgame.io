@@ -31,12 +31,15 @@ const Leaderboard = () => {
   );
 
   const setError = useCallback(() => {
-    setRunData(<h5>No records for this challenge</h5>);
-    setTitle("Error");
-    setPlayerCount(false);
-    setSolutionImagePath(false);
-    document.title = "Leaderboard";
-  }, []);
+    if (pageNumber !== 1) goToPage(1);
+    else {
+      setRunData(<h5>No records for this challenge</h5>);
+      setTitle("Error");
+      setPlayerCount(false);
+      setSolutionImagePath(false);
+      document.title = "Leaderboard";
+    }
+  }, [pageNumber, goToPage]);
 
   const setLeaderboardData = useCallback(
     ({ daily, leaderboard, name, playerCount, solutionImage, pageLength }) => {
