@@ -19,16 +19,23 @@ const sdk = new NodeSDK({
   traceExporter,
   instrumentations: [
     getNodeAutoInstrumentations({
-      "@opentelemetry/instrumentation-http": { ignoreIncomingPaths: ["/health"] },
+      "@opentelemetry/instrumentation-http": {
+        ignoreIncomingPaths: ["/health"],
+        ignoreOutgoingUrls: [/logz\.io/],
+      },
     }),
   ],
 });
 
-export const setAttributes = ({ userID, clientID, username }) => {
+export const setAttributes = ({
+  userID = undefined,
+  clientID = undefined,
+  username = undefined,
+}) => {
   const activeSpan = TelemAPI.trace.getSpan(TelemAPI.context.active());
-  activeSpan.setAttribute("user.id", userID);
-  activeSpan.setAttribute("user.clientID", clientID);
-  activeSpan.setAttribute("user.name", username);
+  if (userID) activeSpan.setAttribute("user.id", userID);
+  if (clientID) activeSpan.setAttribute("user.clientID", clientID);
+  if (username) activeSpan.setAttribute("user.name", username);
 };
 
 sdk.start();
