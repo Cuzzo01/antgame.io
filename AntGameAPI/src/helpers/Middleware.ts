@@ -45,21 +45,35 @@ export const JwtResultHandler = function (
 
 export const TokenVerifier = async function (req: Request, res: Response, next: NextFunction) {
   try {
-    if (!req.user) {
+    const clientIdHeader = req.header("clientId");
+    if (!clientIdHeader) {
+      res.status(400);
+      res.send("Missing clientId header");
+      return;
+    } else {
+      setAttributes({ clientID: clientIdHeader });
+    }
+
+    const user = req.user as AuthToken;
+    if (!user) {
       next();
       return;
     }
 
-    const user = req.user as AuthToken;
+    const tokenClientId = user.clientID;
+    if (tokenClientId !== clientIdHeader) {
+      res.status(401);
+      res.send("ClientId header doesn't match JWT");
+      return;
+    }
 
     if (!user.anon) {
       const userID = user.id;
       const adminToken = user.admin === true;
       const tokenIssuedAt = user.iat;
-      const clientID = user.clientID;
       const TokenIsValid = await TokenRevokedCache.isTokenValid(userID, adminToken, tokenIssuedAt);
 
-      setAttributes({ userID, clientID, username: await ObjectIDToNameCache.getUsername(userID) });
+      setAttributes({ userID, username: await ObjectIDToNameCache.getUsername(userID) });
 
       if (TokenIsValid === false) {
         Logger.logAuthEvent({
