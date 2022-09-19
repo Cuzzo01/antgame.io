@@ -105,6 +105,7 @@ class AuthHandler {
         this.checkForUpdatedToken();
         config.headers.Authorization = `Bearer ${this.token}`;
       }
+      config.headers.clientId = this.clientID;
       return config;
     });
   }

@@ -91,11 +91,11 @@ export class LoggerBase {
     this.log(toLog);
   }
 
-  info(options: { source: string; infoText: string }) {
+  info(source: string, infoText: string) {
     const toLog: InfoLog = {
       message: MessageType.Info,
-      source: options.source,
-      infoText: options.infoText,
+      source: source,
+      infoText: infoText,
     };
     this.log(toLog);
   }
