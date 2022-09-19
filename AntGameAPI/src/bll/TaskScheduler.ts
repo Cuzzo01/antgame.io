@@ -16,17 +16,15 @@ export const initializeScheduledTasks = () => {
       { hour: 0, minute: 0 },
       removeAnonAndTagLessRunsOlderThan7Days
     );
-    Logger.info({
-      source: "removeAnonAndTagLessRunsOlderThan7Days",
-      infoText: `cron initialized, next run at ${dbCleanupJob.nextInvocation().toISOString()}`,
-    });
+    Logger.info(
+      "removeAnonAndTagLessRunsOlderThan7Days",
+      `cron initialized, next run at ${dbCleanupJob.nextInvocation().toISOString()}`
+    );
     const activeChallengeJob = scheduleJob("*/10 * * * *", RefreshActiveChallengeCache);
-    Logger.info({
-      source: "activeChallengeJob",
-      infoText: `cron initialized, next run at ${activeChallengeJob
-        .nextInvocation()
-        .toISOString()}`,
-    });
+    Logger.info(
+      "activeChallengeJob",
+      `cron initialized, next run at ${activeChallengeJob.nextInvocation().toISOString()}`
+    );
   } else {
     console.log("Skipping initializing crons");
   }

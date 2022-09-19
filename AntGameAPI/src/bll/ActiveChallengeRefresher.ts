@@ -18,8 +18,8 @@ export const RefreshActiveChallengeCache = async () => {
   await Promise.all(promises);
   const endTime = new Date();
   const elasped = endTime.getTime() - startTime.getTime();
-  Logger.info({
-    source: "RefreshActiveChallengeCache",
-    infoText: `Refreshed all active challenge leaderboards, it took ${elasped}ms`,
-  });
+  Logger.info(
+    "RefreshActiveChallengeCache",
+    `Refreshed all active challenge leaderboards, it took ${elasped}ms`
+  );
 };

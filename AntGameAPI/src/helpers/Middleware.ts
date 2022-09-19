@@ -46,10 +46,14 @@ export const JwtResultHandler = function (
 export const TokenVerifier = async function (req: Request, res: Response, next: NextFunction) {
   try {
     const clientIdHeader = req.header("clientId");
-    if (!clientIdHeader && req.url !== '/health') {
-      res.status(400);
-      res.send("Missing clientId header");
-      return;
+    if (!clientIdHeader && req.url !== "/health") {
+      if (await FlagCache.getBoolFlag("enable.require-clientid-header")) {
+        res.status(400);
+        res.send("Missing clientId header");
+        return;
+      } else {
+        Logger.info("TokenVerifier", "Allowing request without clientId header due to flag");
+      }
     } else {
       setAttributes({ clientID: clientIdHeader });
     }
@@ -90,7 +94,7 @@ export const TokenVerifier = async function (req: Request, res: Response, next: 
       if (!AllowAnon) {
         Logger.logAuthEvent({ event: "received anon token when not allowed" });
         res.status(401);
-        res.send("Anon access not currently allowed")
+        res.send("Anon access not currently allowed");
         return;
       }
     }
@@ -99,7 +103,7 @@ export const TokenVerifier = async function (req: Request, res: Response, next: 
       const LoginsEnabled = await TokenRevokedCache.AreLoginsEnabled();
       if (!LoginsEnabled) {
         res.status(401);
-        res.send("Access is currently disabled")
+        res.send("Access is currently disabled");
         return;
       }
     }
