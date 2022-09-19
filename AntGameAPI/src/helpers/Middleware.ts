@@ -46,15 +46,7 @@ export const JwtResultHandler = function (
 export const TokenVerifier = async function (req: Request, res: Response, next: NextFunction) {
   try {
     const clientIdHeader = req.header("clientId");
-    if (!clientIdHeader && req.url !== "/health") {
-      if (await FlagCache.getBoolFlag("enable.require-clientid-header")) {
-        res.status(400);
-        res.send("Missing clientId header");
-        return;
-      } else {
-        Logger.info("TokenVerifier", "Allowing request without clientId header due to flag");
-      }
-    } else {
+    if (clientIdHeader) {
       setAttributes({ clientID: clientIdHeader });
     }
 
@@ -65,10 +57,12 @@ export const TokenVerifier = async function (req: Request, res: Response, next: 
     }
 
     const tokenClientId = user.clientID;
-    if (tokenClientId !== clientIdHeader) {
+    if (clientIdHeader && tokenClientId !== clientIdHeader) {
       res.status(401);
       res.send("ClientId header doesn't match JWT");
       return;
+    } else if (!clientIdHeader) {
+      setAttributes({ clientID: tokenClientId });
     }
 
     if (!user.anon) {
