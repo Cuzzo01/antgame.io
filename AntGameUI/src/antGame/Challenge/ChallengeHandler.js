@@ -194,7 +194,6 @@ class ChallengeHandler {
       };
     }
 
-    clearInterval(this.snapshotInterval);
     this.artifact.GameConfig = {
       MapPath: this.config.mapPath,
       Time: this.config.seconds,

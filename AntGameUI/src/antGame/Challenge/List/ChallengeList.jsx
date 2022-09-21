@@ -28,20 +28,18 @@ const ChallengeList = () => {
 
   useEffect(() => {
     document.title = "AntGame.io";
-    const thumbnailFlagPromise = getFlag("show-challenge-list-thumbnails");
     if (AuthHandler.loggedIn && !AuthHandler.isAnon) {
       getActiveChallenges().then(challengeResponse =>
-        setData({ challengeResponse, thumbnailFlagPromise })
+        setData({ challengeResponse })
       );
     } else {
       getPublicActiveChallenges().then(challengeResponse =>
-        setData({ challengeResponse, thumbnailFlagPromise })
+        setData({ challengeResponse })
       );
     }
   }, [history]);
 
-  const setData = async ({ challengeResponse, thumbnailFlagPromise }) => {
-    const shouldShowThumbnails = await thumbnailFlagPromise;
+  const setData = async ({ challengeResponse }) => {
     const records = challengeResponse.records;
 
     const championshipData = challengeResponse.championshipData;
@@ -75,7 +73,6 @@ const ChallengeList = () => {
             id={challenge.id}
             time={challenge.time}
             homes={challenge.homes}
-            showThumbnails={shouldShowThumbnails}
             thumbnailURL={challenge.thumbnailURL}
           />
         );
@@ -114,7 +111,7 @@ const ChallengeList = () => {
 };
 export default ChallengeList;
 
-const ChallengeCard = ({ name, time, homes, records, id, showThumbnails, thumbnailURL }) => {
+const ChallengeCard = ({ name, time, homes, records, id, thumbnailURL }) => {
   return (
     <div className={styles.challengeGridElement}>
       <div className={styles.topBar}>
@@ -141,7 +138,7 @@ const ChallengeCard = ({ name, time, homes, records, id, showThumbnails, thumbna
           <LeaderboardLink id={id} />
         </div>
       </div>
-      {showThumbnails ? <Thumbnail url={thumbnailURL} /> : null}
+      <Thumbnail url={thumbnailURL} />
     </div>
   );
 };
