@@ -143,7 +143,7 @@ class AuthHandler {
   }
 
   async checkForAndSendUnsentArtifacts() {
-    const storedArtifact = localStorage.getItem("artifactToSend")
+    const storedArtifact = localStorage.getItem("artifactToSend");
     if (storedArtifact) {
       // TODO: Verify clientID before sending
       // Saving user and checking that too wouldn't be a bad idea

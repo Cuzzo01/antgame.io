@@ -23,21 +23,24 @@ const ChallengeLeaderboard = ({ leaderboard }) => {
   const currentUser = AuthHandler.username;
   let rowList = [];
 
+  let lastRank = 0;
   for (let i = 0; i < leaderboard?.length; i++) {
     const entry = leaderboard[i];
 
+    if (lastRank + 1 !== entry.rank) rowList.push(<div className={styles.bigCardHr} />);
     rowList.push(
       <LeaderboardRow
         id={entry.id}
         ownRow={entry.username === currentUser}
         key={entry.username}
-        rank={i + 1}
+        rank={entry.rank}
         name={entry.username}
         pb={entry.pb}
         skinny
       />
     );
+    lastRank = entry.rank;
   }
 
-  return <div>{rowList}</div>;
+  return <div className={styles.bigCardLeaderboard}>{rowList}</div>;
 };
