@@ -3,7 +3,6 @@ import styles from "./ChallengePage.module.css";
 import { getActiveChallenges, getPublicActiveChallenges } from "../../Challenge/ChallengeService";
 import AuthHandler from "../../Auth/AuthHandler";
 import { useHistory } from "react-router-dom";
-import { getFlag } from "../../Helpers/FlagService";
 import { DailyChallengeCard } from "./DailyChallengeCard";
 import { ChallengeDetails, ChallengeLink, LeaderboardLink, PBDisplay, WRDisplay } from "./Helpers";
 import { Thumbnail } from "./Thumbnail";
@@ -29,13 +28,9 @@ const ChallengeList = () => {
   useEffect(() => {
     document.title = "AntGame.io";
     if (AuthHandler.loggedIn && !AuthHandler.isAnon) {
-      getActiveChallenges().then(challengeResponse =>
-        setData({ challengeResponse })
-      );
+      getActiveChallenges().then(challengeResponse => setData({ challengeResponse }));
     } else {
-      getPublicActiveChallenges().then(challengeResponse =>
-        setData({ challengeResponse })
-      );
+      getPublicActiveChallenges().then(challengeResponse => setData({ challengeResponse }));
     }
   }, [history]);
 
