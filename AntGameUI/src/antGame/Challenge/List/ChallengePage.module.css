@@ -281,8 +281,19 @@ body {
   font-family: "Courier Prime Bold";
 }
 
+.bigCardLeaderboard {
+  display: flex;
+  flex-direction: column;
+}
+
 .bigCard h5 {
-  margin: 0.2em 0 0.3em 0;
+  margin: 0.1em 0 0.1em 0;
+}
+
+.bigCardHr {
+  height: 0.15rem;
+  background-color: black;
+  margin: 0 2rem;
 }
 
 /* ChampionshipCard */
