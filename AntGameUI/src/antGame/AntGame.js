@@ -549,7 +549,7 @@ export default class AntGame extends React.Component {
               foodReturned={this.state.foodReturned}
               homeOnMap={this.state.homeOnMap}
               loadPRHandler={this.loadPRHomeLocations}
-              // toggleShowHistory={this.toggleShowHistoryTab}
+              toggleShowHistory={this.toggleShowHistoryTab}
             />
           </div>
           <div className={cssStyles.innerWindow}>

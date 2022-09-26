@@ -27,7 +27,7 @@ export default function MenuBar(props) {
         loadMapHandler={props.loadMapHandler}
         saveMapHandler={props.saveMapHandler}
         loadPRHandler={props.loadPRHandler}
-        // toggleShowHistory={props.toggleShowHistory}
+        toggleShowHistory={props.toggleShowHistory}
       />
       <div className={IsChallenge ? styles.challengeMiddle : styles.middle}>
         {IsChallenge ? (
