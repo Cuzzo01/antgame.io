@@ -4,7 +4,7 @@
   margin-right: 10px;
   margin-bottom: 10px;
   padding:5px;
-  height: 80%;
+  height: 100%;
   overflow: hidden;
   justify-items: center;
   display: flex;
@@ -16,7 +16,8 @@
   display: flex;
   width: 100%;
   flex-direction: column;
-  height: calc(100vh - 145px); /* top of list ~127 pxs down ... TODO*/
+ height: calc(100vh - 145px); /* top of list ~127 pxs down ... TODO*/
+ /* height: 100%; /* top of list ~127 pxs down ... TODO*/
   overflow-y: auto;
   align-items: center;
 }
