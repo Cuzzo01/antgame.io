@@ -562,12 +562,6 @@ export default class AntGame extends React.Component {
               ) : (
                 <></>
               )}
-              <div
-                style={{ margin: "10px", backgroundColor: "green" }}
-                onClick={this.toggleShowHistoryTab}
-              >
-                h<br />i<br />s<br />t<br />o<br />r<br />y
-              </div>
             </div>
             <Sketch setup={this.setup} draw={this.draw} />
           </div>
