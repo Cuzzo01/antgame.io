@@ -177,6 +177,8 @@ export default class AntGame extends React.Component {
 		if(this.showHistoryTab){
 			amtToSubtract = this.sideRef.current.offsetLeft + this.sideRef.current.offsetWidth + 10;
 			if(amtToSubtract < 100) return;
+		} else if (this.state.timerActive){
+			amtToSubtract = 0;
 		} else {
 			amtToSubtract = this.parentRef.offsetLeft;
 			if(amtToSubtract > 100) return;
@@ -406,6 +408,7 @@ export default class AntGame extends React.Component {
 			this.setMapUiUpdate(100);
 			this.toggleTimer(false);
 		}
+		this.showHistoryTabSwitched = true;
 		this.setState({ playState: state });
 	};
 
