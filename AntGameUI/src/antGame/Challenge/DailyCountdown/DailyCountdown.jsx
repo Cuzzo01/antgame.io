@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
 import Countdown from "react-countdown";
@@ -77,7 +78,8 @@ const DailyCountdown = ({ short = false }) => {
 export default DailyCountdown;
 
 const getCurrentTime = async () => {
-  return fetch("/api/time")
+  return axios
+    .get("/api/time")
     .then(response => response.json())
     .then(data => data.now);
 };

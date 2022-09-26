@@ -17,6 +17,7 @@ import { ActiveChallengeData } from "../models/Handlers/ActiveChallengeData";
 import { RecordDetails } from "../models/RecordDetails";
 import { ChampionshipData, DailyData } from "../models/ActiveChallengeResponse";
 import { TimeHelper } from "../helpers/TimeHelperTS";
+import { LeaderboardEntryWithUsername } from "../models/LeaderboardEntryWithUsername";
 
 const DailyChallengeCache = DailyChallengeHandler.getCache();
 const LeaderboardCache = LeaderboardHandler.getCache();
@@ -91,11 +92,11 @@ class ActiveChallengesCache extends ResultCacheWrapper<
 
         const leaderboardCopy = [...leaderboard];
         if (leaderboardCopy.length > 10) leaderboardCopy.length = 10;
-        await populateLeaderboardNames(leaderboardCopy);
+        const populatedLeaderboard = await populateLeaderboardNames(leaderboardCopy);
 
         return {
           id: championshipID.toString(),
-          leaderboard: leaderboardCopy,
+          leaderboard: populatedLeaderboard,
           name: await ObjectIDToNameCache.getChampionshipName(championshipID),
         };
       },
@@ -121,12 +122,13 @@ class ActiveChallengesCache extends ResultCacheWrapper<
           const entry = leaderboardCopy[i];
           const timeString = TimeHelper.getTimeStringForDailyChallenge(entry.runID);
 
+          const username = await ObjectIDToNameCache.getUsername(entry._id);
           leaderboardData.push({
             id: entry._id.toString(),
             rank: i + 1,
-            username: entry.username,
             pb: entry.pb,
             age: timeString,
+            username,
           });
         }
 
@@ -142,9 +144,14 @@ class ActiveChallengesCache extends ResultCacheWrapper<
 }
 
 const populateLeaderboardNames = async (leaderboard: RawLeaderboardEntry[]) => {
+  const toReturn: LeaderboardEntryWithUsername[] = [];
   for (let i = 0; i < leaderboard.length; i++) {
     const entry = leaderboard[i];
     const username = await ObjectIDToNameCache.getUsername(entry._id);
-    entry.username = username;
+    toReturn.push({
+      username,
+      ...entry,
+    });
   }
+  return toReturn;
 };

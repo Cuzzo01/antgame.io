@@ -45,21 +45,33 @@ export const JwtResultHandler = function (
 
 export const TokenVerifier = async function (req: Request, res: Response, next: NextFunction) {
   try {
-    if (!req.user) {
+    const clientIdHeader = req.header("clientId");
+    if (clientIdHeader) {
+      setAttributes({ clientID: clientIdHeader });
+    }
+
+    const user = req.user as AuthToken;
+    if (!user) {
       next();
       return;
     }
 
-    const user = req.user as AuthToken;
+    const tokenClientId = user.clientID;
+    if (clientIdHeader && tokenClientId !== clientIdHeader) {
+      res.status(401);
+      res.send("ClientId header doesn't match JWT");
+      return;
+    } else if (!clientIdHeader) {
+      setAttributes({ clientID: tokenClientId });
+    }
 
     if (!user.anon) {
       const userID = user.id;
       const adminToken = user.admin === true;
       const tokenIssuedAt = user.iat;
-      const clientID = user.clientID;
       const TokenIsValid = await TokenRevokedCache.isTokenValid(userID, adminToken, tokenIssuedAt);
 
-      setAttributes({ userID, clientID, username: await ObjectIDToNameCache.getUsername(userID) });
+      setAttributes({ userID, username: await ObjectIDToNameCache.getUsername(userID) });
 
       if (TokenIsValid === false) {
         Logger.logAuthEvent({
@@ -75,7 +87,8 @@ export const TokenVerifier = async function (req: Request, res: Response, next: 
       const AllowAnon = await FlagCache.getBoolFlag("allow-anon-logins");
       if (!AllowAnon) {
         Logger.logAuthEvent({ event: "received anon token when not allowed" });
-        res.sendStatus(401);
+        res.status(401);
+        res.send("Anon access not currently allowed");
         return;
       }
     }
@@ -83,7 +96,8 @@ export const TokenVerifier = async function (req: Request, res: Response, next: 
     if (user.admin !== true) {
       const LoginsEnabled = await TokenRevokedCache.AreLoginsEnabled();
       if (!LoginsEnabled) {
-        res.sendStatus(401);
+        res.status(401);
+        res.send("Access is currently disabled");
         return;
       }
     }

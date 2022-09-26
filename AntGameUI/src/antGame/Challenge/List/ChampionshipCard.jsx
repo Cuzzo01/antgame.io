@@ -4,16 +4,17 @@ import AuthHandler from "../../Auth/AuthHandler";
 import { Link } from "react-router-dom";
 
 export const ChampionshipCard = ({ data }) => {
-  if (!data) return <div></div>;
   return (
     <div className={`${styles.bigCard} ${styles.championshipCard}`}>
-      <span>
-        <Link to={`/championship/${data.id}`}>
-          <h4>Championship</h4>
-        </Link>
-        <h5>{data.name}</h5>
-      </span>
-      <ChampionshipLeaderboard leaderboard={data.leaderboard} />
+      {data && (
+        <span>
+          <Link to={`/championship/${data.id}`}>
+            <h4>Championship</h4>
+          </Link>
+          <h5>{data.name}</h5>
+          <ChampionshipLeaderboard leaderboard={data.leaderboard} />
+        </span>
+      )}
     </div>
   );
 };
@@ -27,13 +28,14 @@ const ChampionshipLeaderboard = ({ leaderboard }) => {
     const entry = leaderboard[i];
 
     const isTied = lastPoints === entry.points;
+    if (entry.rank) rowList.push(<div className={styles.bigCardHr} />);
     rowList.push(
       <LeaderboardRow
         id={entry._id}
         ownRow={entry.username === currentUser}
         key={entry.username}
         noRank={isTied}
-        rank={i + 1}
+        rank={entry.rank ? entry.rank : i + 1}
         name={entry.username}
         pb={`${entry.points} pts`}
         skinny
@@ -42,5 +44,5 @@ const ChampionshipLeaderboard = ({ leaderboard }) => {
     lastPoints = entry.points;
   }
 
-  return <div>{rowList}</div>;
+  return <div className={styles.bigCardLeaderboard}>{rowList}</div>;
 };

@@ -1,5 +1,4 @@
 import { ResultCacheWrapper } from "./ResultCacheWrapper";
-import { getLeaderboardByChallengeId } from "../dao/UserDao";
 import {
   getChampionshipDetailsFromDB,
   getLastPointsAwarded,
@@ -12,6 +11,7 @@ import { ChampionshipResponse } from "../models/ChampionshipResponse";
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { FullChampionshipConfig } from "../models/FullChampionshipConfig";
 import { RawLeaderboardEntry } from "../models/RawLeaderboardEntry";
+import { ChallengeRecordDao } from "../dao/ChallengeRecordDao";
 
 const FlagCache = FlagHandler.getCache();
 
@@ -26,8 +26,11 @@ export class LeaderboardHandler {
 }
 
 class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | ChampionshipResponse> {
+  private _challengeRecordDao: ChallengeRecordDao;
+
   constructor() {
     super({ name: "LeaderboardHandler" });
+    this._challengeRecordDao = new ChallengeRecordDao();
   }
 
   get size() {
@@ -49,12 +52,14 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
     if (super.itemIsSet(rawID)) super.unsetItem(rawID);
   }
 
+  //#region Challenge
   async getChallengeLeaderboard(id: string): Promise<RawLeaderboardEntry[]> {
     return (await this.getOrFetchValue({
       id,
       type: "Challenge",
       fetchMethod: async id => {
-        return (await getLeaderboardByChallengeId(id, 15)) as RawLeaderboardEntry[];
+        const rawLeaderboard = await this.getRawChallengeLeaderboard(id);
+        return rawLeaderboard.slice(0, 15);
       },
       getTimeToCache: this.getTimeToCache,
       logFormatter: () => "",
@@ -66,13 +71,47 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
       id: `${id}-raw`,
       type: "Raw challenge",
       fetchMethod: async () => {
-        return (await getLeaderboardByChallengeId(id)) as RawLeaderboardEntry[];
+        const rawLeaderboard = await this._challengeRecordDao.getChallengeLeaderboard(id);
+        const toReturn: RawLeaderboardEntry[] = [];
+        for (const entry of rawLeaderboard) {
+          toReturn.push({
+            _id: entry.userId,
+            pb: entry.score,
+            runID: entry.runId,
+          });
+        }
+        return toReturn;
       },
       getTimeToCache: this.getTimeToCache,
       logFormatter: value => (Array.isArray(value) ? `Length: ${value.length}` : ""),
     })) as RawLeaderboardEntry[];
   }
 
+  async getChallengeRankByUserId(challengeID: string, userID: string) {
+    const leaderboardArr = await this.getRawChallengeLeaderboard(challengeID);
+    const rank = 1 + leaderboardArr.findIndex(entry => entry._id.equals(userID));
+    return rank;
+  }
+
+  async getChallengeEntryByRank(challengeID: string, rank: number) {
+    const leaderboardArr = await this.getRawChallengeLeaderboard(challengeID);
+    const entry = leaderboardArr[rank - 1];
+    return entry;
+  }
+
+  async getChallengeEntryByUserID(challengeID: string, userID: string) {
+    const leaderboardArr = await this.getRawChallengeLeaderboard(challengeID);
+    const entry = leaderboardArr.find(entry => entry._id.equals(userID));
+    return entry;
+  }
+
+  async getChallengePlayerCount(challengeID: string) {
+    const leaderboardArr = await this.getRawChallengeLeaderboard(challengeID);
+    return leaderboardArr.length;
+  }
+  //#endregion
+
+  //#region Championship
   async getChampionshipLeaderboardData(id: string): Promise<ChampionshipResponse> {
     return (await this.getOrFetchValue({
       id,
@@ -114,26 +153,11 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
     })) as RawLeaderboardEntry[];
   }
 
-  async getChallengeRankByUserId(challengeID: string, userID: string) {
-    const leaderboardArr = await this.getRawChallengeLeaderboard(challengeID);
-    const rank = 1 + leaderboardArr.findIndex(entry => entry._id.equals(userID));
-    return rank;
+  async getChampionshipEntryByUserId(championshipId: string, userId: string) {
+    const leaderboardArr = await this.getRawChampionshipLeaderboard(championshipId);
+    const index = leaderboardArr.findIndex(entry => entry._id.equals(userId));
+    if (index === -1) return { found: false };
+    return { found: true, entry: leaderboardArr[index], rank: index + 1 };
   }
-
-  async getLeaderboardEntryByRank(challengeID: string, rank: number) {
-    const leaderboardArr = await this.getRawChallengeLeaderboard(challengeID);
-    const entry = leaderboardArr[rank - 1];
-    return entry;
-  }
-
-  async getLeaderboardEntryByUserID(challengeID: string, userID: string) {
-    const leaderboardArr = await this.getRawChallengeLeaderboard(challengeID);
-    const entry = leaderboardArr.find(entry => entry._id.equals(userID));
-    return entry;
-  }
-
-  async getChallengePlayerCount(challengeID: string) {
-    const leaderboardArr = await this.getRawChallengeLeaderboard(challengeID);
-    return leaderboardArr.length;
-  }
+  //#endregion
 }

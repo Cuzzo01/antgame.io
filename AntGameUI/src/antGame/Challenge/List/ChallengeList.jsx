@@ -3,7 +3,6 @@ import styles from "./ChallengePage.module.css";
 import { getActiveChallenges, getPublicActiveChallenges } from "../../Challenge/ChallengeService";
 import AuthHandler from "../../Auth/AuthHandler";
 import { useHistory } from "react-router-dom";
-import { getFlag } from "../../Helpers/FlagService";
 import { DailyChallengeCard } from "./DailyChallengeCard";
 import { ChallengeDetails, ChallengeLink, LeaderboardLink, PBDisplay, WRDisplay } from "./Helpers";
 import { Thumbnail } from "./Thumbnail";
@@ -11,12 +10,13 @@ import { ChampionshipCard } from "./ChampionshipCard";
 import { YesterdaysDailyCard } from "./YesterdaysDailyCard";
 
 const ChallengeList = () => {
-  const InitialList = Array(12).fill(
+  const InitialList = [
     <DailyChallengeCard />,
-    <ChampionshipCard />,
     <YesterdaysDailyCard />,
-    <ChallengeCard showThumbnails loading />
-  );
+    <ChampionshipCard />,
+    <div className={styles.flexBreak} />,
+  ];
+  InitialList.push(...Array(12).fill(<ChallengeCard showThumbnails loading />));
 
   const [loading, setLoading] = useState(true);
   const [menuList, setMenuList] = useState([]);
@@ -27,20 +27,14 @@ const ChallengeList = () => {
 
   useEffect(() => {
     document.title = "AntGame.io";
-    const thumbnailFlagPromise = getFlag("show-challenge-list-thumbnails");
     if (AuthHandler.loggedIn && !AuthHandler.isAnon) {
-      getActiveChallenges().then(challengeResponse =>
-        setData({ challengeResponse, thumbnailFlagPromise })
-      );
+      getActiveChallenges().then(challengeResponse => setData({ challengeResponse }));
     } else {
-      getPublicActiveChallenges().then(challengeResponse =>
-        setData({ challengeResponse, thumbnailFlagPromise })
-      );
+      getPublicActiveChallenges().then(challengeResponse => setData({ challengeResponse }));
     }
   }, [history]);
 
-  const setData = async ({ challengeResponse, thumbnailFlagPromise }) => {
-    const shouldShowThumbnails = await thumbnailFlagPromise;
+  const setData = async ({ challengeResponse }) => {
     const records = challengeResponse.records;
 
     const championshipData = challengeResponse.championshipData;
@@ -74,7 +68,6 @@ const ChallengeList = () => {
             id={challenge.id}
             time={challenge.time}
             homes={challenge.homes}
-            showThumbnails={shouldShowThumbnails}
             thumbnailURL={challenge.thumbnailURL}
           />
         );
@@ -113,7 +106,7 @@ const ChallengeList = () => {
 };
 export default ChallengeList;
 
-const ChallengeCard = ({ name, time, homes, records, id, showThumbnails, thumbnailURL }) => {
+const ChallengeCard = ({ name, time, homes, records, id, thumbnailURL }) => {
   return (
     <div className={styles.challengeGridElement}>
       <div className={styles.topBar}>
@@ -140,7 +133,7 @@ const ChallengeCard = ({ name, time, homes, records, id, showThumbnails, thumbna
           <LeaderboardLink id={id} />
         </div>
       </div>
-      {showThumbnails ? <Thumbnail url={thumbnailURL} /> : null}
+      <Thumbnail url={thumbnailURL} />
     </div>
   );
 };

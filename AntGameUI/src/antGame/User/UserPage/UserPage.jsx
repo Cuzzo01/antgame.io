@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import styles from "./UserPage.module.css";
 import { GetUserDetails } from "../UserService";
 import { TrophyIcon } from "../../AntGameHelpers/Icons";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 export const UserPage = ({ username }) => {
+  const history = useHistory();
   const [userDetails, setUserDetails] = useState(false);
 
   useEffect(() => {
@@ -36,7 +37,9 @@ export const UserPage = ({ username }) => {
       </div>
       <div className={styles.hr} />
       <div className={styles.center}>
-        <Link to="/">Home</Link>
+        <div className={styles.link} onClick={() => history.goBack()}>
+          Back
+        </div>
       </div>
     </div>
   );

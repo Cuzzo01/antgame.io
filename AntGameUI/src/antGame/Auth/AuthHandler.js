@@ -105,6 +105,7 @@ class AuthHandler {
         this.checkForUpdatedToken();
         config.headers.Authorization = `Bearer ${this.token}`;
       }
+      config.headers.clientId = this.clientID;
       return config;
     });
   }
@@ -142,10 +143,11 @@ class AuthHandler {
   }
 
   async checkForAndSendUnsentArtifacts() {
-    if (localStorage.getItem("artifactToSend")) {
+    const storedArtifact = localStorage.getItem("artifactToSend");
+    if (storedArtifact) {
       // TODO: Verify clientID before sending
       // Saving user and checking that too wouldn't be a bad idea
-      const artifactToSend = JSON.parse(localStorage.getItem("artifactToSend"));
+      const artifactToSend = JSON.parse(storedArtifact);
       if (artifactToSend.Timing.SystemStartTime + TwoHoursInMilliseconds > new Date().getTime())
         sendRunArtifact(artifactToSend)
           .then(() => {

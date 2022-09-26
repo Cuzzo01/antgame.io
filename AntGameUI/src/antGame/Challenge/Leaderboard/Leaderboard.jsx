@@ -8,8 +8,8 @@ import { useCallback } from "react";
 import LeaderboardRow from "../../Helpers/LeaderboardRow";
 import SolutionImage from "./SolutionImage";
 
-const Leaderboard = props => {
-  const challengeID = useParams().id;
+const Leaderboard = () => {
+  const { id, page } = useParams();
   const history = useHistory();
 
   const [loading, setLoading] = useState(true);
@@ -18,16 +18,28 @@ const Leaderboard = props => {
   const [playerCount, setPlayerCount] = useState(false);
   const [isDaily, setIsDaily] = useState(false);
   const [solutionImagePath, setSolutionImagePath] = useState(false);
-  const [pageNumber, setPageNumber] = useState(1);
+  const [pageNumber, setPageNumber] = useState(false);
   const [morePages, setMorePages] = useState(false);
 
+  const goToPage = useCallback(
+    page => {
+      if (page === 1) history.push(`/challenge/${id}/leaderboard`);
+      else history.push(`/challenge/${id}/leaderboard/${page}`);
+      setPageNumber(page);
+    },
+    [history, id]
+  );
+
   const setError = useCallback(() => {
-    setRunData(<h5>No records for this challenge</h5>);
-    setTitle("Error");
-    setPlayerCount(false);
-    setSolutionImagePath(false);
-    document.title = "Leaderboard";
-  }, []);
+    if (pageNumber !== 1) goToPage(1);
+    else {
+      setRunData(<h5>No records for this challenge</h5>);
+      setTitle("Error");
+      setPlayerCount(false);
+      setSolutionImagePath(false);
+      document.title = "Leaderboard";
+    }
+  }, [pageNumber, goToPage]);
 
   const setLeaderboardData = useCallback(
     ({ daily, leaderboard, name, playerCount, solutionImage, pageLength }) => {
@@ -48,7 +60,7 @@ const Leaderboard = props => {
         let rankLink, personalPage;
         if (data.extra) {
           personalPage = Math.floor(data.rank / (pageLength + 1)) + 1;
-          rankLink = data.extra ? () => setPageNumber(personalPage) : undefined;
+          rankLink = data.extra ? () => goToPage(personalPage) : undefined;
           lastRank = 0;
         }
         table.push(
@@ -72,42 +84,50 @@ const Leaderboard = props => {
 
       document.title = `${name} - Leaderboard`;
     },
-    []
+    [goToPage]
   );
 
   const fetchLeaderboard = useCallback(
-    ({ id }) => {
+    (id, pageNumber) => {
       getLeaderboard(id, pageNumber).then(data => {
         if (data === null) setError();
         else setLeaderboardData(data);
         setLoading(false);
       });
     },
-    [setLeaderboardData, setError, pageNumber]
+    [setLeaderboardData, setError]
   );
 
   const fetchPublicLeaderboard = useCallback(
-    ({ id }) => {
+    (id, pageNumber) => {
       getPublicLeaderboard(id, pageNumber).then(data => {
-        if (data === null && pageNumber !== 1) setPageNumber(1);
+        if (data === null && pageNumber !== 1) goToPage(1);
         else if (data === null) setError();
         else setLeaderboardData(data);
         setLoading(false);
       });
     },
-    [setLeaderboardData, setError, pageNumber]
+    [setLeaderboardData, setError, goToPage]
   );
 
-  const refreshLeaderboard = useCallback(() => {
-    if (!AuthHandler.loggedIn) fetchPublicLeaderboard({ id: challengeID });
-    else fetchLeaderboard({ id: challengeID });
-  }, [challengeID, fetchLeaderboard, fetchPublicLeaderboard]);
+  const refreshLeaderboard = useCallback(
+    (id, pageNumber) => {
+      if (!AuthHandler.loggedIn) fetchPublicLeaderboard(id, pageNumber);
+      else fetchLeaderboard(id, pageNumber);
+    },
+    [fetchLeaderboard, fetchPublicLeaderboard]
+  );
 
   useEffect(() => {
     if (window.location.pathname.includes("daily")) setIsDaily(true);
 
-    refreshLeaderboard();
-  }, [history, refreshLeaderboard]);
+    let parsedPage;
+    if (page) parsedPage = parseInt(page);
+    else parsedPage = 1;
+
+    setPageNumber(parsedPage);
+    refreshLeaderboard(id, parsedPage);
+  }, [id, history, page, refreshLeaderboard]);
 
   return loading ? null : (
     <div className={styles.container}>
@@ -117,7 +137,7 @@ const Leaderboard = props => {
       {isDaily ? (
         <DailyChallengePicker
           callback={newId => history.push(`/challenge/${newId}/leaderboard`)}
-          currentID={challengeID}
+          currentID={id}
         />
       ) : null}
       {solutionImagePath ? <SolutionImage path={solutionImagePath} /> : null}
@@ -129,14 +149,14 @@ const Leaderboard = props => {
           {isDaily ? (
             <a href="/challenge/daily">Play Daily</a>
           ) : (
-            <a href={`/challenge/${challengeID}`}>Play Challenge</a>
+            <a href={`/challenge/${id}`}>Play Challenge</a>
           )}
         </div>
       </div>
       {runTable}
       <div className={styles.pageNav}>
         {pageNumber !== 1 ? (
-          <span className={styles.link} onClick={() => setPageNumber(pageNumber - 1)}>
+          <span className={styles.link} onClick={() => goToPage(pageNumber - 1)}>
             &lt;&lt;
           </span>
         ) : (
@@ -144,7 +164,7 @@ const Leaderboard = props => {
         )}
         <span>{pageNumber}</span>
         {morePages ? (
-          <span className={styles.link} onClick={() => setPageNumber(pageNumber + 1)}>
+          <span className={styles.link} onClick={() => goToPage(pageNumber + 1)}>
             &gt;&gt;
           </span>
         ) : (

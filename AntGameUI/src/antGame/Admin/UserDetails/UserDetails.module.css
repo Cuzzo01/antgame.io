@@ -5,7 +5,7 @@
 
 .challengeListItem {
   display: grid;
-  grid-template-columns: 7em 5em 6em auto 7em;
+  grid-template-columns: 7em 5em 2em 6em auto 7em;
 }
 
 .alignRight {
@@ -18,4 +18,10 @@
 
 .username {
   font-family: "Courier Prime";
+}
+
+.playerCount {
+  display: flex;
+  align-items: flex-end;
+  font-size: 0.7em;
 }
