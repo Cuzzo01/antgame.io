@@ -7,7 +7,7 @@ const RunHistoryTab = props => {
   var challengeId = props.challengeID;
 
   const [latestRunHistoryTime, setLatestRunHistoryTime] = useState(new Date());
-  const [hasGrabbedAllValidPrevRuns, setHasGrabbedAllValidPrevRuns] = useState(false);
+  const [hasGrabbedAllValidPrevRuns, setHasGrabbedAllValidPrevRuns] = useState(null);
   const [previousRuns, setPreviousRuns] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,11 +33,15 @@ const RunHistoryTab = props => {
     addRuns(15).then(() => setLoading(false)); //todo: this doesn't work
   }, []);
 
+  const doneLoading = () => {
+    return !loading && hasGrabbedAllValidPrevRuns !== null;
+  }
+
   return (
     <div className={styles.container}>
-      {!loading ? (
+      {doneLoading() ? (
         <>
-          <h2 className={styles.title}>Last {previousRuns.length} Runs</h2>
+          <h2 className={styles.title}>Last {previousRuns?.length} Runs</h2>
           <div className={styles.runsList}>
             {previousRuns.map((value, index) => (
               <RunEntry run={value} key={index} action={run => props.loadRunHandler(run)} />
@@ -53,7 +57,7 @@ const RunHistoryTab = props => {
           <div className={styles.bottombar} />
         </>
       ) : (
-        <></>
+        <>Loading...</>
       )}
     </div>
   );
