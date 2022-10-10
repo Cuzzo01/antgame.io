@@ -3,6 +3,7 @@ import {
   getChallengeConfig,
   getPRInfo,
   getRecords,
+  getReplayConfig,
   getSeed,
   sendRunArtifact,
 } from "./ChallengeService";
@@ -33,10 +34,6 @@ class ChallengeHandler {
     this.lastSeenUpdateCount = count;
   }
 
-  get isPB() {
-    return this.artifact?.PB === true;
-  }
-
   set timerHandler(timerHandler) {
     this._timerHandler = timerHandler;
   }
@@ -62,19 +59,61 @@ class ChallengeHandler {
     this._timerHandler.resetTime();
   }
 
+  set gamemode(gamemode) {
+    this._gamemode = gamemode;
+  }
+
+  get replayLabel() {
+    return this._label
+  }
+
   get config() {
     if (this._config) return this._config;
     else return false;
   }
 
-  async loadPRRun() {
+  get isPB() {
+    return this.artifact?.PB === true;
+  }
+
+  async loadRun(type) {
     this._mapHandler.clearMap();
-    if (this.prInfo === false) {
-      const info = await getPRInfo(this.config.id);
-      if (this.prInfo === null) return;
-      this.prInfo = info;
+    if (type === "pr") {
+      if (this._gamemode === "challenge") {
+        if (this.prInfo === false) {
+          const info = await getPRInfo(this.config.id);
+          if (this.prInfo === null) return;
+          this.prInfo = info;
+        }
+
+        this._mapHandler.setHomeLocations(this.prInfo);
+      } else if (this._gamemode === "replay") {
+        const prData = this.config.prData;
+        this._runSeed = prData.seed;
+        this._mapHandler.setHomeLocations({ locations: prData.locations, amounts: prData.amounts });
+        this.setReplayLabel("pr");
+      }
+    } else if (type === "wr") {
+      const wrData = this.config.wrData
+      this._runSeed = wrData.seed;
+      this._mapHandler.setHomeLocations({ locations: wrData.locations, amounts: wrData.amounts });
+      this.setReplayLabel("wr");
     }
-    this._mapHandler.setPRInfo(this.prInfo);
+  }
+
+  setReplayLabel(type) {
+    if (type === "wr") {
+      const username = this.records.wr.name
+      const score = this.records.wr.score
+
+      this._label = `${username} - ${score} | WR`
+    } else if (type === "pr") {
+      const username = AuthHandler.username
+      const score = this.records.pr
+      const rank = this.records.rank
+
+      this._label = `${username} - ${score} | PR`
+    }
   }
 
   clearConfig() {
@@ -115,12 +154,21 @@ class ChallengeHandler {
         this.challengeID = Config.ChallengeID;
       }
       this.loadingConfig = true;
-      this.configPromise = getChallengeConfig(this._challengeID).then(config => {
-        this.loadingConfig = false;
-        this.config = config;
-        this.getRecords();
-        return config;
-      });
+      if (this._gamemode === "challenge") {
+        this.configPromise = getChallengeConfig(this._challengeID).then(config => {
+          this.loadingConfig = false;
+          this.config = config;
+          this.getRecords();
+          return config;
+        });
+      } else if (this._gamemode === "replay") {
+        this.configPromise = getReplayConfig(this._challengeID).then(config => {
+          this.loadingConfig = false;
+          this.config = config;
+          this.getRecords();
+          return config;
+        });
+      }
       return this.configPromise;
     }
   }
@@ -179,6 +227,9 @@ class ChallengeHandler {
   }
 
   handleTimeout() {
+    const IsReplay = this._gamemode === "replay"
+    if (IsReplay) return
+
     const mapHandler = this._mapHandler;
     this.score = Math.round(mapHandler.percentFoodReturned * 100000);
 

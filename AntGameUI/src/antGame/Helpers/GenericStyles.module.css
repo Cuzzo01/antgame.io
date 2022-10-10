@@ -117,3 +117,7 @@
   color: blue;
   cursor: pointer;
 }
+
+.bold {
+  font-family: "Courier Prime Bold";
+}

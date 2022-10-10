@@ -1,11 +1,10 @@
 import "./FoodTracker.css";
 
-const FoodTracker = props => {
-  const foodReturned = props.foodReturned;
+const FoodTracker = ({DisplayScore, foodReturned, styles, active}) => {
   let roundedFoodReturned = Math.round(foodReturned * 1000) / 10;
 
   let displayAmount = "";
-  if (props.IsChallenge) {
+  if (DisplayScore) {
     displayAmount = Math.round(foodReturned * 100000);
   } else {
     if (roundedFoodReturned === 0) displayAmount = "00.0";
@@ -19,8 +18,8 @@ const FoodTracker = props => {
   }
 
   return (
-    <div style={props.styles}>
-      <h2 className={`tracker ${props.active ? "active" : ""}`}>{displayAmount}</h2>
+    <div style={styles}>
+      <h2 className={`tracker ${active ? "active" : ""}`}>{displayAmount}</h2>
     </div>
   );
 };

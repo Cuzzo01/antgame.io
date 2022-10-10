@@ -160,6 +160,7 @@ const getRunDataByRunId = async id => {
             $arrayElemAt: ["$details.snapshots", -1],
           },
           solutionImage: 1,
+          seed: 1
         },
         tags: 1,
         challengeID: 1,
@@ -183,6 +184,7 @@ const getRunDataByRunId = async id => {
     userID: result.userID,
     score: result.score,
     solutionImage: result.details.solutionImage,
+    seed: result.details.seed,
     runNumber,
   };
 };

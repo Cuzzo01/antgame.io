@@ -10,12 +10,21 @@ import { useHistory } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
 import genericStyles from "../../../Helpers/GenericStyles.module.css";
 
-export default function GameMenu(props) {
+export default function GameMenu({
+  mapClear,
+  loadMapHandler,
+  saveMapHandler,
+  playState,
+  clearMapHandler,
+  loadPRHandler,
+  resetHandler,
+  playButtonHandler,
+}) {
   const [flashReset, setFlashReset] = useState(false);
   const [disablePlay, setDisablePlay] = useState(true);
+  const [sandBoxButtons, setSandBoxButtons] = useState(false);
   const gameMode = useContext(GameModeContext);
   const history = useHistory();
-  let sandBoxButtons = [];
 
   useEffect(() => {
     if (flashReset === true) setTimeout(() => setFlashReset(false), 900);
@@ -26,75 +35,78 @@ export default function GameMenu(props) {
     } else {
       setDisablePlay(false);
     }
-  }, [flashReset, gameMode]);
 
-  if (props.mapClear)
-    sandBoxButtons.push(
-      <UploadMapButton key="upload" styles={styles.button} loadMapHandler={props.loadMapHandler} />
-    );
-  else {
-    var isInIframe = window.self !== window.top;
-    if (isInIframe) {
-      sandBoxButtons.push(
-        <span data-tip="" data-for={"warning"}>
-          <SettingButton key="save" disabled={true} text="Save" />
-          <ReactTooltip effect="solid" id={"warning"}>
-            Map saving does not work on outside sites. To save maps, visit antgame.io.
-          </ReactTooltip>
-        </span>
+    const buttons = [];
+    if (mapClear)
+      buttons.push(
+        <UploadMapButton key="upload" styles={styles.button} loadMapHandler={loadMapHandler} />
       );
-    } else {
-      sandBoxButtons.push(
-        <SettingButton
-          key="save"
-          handler={props.saveMapHandler}
-          disabled={props.playState}
-          text="Save"
-        />
-      );
+    else {
+      var isInIframe = window.self !== window.top;
+      if (isInIframe) {
+        buttons.push(
+          <span data-tip="" data-for={"warning"}>
+            <SettingButton key="save" disabled={true} text="Save" />
+            <ReactTooltip effect="solid" id={"warning"}>
+              Map saving does not work on outside sites. To save maps, visit antgame.io.
+            </ReactTooltip>
+          </span>
+        );
+      } else {
+        buttons.push(
+          <SettingButton key="save" handler={saveMapHandler} disabled={playState} text="Save" />
+        );
+      }
     }
-  }
+    setSandBoxButtons(buttons);
+  }, [flashReset, gameMode, loadMapHandler, mapClear, playState, saveMapHandler]);
 
   return (
     <div className={cssStyles.justifyLeft}>
-      {gameMode.mode === "challenge" ? (
+      {(gameMode.mode === "challenge" || gameMode.mode === "replay") && (
         <SettingButton
-          className={props.playState ? cssStyles.disabled : null}
-          disabled={props.playState}
+          className={playState ? cssStyles.disabled : null}
+          disabled={playState}
           text={<BackIcon />}
           handler={() => {
-            history.push({ pathname: "/" });
+            history.goBack();
           }}
         />
-      ) : null}
-      <SettingButton
-        key="clear"
-        text="Clear"
-        handler={props.clearMapHandler}
-        disabled={props.playState}
-      />
-      {ChallengeHandler.records.pr ? (
+      )}
+      {gameMode.mode !== "replay" && (
+        <SettingButton key="clear" text="Clear" handler={clearMapHandler} disabled={playState} />
+      )}
+      {(ChallengeHandler.records.pr || ChallengeHandler.config.prData) && (
         <SettingButton
           key="PR"
           text="Load PR"
-          handler={props.loadPRHandler}
-          disabled={props.playState}
+          handler={() => loadPRHandler("pr")}
+          disabled={playState}
         />
-      ) : null}
+      )}
+      {ChallengeHandler.config.wrData && (
+        <SettingButton
+          key="WR"
+          text="Load WR"
+          handler={() => loadPRHandler("wr")}
+          disabled={playState}
+        />
+      )}
+
       <SettingButton
         className={flashReset ? cssStyles.flashing : ""}
         text={"Reset"}
-        handler={props.resetHandler}
-        disabled={props.playState}
+        handler={resetHandler}
+        disabled={playState}
       />
-      {gameMode.mode === "challenge" ? null : sandBoxButtons}
+      {gameMode.mode === "sandbox" && sandBoxButtons}
       <SettingButton
         disabled={disablePlay}
         className={cssStyles.playButton}
-        text={props.playState ? <PauseIcon /> : <PlayIcon />}
+        text={playState ? <PauseIcon /> : <PlayIcon />}
         handler={async () => {
           setDisablePlay(true);
-          const result = await props.playButtonHandler(!props.playState);
+          const result = await playButtonHandler(!playState);
           setDisablePlay(false);
           if (result === "reset") setFlashReset(true);
         }}

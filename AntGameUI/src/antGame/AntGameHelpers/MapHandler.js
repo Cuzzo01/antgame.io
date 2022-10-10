@@ -97,7 +97,7 @@ export class MapHandler {
   }
 
   clearMap() {
-    if (this._gameMode === "challenge") {
+    if (this._gameMode === "challenge" || this._gameMode === "replay") {
       this.clearHomeTiles();
       return false;
     }
@@ -285,7 +285,7 @@ export class MapHandler {
     this.placeAndCountDecayableBlocks();
   };
 
-  setPRInfo = ({ locations, amounts }) => {
+  setHomeLocations = ({ locations, amounts }) => {
     locations.forEach(location => {
       this.setCellTo([location[0], location[1]], "h");
     });

@@ -52,12 +52,13 @@ export class TimerHandler {
 
   tickTime() {
     const IsChallenge = this._gameMode === "challenge";
-    if (IsChallenge) {
+    const IsReplay = this._gameMode === "replay";
+    if (IsChallenge || IsReplay) {
       this.sec--;
     } else this.sec++;
     this.updateDisplayTime();
     this.setDisplayTimeFunc(this.displayTime);
-    if (IsChallenge && this.sec === 0 && this.min === 0) {
+    if ((IsChallenge || IsReplay) && this.sec === 0 && this.min === 0) {
       this.handleChallengeTimeout();
       return false;
     }

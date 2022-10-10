@@ -82,9 +82,10 @@ export default class AntGame extends React.Component {
     this.setMapUiUpdate(100);
 
     this.gamemode = this.context.mode;
-    if (this.gamemode === "challenge") {
+    if (this.gamemode === "challenge" || this.gamemode === "replay") {
       const challengeID = this.context.challengeID;
       this.challengeHandler = ChallengeHandler;
+      this.challengeHandler.gamemode = this.gamemode;
       this.challengeHandler.challengeID = challengeID;
       this.challengeHandler.mapHandler = this.mapHandler;
       this.challengeHandler.timerHandler = this.timerHandler;
@@ -98,6 +99,7 @@ export default class AntGame extends React.Component {
         showChallengeModal: false,
       });
     }
+
     this.mapHandler.gameMode = this.gamemode;
     this.timerHandler.gameMode = this.gamemode;
     this.timerHandler.updateTimeDisplay(this.setTime);
@@ -133,7 +135,7 @@ export default class AntGame extends React.Component {
   handleChallengeTimeout = () => {
     this.updatePlayState(false);
     this.challengeHandler.handleTimeout();
-    this.setState({ showChallengeModal: true });
+    if (this.gamemode === "challenge") this.setState({ showChallengeModal: true });
   };
 
   setup = (p5, parentRef) => {
@@ -304,6 +306,7 @@ export default class AntGame extends React.Component {
 
   updatePlayState = async state => {
     const IsChallenge = this.gamemode === "challenge";
+    const IsReplay = this.gamemode === "replay";
     if (state) {
       if (this.state.emptyMap) return;
       if (this.mapHandler.homeCellCount === 0) return;
@@ -326,6 +329,9 @@ export default class AntGame extends React.Component {
             this.challengeHandler._runSeed = seed;
           }
           this.challengeHandler.handleStart(this.mapHandler.homeLocations);
+        } else if (IsReplay) {
+          seed = this.challengeHandler._runSeed;
+          // this.challengeHandler.handleStart()
         }
         this.antHandler.spawnAnts({
           homeTrailHandler: this.homeTrailHandler,
@@ -473,11 +479,14 @@ export default class AntGame extends React.Component {
     this.setState({ showChallengeModal: false });
   };
 
-  loadPRHomeLocations = () => {
+  loadRunHandler = type => {
     this.reset();
-    ChallengeHandler.loadPRRun().then(result => {
+    ChallengeHandler.loadRun(type).then(result => {
       if (result !== false && this.state.emptyMap) this.setState({ emptyMap: false });
     });
+    if (this.gamemode === "replay") {
+      this.setState({replayLabel: ChallengeHandler.replayLabel})
+    }
   };
 
   render() {
@@ -508,7 +517,8 @@ export default class AntGame extends React.Component {
               getMapName={() => this.mapHandler.mapName}
               foodReturned={this.state.foodReturned}
               homeOnMap={this.state.homeOnMap}
-              loadPRHandler={this.loadPRHomeLocations}
+              loadPRHandler={this.loadRunHandler}
+              replayLabel={this.state.replayLabel}
             />
           </div>
           <Sketch setup={this.setup} draw={this.draw} />
