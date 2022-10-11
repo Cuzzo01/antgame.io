@@ -63,19 +63,23 @@ export default function GameMenu({
     setSandBoxButtons(buttons);
   }, [flashReset, gameMode, loadMapHandler, mapClear, playState, saveMapHandler]);
 
+  const IsChallenge = gameMode.mode === "challenge";
+  const IsReplay = gameMode.mode === "replay";
+  const IsSandbox = gameMode.mode === "sandbox";
   return (
     <div className={cssStyles.justifyLeft}>
-      {(gameMode.mode === "challenge" || gameMode.mode === "replay") && (
+      {(IsChallenge || IsReplay) && (
         <SettingButton
           className={playState ? cssStyles.disabled : null}
           disabled={playState}
           text={<BackIcon />}
           handler={() => {
-            history.goBack();
+            if (IsChallenge) history.push({ pathname: "/" });
+            else history.goBack();
           }}
         />
       )}
-      {gameMode.mode !== "replay" && (
+      {!IsReplay && (
         <SettingButton key="clear" text="Clear" handler={clearMapHandler} disabled={playState} />
       )}
       {(ChallengeHandler.records.pr || ChallengeHandler.config.prData) && (
@@ -100,7 +104,7 @@ export default function GameMenu({
         handler={resetHandler}
         disabled={playState}
       />
-      {gameMode.mode === "replay" && (
+      {IsReplay && (
         <SettingButton
           key="speed"
           text={`${speed}x`}
@@ -111,7 +115,7 @@ export default function GameMenu({
           }}
         />
       )}
-      {gameMode.mode === "sandbox" && sandBoxButtons}
+      {IsSandbox && sandBoxButtons}
       <SettingButton
         disabled={disablePlay}
         className={cssStyles.playButton}
