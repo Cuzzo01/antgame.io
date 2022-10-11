@@ -5,6 +5,7 @@ import styles from "./RunHistoryTab.module.css";
 
 const RunHistoryTab = props => {
   var challengeId = props.challengeID;
+  const oppositeGameMode = props.gameMode === "replay" ? "Challenge" : "Replay";
 
   const [hasGrabbedAllValidPrevRuns, setHasGrabbedAllValidPrevRuns] = useState(null);
   const [pageIndex, setPageIndex] = useState(0);
@@ -32,19 +33,12 @@ const RunHistoryTab = props => {
     return !loading && hasGrabbedAllValidPrevRuns !== null;
   };
 
-  const getOppositeGameMode = () => {
-    if (props.gameMode === "replay") {
-      return "Challenge";
-    }
-    return "Replay";
-  };
-
   return (
     <div className={styles.container}>
       {doneLoading() ? (
         <>
           <h2 className={styles.title}>Last {previousRuns?.length} Runs</h2>
-          <a href={`/${getOppositeGameMode()}/${challengeId}`}>{getOppositeGameMode()}</a>
+          <a href={`/${oppositeGameMode}/${challengeId}`}>{oppositeGameMode}</a>
           <div className={styles.runsList}>
             {previousRuns.map((value, index) => (
               <RunEntry run={value} key={index} action={run => props.loadRunHandler(run)} />
