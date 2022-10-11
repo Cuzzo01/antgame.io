@@ -38,7 +38,6 @@ export class AntsHandler {
   }
 
   async spawnAnts({ homeTrailHandler, foodTrailHandler, mapHandler, seed }) {
-    console.log(seed);
     if (this.deterministicMode) {
       seed = "1";
     }
