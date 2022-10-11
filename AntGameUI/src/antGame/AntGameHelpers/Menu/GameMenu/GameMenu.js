@@ -21,6 +21,7 @@ export default function GameMenu({
   playButtonHandler,
   speed,
   setSpeed,
+  toggleShowHistory,
 }) {
   const [flashReset, setFlashReset] = useState(false);
   const [disablePlay, setDisablePlay] = useState(true);
@@ -101,8 +102,8 @@ export default function GameMenu({
       <SettingButton
         className={flashReset ? cssStyles.flashing : ""}
         text={"History"}
-        handler={props.toggleShowHistory}
-        disabled={props.playState}
+        handler={toggleShowHistory}
+        disabled={playState}
       />
       <SettingButton
         className={flashReset ? cssStyles.flashing : ""}

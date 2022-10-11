@@ -567,7 +567,7 @@ export default class AntGame extends React.Component {
               getMapName={() => this.mapHandler.mapName}
               foodReturned={this.state.foodReturned}
               homeOnMap={this.state.homeOnMap}
-              loadPRHandler={this.loadPRHomeLocations}
+              loadPRHandler={this.loadRunHandler}
               toggleShowHistory={this.toggleShowHistoryTab}
             />
           </div>

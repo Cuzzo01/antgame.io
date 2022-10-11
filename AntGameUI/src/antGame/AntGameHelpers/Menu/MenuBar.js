@@ -33,6 +33,7 @@ export default function MenuBar({
   replayLabel,
   speed,
   setSpeed,
+  toggleShowHistory,
 }) {
   const gameMode = useContext(GameModeContext);
   const IsSandbox = gameMode.mode === "sandbox";
@@ -54,7 +55,7 @@ export default function MenuBar({
         loadMapHandler={loadMapHandler}
         saveMapHandler={saveMapHandler}
         loadPRHandler={loadPRHandler}
-        toggleShowHistory={props.toggleShowHistory}
+        toggleShowHistory={toggleShowHistory}
         speed={speed}
         setSpeed={setSpeed}
       />
