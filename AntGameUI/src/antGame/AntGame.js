@@ -184,17 +184,14 @@ export default class AntGame extends React.Component {
     this.windowSize = [p5.windowWidth, p5.windowHeight];
 
     let amtToSubtract;
-    if (this.showHistoryTab) {
-      //tab open
+    if (this.showHistoryTab) { //tab open
       console.log(1);
       amtToSubtract = this.sideRef.current.offsetLeft + this.sideRef.current.offsetWidth + 10;
       if (amtToSubtract < 100) return;
-    } else if (this.state.timerActive) {
-      //closing when game running or during game
+    } else if (this.state.timerActive) { //closing when game running or during game
       console.log(2);
       amtToSubtract = 0;
-    } else {
-      // resize without tab open
+    } else { // resize without tab open
       console.log(3);
       amtToSubtract = this.parentRef.offsetLeft;
       if (amtToSubtract > 100) return;
