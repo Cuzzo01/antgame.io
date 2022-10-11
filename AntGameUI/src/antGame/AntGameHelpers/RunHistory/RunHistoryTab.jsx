@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useCallback } from "react";
 import { getPreviousRunData } from "../../Challenge/ChallengeService";
 import styles from "./RunHistoryTab.module.css";
+import ChallengeHandler from "../../Challenge/ChallengeHandler";
+
 
 const RunHistoryTab = props => {
   var challengeId = props.challengeID;
@@ -38,7 +40,7 @@ const RunHistoryTab = props => {
       {doneLoading() ? (
         <>
           <h2 className={styles.title}>Last {previousRuns?.length} Runs</h2>
-          <a href={`/${oppositeGameMode}/${challengeId}`}>{oppositeGameMode}</a>
+          {(!(!ChallengeHandler.config.active && oppositeGameMode === "Challenge")) && (<a href={`/${oppositeGameMode}/${challengeId}`}>{oppositeGameMode}</a>)}
           <div className={styles.runsList}>
             {previousRuns.map((value, index) => (
               <RunEntry run={value} key={index} action={run => props.loadRunHandler(run)} />

@@ -364,6 +364,7 @@ export class ChallengeController {
         id: config.id,
         seconds: config.seconds,
         name: config.name,
+        active: config.active,
         mapPath: undefined,
         wrData: undefined,
         prData: undefined,
