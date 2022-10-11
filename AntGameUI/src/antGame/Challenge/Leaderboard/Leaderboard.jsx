@@ -20,6 +20,7 @@ const Leaderboard = () => {
   const [solutionImagePath, setSolutionImagePath] = useState(false);
   const [pageNumber, setPageNumber] = useState(false);
   const [morePages, setMorePages] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
   const goToPage = useCallback(
     page => {
@@ -42,7 +43,7 @@ const Leaderboard = () => {
   }, [pageNumber, goToPage]);
 
   const setLeaderboardData = useCallback(
-    ({ daily, leaderboard, name, playerCount, solutionImage, pageLength }) => {
+    ({ daily, leaderboard, name, playerCount, solutionImage, pageLength, active }) => {
       const currentUsername = AuthHandler.username;
 
       if (solutionImage) setSolutionImagePath(solutionImage);
@@ -81,6 +82,7 @@ const Leaderboard = () => {
       setTitle(name);
       setPlayerCount(playerCount);
       setMorePages(playerCount > pageLength && lastRank !== playerCount);
+      setIsActive(active);
 
       document.title = `${name} - Leaderboard`;
     },
@@ -148,11 +150,9 @@ const Leaderboard = () => {
           <Link to="/">Home</Link>
         </div>
         <div className={styles.navRight}>
-          {isDaily ? (
-            <a href="/challenge/daily">Play Daily</a>
-          ) : (
-            <a href={`/challenge/${id}`}>Play Challenge</a>
-          )}
+          {isDaily && isActive && <a href="/challenge/daily">Play Daily</a>}
+          {isDaily && !isActive && <a href={`/replay/${id}`}>Replay</a>}
+          {!isDaily && <a href={`/challenge/${id}`}>Play Challenge</a>}
         </div>
       </div>
       {runTable}

@@ -74,6 +74,7 @@ export class PublicController {
         name: await ObjectIDToNameCache.getChallengeName(challengeID),
         leaderboard: leaderboardData.leaderboardRows,
         daily: leaderboardData.isDaily,
+        active: challengeID === currentDaily.toString(),
         solutionImage: leaderboardData.solutionImgPath,
         playerCount: leaderboardData.playerCount,
         pageLength: await FlagCache.getIntFlag("leaderboard-length"),

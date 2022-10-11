@@ -113,7 +113,6 @@ class ChallengeHandler {
 
       this._label = `${username} - ${score} | PR`;
     }
-    console.log(this._label);
   }
 
   clearConfig() {

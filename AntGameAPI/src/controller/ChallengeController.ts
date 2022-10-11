@@ -650,6 +650,7 @@ export class ChallengeController {
         name: await ObjectIDToNameCache.getChallengeName(challengeId),
         leaderboard: leaderboardRows,
         daily: isDaily,
+        active: details.active,
         solutionImage: solutionImgPath,
         playerCount: await LeaderboardCache.getChallengePlayerCount(challengeId),
         pageLength: await FlagCache.getIntFlag("leaderboard-length"),

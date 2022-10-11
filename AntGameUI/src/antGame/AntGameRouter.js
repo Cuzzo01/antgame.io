@@ -118,7 +118,7 @@ const ChallengeMap = () => {
 
 const ReplayPage = () => {
   let { id } = useParams();
-  if (!AuthHandler.loggedIn) return <Redirect to={`/login?redirect=/challenge/${id}`} />;
+  if (!AuthHandler.loggedIn) return <Redirect to={`/login?redirect=/replay/${id}`} />;
   return (
     <GameModeContext.Provider value={{ mode: "replay", challengeID: id }}>
       <AntGame />
