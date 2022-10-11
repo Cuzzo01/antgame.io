@@ -129,17 +129,19 @@ const Leaderboard = () => {
     refreshLeaderboard(id, parsedPage);
   }, [id, history, page, refreshLeaderboard]);
 
+  const navigateCallback = useCallback(
+    newId => {
+      history.push(`/challenge/${newId}/leaderboard`);
+    },
+    [history]
+  );
+
   return loading ? null : (
     <div className={styles.container}>
       <div className={styles.title}>
         <h2>{title}</h2>
       </div>
-      {isDaily ? (
-        <DailyChallengePicker
-          callback={newId => history.push(`/challenge/${newId}/leaderboard`)}
-          currentID={id}
-        />
-      ) : null}
+      {isDaily ? <DailyChallengePicker callback={navigateCallback} currentID={id} /> : null}
       {solutionImagePath ? <SolutionImage path={solutionImagePath} /> : null}
       <div className={styles.nav}>
         <div className={styles.navLeft}>
