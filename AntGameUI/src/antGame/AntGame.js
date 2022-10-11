@@ -173,26 +173,32 @@ export default class AntGame extends React.Component {
     p5.frameRate(FrameRate);
   };
 
+  /* the before
+    setCanvasBounds = p5 => {
+      this.windowSize = [p5.windowWidth, p5.windowHeight];
+      canvasW = p5.windowWidth - this.parentRef.offsetLeft * 2;
+      canvasH = p5.windowHeight - this.parentRef.offsetTop - 20;
+    };
+  */
   setCanvasBounds = p5 => {
     this.windowSize = [p5.windowWidth, p5.windowHeight];
+
     let amtToSubtract;
-    if (this.showHistoryTab) {
+    if (this.showHistoryTab) { //tab open
+      console.log(1);
       amtToSubtract = this.sideRef.current.offsetLeft + this.sideRef.current.offsetWidth + 10;
       if (amtToSubtract < 100) return;
-    } else if (this.state.timerActive) {
+    } else if (this.state.timerActive) { //closing when game running or during game
+      console.log(2);
       amtToSubtract = 0;
-    } else {
+    } else { // resize without tab open
+      console.log(3);
       amtToSubtract = this.parentRef.offsetLeft;
       if (amtToSubtract > 100) return;
     }
-    console.log(amtToSubtract);
     canvasW = p5.windowWidth - amtToSubtract;
-    //TODO: THIS...
-    // canvasW = p5.windowWidth - this.parentRef.offsetLeft * (this.showHistoryTab ? 1 : 2);
-    // canvasW = p5.windowWidth - this.parentRef.offsetLeft;
+
     canvasH = p5.windowHeight - this.parentRef.offsetTop - 20;
-    console.log(canvasW, this.parentRef.offsetLeft, this.sideRef);
-    console.log(this.windowSize, canvasW, canvasH);
     this.showHistoryTabSwitched = false;
   };
 
@@ -209,11 +215,11 @@ export default class AntGame extends React.Component {
       p5.windowHeight !== this.windowSize[1] ||
       this.showHistoryTabSwitched
     ) {
-      this.resizeCanvas(p5);
-      this.containerRef.current.style.height = this.windowSize[1];
-      this.mapDrawer.drawFullMap({ map: this.mapHandler.map });
-      this.homeTrailDrawer.refreshSize();
-      this.foodTrailDrawer.refreshSize();
+        this.resizeCanvas(p5);
+        this.containerRef.current.style.height = this.windowSize[1];
+        this.mapDrawer.drawFullMap({ map: this.mapHandler.map });
+        this.homeTrailDrawer.refreshSize();
+        this.foodTrailDrawer.refreshSize();
     }
 
     if (p5.mouseIsPressed) this.handleClick(p5);
@@ -299,7 +305,6 @@ export default class AntGame extends React.Component {
   };
 
   resizeCanvas = p5 => {
-    console.log("resize");
     this.setCanvasBounds(p5);
     this.setupAndInitialize();
     p5.resizeCanvas(canvasW, canvasH);
@@ -410,13 +415,13 @@ export default class AntGame extends React.Component {
         }
         this.lastGameUpdateRunTime = new Date();
       }, updateRate);
+      this.showHistoryTabSwitched = true;
     } else {
       clearInterval(this.challengeSnapshotInterval);
       clearInterval(this.gameLoopInterval);
       this.setMapUiUpdate(100);
       this.toggleTimer(false);
     }
-    this.showHistoryTabSwitched = true;
     this.setState({ playState: state });
   };
 
@@ -447,7 +452,6 @@ export default class AntGame extends React.Component {
   toggleShowHistoryTab = () => {
     this.showHistoryTab = !this.showHistoryTab;
     this.showHistoryTabSwitched = true;
-    console.log(this.showHistoryTab, this.showHistoryTabSwitched);
   };
 
   setTime = time => {
