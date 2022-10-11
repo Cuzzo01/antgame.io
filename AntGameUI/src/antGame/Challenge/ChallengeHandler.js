@@ -95,7 +95,14 @@ class ChallengeHandler {
       this._mapHandler.setHomeLocations({ locations: wrData.locations, amounts: wrData.amounts });
       this.setReplayLabel("wr");
     } else {
-      this._mapHandler.setHomeLocations({ locations: type.homeLocations, amounts: type.homeAmounts });
+      if (this._gamemode === "replay") {
+        this._runSeed = type.seed;
+        this.setReplayLabel("pr");
+      }
+      this._mapHandler.setHomeLocations({
+        locations: type.homeLocations,
+        amounts: type.homeAmounts,
+      });
     }
   }
 

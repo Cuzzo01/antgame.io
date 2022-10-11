@@ -32,11 +32,19 @@ const RunHistoryTab = props => {
     return !loading && hasGrabbedAllValidPrevRuns !== null;
   };
 
+  const getOppositeGameMode = () => {
+    if (props.gameMode === "replay") {
+      return "Challenge";
+    }
+    return "Replay";
+  };
+
   return (
     <div className={styles.container}>
       {doneLoading() ? (
         <>
           <h2 className={styles.title}>Last {previousRuns?.length} Runs</h2>
+          <a href={`/${getOppositeGameMode()}/${challengeId}`}>{getOppositeGameMode()}</a>
           <div className={styles.runsList}>
             {previousRuns.map((value, index) => (
               <RunEntry run={value} key={index} action={run => props.loadRunHandler(run)} />

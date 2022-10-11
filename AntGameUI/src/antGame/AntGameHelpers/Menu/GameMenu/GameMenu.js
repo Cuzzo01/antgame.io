@@ -95,20 +95,21 @@ export default function GameMenu({
       )}
       {ChallengeHandler.config.wrData && (
         <SettingButton
-        key="WR"
-        text="Load WR"
-        handler={() => loadPRHandler("wr")}
-        disabled={playState}
+          key="WR"
+          text="Load WR"
+          handler={() => loadPRHandler("wr")}
+          disabled={playState}
         />
-        )}
-        {(ChallengeHandler.records.pr && !(ChallengeHandler.config.prData || ChallengeHandler.config.wrData)) && (
+      )}
+      {ChallengeHandler.records.pr && (
+        // && !(ChallengeHandler.config.prData || ChallengeHandler.config.wrData)
         <SettingButton
           className={flashReset ? cssStyles.flashing : ""}
           text={"History"}
           handler={toggleShowHistory}
           disabled={playState}
         />
-        )}
+      )}
       <SettingButton
         className={flashReset ? cssStyles.flashing : ""}
         text={"Reset"}

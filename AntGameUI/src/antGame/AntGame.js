@@ -34,7 +34,7 @@ const FrameRate = Config.FrameRate;
 const PreloadMap = Config.PreloadMap;
 
 export default class AntGame extends React.Component {
-  static contextType = GameModeContext;
+  static contextType = GameModeContext; //TODO: question - does this do anything?
 
   constructor(props) {
     super(props);
@@ -186,14 +186,17 @@ export default class AntGame extends React.Component {
     this.windowSize = [p5.windowWidth, p5.windowHeight];
 
     let amtToSubtract;
-    if (this.showHistoryTab) { //tab open
+    if (this.showHistoryTab) {
+      //tab open
       console.log(1);
       amtToSubtract = this.sideRef.current.offsetLeft + this.sideRef.current.offsetWidth + 10;
       if (amtToSubtract < 100) return;
-    } else if (this.state.timerActive) { //closing when game running or during game
+    } else if (this.state.timerActive) {
+      //closing when game running or during game
       console.log(2);
       amtToSubtract = 0;
-    } else { // resize without tab open
+    } else {
+      // resize without tab open
       console.log(3);
       amtToSubtract = this.parentRef.offsetLeft;
       if (amtToSubtract > 100) return;
@@ -203,19 +206,22 @@ export default class AntGame extends React.Component {
     canvasH = p5.windowHeight - this.parentRef.offsetTop - 20;
     this.showHistoryTabSwitched = false;
   };
-  
+
   setCanvasBounds = p5 => {
     this.windowSize = [p5.windowWidth, p5.windowHeight];
 
     let amtToSubtract;
-    if (this.showHistoryTab) { //tab open
+    if (this.showHistoryTab) {
+      //tab open
       console.log(1);
       amtToSubtract = this.sideRef.current.offsetLeft + this.sideRef.current.offsetWidth + 10;
       if (amtToSubtract < 100) return;
-    } else if (this.state.timerActive) { //closing when game running or during game
+    } else if (this.state.timerActive) {
+      //closing when game running or during game
       console.log(2);
       amtToSubtract = 0;
-    } else { // resize without tab open
+    } else {
+      // resize without tab open
       console.log(3);
       amtToSubtract = this.parentRef.offsetLeft;
       if (amtToSubtract > 100) return;
@@ -239,11 +245,11 @@ export default class AntGame extends React.Component {
       p5.windowHeight !== this.windowSize[1] ||
       this.showHistoryTabSwitched
     ) {
-        this.resizeCanvas(p5);
-        this.containerRef.current.style.height = this.windowSize[1];
-        this.mapDrawer.drawFullMap({ map: this.mapHandler.map });
-        this.homeTrailDrawer.refreshSize();
-        this.foodTrailDrawer.refreshSize();
+      this.resizeCanvas(p5);
+      this.containerRef.current.style.height = this.windowSize[1];
+      this.mapDrawer.drawFullMap({ map: this.mapHandler.map });
+      this.homeTrailDrawer.refreshSize();
+      this.foodTrailDrawer.refreshSize();
     }
 
     if (p5.mouseIsPressed) this.handleClick(p5);
@@ -600,7 +606,8 @@ export default class AntGame extends React.Component {
               {this.showHistoryTab && !AuthHandler.isAnon ? (
                 <RunHistoryTab
                   challengeID={this.dailyChallengeId ?? this.context.challengeID}
-                  loadRunHandler={run => this.loadRunHandler( run )}
+                  loadRunHandler={run => this.loadRunHandler(run)}
+                  gameMode={this.gamemode}
                 ></RunHistoryTab>
               ) : (
                 <></>

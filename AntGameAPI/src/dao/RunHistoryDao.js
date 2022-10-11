@@ -30,6 +30,7 @@ const getRunsByUserIdAndChallengeId = async ({ userId, challengeId, pageIndex })
             homeAmounts: {
               $arrayElemAt: [{ $arrayElemAt: ["$details.snapshots", -1] }, 5],
             },
+            seed: 1,
           },
           tagTypes: "$tags.type",
           score: 1,
@@ -53,6 +54,7 @@ const getRunsByUserIdAndChallengeId = async ({ userId, challengeId, pageIndex })
     return {
       homeLocations: runData.details.homeLocations,
       homeAmounts: runData.details.homeAmounts,
+      seed: runData.details.seed,
       submissionTime: runData.submissionTime,
       score: runData.score,
       pr: runData.tagTypes?.includes("pr") ?? false,

@@ -360,18 +360,6 @@ export class ChallengeController {
         return;
       }
 
-      if (config.active) {
-        res.status(400);
-        res.send("Challenge still active");
-        return;
-      }
-
-      if (!config.dailyChallenge) {
-        res.status(400);
-        res.send("Replay only allowed on daily challenges");
-        return;
-      }
-
       const toReturn = {
         id: config.id,
         seconds: config.seconds,
@@ -392,18 +380,20 @@ export class ChallengeController {
         toReturn.mapPath = config.mapPath;
       }
 
-      const wrRunInfo = await LeaderboardCache.getChallengeEntryByRank(id, 1);
-      if (wrRunInfo) {
-        const wrRunData = (await getRunDataByRunId(wrRunInfo.runID)) as {
-          homeLocations: number[][];
-          homeAmounts: { [location: string]: number };
-          seed: number;
-        };
-        toReturn.wrData = {
-          locations: wrRunData.homeLocations,
-          amounts: wrRunData.homeAmounts,
-          seed: wrRunData.seed,
-        };
+      if(!config.active && config.dailyChallenge){
+        const wrRunInfo = await LeaderboardCache.getChallengeEntryByRank(id, 1);
+        if (wrRunInfo) {
+          const wrRunData = (await getRunDataByRunId(wrRunInfo.runID)) as {
+            homeLocations: number[][];
+            homeAmounts: { [location: string]: number };
+            seed: number;
+          };
+          toReturn.wrData = {
+            locations: wrRunData.homeLocations,
+            amounts: wrRunData.homeAmounts,
+            seed: wrRunData.seed,
+          };
+        }
       }
 
       if (!user.anon) {
