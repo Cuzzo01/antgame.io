@@ -78,8 +78,5 @@ const DailyCountdown = ({ short = false }) => {
 export default DailyCountdown;
 
 const getCurrentTime = async () => {
-  return axios
-    .get("/api/time")
-    .then(response => response.json())
-    .then(data => data.now);
+  return axios.get("/api/time").then(res => res.data.now);
 };
