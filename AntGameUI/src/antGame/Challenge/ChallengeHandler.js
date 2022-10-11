@@ -94,6 +94,8 @@ class ChallengeHandler {
       this._runSeed = wrData.seed;
       this._mapHandler.setHomeLocations({ locations: wrData.locations, amounts: wrData.amounts });
       this.setReplayLabel("wr");
+    } else {
+      this._mapHandler.setHomeLocations({ locations: type.homeLocations, amounts: type.homeAmounts });
     }
   }
 
@@ -109,11 +111,6 @@ class ChallengeHandler {
 
       this._label = `${username} - ${score} | PR`;
     }
-  }
-
-  async loadHistoricalRun({ run }) {
-    this._mapHandler.clearMap();
-    this._mapHandler.setHomeLocations({ locations: run.homeLocations, amounts: run.homeAmounts });
   }
 
   clearConfig() {

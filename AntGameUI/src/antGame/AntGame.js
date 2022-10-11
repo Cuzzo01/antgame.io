@@ -560,14 +560,6 @@ export default class AntGame extends React.Component {
     }
   };
 
-  loadHistoricalHomeLocations = run => {
-    console.log("load historical run", run);
-    this.reset();
-    ChallengeHandler.loadHistoricalRun(run).then(result => {
-      if (result !== false && this.state.emptyMap) this.setState({ emptyMap: false });
-    });
-  };
-
   render() {
     return (
       <div className={cssStyles.container} ref={this.containerRef}>
@@ -608,7 +600,7 @@ export default class AntGame extends React.Component {
               {this.showHistoryTab && !AuthHandler.isAnon ? (
                 <RunHistoryTab
                   challengeID={this.dailyChallengeId ?? this.context.challengeID}
-                  loadRunHandler={run => this.loadHistoricalHomeLocations({ run })}
+                  loadRunHandler={run => this.loadRunHandler( run )}
                 ></RunHistoryTab>
               ) : (
                 <></>
