@@ -60,9 +60,10 @@
   display: grid;
   background-color: lightgray;
   margin: 2.5px 5px;
+  padding: 2px;
   grid-template-areas: 
   "date score"
-  "time tags";
+  "time pr";
 }
 
 .date{
@@ -75,6 +76,13 @@
 .score{
   grid-area: score;
 }
-.tags{
-  grid-area: tags;
+.pr{
+  grid-area: pr;
+}
+
+.prText {
+  color: white;
+  background-color: #1e8449;
+  padding: 0.1em;
+  margin: 10px;
 }
