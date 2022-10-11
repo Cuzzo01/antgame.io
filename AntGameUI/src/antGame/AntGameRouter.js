@@ -38,6 +38,10 @@ const AntGameRouter = () => {
             <ChallengeMap />
             <UserBar showRecords />
           </Route>
+          <Route exact path="/replay/:id">
+            <ReplayPage />
+            <UserBar showRecords />
+          </Route>
           <Route>
             <div className={styles.windowContainer}>
               <Switch>
@@ -107,6 +111,16 @@ const ChallengeMap = () => {
   if (!AuthHandler.loggedIn) return <Redirect to={`/login?redirect=/challenge/${id}`} />;
   return (
     <GameModeContext.Provider value={{ mode: "challenge", challengeID: id }}>
+      <AntGame />
+    </GameModeContext.Provider>
+  );
+};
+
+const ReplayPage = () => {
+  let { id } = useParams();
+  if (!AuthHandler.loggedIn) return <Redirect to={`/login?redirect=/replay/${id}`} />;
+  return (
+    <GameModeContext.Provider value={{ mode: "replay", challengeID: id }}>
       <AntGame />
     </GameModeContext.Provider>
   );

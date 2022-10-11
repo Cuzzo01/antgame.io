@@ -20,6 +20,7 @@ const Leaderboard = () => {
   const [solutionImagePath, setSolutionImagePath] = useState(false);
   const [pageNumber, setPageNumber] = useState(false);
   const [morePages, setMorePages] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
   const goToPage = useCallback(
     page => {
@@ -42,7 +43,7 @@ const Leaderboard = () => {
   }, [pageNumber, goToPage]);
 
   const setLeaderboardData = useCallback(
-    ({ daily, leaderboard, name, playerCount, solutionImage, pageLength }) => {
+    ({ daily, leaderboard, name, playerCount, solutionImage, pageLength, active }) => {
       const currentUsername = AuthHandler.username;
 
       if (solutionImage) setSolutionImagePath(solutionImage);
@@ -81,6 +82,7 @@ const Leaderboard = () => {
       setTitle(name);
       setPlayerCount(playerCount);
       setMorePages(playerCount > pageLength && lastRank !== playerCount);
+      setIsActive(active);
 
       document.title = `${name} - Leaderboard`;
     },
@@ -129,28 +131,28 @@ const Leaderboard = () => {
     refreshLeaderboard(id, parsedPage);
   }, [id, history, page, refreshLeaderboard]);
 
+  const navigateCallback = useCallback(
+    newId => {
+      history.push(`/challenge/${newId}/leaderboard`);
+    },
+    [history]
+  );
+
   return loading ? null : (
     <div className={styles.container}>
       <div className={styles.title}>
         <h2>{title}</h2>
       </div>
-      {isDaily ? (
-        <DailyChallengePicker
-          callback={newId => history.push(`/challenge/${newId}/leaderboard`)}
-          currentID={id}
-        />
-      ) : null}
+      {isDaily ? <DailyChallengePicker callback={navigateCallback} currentID={id} /> : null}
       {solutionImagePath ? <SolutionImage path={solutionImagePath} /> : null}
       <div className={styles.nav}>
         <div className={styles.navLeft}>
           <Link to="/">Home</Link>
         </div>
         <div className={styles.navRight}>
-          {isDaily ? (
-            <a href="/challenge/daily">Play Daily</a>
-          ) : (
-            <a href={`/challenge/${id}`}>Play Challenge</a>
-          )}
+          {isDaily && isActive && <a href="/challenge/daily">Play Daily</a>}
+          {isDaily && !isActive && <a href={`/replay/${id}`}>Replay</a>}
+          {!isDaily && <a href={`/challenge/${id}`}>Play Challenge</a>}
         </div>
       </div>
       {runTable}
