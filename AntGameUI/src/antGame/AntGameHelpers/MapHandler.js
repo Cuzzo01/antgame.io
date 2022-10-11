@@ -97,7 +97,7 @@ export class MapHandler {
   }
 
   clearMap() {
-    if (this._gameMode === "challenge") {
+    if (this._gameMode === "challenge" || this._gameMode === "replay") {
       this.clearHomeTiles();
       return false;
     }
@@ -172,7 +172,7 @@ export class MapHandler {
 
   fetchAndLoadMap(path) {
     let setTitle = true;
-    if (this._gameMode === "challenge") setTitle = false;
+    if (this._gameMode === "challenge" || this._gameMode === "replay") setTitle = false;
     return axios.get(path).then(res => {
       this.loadMap(res.data, setTitle);
     });
@@ -285,7 +285,7 @@ export class MapHandler {
     this.placeAndCountDecayableBlocks();
   };
 
-  setLocationInfo = ({ locations, amounts }) => {
+  setHomeLocations = ({ locations, amounts }) => {
     locations.forEach(location => {
       this.setCellTo([location[0], location[1]], "h");
     });

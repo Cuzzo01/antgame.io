@@ -9,41 +9,71 @@ import { useContext } from "react";
 import styles from "./MenuBar.module.css";
 import ChallengeHandler from "../../Challenge/ChallengeHandler";
 import HelpButton from "./HelpButton/HelpButton";
+import ReplayLabel from "./ReplayLabel/ReplayLabel";
 
-export default function MenuBar(props) {
+export default function MenuBar({
+  playState,
+  foodReturned,
+  playButtonHandler,
+  resetHandler,
+  mapClear,
+  clearMapHandler,
+  loadMapHandler,
+  saveMapHandler,
+  loadPRHandler,
+  time,
+  timerActive,
+  homeOnMap,
+  blockDrawHandler,
+  brushSizeHandler,
+  brushTypeHandler,
+  saveImageHandler,
+  setMapNameHandler,
+  getMapName,
+  replayLabel,
+  speed,
+  setSpeed,
+  toggleShowHistory,
+}) {
   const gameMode = useContext(GameModeContext);
+  const IsSandbox = gameMode.mode === "sandbox";
   const IsChallenge = gameMode.mode === "challenge";
-  const unresetChallengeMode = IsChallenge && props.foodReturned !== 0;
-  const brushDisabled = props.playState || unresetChallengeMode;
+  const IsReplay = gameMode.mode === "replay";
+  const unresetChallengeMode = IsChallenge && foodReturned !== 0;
+  const brushDisabled = playState || unresetChallengeMode;
+
+  const challengeStyleBar = IsChallenge || IsReplay;
 
   return (
     <div className={styles.container}>
       <GameMenu
-        playState={props.playState}
-        playButtonHandler={props.playButtonHandler}
-        resetHandler={props.resetHandler}
-        mapClear={props.mapClear}
-        clearMapHandler={props.clearMapHandler}
-        loadMapHandler={props.loadMapHandler}
-        saveMapHandler={props.saveMapHandler}
-        loadPRHandler={props.loadPRHandler}
-        toggleShowHistory={props.toggleShowHistory}
+        playState={playState}
+        playButtonHandler={playButtonHandler}
+        resetHandler={resetHandler}
+        mapClear={mapClear}
+        clearMapHandler={clearMapHandler}
+        loadMapHandler={loadMapHandler}
+        saveMapHandler={saveMapHandler}
+        loadPRHandler={loadPRHandler}
+        speed={speed}
+        setSpeed={setSpeed}
+        toggleShowHistory={toggleShowHistory}
       />
-      <div className={IsChallenge ? styles.challengeMiddle : styles.middle}>
-        {IsChallenge ? (
+      <div className={challengeStyleBar ? styles.challengeMiddle : styles.middle}>
+        {challengeStyleBar && (
           <div className={styles.challengeName}>
             <h3>{ChallengeHandler.config.name}</h3>
           </div>
-        ) : null}
-        {IsChallenge ? (
+        )}
+        {challengeStyleBar && (
           <div className={styles.vertLineContainer}>
             <div />
             <div className={styles.verticalLine}></div>
             <div />
           </div>
-        ) : null}
-        <div className={IsChallenge ? styles.timerChallenge : styles.timer}>
-          <Timer time={props.time} active={props.timerActive} />
+        )}
+        <div className={challengeStyleBar ? styles.timerChallenge : styles.timer}>
+          <Timer time={time} active={timerActive} />
         </div>
         <div className={styles.vertLineContainer}>
           <div />
@@ -52,32 +82,34 @@ export default function MenuBar(props) {
         </div>
         <div className={styles.foodTracker}>
           <FoodTracker
-            active={props.timerActive}
-            foodReturned={props.foodReturned}
-            IsChallenge={IsChallenge}
+            active={timerActive}
+            foodReturned={foodReturned}
+            DisplayScore={challengeStyleBar}
           />
         </div>
       </div>
       <div className={styles.justifyRight}>
-        {IsChallenge ? <HomeTracker homeOnMap={props.homeOnMap} greyedOut={brushDisabled} /> : null}
-        <BrushMenu
-          disableButtons={brushDisabled}
-          brushSizeHandler={props.brushSizeHandler}
-          brushTypeHandler={props.brushTypeHandler}
-        />
-        {IsChallenge ? (
-          <HelpButton blockDrawHandler={props.blockDrawHandler} />
-        ) : (
-          <OptionsMenu
-            playState={props.playState}
-            mapNameDisabled={IsChallenge}
-            blockDrawHandler={props.blockDrawHandler}
-            saveImageHandler={props.saveImageHandler}
-            loadMapHandler={props.loadMapHandler}
-            setMapNameHandler={props.setMapNameHandler}
-            getMapName={props.getMapName}
+        {IsChallenge && <HomeTracker homeOnMap={homeOnMap} greyedOut={brushDisabled} />}
+        {(IsSandbox || IsChallenge) && (
+          <BrushMenu
+            disableButtons={brushDisabled}
+            brushSizeHandler={brushSizeHandler}
+            brushTypeHandler={brushTypeHandler}
           />
         )}
+        {IsChallenge && <HelpButton blockDrawHandler={blockDrawHandler} />}
+        {IsSandbox && (
+          <OptionsMenu
+            playState={playState}
+            mapNameDisabled={IsChallenge}
+            blockDrawHandler={blockDrawHandler}
+            saveImageHandler={saveImageHandler}
+            loadMapHandler={loadMapHandler}
+            setMapNameHandler={setMapNameHandler}
+            getMapName={getMapName}
+          />
+        )}
+        {IsReplay && <ReplayLabel label={replayLabel} />}
       </div>
     </div>
   );

@@ -10,12 +10,24 @@ import { useHistory } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
 import genericStyles from "../../../Helpers/GenericStyles.module.css";
 
-export default function GameMenu(props) {
+export default function GameMenu({
+  mapClear,
+  loadMapHandler,
+  saveMapHandler,
+  playState,
+  clearMapHandler,
+  loadPRHandler,
+  resetHandler,
+  playButtonHandler,
+  speed,
+  setSpeed,
+  toggleShowHistory,
+}) {
   const [flashReset, setFlashReset] = useState(false);
   const [disablePlay, setDisablePlay] = useState(true);
+  const [sandBoxButtons, setSandBoxButtons] = useState(false);
   const gameMode = useContext(GameModeContext);
   const history = useHistory();
-  let sandBoxButtons = [];
 
   useEffect(() => {
     if (flashReset === true) setTimeout(() => setFlashReset(false), 900);
@@ -26,83 +38,102 @@ export default function GameMenu(props) {
     } else {
       setDisablePlay(false);
     }
-  }, [flashReset, gameMode]);
 
-  if (props.mapClear)
-    sandBoxButtons.push(
-      <UploadMapButton key="upload" styles={styles.button} loadMapHandler={props.loadMapHandler} />
-    );
-  else {
-    var isInIframe = window.self !== window.top;
-    if (isInIframe) {
-      sandBoxButtons.push(
-        <span data-tip="" data-for={"warning"}>
-          <SettingButton key="save" disabled={true} text="Save" />
-          <ReactTooltip effect="solid" id={"warning"}>
-            Map saving does not work on outside sites. To save maps, visit antgame.io.
-          </ReactTooltip>
-        </span>
+    const buttons = [];
+    if (mapClear)
+      buttons.push(
+        <UploadMapButton key="upload" styles={styles.button} loadMapHandler={loadMapHandler} />
       );
-    } else {
-      sandBoxButtons.push(
-        <SettingButton
-          key="save"
-          handler={props.saveMapHandler}
-          disabled={props.playState}
-          text="Save"
-        />
-      );
+    else {
+      var isInIframe = window.self !== window.top;
+      if (isInIframe) {
+        buttons.push(
+          <span data-tip="" data-for={"warning"}>
+            <SettingButton key="save" disabled={true} text="Save" />
+            <ReactTooltip effect="solid" id={"warning"}>
+              Map saving does not work on outside sites. To save maps, visit antgame.io.
+            </ReactTooltip>
+          </span>
+        );
+      } else {
+        buttons.push(
+          <SettingButton key="save" handler={saveMapHandler} disabled={playState} text="Save" />
+        );
+      }
     }
-  }
+    setSandBoxButtons(buttons);
+  }, [flashReset, gameMode, loadMapHandler, mapClear, playState, saveMapHandler]);
 
+  const IsChallenge = gameMode.mode === "challenge";
+  const IsReplay = gameMode.mode === "replay";
+  const IsSandbox = gameMode.mode === "sandbox";
   return (
     <div className={cssStyles.justifyLeft}>
-      {gameMode.mode === "challenge" ? (
+      {(IsChallenge || IsReplay) && (
         <SettingButton
-          className={props.playState ? cssStyles.disabled : null}
-          disabled={props.playState}
+          className={playState ? cssStyles.disabled : null}
+          disabled={playState}
           text={<BackIcon />}
           handler={() => {
-            history.push({ pathname: "/" });
+            if (IsChallenge) history.push({ pathname: "/" });
+            else history.goBack();
           }}
         />
-      ) : null}
-      <SettingButton
-        key="clear"
-        text="Clear"
-        handler={props.clearMapHandler}
-        disabled={props.playState}
-      />
-      {ChallengeHandler.records.pr ? (
+      )}
+      {!IsReplay && (
+        <SettingButton key="clear" text="Clear" handler={clearMapHandler} disabled={playState} />
+      )}
+      {(ChallengeHandler.records.pr || ChallengeHandler.config.prData) && (
         <>
           <SettingButton
             key="PR"
             text="Load PR"
-            handler={props.loadPRHandler}
-            disabled={props.playState}
-          />
-          <SettingButton
-            className={flashReset ? cssStyles.flashing : ""}
-            text={"History"}
-            handler={props.toggleShowHistory}
-            disabled={props.playState}
+            handler={() => loadPRHandler("pr")}
+            disabled={playState}
           />
         </>
-      ) : null}
+      )}
+      {ChallengeHandler.config.wrData && (
+        <SettingButton
+        key="WR"
+        text="Load WR"
+        handler={() => loadPRHandler("wr")}
+        disabled={playState}
+        />
+        )}
+        {(ChallengeHandler.records.pr && !(ChallengeHandler.config.prData || ChallengeHandler.config.wrData)) && (
+        <SettingButton
+          className={flashReset ? cssStyles.flashing : ""}
+          text={"History"}
+          handler={toggleShowHistory}
+          disabled={playState}
+        />
+        )}
       <SettingButton
         className={flashReset ? cssStyles.flashing : ""}
         text={"Reset"}
-        handler={props.resetHandler}
-        disabled={props.playState}
+        handler={resetHandler}
+        disabled={playState}
       />
-      {gameMode.mode === "challenge" ? null : sandBoxButtons}
+      {IsReplay && (
+        <SettingButton
+          key="speed"
+          text={`${speed}x`}
+          handler={() => {
+            const newSpeed = 2 * speed;
+            if (newSpeed > 8) setSpeed(1);
+            else setSpeed(newSpeed);
+          }}
+        />
+      )}
+      {IsSandbox && sandBoxButtons}
       <SettingButton
         disabled={disablePlay}
         className={cssStyles.playButton}
-        text={props.playState ? <PauseIcon /> : <PlayIcon />}
+        text={playState ? <PauseIcon /> : <PlayIcon />}
         handler={async () => {
           setDisablePlay(true);
-          const result = await props.playButtonHandler(!props.playState);
+          const result = await playButtonHandler(!playState);
           setDisablePlay(false);
           if (result === "reset") setFlashReset(true);
         }}
@@ -145,9 +176,9 @@ const SettingButton = ({ handler, className, disabled, text }) => {
 
 const styles = {
   button: {
-    marginLeft: "0.2em",
+    marginLeft: "0.2rem",
     borderRadius: "5px",
-    padding: "0.25em 0.5em",
-    letterSpacing: "-0.05em",
+    padding: "0.25rem 0.5rem",
+    letterSpacing: "-0.05rem",
   },
 };
