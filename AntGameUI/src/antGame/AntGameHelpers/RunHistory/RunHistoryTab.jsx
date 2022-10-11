@@ -6,27 +6,25 @@ import styles from "./RunHistoryTab.module.css";
 const RunHistoryTab = props => {
   var challengeId = props.challengeID;
 
-  const [latestRunHistoryTime, setLatestRunHistoryTime] = useState(new Date());
   const [hasGrabbedAllValidPrevRuns, setHasGrabbedAllValidPrevRuns] = useState(null);
+  const [pageIndex, setPageIndex] = useState(0);
   const [previousRuns, setPreviousRuns] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const addRuns = useCallback(
-    async itemsToGrab => {
+    async () => {
       if (!hasGrabbedAllValidPrevRuns) {
         getPreviousRunData({
           challengeId,
-          timeBefore: latestRunHistoryTime,
-          itemsToGrab: itemsToGrab,
+          pageIndex
         }).then(result => {
-          setHasGrabbedAllValidPrevRuns(result.length < itemsToGrab); //todo: when no runs, the "load more" button will flash b4 this completes
-          setPreviousRuns([...previousRuns, ...result]);
-          if (result.length > 0)
-            setLatestRunHistoryTime(new Date(result[result.length - 1]?.submissionTime));
+          setHasGrabbedAllValidPrevRuns(result.reachedEndOfBatch); //todo: when no runs, the "load more" button will flash b4 this completes
+          setPreviousRuns([...previousRuns, ...result.runs]);
+          setPageIndex(prev => prev + 1);
         });
       }
     },
-    [challengeId, hasGrabbedAllValidPrevRuns, latestRunHistoryTime, previousRuns]
+    [challengeId, hasGrabbedAllValidPrevRuns, pageIndex, previousRuns]
   );
 
   useEffect(() => {
@@ -73,7 +71,7 @@ const RunEntry = props => {
       <div className={styles.date}>{dateValue.toLocaleDateString()}</div>
       <div className={styles.score}>{run.score}</div>
       <div className={styles.time}>{dateValue.toLocaleTimeString()}</div>
-      <div className={styles.tags}>{run.types.toString()}</div>
+      {run.pr ? <div className={styles.tags}><span className={styles.prText}>PR</span></div> : <></>}
     </div>
   );
 };

@@ -131,9 +131,9 @@ export async function getSeed({ homeLocations }) {
     .catch(() => false);
 }
 
-export async function getPreviousRunData({ challengeId, timeBefore, itemsToGrab }) {
+export async function getPreviousRunData({ challengeId, pageIndex }) {
   return axios
-    .post("/api/runs", { challengeId, timeBefore, itemsToGrab })
+    .post("/api/runs", { challengeId, pageIndex })
     .then(res => res.data)
     .catch(() => []);
 }

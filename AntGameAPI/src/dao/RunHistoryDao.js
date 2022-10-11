@@ -1,65 +1,65 @@
 const Connection = require("./MongoClient");
+const { FlagHandler } = require("../handler/FlagHandler");
 const { TryParseObjectID } = require("./helpers");
+
+const FlagCache = FlagHandler.getCache();
 
 const getCollection = async collection => {
   const connection = await Connection.open();
   return await connection.db("challenges").collection(collection);
 };
 
-const getRunsByUserIdAndChallengeId = async ({ userId, challengeId, timeBefore, itemsToGrab} ) => {
+const getRunsByUserIdAndChallengeId = async ({ userId, challengeId, pageIndex }) => {
+  const challengeObjectID = TryParseObjectID(challengeId, "challengeID", "RunHistoryDao");
+  const userObjectID = TryParseObjectID(userId, "userID", "RunHistoryDao");
+  const pageLength = await FlagCache.getIntFlag("batch-size.run-history");
+  const recordsToSkip = pageLength * pageIndex;
 
-    const challengeObjectID = TryParseObjectID(challengeId, "challengeID", "RunHistoryDao");
-    const userObjectID = TryParseObjectID(userId, "userID", "RunHistoryDao");
-    const date = new Date(timeBefore);
-  
-    const collection = await getCollection("runs");
+  const collection = await getCollection("runs");
 
-    const result = await collection
-    .find({
-      userID: userObjectID,
-      challengeID: challengeObjectID,
-      submissionTime: { $lt: date },
-    },
-    {
+  const result = await collection
+    .find(
+      {
+        userID: userObjectID,
+        challengeID: challengeObjectID,
+      },
+      {
         projection: {
           details: {
             homeLocations: 1,
-            food: {
-              $arrayElemAt: ["$details.snapshots", -1],
+            homeAmounts: {
+              $arrayElemAt: [{ $arrayElemAt: ["$details.snapshots", -1] }, 5],
             },
           },
-          tags: 1,
+          tagTypes: "$tags.type",
           score: 1,
           submissionTime: 1,
         },
-      })
+      }
+    )
     .sort({ submissionTime: -1 })
-    .limit(itemsToGrab)
+    .skip(recordsToSkip)
+    .limit(pageLength + 1)
     .toArray();
-   
-    if (!result) return [];
 
-    return result.map( runData => {
-        try{
-            if(!runData.details.homeLocations || !runData.details.food[5]){
-                throw new Error();
-            }
-            return {
-                homeLocations: runData.details.homeLocations,
-                homeAmounts: runData.details.food[5],
-                submissionTime: runData.submissionTime,
-                score!: runData.score,
-                types: runData.tags.map(t => {
-                    if(t.type === "pr" || t.type === "wr"){
-                        return t.type;
-                    }
-                    return null;
-                }).filter(t => t)
-            }
-        } catch {
-            return null;
-        }
-    }).filter(t => t !== null)
-  };
-  
+  if (!result) return [];
+
+  const reachedEndOfBatch = result.length < pageLength;
+  if (!reachedEndOfBatch) {
+    result.pop();
+  }
+
+  const runs = result.map(runData => {
+    return {
+      homeLocations: runData.details.homeLocations,
+      homeAmounts: runData.details.homeAmounts,
+      submissionTime: runData.submissionTime,
+      score: runData.score,
+      pr: runData.tagTypes?.includes("pr") ?? false,
+    };
+  });
+
+  return { runs, reachedEndOfBatch };
+};
+
 module.exports = { getRunsByUserIdAndChallengeId };
