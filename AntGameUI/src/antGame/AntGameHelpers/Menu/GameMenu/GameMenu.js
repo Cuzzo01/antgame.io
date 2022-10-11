@@ -75,19 +75,19 @@ export default function GameMenu(props) {
       />
       {ChallengeHandler.records.pr ? (
         <>
-        <SettingButton
-          key="PR"
-          text="Load PR"
-          handler={props.loadPRHandler}
-          disabled={props.playState}
+          <SettingButton
+            key="PR"
+            text="Load PR"
+            handler={props.loadPRHandler}
+            disabled={props.playState}
           />
-        <SettingButton
-          className={flashReset ? cssStyles.flashing : ""}
-          text={"History"}
-          handler={props.toggleShowHistory}
-          disabled={props.playState}
+          <SettingButton
+            className={flashReset ? cssStyles.flashing : ""}
+            text={"History"}
+            handler={props.toggleShowHistory}
+            disabled={props.playState}
           />
-          </>
+        </>
       ) : null}
       <SettingButton
         className={flashReset ? cssStyles.flashing : ""}

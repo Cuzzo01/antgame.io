@@ -3,7 +3,7 @@
   width: 20%;
   margin-right: 10px;
   margin-bottom: 10px;
-  padding:5px;
+  padding: 5px;
   height: 100%;
   overflow: hidden;
   justify-items: center;
@@ -16,14 +16,14 @@
   display: flex;
   width: 100%;
   flex-direction: column;
- height: calc(100vh - 145px); /* top of list ~127 pxs down ... TODO*/
- /* height: 100%; /* top of list ~127 pxs down ... TODO*/
+  height: calc(100vh - 145px); /* top of list ~127 pxs down ... TODO*/
+  /* height: 100%; /* top of list ~127 pxs down ... TODO*/
   overflow-y: auto;
   align-items: center;
 }
 
 .runsList::-webkit-scrollbar {
-  width: 10px; 
+  width: 10px;
   padding-right: 5px;
 }
 
@@ -53,7 +53,6 @@
   margin-bottom: 10px;
 }
 
-
 .runEntryRow {
   width: 95%;
   height: 50;
@@ -61,22 +60,22 @@
   background-color: lightgray;
   margin: 2.5px 5px;
   padding: 2px;
-  grid-template-areas: 
-  "date score"
-  "time pr";
+  grid-template-areas:
+    "date score"
+    "time pr";
 }
 
-.date{
+.date {
   grid-area: date;
 }
 
-.time{
+.time {
   grid-area: time;
 }
-.score{
+.score {
   grid-area: score;
 }
-.pr{
+.pr {
   grid-area: pr;
 }
 

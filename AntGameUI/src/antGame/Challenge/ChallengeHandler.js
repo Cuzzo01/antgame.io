@@ -77,9 +77,9 @@ class ChallengeHandler {
     this._mapHandler.setLocationInfo(this.prInfo);
   }
 
-  async loadHistoricalRun({run}) {
+  async loadHistoricalRun({ run }) {
     this._mapHandler.clearMap();
-    this._mapHandler.setLocationInfo({locations: run.homeLocations, amounts: run.homeAmounts});
+    this._mapHandler.setLocationInfo({ locations: run.homeLocations, amounts: run.homeAmounts });
   }
 
   clearConfig() {

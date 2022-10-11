@@ -11,21 +11,18 @@ const RunHistoryTab = props => {
   const [previousRuns, setPreviousRuns] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const addRuns = useCallback(
-    async () => {
-      if (!hasGrabbedAllValidPrevRuns) {
-        getPreviousRunData({
-          challengeId,
-          pageIndex
-        }).then(result => {
-          setHasGrabbedAllValidPrevRuns(result.reachedEndOfBatch); //todo: when no runs, the "load more" button will flash b4 this completes
-          setPreviousRuns([...previousRuns, ...result.runs]);
-          setPageIndex(prev => prev + 1);
-        });
-      }
-    },
-    [challengeId, hasGrabbedAllValidPrevRuns, pageIndex, previousRuns]
-  );
+  const addRuns = useCallback(async () => {
+    if (!hasGrabbedAllValidPrevRuns) {
+      getPreviousRunData({
+        challengeId,
+        pageIndex,
+      }).then(result => {
+        setHasGrabbedAllValidPrevRuns(result.reachedEndOfBatch); //todo: when no runs, the "load more" button will flash b4 this completes
+        setPreviousRuns([...previousRuns, ...result.runs]);
+        setPageIndex(prev => prev + 1);
+      });
+    }
+  }, [challengeId, hasGrabbedAllValidPrevRuns, pageIndex, previousRuns]);
 
   useEffect(() => {
     addRuns(15).then(() => setLoading(false)); //todo: this doesn't work
@@ -33,7 +30,7 @@ const RunHistoryTab = props => {
 
   const doneLoading = () => {
     return !loading && hasGrabbedAllValidPrevRuns !== null;
-  }
+  };
 
   return (
     <div className={styles.container}>
@@ -49,7 +46,7 @@ const RunHistoryTab = props => {
                 Load More{">>"}
               </div>
             ) : (
-             <div>No {previousRuns.length > 0 ? "More " : ""}Loadable Runs</div>
+              <div>No {previousRuns.length > 0 ? "More " : ""}Loadable Runs</div>
             )}
           </div>
           <div className={styles.bottombar} />
@@ -71,7 +68,13 @@ const RunEntry = props => {
       <div className={styles.date}>{dateValue.toLocaleDateString()}</div>
       <div className={styles.score}>{run.score}</div>
       <div className={styles.time}>{dateValue.toLocaleTimeString()}</div>
-      {run.pr ? <div className={styles.tags}><span className={styles.prText}>PR</span></div> : <></>}
+      {run.pr ? (
+        <div className={styles.tags}>
+          <span className={styles.prText}>PR</span>
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };
