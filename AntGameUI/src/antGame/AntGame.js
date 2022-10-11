@@ -184,14 +184,17 @@ export default class AntGame extends React.Component {
     this.windowSize = [p5.windowWidth, p5.windowHeight];
 
     let amtToSubtract;
-    if (this.showHistoryTab) { //tab open
+    if (this.showHistoryTab) {
+      //tab open
       console.log(1);
       amtToSubtract = this.sideRef.current.offsetLeft + this.sideRef.current.offsetWidth + 10;
       if (amtToSubtract < 100) return;
-    } else if (this.state.timerActive) { //closing when game running or during game
+    } else if (this.state.timerActive) {
+      //closing when game running or during game
       console.log(2);
       amtToSubtract = 0;
-    } else { // resize without tab open
+    } else {
+      // resize without tab open
       console.log(3);
       amtToSubtract = this.parentRef.offsetLeft;
       if (amtToSubtract > 100) return;
@@ -215,11 +218,11 @@ export default class AntGame extends React.Component {
       p5.windowHeight !== this.windowSize[1] ||
       this.showHistoryTabSwitched
     ) {
-        this.resizeCanvas(p5);
-        this.containerRef.current.style.height = this.windowSize[1];
-        this.mapDrawer.drawFullMap({ map: this.mapHandler.map });
-        this.homeTrailDrawer.refreshSize();
-        this.foodTrailDrawer.refreshSize();
+      this.resizeCanvas(p5);
+      this.containerRef.current.style.height = this.windowSize[1];
+      this.mapDrawer.drawFullMap({ map: this.mapHandler.map });
+      this.homeTrailDrawer.refreshSize();
+      this.foodTrailDrawer.refreshSize();
     }
 
     if (p5.mouseIsPressed) this.handleClick(p5);
@@ -389,7 +392,7 @@ export default class AntGame extends React.Component {
       let keepGoing = true;
       this.gameLoopInterval = setInterval(() => {
         const timeSinceLastRun = new Date().getTime() - this.lastGameUpdateRunTime.getTime();
-				if (timeSinceLastRun > 200 && this.gamemode === "challenge") {
+        if (timeSinceLastRun > 200 && this.gamemode === "challenge") {
           const missedUpdates = Math.floor(timeSinceLastRun / updateRate);
           catchUpUpdates += missedUpdates;
         } else {
