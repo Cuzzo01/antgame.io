@@ -348,6 +348,88 @@ export class ChallengeController {
     }
   }
 
+  static async getReplayConfig(req: Request, res: Response) {
+    try {
+      const id: string | ObjectId = req.params.id;
+      const user = req.user as AuthToken;
+
+      const config = (await getChallengeByChallengeId(id)) as FullChallengeConfig | false;
+      if (config === false) {
+        res.status(400);
+        res.send("Invalid challenge ID");
+        return;
+      }
+
+      if (config.active) {
+        res.status(400);
+        res.send("Challenge still active");
+        return;
+      }
+
+      if (!config.dailyChallenge) {
+        res.status(400);
+        res.send("Replay only allowed on daily challenges");
+        return;
+      }
+
+      const toReturn = {
+        id: config.id,
+        seconds: config.seconds,
+        name: config.name,
+        mapPath: undefined,
+        wrData: undefined,
+        prData: undefined,
+      };
+
+      if (config.mapID) {
+        const mapData = await MapCache.getMapData({ mapID: config.mapID.toString() });
+        if (await FlagCache.getFlagValue("use-spaces-proxy")) {
+          toReturn.mapPath = `https://antgame.io/assets/${mapData.url}`;
+        } else {
+          toReturn.mapPath = `https://antgame.nyc3.digitaloceanspaces.com/${mapData.url}`;
+        }
+      } else {
+        toReturn.mapPath = config.mapPath;
+      }
+
+      const wrRunInfo = await LeaderboardCache.getChallengeEntryByRank(id, 1);
+      if (wrRunInfo) {
+        const wrRunData = (await getRunDataByRunId(wrRunInfo.runID)) as {
+          homeLocations: number[][];
+          homeAmounts: { [location: string]: number };
+          seed: number;
+        };
+        toReturn.wrData = {
+          locations: wrRunData.homeLocations,
+          amounts: wrRunData.homeAmounts,
+          seed: wrRunData.seed,
+        };
+      }
+
+      if (!user.anon) {
+        const prRunInfo = await LeaderboardCache.getChallengeEntryByUserID(id, user.id);
+        if (prRunInfo) {
+          const prRunData = (await getRunDataByRunId(prRunInfo.runID)) as {
+            homeLocations: number[][];
+            homeAmounts: { [location: string]: number };
+            seed: number;
+          };
+          toReturn.prData = {
+            locations: prRunData.homeLocations,
+            amounts: prRunData.homeAmounts,
+            seed: prRunData.seed,
+          };
+        }
+      }
+
+      res.send(toReturn);
+    } catch (e) {
+      Logger.logError("ChallengeController.getReplayConfig", e as Error);
+      res.status(500);
+      res.send("Get challenge failed");
+    }
+  }
+
   static async getActiveChallenges(req: Request, res: Response) {
     try {
       const user = req.user as AuthToken;
@@ -568,6 +650,7 @@ export class ChallengeController {
         name: await ObjectIDToNameCache.getChallengeName(challengeId),
         leaderboard: leaderboardRows,
         daily: isDaily,
+        active: details.active,
         solutionImage: solutionImgPath,
         playerCount: await LeaderboardCache.getChallengePlayerCount(challengeId),
         pageLength: await FlagCache.getIntFlag("leaderboard-length"),

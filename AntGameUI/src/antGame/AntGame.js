@@ -44,6 +44,7 @@ export default class AntGame extends React.Component {
     this.blockDrawing = false;
     this.imageToSave = "";
     this.updateCount = 0;
+    this.gameSpeed = 1;
     this.containerRef = createRef();
 
     this.timerHandler = new TimerHandler(this.handleChallengeTimeout, this.setTime);
@@ -67,6 +68,7 @@ export default class AntGame extends React.Component {
       timerActive: false,
       foodReturned: 0,
       homeOnMap: 0,
+      speed: this.gameSpeed,
     };
 
     const homeColor = Brushes.find(brush => brush.value === HomeValue).color;
@@ -82,9 +84,10 @@ export default class AntGame extends React.Component {
     this.setMapUiUpdate(100);
 
     this.gamemode = this.context.mode;
-    if (this.gamemode === "challenge") {
+    if (this.gamemode === "challenge" || this.gamemode === "replay") {
       const challengeID = this.context.challengeID;
       this.challengeHandler = ChallengeHandler;
+      this.challengeHandler.gamemode = this.gamemode;
       this.challengeHandler.challengeID = challengeID;
       this.challengeHandler.mapHandler = this.mapHandler;
       this.challengeHandler.timerHandler = this.timerHandler;
@@ -98,6 +101,7 @@ export default class AntGame extends React.Component {
         showChallengeModal: false,
       });
     }
+
     this.mapHandler.gameMode = this.gamemode;
     this.timerHandler.gameMode = this.gamemode;
     this.timerHandler.updateTimeDisplay(this.setTime);
@@ -133,7 +137,7 @@ export default class AntGame extends React.Component {
   handleChallengeTimeout = () => {
     this.updatePlayState(false);
     this.challengeHandler.handleTimeout();
-    this.setState({ showChallengeModal: true });
+    if (this.gamemode === "challenge") this.setState({ showChallengeModal: true });
   };
 
   setup = (p5, parentRef) => {
@@ -185,7 +189,7 @@ export default class AntGame extends React.Component {
       this.foodTrailDrawer.refreshSize();
     }
 
-    if (p5.mouseIsPressed) this.handleMousePressed(p5);
+    if (p5.mouseIsPressed) this.handleClick(p5);
 
     if (this.mapHandler.redrawFullMap) {
       this.mapDrawer.drawFullMap({ map: this.mapHandler.map });
@@ -218,7 +222,7 @@ export default class AntGame extends React.Component {
           totalFood: this.mapHandler.totalFood,
         });
         this.mapHandler.homeAmountsDrawn = true;
-        this.mapHandler.shouldDrawHomeAmounts = false;
+        if (this.gamemode !== "replay") this.mapHandler.shouldDrawHomeAmounts = false;
       } else {
         this.mapHandler.homeAmountsDrawn = false;
       }
@@ -277,7 +281,8 @@ export default class AntGame extends React.Component {
     this.homeTrailGraphic.resizeCanvas(canvasW, canvasH);
   };
 
-  handleMousePressed = p5 => {
+  handleClick = p5 => {
+    if (this.gamemode === "replay") return;
     if (this.state.playState) return;
     if (this.blockDrawing) return;
     if (this.gamemode === "challenge" && this.updateCount !== 0) return;
@@ -304,10 +309,11 @@ export default class AntGame extends React.Component {
 
   updatePlayState = async state => {
     const IsChallenge = this.gamemode === "challenge";
+    const IsReplay = this.gamemode === "replay";
     if (state) {
       if (this.state.emptyMap) return;
       if (this.mapHandler.homeCellCount === 0) return;
-      if (IsChallenge && this.timerHandler.noTime) return "reset";
+      if ((IsChallenge || IsReplay) && this.timerHandler.noTime) return "reset";
       this.mapHandler.shouldDrawFoodAmounts = false;
       if (!this.antHandler.antsSpawned) {
         this.updateCount = 0;
@@ -326,6 +332,8 @@ export default class AntGame extends React.Component {
             this.challengeHandler._runSeed = seed;
           }
           this.challengeHandler.handleStart(this.mapHandler.homeLocations);
+        } else if (IsReplay) {
+          seed = this.challengeHandler._runSeed;
         }
         this.antHandler.spawnAnts({
           homeTrailHandler: this.homeTrailHandler,
@@ -349,11 +357,11 @@ export default class AntGame extends React.Component {
       let keepGoing = true;
       this.gameLoopInterval = setInterval(() => {
         const timeSinceLastRun = new Date().getTime() - this.lastGameUpdateRunTime.getTime();
-        if (timeSinceLastRun > 200) {
+        if (timeSinceLastRun > 200 && this.gamemode === "challenge") {
           const missedUpdates = Math.floor(timeSinceLastRun / updateRate);
           catchUpUpdates += missedUpdates;
         } else {
-          let updates = 1;
+          let updates = this.gameSpeed;
           if (catchUpUpdates) {
             updates = this.determineUpdateCount(catchUpUpdates);
             catchUpUpdates -= updates;
@@ -416,6 +424,11 @@ export default class AntGame extends React.Component {
     this.mapHandler.name = mapName;
   };
 
+  setGameSpeed = speed => {
+    this.gameSpeed = speed;
+    this.setState({ speed });
+  };
+
   clearMap = () => {
     const emptyMap = this.mapHandler.clearMap();
     if (emptyMap) this.setState({ emptyMap: true });
@@ -473,11 +486,14 @@ export default class AntGame extends React.Component {
     this.setState({ showChallengeModal: false });
   };
 
-  loadPRHomeLocations = () => {
+  loadRunHandler = type => {
     this.reset();
-    ChallengeHandler.loadPRRun().then(result => {
+    ChallengeHandler.loadRun(type).then(result => {
       if (result !== false && this.state.emptyMap) this.setState({ emptyMap: false });
     });
+    if (this.gamemode === "replay") {
+      this.setState({ replayLabel: ChallengeHandler.replayLabel });
+    }
   };
 
   render() {
@@ -508,7 +524,10 @@ export default class AntGame extends React.Component {
               getMapName={() => this.mapHandler.mapName}
               foodReturned={this.state.foodReturned}
               homeOnMap={this.state.homeOnMap}
-              loadPRHandler={this.loadPRHomeLocations}
+              loadPRHandler={this.loadRunHandler}
+              replayLabel={this.state.replayLabel}
+              speed={this.state.speed}
+              setSpeed={this.setGameSpeed}
             />
           </div>
           <Sketch setup={this.setup} draw={this.draw} />

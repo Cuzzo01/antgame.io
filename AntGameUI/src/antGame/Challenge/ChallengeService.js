@@ -28,6 +28,18 @@ export async function getChallengeConfig(id) {
     });
 }
 
+export async function getReplayConfig(id) {
+  return axios
+    .get(`/api/challenge/${id}/replay`)
+    .then(res => {
+      return res.data;
+    })
+    .catch(error => {
+      console.error(error);
+      window.location = "/";
+    });
+}
+
 export async function getActiveChallenges() {
   return axios
     .get("/api/challenges/active")
