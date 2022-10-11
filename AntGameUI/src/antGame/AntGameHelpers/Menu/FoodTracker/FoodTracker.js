@@ -1,6 +1,6 @@
 import "./FoodTracker.css";
 
-const FoodTracker = ({DisplayScore, foodReturned, styles, active}) => {
+const FoodTracker = ({ DisplayScore, foodReturned, styles, active }) => {
   let roundedFoodReturned = Math.round(foodReturned * 1000) / 10;
 
   let displayAmount = "";

@@ -378,8 +378,8 @@ export class ChallengeController {
         name: config.name,
         mapPath: undefined,
         wrData: undefined,
-        prData: undefined
-      }
+        prData: undefined,
+      };
 
       if (config.mapID) {
         const mapData = await MapCache.getMapData({ mapID: config.mapID.toString() });
@@ -394,33 +394,33 @@ export class ChallengeController {
 
       const wrRunInfo = await LeaderboardCache.getChallengeEntryByRank(id, 1);
       if (wrRunInfo) {
-        const wrRunData =  (await getRunDataByRunId(wrRunInfo.runID)) as {
+        const wrRunData = (await getRunDataByRunId(wrRunInfo.runID)) as {
           homeLocations: number[][];
           homeAmounts: { [location: string]: number };
-          seed: number
+          seed: number;
         };
         toReturn.wrData = {
           locations: wrRunData.homeLocations,
           amounts: wrRunData.homeAmounts,
-          seed: wrRunData.seed
-        }
+          seed: wrRunData.seed,
+        };
       }
 
-      const prRunInfo = await LeaderboardCache.getChallengeEntryByUserID(id, user.id)
+      const prRunInfo = await LeaderboardCache.getChallengeEntryByUserID(id, user.id);
       if (prRunInfo) {
-        const prRunData =  (await getRunDataByRunId(prRunInfo.runID)) as {
+        const prRunData = (await getRunDataByRunId(prRunInfo.runID)) as {
           homeLocations: number[][];
           homeAmounts: { [location: string]: number };
-          seed: number
+          seed: number;
         };
         toReturn.prData = {
           locations: prRunData.homeLocations,
           amounts: prRunData.homeAmounts,
-          seed: prRunData.seed
-        }
+          seed: prRunData.seed,
+        };
       }
 
-      res.send(toReturn)
+      res.send(toReturn);
     } catch (e) {
       Logger.logError("ChallengeController.getReplayConfig", e as Error);
       res.status(500);

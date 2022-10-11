@@ -160,7 +160,7 @@ const getRunDataByRunId = async id => {
             $arrayElemAt: ["$details.snapshots", -1],
           },
           solutionImage: 1,
-          seed: 1
+          seed: 1,
         },
         tags: 1,
         challengeID: 1,

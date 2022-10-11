@@ -44,6 +44,7 @@ export default class AntGame extends React.Component {
     this.blockDrawing = false;
     this.imageToSave = "";
     this.updateCount = 0;
+    this.gameSpeed = 1;
     this.containerRef = createRef();
 
     this.timerHandler = new TimerHandler(this.handleChallengeTimeout, this.setTime);
@@ -67,6 +68,7 @@ export default class AntGame extends React.Component {
       timerActive: false,
       foodReturned: 0,
       homeOnMap: 0,
+      speed: this.gameSpeed,
     };
 
     const homeColor = Brushes.find(brush => brush.value === HomeValue).color;
@@ -187,7 +189,7 @@ export default class AntGame extends React.Component {
       this.foodTrailDrawer.refreshSize();
     }
 
-    if (p5.mouseIsPressed) this.handleMousePressed(p5);
+    if (p5.mouseIsPressed) this.handleClick(p5);
 
     if (this.mapHandler.redrawFullMap) {
       this.mapDrawer.drawFullMap({ map: this.mapHandler.map });
@@ -220,7 +222,7 @@ export default class AntGame extends React.Component {
           totalFood: this.mapHandler.totalFood,
         });
         this.mapHandler.homeAmountsDrawn = true;
-        this.mapHandler.shouldDrawHomeAmounts = false;
+        if (this.gamemode !== "replay") this.mapHandler.shouldDrawHomeAmounts = false;
       } else {
         this.mapHandler.homeAmountsDrawn = false;
       }
@@ -279,7 +281,8 @@ export default class AntGame extends React.Component {
     this.homeTrailGraphic.resizeCanvas(canvasW, canvasH);
   };
 
-  handleMousePressed = p5 => {
+  handleClick = p5 => {
+    if (this.gamemode === "replay") return;
     if (this.state.playState) return;
     if (this.blockDrawing) return;
     if (this.gamemode === "challenge" && this.updateCount !== 0) return;
@@ -310,7 +313,7 @@ export default class AntGame extends React.Component {
     if (state) {
       if (this.state.emptyMap) return;
       if (this.mapHandler.homeCellCount === 0) return;
-      if (IsChallenge && this.timerHandler.noTime) return "reset";
+      if ((IsChallenge || IsReplay) && this.timerHandler.noTime) return "reset";
       this.mapHandler.shouldDrawFoodAmounts = false;
       if (!this.antHandler.antsSpawned) {
         this.updateCount = 0;
@@ -331,7 +334,6 @@ export default class AntGame extends React.Component {
           this.challengeHandler.handleStart(this.mapHandler.homeLocations);
         } else if (IsReplay) {
           seed = this.challengeHandler._runSeed;
-          // this.challengeHandler.handleStart()
         }
         this.antHandler.spawnAnts({
           homeTrailHandler: this.homeTrailHandler,
@@ -355,11 +357,11 @@ export default class AntGame extends React.Component {
       let keepGoing = true;
       this.gameLoopInterval = setInterval(() => {
         const timeSinceLastRun = new Date().getTime() - this.lastGameUpdateRunTime.getTime();
-        if (timeSinceLastRun > 200) {
+        if (timeSinceLastRun > 200 && this.gamemode === "challenge") {
           const missedUpdates = Math.floor(timeSinceLastRun / updateRate);
           catchUpUpdates += missedUpdates;
         } else {
-          let updates = 1;
+          let updates = this.gameSpeed;
           if (catchUpUpdates) {
             updates = this.determineUpdateCount(catchUpUpdates);
             catchUpUpdates -= updates;
@@ -420,6 +422,11 @@ export default class AntGame extends React.Component {
 
   setMapName = mapName => {
     this.mapHandler.name = mapName;
+  };
+
+  setGameSpeed = speed => {
+    this.gameSpeed = speed;
+    this.setState({ speed });
   };
 
   clearMap = () => {
@@ -485,7 +492,7 @@ export default class AntGame extends React.Component {
       if (result !== false && this.state.emptyMap) this.setState({ emptyMap: false });
     });
     if (this.gamemode === "replay") {
-      this.setState({replayLabel: ChallengeHandler.replayLabel})
+      this.setState({ replayLabel: ChallengeHandler.replayLabel });
     }
   };
 
@@ -519,6 +526,8 @@ export default class AntGame extends React.Component {
               homeOnMap={this.state.homeOnMap}
               loadPRHandler={this.loadRunHandler}
               replayLabel={this.state.replayLabel}
+              speed={this.state.speed}
+              setSpeed={this.setGameSpeed}
             />
           </div>
           <Sketch setup={this.setup} draw={this.draw} />

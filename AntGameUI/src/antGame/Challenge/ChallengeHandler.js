@@ -64,7 +64,7 @@ class ChallengeHandler {
   }
 
   get replayLabel() {
-    return this._label
+    return this._label;
   }
 
   get config() {
@@ -94,7 +94,7 @@ class ChallengeHandler {
         this.setReplayLabel("pr");
       }
     } else if (type === "wr") {
-      const wrData = this.config.wrData
+      const wrData = this.config.wrData;
       this._runSeed = wrData.seed;
       this._mapHandler.setHomeLocations({ locations: wrData.locations, amounts: wrData.amounts });
       this.setReplayLabel("wr");
@@ -103,17 +103,17 @@ class ChallengeHandler {
 
   setReplayLabel(type) {
     if (type === "wr") {
-      const username = this.records.wr.name
-      const score = this.records.wr.score
+      const username = this.records.wr.name;
+      const score = this.records.wr.score;
 
-      this._label = `${username} - ${score} | WR`
+      this._label = `${username} - ${score} | WR`;
     } else if (type === "pr") {
-      const username = AuthHandler.username
-      const score = this.records.pr
-      const rank = this.records.rank
+      const username = AuthHandler.username;
+      const score = this.records.pr;
 
-      this._label = `${username} - ${score} | PR`
+      this._label = `${username} - ${score} | PR`;
     }
+    console.log(this._label);
   }
 
   clearConfig() {
@@ -227,8 +227,8 @@ class ChallengeHandler {
   }
 
   handleTimeout() {
-    const IsReplay = this._gamemode === "replay"
-    if (IsReplay) return
+    const IsReplay = this._gamemode === "replay";
+    if (IsReplay) return;
 
     const mapHandler = this._mapHandler;
     this.score = Math.round(mapHandler.percentFoodReturned * 100000);

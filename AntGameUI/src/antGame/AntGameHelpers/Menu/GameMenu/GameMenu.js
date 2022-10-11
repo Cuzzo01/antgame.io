@@ -19,6 +19,8 @@ export default function GameMenu({
   loadPRHandler,
   resetHandler,
   playButtonHandler,
+  speed,
+  setSpeed,
 }) {
   const [flashReset, setFlashReset] = useState(false);
   const [disablePlay, setDisablePlay] = useState(true);
@@ -92,13 +94,23 @@ export default function GameMenu({
           disabled={playState}
         />
       )}
-
       <SettingButton
         className={flashReset ? cssStyles.flashing : ""}
         text={"Reset"}
         handler={resetHandler}
         disabled={playState}
       />
+      {gameMode.mode === "replay" && (
+        <SettingButton
+          key="speed"
+          text={`${speed}x`}
+          handler={() => {
+            const newSpeed = 2 * speed;
+            if (newSpeed > 8) setSpeed(1);
+            else setSpeed(newSpeed);
+          }}
+        />
+      )}
       {gameMode.mode === "sandbox" && sandBoxButtons}
       <SettingButton
         disabled={disablePlay}
@@ -149,9 +161,9 @@ const SettingButton = ({ handler, className, disabled, text }) => {
 
 const styles = {
   button: {
-    marginLeft: "0.2em",
+    marginLeft: "0.2rem",
     borderRadius: "5px",
-    padding: "0.25em 0.5em",
-    letterSpacing: "-0.05em",
+    padding: "0.25rem 0.5rem",
+    letterSpacing: "-0.05rem",
   },
 };

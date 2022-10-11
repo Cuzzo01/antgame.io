@@ -172,7 +172,7 @@ export class MapHandler {
 
   fetchAndLoadMap(path) {
     let setTitle = true;
-    if (this._gameMode === "challenge") setTitle = false;
+    if (this._gameMode === "challenge" || this._gameMode === "replay") setTitle = false;
     return axios.get(path).then(res => {
       this.loadMap(res.data, setTitle);
     });

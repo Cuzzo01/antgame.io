@@ -30,7 +30,9 @@ export default function MenuBar({
   saveImageHandler,
   setMapNameHandler,
   getMapName,
-  replayLabel
+  replayLabel,
+  speed,
+  setSpeed,
 }) {
   const gameMode = useContext(GameModeContext);
   const IsSandbox = gameMode.mode === "sandbox";
@@ -52,6 +54,8 @@ export default function MenuBar({
         loadMapHandler={loadMapHandler}
         saveMapHandler={saveMapHandler}
         loadPRHandler={loadPRHandler}
+        speed={speed}
+        setSpeed={setSpeed}
       />
       <div className={challengeStyleBar ? styles.challengeMiddle : styles.middle}>
         {challengeStyleBar && (
@@ -84,14 +88,14 @@ export default function MenuBar({
       </div>
       <div className={styles.justifyRight}>
         {IsChallenge && <HomeTracker homeOnMap={homeOnMap} greyedOut={brushDisabled} />}
-        {IsChallenge && <HelpButton blockDrawHandler={blockDrawHandler} />}
-        {IsSandbox && (
+        {(IsSandbox || IsChallenge) && (
           <BrushMenu
             disableButtons={brushDisabled}
             brushSizeHandler={brushSizeHandler}
             brushTypeHandler={brushTypeHandler}
           />
         )}
+        {IsChallenge && <HelpButton blockDrawHandler={blockDrawHandler} />}
         {IsSandbox && (
           <OptionsMenu
             playState={playState}
@@ -103,7 +107,7 @@ export default function MenuBar({
             getMapName={getMapName}
           />
         )}
-        {IsReplay && <ReplayLabel label={replayLabel}/>}
+        {IsReplay && <ReplayLabel label={replayLabel} />}
       </div>
     </div>
   );
