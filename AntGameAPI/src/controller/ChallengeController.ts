@@ -406,18 +406,20 @@ export class ChallengeController {
         };
       }
 
-      const prRunInfo = await LeaderboardCache.getChallengeEntryByUserID(id, user.id);
-      if (prRunInfo) {
-        const prRunData = (await getRunDataByRunId(prRunInfo.runID)) as {
-          homeLocations: number[][];
-          homeAmounts: { [location: string]: number };
-          seed: number;
-        };
-        toReturn.prData = {
-          locations: prRunData.homeLocations,
-          amounts: prRunData.homeAmounts,
-          seed: prRunData.seed,
-        };
+      if (!user.anon) {
+        const prRunInfo = await LeaderboardCache.getChallengeEntryByUserID(id, user.id);
+        if (prRunInfo) {
+          const prRunData = (await getRunDataByRunId(prRunInfo.runID)) as {
+            homeLocations: number[][];
+            homeAmounts: { [location: string]: number };
+            seed: number;
+          };
+          toReturn.prData = {
+            locations: prRunData.homeLocations,
+            amounts: prRunData.homeAmounts,
+            seed: prRunData.seed,
+          };
+        }
       }
 
       res.send(toReturn);
