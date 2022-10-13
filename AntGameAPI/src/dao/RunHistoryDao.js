@@ -41,8 +41,8 @@ const getRunsByUserIdAndChallengeId = async ({ userId, challengeId, pageIndex, p
 
   const runs = result?.map(runData => {
     return {
-      homeLocations: runData.details.homeLocations,
-      homeAmounts: runData.details.homeAmounts,
+      locations: runData.details.homeLocations,
+      amounts: runData.details.homeAmounts,
       seed: runData.details.seed,
       submissionTime: runData.submissionTime,
       score: runData.score,
