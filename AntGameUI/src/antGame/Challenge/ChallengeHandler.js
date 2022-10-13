@@ -123,6 +123,9 @@ class ChallengeHandler {
 
       this._label = `${username} - ${score}`;
     }
+    if (this._label.includes("undefined")) {
+      this._label = "";
+    }
   }
 
   clearConfig() {
