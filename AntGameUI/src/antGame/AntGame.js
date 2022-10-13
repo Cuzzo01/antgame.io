@@ -528,7 +528,7 @@ export default class AntGame extends React.Component {
       this.setState({ replayLabel: ChallengeHandler.replayLabel });
     }
   };
-  
+
   loadRunHandler = run => {
     if (this.state.playState) return;
     this.reset();
@@ -537,7 +537,7 @@ export default class AntGame extends React.Component {
     if (this.gamemode === "replay") {
       this.setState({ replayLabel: ChallengeHandler.replayLabel });
     }
-  }
+  };
 
   render() {
     return (

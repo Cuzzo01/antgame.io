@@ -86,14 +86,13 @@ class ChallengeHandler {
         this.prInfo = info;
       }
       this.loadRun(this.prInfo);
-
     } else if (this._gamemode === "replay") {
       if (type === "pr") {
         const prData = this.config.prData;
-        this.loadRun({...prData, score: this.records.pr}, type);
+        this.loadRun({ ...prData, score: this.records.pr }, type);
       } else if (type === "wr") {
         const wrData = this.config.wrData;
-      this.loadRun({...wrData, score: this.records.wr?.score}, type);
+        this.loadRun({ ...wrData, score: this.records.wr?.score }, type);
       }
     }
   }
@@ -102,7 +101,7 @@ class ChallengeHandler {
     this._mapHandler.clearMap();
     if (this._gamemode === "replay") {
       this._runSeed = run.seed;
-      this.setReplayLabel(type,  run.score);
+      this.setReplayLabel(type, run.score);
     }
     this._mapHandler.setHomeLocations({
       locations: run.locations,
