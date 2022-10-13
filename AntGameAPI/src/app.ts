@@ -126,6 +126,7 @@ app.post("/challenge/artifact", runSubmissionLimiter, ChallengeController.postRu
 app.get("/challenge/:id/records", ChallengeController.getRecords);
 app.get("/challenge/:id", ChallengeController.getChallenge);
 app.get("/challenge/:id/replay", ChallengeController.getReplayConfig);
+app.get("/challenge/:id/rerun", ChallengeController.getRerunConfig);
 app.get("/challenge/:id/pr", ChallengeController.getPRHomeLocations);
 app.get("/challenges/active", ChallengeController.getActiveChallenges);
 app.get("/challenge/:id/leaderboard/:page", ChallengeController.getLeaderboard);

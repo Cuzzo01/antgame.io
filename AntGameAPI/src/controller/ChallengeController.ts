@@ -360,6 +360,19 @@ export class ChallengeController {
         return;
       }
 
+      if (config.active) {
+        res.status(400);
+        res.send("Challenge still active");
+        return;
+      }
+
+      if (!config.dailyChallenge) {
+        res.status(400);
+        res.send("Replay only allowed on daily challenges");
+        return;
+      }
+
+
       const toReturn = {
         id: config.id,
         seconds: config.seconds,
@@ -370,52 +383,52 @@ export class ChallengeController {
         prData: undefined,
       };
 
-      if (config.mapID) {
-        const mapData = await MapCache.getMapData({ mapID: config.mapID.toString() });
-        if (await FlagCache.getFlagValue("use-spaces-proxy")) {
-          toReturn.mapPath = `https://antgame.io/assets/${mapData.url}`;
-        } else {
-          toReturn.mapPath = `https://antgame.nyc3.digitaloceanspaces.com/${mapData.url}`;
-        }
-      } else {
-        toReturn.mapPath = config.mapPath;
-      }
+      await ChallengeController.setMapData(config, toReturn);
 
-      if(!config.active && config.dailyChallenge){
-        const wrRunInfo = await LeaderboardCache.getChallengeEntryByRank(id, 1);
-        if (wrRunInfo) {
-          const wrRunData = (await getRunDataByRunId(wrRunInfo.runID)) as {
-            homeLocations: number[][];
-            homeAmounts: { [location: string]: number };
-            seed: number;
-          };
-          toReturn.wrData = {
-            locations: wrRunData.homeLocations,
-            amounts: wrRunData.homeAmounts,
-            seed: wrRunData.seed,
-          };
-        }
-      }
+      await ChallengeController.setWrData(id, toReturn);
 
       if (!user.anon) {
-        const prRunInfo = await LeaderboardCache.getChallengeEntryByUserID(id, user.id);
-        if (prRunInfo) {
-          const prRunData = (await getRunDataByRunId(prRunInfo.runID)) as {
-            homeLocations: number[][];
-            homeAmounts: { [location: string]: number };
-            seed: number;
-          };
-          toReturn.prData = {
-            locations: prRunData.homeLocations,
-            amounts: prRunData.homeAmounts,
-            seed: prRunData.seed,
-          };
-        }
+        await ChallengeController.setPrData(id, user, toReturn);
       }
 
       res.send(toReturn);
     } catch (e) {
       Logger.logError("ChallengeController.getReplayConfig", e as Error);
+      res.status(500);
+      res.send("Get challenge failed");
+    }
+  }
+
+  static async getRerunConfig(req: Request, res: Response) {
+    try {
+      const id: string | ObjectId = req.params.id;
+      const user = req.user as AuthToken;
+
+      const config = (await getChallengeByChallengeId(id)) as FullChallengeConfig | false;
+      if (config === false) {
+        res.status(400);
+        res.send("Invalid challenge ID");
+        return;
+      }
+
+      const toReturn = {
+        id: config.id,
+        seconds: config.seconds,
+        name: config.name,
+        active: config.active,
+        mapPath: undefined,
+        prData: undefined,
+      };
+
+      await ChallengeController.setMapData(config, toReturn);
+
+      if (!user.anon) {
+        await ChallengeController.setPrData(id, user, toReturn);
+      }
+
+      res.send(toReturn);
+    } catch (e) {
+      Logger.logError("ChallengeController.getRerunConfig", e as Error);
       res.status(500);
       res.send("Get challenge failed");
     }
@@ -678,6 +691,52 @@ export class ChallengeController {
       Logger.logError("ChallengeController.GetPRHomeLocations", e as Error);
       res.status(500);
       res.send("Get leader board failed");
+    }
+  }
+
+   
+  private static async setMapData(config: FullChallengeConfig, toReturn: { id: string; seconds: number; name: string; active: boolean; mapPath: any; prData: any; }) {
+    if (config.mapID) {
+      const mapData = await MapCache.getMapData({ mapID: config.mapID.toString() });
+      if (await FlagCache.getFlagValue("use-spaces-proxy")) {
+        toReturn.mapPath = `https://antgame.io/assets/${mapData.url}`;
+      } else {
+        toReturn.mapPath = `https://antgame.nyc3.digitaloceanspaces.com/${mapData.url}`;
+      }
+    } else {
+      toReturn.mapPath = config.mapPath;
+    }
+  }
+
+  private static async setPrData(id: string, user: AuthToken, toReturn: { id: string; seconds: number; name: string; active: boolean; mapPath: any; prData: any; }) {
+    const prRunInfo = await LeaderboardCache.getChallengeEntryByUserID(id, user.id);
+    if (prRunInfo) {
+      const prRunData = (await getRunDataByRunId(prRunInfo.runID)) as {
+        homeLocations: number[][];
+        homeAmounts: { [location: string]: number; };
+        seed: number;
+      };
+      toReturn.prData = {
+        locations: prRunData.homeLocations,
+        amounts: prRunData.homeAmounts,
+        seed: prRunData.seed,
+      };
+    }
+  }
+
+  private static async setWrData(id: string, toReturn: { id: string; seconds: number; name: string; active: boolean; mapPath: any; wrData: any; prData: any; }) {
+    const wrRunInfo = await LeaderboardCache.getChallengeEntryByRank(id, 1);
+    if (wrRunInfo) {
+      const wrRunData = (await getRunDataByRunId(wrRunInfo.runID)) as {
+        homeLocations: number[][];
+        homeAmounts: { [location: string]: number; };
+        seed: number;
+      };
+      toReturn.wrData = {
+        locations: wrRunData.homeLocations,
+        amounts: wrRunData.homeAmounts,
+        seed: wrRunData.seed,
+      };
     }
   }
 }

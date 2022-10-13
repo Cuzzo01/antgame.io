@@ -4,6 +4,7 @@ import {
   getPRInfo,
   getRecords,
   getReplayConfig,
+  getRerunConfig,
   getSeed,
   sendRunArtifact,
 } from "./ChallengeService";
@@ -166,12 +167,23 @@ class ChallengeHandler {
           return config;
         });
       } else if (this._gamemode === "replay") {
-        this.configPromise = getReplayConfig(this._challengeID).then(config => {
-          this.loadingConfig = false;
-          this.config = config;
-          this.getRecords();
-          return config;
-        });
+        this.configPromise = getChallengeConfig(this._challengeID).then( config => {
+          if(config.active) {
+            return getRerunConfig(this._challengeID).then(config => {
+              this.loadingConfig = false;
+              this.config = config;
+              this.getRecords();
+              return config;
+            });
+          } else {
+            return getReplayConfig(this._challengeID).then(config => {
+              this.loadingConfig = false;
+              this.config = config;
+              this.getRecords();
+              return config;
+            });
+          }
+        })
       }
       return this.configPromise;
     }

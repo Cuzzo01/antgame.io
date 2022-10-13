@@ -20,7 +20,7 @@ const RunHistoryTab = props => {
         challengeId,
         pageIndex,
       }).then(result => {
-        setHasGrabbedAllValidPrevRuns(result.length < result.pageLength); //todo: when no runs, the "load more" button will flash b4 this completes
+        setHasGrabbedAllValidPrevRuns((result.runs.length < result.pageLength));
         setPreviousRuns([...previousRuns, ...result.runs]);
         setPageIndex(prev => prev + 1);
       });
@@ -28,7 +28,7 @@ const RunHistoryTab = props => {
   }, [challengeId, hasGrabbedAllValidPrevRuns, pageIndex, previousRuns]);
 
   useEffect(() => {
-    addRuns(15).then(() => setLoading(false)); //todo: this doesn't work
+    addRuns().then(() => setLoading(false));
   }, []);
 
   const doneLoading = () => {

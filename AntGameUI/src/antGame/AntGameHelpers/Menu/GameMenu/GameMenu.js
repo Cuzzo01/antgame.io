@@ -102,7 +102,6 @@ export default function GameMenu({
         />
       )}
       {ChallengeHandler.records.pr && (
-        // && !(ChallengeHandler.config.prData || ChallengeHandler.config.wrData)
         <SettingButton
           className={flashReset ? cssStyles.flashing : ""}
           text={"History"}

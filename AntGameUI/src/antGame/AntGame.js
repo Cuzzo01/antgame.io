@@ -411,7 +411,10 @@ export default class AntGame extends React.Component {
 
       this.setMapUiUpdate(500);
       this.toggleTimer(true);
-      this.showHistoryTab = false;
+      if(!IsReplay){
+        this.showHistoryTab = false;
+        this.showHistoryTabSwitched = true;
+      }
 
       const ticksPerSecond = FrameRate * 1.5;
       const updateRate = Math.round(1000 / ticksPerSecond);
@@ -447,7 +450,6 @@ export default class AntGame extends React.Component {
         }
         this.lastGameUpdateRunTime = new Date();
       }, updateRate);
-      this.showHistoryTabSwitched = true;
     } else {
       clearInterval(this.challengeSnapshotInterval);
       clearInterval(this.gameLoopInterval);
@@ -557,6 +559,7 @@ export default class AntGame extends React.Component {
   };
 
   loadRunHandler = type => {
+    if(this.state.playState) return;
     this.reset();
     ChallengeHandler.loadRun(type).then(result => {
       if (result !== false && this.state.emptyMap) this.setState({ emptyMap: false });
