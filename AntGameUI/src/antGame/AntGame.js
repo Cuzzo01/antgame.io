@@ -39,8 +39,6 @@ export default class AntGame extends React.Component {
   constructor(props) {
     super(props);
 
-    this.sideRef = React.createRef();
-
     this.brushSize = BrushSizeDefault;
     this.brushType = DefaultBrush.value;
     this.windowSize = [];

@@ -1,18 +1,14 @@
 const Connection = require("./MongoClient");
-const { FlagHandler } = require("../handler/FlagHandler");
 const { TryParseObjectID } = require("./helpers");
-
-const FlagCache = FlagHandler.getCache();
 
 const getCollection = async collection => {
   const connection = await Connection.open();
   return await connection.db("challenges").collection(collection);
 };
 
-const getRunsByUserIdAndChallengeId = async ({ userId, challengeId, pageIndex }) => {
+const getRunsByUserIdAndChallengeId = async ({ userId, challengeId, pageIndex, pageLength }) => {
   const challengeObjectID = TryParseObjectID(challengeId, "challengeID", "RunHistoryDao");
   const userObjectID = TryParseObjectID(userId, "userID", "RunHistoryDao");
-  const pageLength = await FlagCache.getIntFlag("batch-size.run-history");
   const recordsToSkip = pageLength * pageIndex;
 
   const collection = await getCollection("runs");
@@ -43,9 +39,7 @@ const getRunsByUserIdAndChallengeId = async ({ userId, challengeId, pageIndex })
     .limit(pageLength)
     .toArray();
 
-  if (!result) return [];
-
-  const runs = result.map(runData => {
+  const runs = result?.map(runData => {
     return {
       homeLocations: runData.details.homeLocations,
       homeAmounts: runData.details.homeAmounts,

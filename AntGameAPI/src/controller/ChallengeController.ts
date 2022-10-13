@@ -372,7 +372,6 @@ export class ChallengeController {
         return;
       }
 
-
       const toReturn = {
         id: config.id,
         seconds: config.seconds,

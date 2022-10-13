@@ -73,6 +73,10 @@ class ChallengeHandler {
     else return false;
   }
 
+  get isPB() {
+    return this.artifact?.PB === true;
+  }
+
   async loadRun(type) {
     this._mapHandler.clearMap();
     if (type === "pr") {
@@ -98,7 +102,7 @@ class ChallengeHandler {
     } else {
       if (this._gamemode === "replay") {
         this._runSeed = type.seed;
-        this.setReplayLabel("pr");
+        this.setReplayLabel({score: type.score});
       }
       this._mapHandler.setHomeLocations({
         locations: type.homeLocations,
@@ -118,6 +122,11 @@ class ChallengeHandler {
       const score = this.records.pr;
 
       this._label = `${username} - ${score} | PR`;
+    } else {
+      const username = AuthHandler.username;
+      const score = type.score;
+
+      this._label = `${username} - ${score}`;
     }
   }
 

@@ -237,7 +237,7 @@ class MapHandler {
     this.placeAndCountDecayableBlocks();
   };
 
-  setLocationInfo = ({ locations, amounts }) => {
+  setPRInfo = ({ locations, amounts }) => {
     locations.forEach(location => {
       this.setCellTo([location[0], location[1]], "h");
     });
