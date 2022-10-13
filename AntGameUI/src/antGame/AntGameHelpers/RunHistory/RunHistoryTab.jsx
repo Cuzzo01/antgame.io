@@ -56,7 +56,7 @@ const RunHistoryTab = props => {
           <div className={styles.bottombar} />
         </>
       ) : (
-        <>Loading...</>
+        <div className={styles.loading}>Loading...</div>
       )}
     </div>
   );

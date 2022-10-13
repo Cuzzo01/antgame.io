@@ -566,7 +566,6 @@ export default class AntGame extends React.Component {
             />
           </div>
           <div className={cssStyles.innerWindow}>
-            <div style={{ display: "flex", flexDirection: "row" }}>
               {this.showHistoryTab && !AuthHandler.isAnon ? (
                 <RunHistoryTab
                   challengeID={this.dailyChallengeId ?? this.context.challengeID}
@@ -576,7 +575,6 @@ export default class AntGame extends React.Component {
               ) : (
                 <></>
               )}
-            </div>
             <Sketch setup={this.setup} draw={this.draw} />
           </div>
         </div>

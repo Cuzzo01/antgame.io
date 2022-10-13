@@ -10,6 +10,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  align-self: center;
+}
+
+.loading {
+  width: 100%;
+  height: calc(100vh - 150px);
 }
 
 .runsList {
