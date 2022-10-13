@@ -167,8 +167,8 @@ class ChallengeHandler {
           return config;
         });
       } else if (this._gamemode === "replay") {
-        this.configPromise = getChallengeConfig(this._challengeID).then( config => {
-          if(config.active) {
+        this.configPromise = getChallengeConfig(this._challengeID).then(config => {
+          if (config.active) {
             return getRerunConfig(this._challengeID).then(config => {
               this.loadingConfig = false;
               this.config = config;
@@ -183,7 +183,7 @@ class ChallengeHandler {
               return config;
             });
           }
-        })
+        });
       }
       return this.configPromise;
     }

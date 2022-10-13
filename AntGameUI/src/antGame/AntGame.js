@@ -176,20 +176,22 @@ export default class AntGame extends React.Component {
   };
 
   setCanvasBounds = p5 => {
-    if(this.readyToUpdateCanvasBounds()) {
+    if (this.readyToUpdateCanvasBounds()) {
       this.windowSize = [p5.windowWidth, p5.windowHeight];
       canvasW = p5.windowWidth - this.parentRef.offsetLeft;
       canvasH = p5.windowHeight - this.parentRef.offsetTop - 20;
-  
+
       this.showHistoryTabSwitched = false;
-    }    
+    }
   };
 
   readyToUpdateCanvasBounds() {
     let biggerThanMarginButSmallerThanHistoryTab = 100;
-    
-    const readyToOpen = this.showHistoryTab && this.parentRef.offsetLeft > biggerThanMarginButSmallerThanHistoryTab;
-    const readyToClose = !this.showHistoryTab && this.parentRef.offsetLeft < biggerThanMarginButSmallerThanHistoryTab;
+
+    const readyToOpen =
+      this.showHistoryTab && this.parentRef.offsetLeft > biggerThanMarginButSmallerThanHistoryTab;
+    const readyToClose =
+      !this.showHistoryTab && this.parentRef.offsetLeft < biggerThanMarginButSmallerThanHistoryTab;
     return readyToOpen || readyToClose;
   }
 
@@ -372,7 +374,7 @@ export default class AntGame extends React.Component {
 
       this.setMapUiUpdate(500);
       this.toggleTimer(true);
-      if(!IsReplay){
+      if (!IsReplay) {
         this.showHistoryTab = false;
         this.showHistoryTabSwitched = true;
       }
@@ -520,7 +522,7 @@ export default class AntGame extends React.Component {
   };
 
   loadRunHandler = type => {
-    if(this.state.playState) return;
+    if (this.state.playState) return;
     this.reset();
     ChallengeHandler.loadRun(type).then(result => {
       if (result !== false && this.state.emptyMap) this.setState({ emptyMap: false });
@@ -566,15 +568,15 @@ export default class AntGame extends React.Component {
             />
           </div>
           <div className={cssStyles.innerWindow}>
-              {this.showHistoryTab && !AuthHandler.isAnon ? (
-                <RunHistoryTab
-                  challengeID={this.dailyChallengeId ?? this.context.challengeID}
-                  loadRunHandler={run => this.loadRunHandler(run)}
-                  gameMode={this.gamemode}
-                ></RunHistoryTab>
-              ) : (
-                <></>
-              )}
+            {this.showHistoryTab && !AuthHandler.isAnon ? (
+              <RunHistoryTab
+                challengeID={this.dailyChallengeId ?? this.context.challengeID}
+                loadRunHandler={run => this.loadRunHandler(run)}
+                gameMode={this.gamemode}
+              ></RunHistoryTab>
+            ) : (
+              <></>
+            )}
             <Sketch setup={this.setup} draw={this.draw} />
           </div>
         </div>
