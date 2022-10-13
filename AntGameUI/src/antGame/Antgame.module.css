@@ -11,5 +11,5 @@ html {
   display: flex;
   flex-direction: row;
   overflow: clip;
-  /* height: 100%; */
+  align-items: center;
 }

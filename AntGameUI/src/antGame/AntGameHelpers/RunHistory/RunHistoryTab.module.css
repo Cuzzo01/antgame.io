@@ -16,8 +16,7 @@
   display: flex;
   width: 100%;
   flex-direction: column;
-  height: calc(100vh - 145px); /* top of list ~127 pxs down ... TODO*/
-  /* height: 100%; /* top of list ~127 pxs down ... TODO*/
+  height: calc(100vh - 200px);
   overflow-y: auto;
   align-items: center;
 }
