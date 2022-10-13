@@ -175,62 +175,23 @@ export default class AntGame extends React.Component {
     p5.frameRate(FrameRate);
   };
 
-  /* the before
-    setCanvasBounds = p5 => {
+  setCanvasBounds = p5 => {
+    if(this.readyToUpdateCanvasBounds()) {
       this.windowSize = [p5.windowWidth, p5.windowHeight];
-      canvasW = p5.windowWidth - this.parentRef.offsetLeft * 2;
+      canvasW = p5.windowWidth - this.parentRef.offsetLeft;
       canvasH = p5.windowHeight - this.parentRef.offsetTop - 20;
-    };
-  */
-  setCanvasBounds = p5 => {
-    this.windowSize = [p5.windowWidth, p5.windowHeight];
-
-    let amtToSubtract;
-    if (this.showHistoryTab) {
-      //tab open
-      console.log(1);
-      amtToSubtract = this.sideRef.current.offsetLeft + this.sideRef.current.offsetWidth + 10;
-      if (amtToSubtract < 100) return;
-    } else if (this.state.timerActive) {
-      //closing when game running or during game
-      console.log(2);
-      amtToSubtract = 0;
-    } else {
-      // resize without tab open
-      console.log(3);
-      amtToSubtract = this.parentRef.offsetLeft;
-      if (amtToSubtract > 100) return;
-    }
-    canvasW = p5.windowWidth - amtToSubtract;
-
-    canvasH = p5.windowHeight - this.parentRef.offsetTop - 20;
-    this.showHistoryTabSwitched = false;
+  
+      this.showHistoryTabSwitched = false;
+    }    
   };
 
-  setCanvasBounds = p5 => {
-    this.windowSize = [p5.windowWidth, p5.windowHeight];
-
-    let amtToSubtract;
-    if (this.showHistoryTab) {
-      //tab open
-      console.log(1);
-      amtToSubtract = this.sideRef.current.offsetLeft + this.sideRef.current.offsetWidth + 10;
-      if (amtToSubtract < 100) return;
-    } else if (this.state.timerActive) {
-      //closing when game running or during game
-      console.log(2);
-      amtToSubtract = 0;
-    } else {
-      // resize without tab open
-      console.log(3);
-      amtToSubtract = this.parentRef.offsetLeft;
-      if (amtToSubtract > 100) return;
-    }
-    canvasW = p5.windowWidth - amtToSubtract;
-
-    canvasH = p5.windowHeight - this.parentRef.offsetTop - 20;
-    this.showHistoryTabSwitched = false;
-  };
+  readyToUpdateCanvasBounds() {
+    let biggerThanMarginButSmallerThanHistoryTab = 100;
+    
+    const readyToOpen = this.showHistoryTab && this.parentRef.offsetLeft > biggerThanMarginButSmallerThanHistoryTab;
+    const readyToClose = !this.showHistoryTab && this.parentRef.offsetLeft < biggerThanMarginButSmallerThanHistoryTab;
+    return readyToOpen || readyToClose;
+  }
 
   setupAndInitialize = () => {
     this.mapDrawer.setupMap(canvasW, canvasH);
@@ -605,7 +566,7 @@ export default class AntGame extends React.Component {
             />
           </div>
           <div className={cssStyles.innerWindow}>
-            <div ref={this.sideRef} style={{ display: "flex", flexDirection: "row" }}>
+            <div style={{ display: "flex", flexDirection: "row" }}>
               {this.showHistoryTab && !AuthHandler.isAnon ? (
                 <RunHistoryTab
                   challengeID={this.dailyChallengeId ?? this.context.challengeID}

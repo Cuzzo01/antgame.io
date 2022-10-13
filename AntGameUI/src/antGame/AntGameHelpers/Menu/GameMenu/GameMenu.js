@@ -106,7 +106,7 @@ export default function GameMenu({
           className={flashReset ? cssStyles.flashing : ""}
           text={"History"}
           handler={toggleShowHistory}
-          disabled={playState}
+          disabled={playState && IsChallenge}
         />
       )}
       <SettingButton
