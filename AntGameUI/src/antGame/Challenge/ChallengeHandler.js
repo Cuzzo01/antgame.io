@@ -79,23 +79,23 @@ class ChallengeHandler {
 
   async lookupAndLoadRun(type) {
     this._mapHandler.clearMap();
-    if (type === "pr") {
-      if (this._gamemode === "challenge") {
-        if (this.prInfo === false) {
-          const info = await getPRInfo(this.config.id);
-          if (this.prInfo === null) return;
-          this.prInfo = info;
-        }
+    if (this._gamemode === "challenge") {
+      if (this.prInfo === false) {
+        const info = await getPRInfo(this.config.id);
+        if (this.prInfo === null) return;
+        this.prInfo = info;
+      }
+      this.loadRun(this.prInfo);
 
-        this.loadRun({...this.prInfo});
-      } else if (this._gamemode === "replay") {
+    } else if (this._gamemode === "replay") {
+      if (type === "pr") {
         const prData = this.config.prData;
         this.loadRun({...prData, score: this.records.pr}, type);
+      } else if (type === "wr") {
+        const wrData = this.config.wrData;
+      this.loadRun({...wrData, score: this.records.wr?.score}, type);
       }
-    } else if (type === "wr") {
-      const wrData = this.config.wrData;
-      this.loadRun({...wrData, score: this.records.wr.score}, type);
-    } 
+    }
   }
 
   loadRun(run, type) {
@@ -112,7 +112,7 @@ class ChallengeHandler {
 
   setReplayLabel(type, score) {
     if (type === "wr") {
-      const username = this.records.wr.name;
+      const username = this.records.wr?.name;
 
       this._label = `${username} - ${score} | WR`;
     } else if (type === "pr") {
