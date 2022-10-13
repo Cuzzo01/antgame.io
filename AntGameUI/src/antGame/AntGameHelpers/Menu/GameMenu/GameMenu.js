@@ -16,7 +16,7 @@ export default function GameMenu({
   saveMapHandler,
   playState,
   clearMapHandler,
-  loadPRHandler,
+  loadRecordHandler,
   resetHandler,
   playButtonHandler,
   speed,
@@ -88,7 +88,7 @@ export default function GameMenu({
           <SettingButton
             key="PR"
             text="Load PR"
-            handler={() => loadPRHandler("pr")}
+            handler={() => loadRecordHandler("pr")}
             disabled={playState}
           />
         </>
@@ -97,7 +97,7 @@ export default function GameMenu({
         <SettingButton
           key="WR"
           text="Load WR"
-          handler={() => loadPRHandler("wr")}
+          handler={() => loadRecordHandler("wr")}
           disabled={playState}
         />
       )}

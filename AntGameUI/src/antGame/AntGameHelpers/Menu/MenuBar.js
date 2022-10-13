@@ -20,7 +20,7 @@ export default function MenuBar({
   clearMapHandler,
   loadMapHandler,
   saveMapHandler,
-  loadPRHandler,
+  loadRecordHandler,
   time,
   timerActive,
   homeOnMap,
@@ -54,7 +54,7 @@ export default function MenuBar({
         clearMapHandler={clearMapHandler}
         loadMapHandler={loadMapHandler}
         saveMapHandler={saveMapHandler}
-        loadPRHandler={loadPRHandler}
+        loadRecordHandler={loadRecordHandler}
         speed={speed}
         setSpeed={setSpeed}
         toggleShowHistory={toggleShowHistory}

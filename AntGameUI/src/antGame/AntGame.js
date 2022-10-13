@@ -519,16 +519,25 @@ export default class AntGame extends React.Component {
     this.setState({ showChallengeModal: false });
   };
 
-  loadRunHandler = type => {
-    if (this.state.playState) return;
+  loadRecordHandler = type => {
     this.reset();
-    ChallengeHandler.loadRun(type).then(result => {
+    ChallengeHandler.lookupAndLoadRun(type).then(result => {
       if (result !== false && this.state.emptyMap) this.setState({ emptyMap: false });
     });
     if (this.gamemode === "replay") {
       this.setState({ replayLabel: ChallengeHandler.replayLabel });
     }
   };
+  
+  loadRunHandler = run => {
+    if (this.state.playState) return;
+    this.reset();
+    ChallengeHandler.loadRun(run);
+    this.setState({ emptyMap: false });
+    if (this.gamemode === "replay") {
+      this.setState({ replayLabel: ChallengeHandler.replayLabel });
+    }
+  }
 
   render() {
     return (
@@ -558,7 +567,7 @@ export default class AntGame extends React.Component {
               getMapName={() => this.mapHandler.mapName}
               foodReturned={this.state.foodReturned}
               homeOnMap={this.state.homeOnMap}
-              loadPRHandler={this.loadRunHandler}
+              loadRecordHandler={this.loadRecordHandler}
               replayLabel={this.state.replayLabel}
               speed={this.state.speed}
               setSpeed={this.setGameSpeed}

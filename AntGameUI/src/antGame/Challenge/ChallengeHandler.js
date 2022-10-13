@@ -77,7 +77,7 @@ class ChallengeHandler {
     return this.artifact?.PB === true;
   }
 
-  async loadRun(type) {
+  async lookupAndLoadRun(type) {
     this._mapHandler.clearMap();
     if (type === "pr") {
       if (this._gamemode === "challenge") {
@@ -99,16 +99,19 @@ class ChallengeHandler {
       this._runSeed = wrData.seed;
       this._mapHandler.setHomeLocations({ locations: wrData.locations, amounts: wrData.amounts });
       this.setReplayLabel("wr");
-    } else {
-      if (this._gamemode === "replay") {
-        this._runSeed = type.seed;
-        this.setReplayLabel({score: type.score});
-      }
-      this._mapHandler.setHomeLocations({
-        locations: type.homeLocations,
-        amounts: type.homeAmounts,
-      });
+    } 
+  }
+
+  loadRun(run) {
+    this._mapHandler.clearMap();
+    if (this._gamemode === "replay") {
+      this._runSeed = run.seed;
+      this.setReplayLabel({score: run.score});
     }
+    this._mapHandler.setHomeLocations({
+      locations: run.homeLocations,
+      amounts: run.homeAmounts,
+    });
   }
 
   setReplayLabel(type) {
