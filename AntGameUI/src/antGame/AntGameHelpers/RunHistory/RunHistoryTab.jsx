@@ -20,7 +20,7 @@ const RunHistoryTab = props => {
         challengeId,
         pageIndex,
       }).then(result => {
-        setHasGrabbedAllValidPrevRuns(result.reachedEndOfBatch); //todo: when no runs, the "load more" button will flash b4 this completes
+        setHasGrabbedAllValidPrevRuns(result.length < result.pageLength); //todo: when no runs, the "load more" button will flash b4 this completes
         setPreviousRuns([...previousRuns, ...result.runs]);
         setPageIndex(prev => prev + 1);
       });

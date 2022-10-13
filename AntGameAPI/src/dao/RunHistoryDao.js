@@ -40,15 +40,10 @@ const getRunsByUserIdAndChallengeId = async ({ userId, challengeId, pageIndex })
     )
     .sort({ submissionTime: -1 })
     .skip(recordsToSkip)
-    .limit(pageLength + 1)
+    .limit(pageLength)
     .toArray();
 
   if (!result) return [];
-
-  const reachedEndOfBatch = result.length < pageLength;
-  if (!reachedEndOfBatch) {
-    result.pop();
-  }
 
   const runs = result.map(runData => {
     return {
@@ -61,7 +56,7 @@ const getRunsByUserIdAndChallengeId = async ({ userId, challengeId, pageIndex })
     };
   });
 
-  return { runs, reachedEndOfBatch };
+  return { runs, pageLength };
 };
 
 module.exports = { getRunsByUserIdAndChallengeId };
