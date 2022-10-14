@@ -145,7 +145,7 @@ export async function getSeed({ homeLocations }) {
 
 export async function getPreviousRunData({ challengeId, pageIndex }) {
   return axios
-  .get(`/api/challenge/${challengeId}/runs/${pageIndex}`)
-  .then(res => res.data)
+    .get(`/api/challenge/${challengeId}/runs/${pageIndex}`)
+    .then(res => res.data)
     .catch(() => []);
 }
