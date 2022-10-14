@@ -37,6 +37,7 @@ import { LeaderboardEntry } from "../models/LeaderboardEntry";
 import { ChallengeRecordDao } from "../dao/ChallengeRecordDao";
 import { ChallengeRecordEntity } from "../dao/entities/ChallengeRecordEntity";
 import { LeaderboardEntryWithUsername } from "../models/LeaderboardEntryWithUsername";
+import { getRunsByUserIdAndChallengeId } from '../dao/RunHistoryDao';
 
 const Logger = LoggerProvider.getInstance();
 const FlagCache = FlagHandler.getCache();
@@ -693,6 +694,30 @@ export class ChallengeController {
     }
   }
 
+  static async getRunHistory(req: Request, res: Response) {
+    try {
+        if (RejectIfAnon(req, res)) return;
+
+        const user = req.user as AuthToken;
+      let challengeId: string = req.params.id;
+      let page: number;
+      try {
+        page = parseInt(req.params.page);
+      } catch (e) {
+        res.sendStatus(400);
+        return;
+      }
+        const pageLength = await FlagCache.getIntFlag("batch-size.run-history");
+
+
+        const result = await getRunsByUserIdAndChallengeId({challengeId, userId: user.id, page, pageLength});
+        res.send(result);
+
+  } catch (e) {
+    Logger.logError("ChallengeController.getRunHistory", e);
+    res.send(500);
+  }
+}
    
   private static async setMapData(config: FullChallengeConfig, toReturn: { id: string; seconds: number; name: string; active: boolean; mapPath: any; prData: any; }) {
     if (config.mapID) {

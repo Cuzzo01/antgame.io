@@ -130,6 +130,7 @@ app.get("/challenge/:id/rerun", ChallengeController.getRerunConfig);
 app.get("/challenge/:id/pr", ChallengeController.getPRHomeLocations);
 app.get("/challenges/active", ChallengeController.getActiveChallenges);
 app.get("/challenge/:id/leaderboard/:page", ChallengeController.getLeaderboard);
+app.post("/challenge/:id/runs/:page", ChallengeController.getRunHistory);
 
 app.get("/public/activeChallenges", PublicController.getActiveChallenges);
 app.get("/public/challengeLeaderboard/:id/:page", PublicController.getChallengeLeaderboard);
@@ -146,7 +147,6 @@ app.post("/badges", UserController.getUserBadges);
 
 app.post("/report/assets", reportLimiter, ReportController.reportAssetLoad);
 
-app.post("/runs", RunHistoryController.getRunHistory);
 
 app.get("/health", (_: Request, res: Response) => {
   res.sendStatus(200);

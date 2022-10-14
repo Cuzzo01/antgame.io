@@ -6,10 +6,10 @@ const getCollection = async collection => {
   return await connection.db("challenges").collection(collection);
 };
 
-const getRunsByUserIdAndChallengeId = async ({ userId, challengeId, pageIndex, pageLength }) => {
+const getRunsByUserIdAndChallengeId = async ({ userId, challengeId, page, pageLength }) => {
   const challengeObjectID = TryParseObjectID(challengeId, "challengeID", "RunHistoryDao");
   const userObjectID = TryParseObjectID(userId, "userID", "RunHistoryDao");
-  const recordsToSkip = pageLength * pageIndex;
+  const recordsToSkip = pageLength * page;
 
   const collection = await getCollection("runs");
 
