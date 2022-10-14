@@ -36,8 +36,8 @@ import { GenerateChallengeLeaderboardData } from "../helpers/LeaderboardHelper";
 import { LeaderboardEntry } from "../models/LeaderboardEntry";
 import { ChallengeRecordDao } from "../dao/ChallengeRecordDao";
 import { ChallengeRecordEntity } from "../dao/entities/ChallengeRecordEntity";
+import  {RunHistoryDao} from '../dao/RunHistoryDao';
 import { LeaderboardEntryWithUsername } from "../models/LeaderboardEntryWithUsername";
-import { getRunsByUserIdAndChallengeId } from '../dao/RunHistoryDao';
 
 const Logger = LoggerProvider.getInstance();
 const FlagCache = FlagHandler.getCache();
@@ -49,6 +49,7 @@ const DailyChallengeCache = DailyChallengeHandler.getCache();
 const ObjectIDToNameCache = ObjectIDToNameHandler.getCache();
 
 const _challengeRecordDao = new ChallengeRecordDao();
+const _runHistoryDao = new RunHistoryDao();
 
 export class ChallengeController {
   static async postRun(req: Request, res: Response) {
@@ -697,20 +698,19 @@ export class ChallengeController {
   static async getRunHistory(req: Request, res: Response) {
     try {
         if (RejectIfAnon(req, res)) return;
-
         const user = req.user as AuthToken;
-      let challengeId: string = req.params.id;
-      let page: number;
-      try {
-        page = parseInt(req.params.page);
-      } catch (e) {
-        res.sendStatus(400);
-        return;
-      }
+        let challengeId: string = req.params.id;
+        let page: number;
+        try {
+          page = parseInt(req.params.page);
+        } catch (e) {
+          res.sendStatus(400);
+          return;
+        }
         const pageLength = await FlagCache.getIntFlag("batch-size.run-history");
 
 
-        const result = await getRunsByUserIdAndChallengeId({challengeId, userId: user.id, page, pageLength});
+        const result = await _runHistoryDao.getRunsByUserIdAndChallengeId(user.id, challengeId, page, pageLength);
         res.send(result);
 
   } catch (e) {
