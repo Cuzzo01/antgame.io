@@ -176,7 +176,7 @@ export default class AntGame extends React.Component {
   setCanvasBounds = p5 => {
     if (this.readyToUpdateCanvasBounds()) {
       this.windowSize = [p5.windowWidth, p5.windowHeight];
-      canvasW = p5.windowWidth - this.parentRef.offsetLeft;
+      canvasW = p5.windowWidth - this.parentRef.offsetLeft - 20;
       canvasH = p5.windowHeight - this.parentRef.offsetTop - 20;
 
       this.showHistoryTabSwitched = false;
