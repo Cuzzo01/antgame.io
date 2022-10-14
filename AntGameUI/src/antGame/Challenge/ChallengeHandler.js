@@ -166,16 +166,15 @@ class ChallengeHandler {
         this.challengeID = Config.ChallengeID;
       }
       this.loadingConfig = true;
-      if (this._gamemode === "challenge") {
-        this.configPromise = getChallengeConfig(this._challengeID).then(config => {
+
+      this.configPromise = getChallengeConfig(this._challengeID).then(challengeConfig => {
+        if (this._gamemode === "challenge") {
           this.loadingConfig = false;
-          this.config = config;
+          this.config = challengeConfig;
           this.getRecords();
-          return config;
-        });
-      } else if (this._gamemode === "replay") {
-        this.configPromise = getChallengeConfig(this._challengeID).then(config => {
-          if (config.active) {
+          return challengeConfig;
+        } else if (this._gamemode === "replay") {
+          if (challengeConfig.active) {
             return getRerunConfig(this._challengeID).then(config => {
               this.loadingConfig = false;
               this.config = config;
@@ -190,10 +189,11 @@ class ChallengeHandler {
               return config;
             });
           }
-        });
-      }
-      return this.configPromise;
+        }
+      });
     }
+
+    return this.configPromise;
   }
 
   async getRecords() {
