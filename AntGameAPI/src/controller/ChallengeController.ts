@@ -36,7 +36,7 @@ import { GenerateChallengeLeaderboardData } from "../helpers/LeaderboardHelper";
 import { LeaderboardEntry } from "../models/LeaderboardEntry";
 import { ChallengeRecordDao } from "../dao/ChallengeRecordDao";
 import { ChallengeRecordEntity } from "../dao/entities/ChallengeRecordEntity";
-import  {RunHistoryDao} from '../dao/RunHistoryDao';
+import { RunHistoryDao } from "../dao/RunHistoryDao";
 import { LeaderboardEntryWithUsername } from "../models/LeaderboardEntryWithUsername";
 import { ReplayConfig } from "../models/ReplayConfig";
 
@@ -698,27 +698,30 @@ export class ChallengeController {
 
   static async getRunHistory(req: Request, res: Response) {
     try {
-        if (RejectIfAnon(req, res)) return;
-        const user = req.user as AuthToken;
-        const challengeId: string = req.params.id;
-        let page: number;
-        try {
-          page = parseInt(req.params.page);
-        } catch (e) {
-          res.sendStatus(400);
-          return;
-        }
-        const pageLength = await FlagCache.getIntFlag("batch-size.run-history");
+      if (RejectIfAnon(req, res)) return;
+      const user = req.user as AuthToken;
+      const challengeId: string = req.params.id;
+      let page: number;
+      try {
+        page = parseInt(req.params.page);
+      } catch (e) {
+        res.sendStatus(400);
+        return;
+      }
+      const pageLength = await FlagCache.getIntFlag("batch-size.run-history");
 
-
-        const result = await _runHistoryDao.getRunsByUserIdAndChallengeId(user.id, challengeId, page, pageLength);
-        res.send(result);
-
-  } catch (e) {
-    Logger.logError("ChallengeController.getRunHistory", e as Error);
-    res.send(500);
+      const result = await _runHistoryDao.getRunsByUserIdAndChallengeId(
+        user.id,
+        challengeId,
+        page,
+        pageLength
+      );
+      res.send(result);
+    } catch (e) {
+      Logger.logError("ChallengeController.getRunHistory", e as Error);
+      res.send(500);
+    }
   }
-}
 
   private static async setMapData(config: FullChallengeConfig, toReturn: ReplayConfig) {
     if (config.mapID) {
@@ -738,7 +741,7 @@ export class ChallengeController {
     if (prRunInfo) {
       const prRunData = (await getRunDataByRunId(prRunInfo.runID)) as {
         homeLocations: number[][];
-        homeAmounts: { [location: string]: number; };
+        homeAmounts: { [location: string]: number };
         seed: number;
       };
       toReturn.prData = {
@@ -754,7 +757,7 @@ export class ChallengeController {
     if (wrRunInfo) {
       const wrRunData = (await getRunDataByRunId(wrRunInfo.runID)) as {
         homeLocations: number[][];
-        homeAmounts: { [location: string]: number; };
+        homeAmounts: { [location: string]: number };
         seed: number;
       };
       toReturn.wrData = {

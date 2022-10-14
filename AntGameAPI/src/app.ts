@@ -146,7 +146,6 @@ app.post("/badges", UserController.getUserBadges);
 
 app.post("/report/assets", reportLimiter, ReportController.reportAssetLoad);
 
-
 app.get("/health", (_: Request, res: Response) => {
   res.sendStatus(200);
 });
