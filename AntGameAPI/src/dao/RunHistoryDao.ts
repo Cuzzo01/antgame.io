@@ -2,6 +2,18 @@ import { Collection } from "mongodb";
 import { TryParseObjectID } from "./helpers";
 import { MongoConnection } from "./MongoClientTS";
 
+interface RunEntityProjection {
+  details: {
+    homeLocations: number[][],
+    seed: number,
+    homeAmounts: {
+      [location: string]: number;
+  }
+  };
+  submissionTime: Date;
+  score: number;
+  tagTypes: string[];
+}
 
 export class RunHistoryDao {
   private _collection: Collection;
@@ -39,13 +51,14 @@ export class RunHistoryDao {
           tagTypes: "$tags.type",
           score: 1,
           submissionTime: 1,
+          _id: 0
         },
       }
     )
     .sort({ submissionTime: -1 })
     .skip(recordsToSkip)
     .limit(pageLength)
-    .toArray();
+    .toArray() as unknown as RunEntityProjection[];
 
     const runs = result?.map(runData => {
       return {

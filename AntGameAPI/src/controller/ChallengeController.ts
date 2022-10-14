@@ -38,6 +38,7 @@ import { ChallengeRecordDao } from "../dao/ChallengeRecordDao";
 import { ChallengeRecordEntity } from "../dao/entities/ChallengeRecordEntity";
 import  {RunHistoryDao} from '../dao/RunHistoryDao';
 import { LeaderboardEntryWithUsername } from "../models/LeaderboardEntryWithUsername";
+import { ReplayConfig } from "../models/ReplayConfig";
 
 const Logger = LoggerProvider.getInstance();
 const FlagCache = FlagHandler.getCache();
@@ -374,7 +375,7 @@ export class ChallengeController {
         return;
       }
 
-      const toReturn = {
+      const toReturn: ReplayConfig = {
         id: config.id,
         seconds: config.seconds,
         name: config.name,
@@ -412,7 +413,7 @@ export class ChallengeController {
         return;
       }
 
-      const toReturn = {
+      const toReturn: ReplayConfig = {
         id: config.id,
         seconds: config.seconds,
         name: config.name,
@@ -699,7 +700,7 @@ export class ChallengeController {
     try {
         if (RejectIfAnon(req, res)) return;
         const user = req.user as AuthToken;
-        let challengeId: string = req.params.id;
+        const challengeId: string = req.params.id;
         let page: number;
         try {
           page = parseInt(req.params.page);
@@ -714,12 +715,12 @@ export class ChallengeController {
         res.send(result);
 
   } catch (e) {
-    Logger.logError("ChallengeController.getRunHistory", e);
+    Logger.logError("ChallengeController.getRunHistory", e as Error);
     res.send(500);
   }
 }
-   
-  private static async setMapData(config: FullChallengeConfig, toReturn: { id: string; seconds: number; name: string; active: boolean; mapPath: any; prData: any; }) {
+
+  private static async setMapData(config: FullChallengeConfig, toReturn: ReplayConfig) {
     if (config.mapID) {
       const mapData = await MapCache.getMapData({ mapID: config.mapID.toString() });
       if (await FlagCache.getFlagValue("use-spaces-proxy")) {
@@ -732,7 +733,7 @@ export class ChallengeController {
     }
   }
 
-  private static async setPrData(id: string, user: AuthToken, toReturn: { id: string; seconds: number; name: string; active: boolean; mapPath: any; prData: any; }) {
+  private static async setPrData(id: string, user: AuthToken, toReturn: ReplayConfig) {
     const prRunInfo = await LeaderboardCache.getChallengeEntryByUserID(id, user.id);
     if (prRunInfo) {
       const prRunData = (await getRunDataByRunId(prRunInfo.runID)) as {
@@ -748,7 +749,7 @@ export class ChallengeController {
     }
   }
 
-  private static async setWrData(id: string, toReturn: { id: string; seconds: number; name: string; active: boolean; mapPath: any; wrData: any; prData: any; }) {
+  private static async setWrData(id: string, toReturn: ReplayConfig) {
     const wrRunInfo = await LeaderboardCache.getChallengeEntryByRank(id, 1);
     if (wrRunInfo) {
       const wrRunData = (await getRunDataByRunId(wrRunInfo.runID)) as {
