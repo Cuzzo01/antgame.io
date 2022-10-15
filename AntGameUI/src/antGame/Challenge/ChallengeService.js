@@ -80,6 +80,7 @@ export async function getLeaderboard(challengeID, pageNumber) {
   return axios
     .get(`/api/challenge/${challengeID}/leaderboard/${pageNumber}`)
     .then(res => {
+      if (res.status === 204) return null;
       return res.data;
     })
     .catch(error => {
@@ -92,6 +93,7 @@ export async function getPublicLeaderboard(challengeID, pageNumber) {
   return axios
     .get(`/api/public/challengeLeaderboard/${challengeID}/${pageNumber}`)
     .then(res => {
+      if (res.status === 204) return null;
       return res.data;
     })
     .catch(error => {

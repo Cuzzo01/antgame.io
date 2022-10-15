@@ -62,7 +62,7 @@ export class PublicController {
       const leaderboardData = await GenerateChallengeLeaderboardData(challengeID, page);
 
       if (!leaderboardData) {
-        res.status(404);
+        res.status(204);
         res.send("Found no records for that challengeID");
         return;
       }
