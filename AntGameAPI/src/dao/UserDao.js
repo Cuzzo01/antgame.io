@@ -6,33 +6,33 @@ const getCollection = async collection => {
   return await connection.db("challenges").collection(collection);
 };
 
-const isUserBanned = async id => {
-  const userObjectID = TryParseObjectID(id, "UserID", "UserDao");
+// const isUserBanned = async id => {
+//   const userObjectID = TryParseObjectID(id, "UserID", "UserDao");
 
-  const collection = await getCollection("users");
-  const result = await collection.findOne({ _id: userObjectID }, { projection: { banned: 1 } });
+//   const collection = await getCollection("users");
+//   const result = await collection.findOne({ _id: userObjectID }, { projection: { banned: 1 } });
 
-  if (!result) return true;
-  return result.banned;
-};
+//   if (!result) return true;
+//   return result.banned;
+// };
 
-const isUserAdmin = async id => {
-  const userObjectID = TryParseObjectID(id, "UserID", "UserDao");
+// const isUserAdmin = async id => {
+//   const userObjectID = TryParseObjectID(id, "UserID", "UserDao");
 
-  const collection = await getCollection("users");
-  const result = await collection.findOne({ _id: userObjectID }, { projection: { admin: 1 } });
+//   const collection = await getCollection("users");
+//   const result = await collection.findOne({ _id: userObjectID }, { projection: { admin: 1 } });
 
-  if (!result) return false;
-  return result.admin;
-};
+//   if (!result) return false;
+//   return result.admin;
+// };
 
-const getUsernameByID = async id => {
-  const userObjectID = TryParseObjectID(id, "UserID", "UserDao");
+// const getUsernameByID = async id => {
+//   const userObjectID = TryParseObjectID(id, "UserID", "UserDao");
 
-  const collection = await getCollection("users");
-  const result = await collection.findOne({ _id: userObjectID }, { projection: { username: 1 } });
-  return result.username;
-};
+//   const collection = await getCollection("users");
+//   const result = await collection.findOne({ _id: userObjectID }, { projection: { username: 1 } });
+//   return result.username;
+// };
 
 const shouldShowUserOnLeaderboard = async id => {
   const userObjectID = TryParseObjectID(id, "UserID", "UserDao");
