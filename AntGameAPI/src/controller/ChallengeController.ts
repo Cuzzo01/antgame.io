@@ -363,15 +363,9 @@ export class ChallengeController {
         return;
       }
 
-      if (config.active) {
+      if (!(config.active || config.dailyChallenge)) {
         res.status(400);
-        res.send("Challenge still active");
-        return;
-      }
-
-      if (!config.dailyChallenge) {
-        res.status(400);
-        res.send("Replay only allowed on daily challenges");
+        res.send("This challenge is inactive");
         return;
       }
 
@@ -385,52 +379,19 @@ export class ChallengeController {
         prData: undefined,
       };
 
-      await ChallengeController.setMapData(config, toReturn);
+      toReturn.mapPath = await ChallengeController.getMapPath(config);
 
-      await ChallengeController.setWrData(id, toReturn);
+      if(!config.active) {
+        toReturn.wrData = await ChallengeController.getWrData(id);
+      }
 
       if (!user.anon) {
-        await ChallengeController.setPrData(id, user, toReturn);
+        toReturn.prData = await ChallengeController.getPrData(id, user);
       }
 
       res.send(toReturn);
     } catch (e) {
       Logger.logError("ChallengeController.getReplayConfig", e as Error);
-      res.status(500);
-      res.send("Get challenge failed");
-    }
-  }
-
-  static async getRerunConfig(req: Request, res: Response) {
-    try {
-      const id: string | ObjectId = req.params.id;
-      const user = req.user as AuthToken;
-
-      const config = (await getChallengeByChallengeId(id)) as FullChallengeConfig | false;
-      if (config === false) {
-        res.status(400);
-        res.send("Invalid challenge ID");
-        return;
-      }
-
-      const toReturn: ReplayConfig = {
-        id: config.id,
-        seconds: config.seconds,
-        name: config.name,
-        active: config.active,
-        mapPath: undefined,
-        prData: undefined,
-      };
-
-      await ChallengeController.setMapData(config, toReturn);
-
-      if (!user.anon) {
-        await ChallengeController.setPrData(id, user, toReturn);
-      }
-
-      res.send(toReturn);
-    } catch (e) {
-      Logger.logError("ChallengeController.getRerunConfig", e as Error);
       res.status(500);
       res.send("Get challenge failed");
     }
@@ -728,20 +689,20 @@ export class ChallengeController {
     }
   }
 
-  private static async setMapData(config: FullChallengeConfig, toReturn: ReplayConfig) {
+  private static async getMapPath(config: FullChallengeConfig) {
     if (config.mapID) {
       const mapData = await MapCache.getMapData({ mapID: config.mapID.toString() });
       if (await FlagCache.getFlagValue("use-spaces-proxy")) {
-        toReturn.mapPath = `https://antgame.io/assets/${mapData.url}`;
+        return `https://antgame.io/assets/${mapData.url}`;
       } else {
-        toReturn.mapPath = `https://antgame.nyc3.digitaloceanspaces.com/${mapData.url}`;
+        return `https://antgame.nyc3.digitaloceanspaces.com/${mapData.url}`;
       }
     } else {
-      toReturn.mapPath = config.mapPath;
+      return config.mapPath;
     }
   }
 
-  private static async setPrData(id: string, user: AuthToken, toReturn: ReplayConfig) {
+  private static async getPrData(id: string, user: AuthToken) {
     const prRunInfo = await LeaderboardCache.getChallengeEntryByUserID(id, user.id);
     if (prRunInfo) {
       const prRunData = (await getRunDataByRunId(prRunInfo.runID)) as {
@@ -749,7 +710,7 @@ export class ChallengeController {
         homeAmounts: { [location: string]: number };
         seed: number;
       };
-      toReturn.prData = {
+      return {
         locations: prRunData.homeLocations,
         amounts: prRunData.homeAmounts,
         seed: prRunData.seed,
@@ -757,7 +718,7 @@ export class ChallengeController {
     }
   }
 
-  private static async setWrData(id: string, toReturn: ReplayConfig) {
+  private static async getWrData(id: string) {
     const wrRunInfo = await LeaderboardCache.getChallengeEntryByRank(id, 1);
     if (wrRunInfo) {
       const wrRunData = (await getRunDataByRunId(wrRunInfo.runID)) as {
@@ -765,7 +726,7 @@ export class ChallengeController {
         homeAmounts: { [location: string]: number };
         seed: number;
       };
-      toReturn.wrData = {
+      return {
         locations: wrRunData.homeLocations,
         amounts: wrRunData.homeAmounts,
         seed: wrRunData.seed,

@@ -1,19 +1,7 @@
 import { Collection } from "mongodb";
 import { TryParseObjectID } from "./helpers";
 import { MongoConnection } from "./MongoClientTS";
-
-interface RunEntityProjection {
-  details: {
-    homeLocations: number[][];
-    seed: number;
-    homeAmounts: {
-      [location: string]: number;
-    };
-  };
-  submissionTime: Date;
-  score: number;
-  tagTypes: string[];
-}
+import { RunEntityProjection } from "./entities/RunEntityProjection";
 
 export class RunHistoryDao {
   private _collection: Collection;
@@ -48,8 +36,8 @@ export class RunHistoryDao {
           projection: {
             details: {
               homeLocations: 1,
-              homeAmounts: {
-                $arrayElemAt: [{ $arrayElemAt: ["$details.snapshots", -1] }, 5],
+              finalSnapshot: {
+                $arrayElemAt: ["$details.snapshots", -1],
               },
               seed: 1,
             },
@@ -65,19 +53,16 @@ export class RunHistoryDao {
       .limit(pageLength)
       .toArray()) as unknown as RunEntityProjection[];
 
-      if (!result) return [];
-
-    const runs = result.map(runData => {
+    return result?.map(runData => {
       return {
         locations: runData.details.homeLocations,
-        amounts: runData.details.homeAmounts,
+        amounts: runData.details.finalSnapshot[5],
         seed: runData.details.seed,
         submissionTime: runData.submissionTime,
         score: runData.score,
         pr: runData.tagTypes?.includes("pr") ?? false,
       };
-    });
+    }) ?? [];
 
-    return runs;
   }
 }

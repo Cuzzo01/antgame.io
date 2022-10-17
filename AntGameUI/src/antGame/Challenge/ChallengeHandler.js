@@ -4,7 +4,6 @@ import {
   getPRInfo,
   getRecords,
   getReplayConfig,
-  getRerunConfig,
   getSeed,
   sendRunArtifact,
 } from "./ChallengeService";
@@ -175,7 +174,7 @@ class ChallengeHandler {
           return challengeConfig;
         } else if (this._gamemode === "replay") {
           if (challengeConfig.active) {
-            return getRerunConfig(this._challengeID).then(config => {
+            return getReplayConfig(this._challengeID).then(config => {
               this.loadingConfig = false;
               this.config = config;
               this.getRecords();

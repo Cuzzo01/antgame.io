@@ -40,18 +40,6 @@ export async function getReplayConfig(id) {
     });
 }
 
-export async function getRerunConfig(id) {
-  return axios
-    .get(`/api/challenge/${id}/rerun`)
-    .then(res => {
-      return res.data;
-    })
-    .catch(error => {
-      console.error(error);
-      window.location = "/";
-    });
-}
-
 export async function getActiveChallenges() {
   return axios
     .get("/api/challenges/active")
