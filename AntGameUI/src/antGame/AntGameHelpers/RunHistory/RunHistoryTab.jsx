@@ -19,9 +19,13 @@ const RunHistoryTab = props => {
         challengeId,
         pageIndex,
       }).then(result => {
-        setHasGrabbedAllValidPrevRuns(result.reachedEndOfBatch);
-        setPreviousRuns([...previousRuns, ...result.runs]);
-        setPageIndex(prev => prev + 1);
+        if (result) {
+          setHasGrabbedAllValidPrevRuns(result.reachedEndOfBatch);
+          setPreviousRuns([...previousRuns, ...result.runs]);
+          setPageIndex(prev => prev + 1);
+        } else {
+          setHasGrabbedAllValidPrevRuns(true);
+        }
       });
     }
   }, [challengeId, hasGrabbedAllValidPrevRuns, pageIndex, previousRuns]);

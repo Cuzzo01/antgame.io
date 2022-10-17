@@ -679,13 +679,14 @@ export class ChallengeController {
       );
 
       if(result.length === 0) {
-        res.send(204);
+        res.sendStatus(204);
+      } else {
+        res.send({runs: result, reachedEndOfBatch : result.length < pageLength});
       }
-
-      res.send({runs: result, reachedEndOfBatch : result.length < pageLength});
     } catch (e) {
       Logger.logError("ChallengeController.getRunHistory", e as Error);
-      res.send(500);
+      res.status(500);
+      res.send("Get run history failed");
     }
   }
 
