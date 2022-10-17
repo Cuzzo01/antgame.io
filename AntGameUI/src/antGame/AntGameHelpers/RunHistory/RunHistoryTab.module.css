@@ -56,11 +56,15 @@
   background-color: lightgray;
   margin-top: 10px;
   margin-bottom: 10px;
+  padding: 2px 15px;
+  border-radius: 5px;
+  border: 2px black solid;
 }
 
 .runEntryRow {
+  border-radius: 5px;
+  border: 2px black solid;
   width: 95%;
-  height: 50;
   display: grid;
   background-color: lightgray;
   margin: 2.5px 5px;
@@ -68,6 +72,14 @@
   grid-template-areas:
     "date score"
     "time pr";
+}
+
+.loadMore:hover {
+  cursor: pointer;
+}
+
+.runEntryRow:hover {
+  cursor: pointer;
 }
 
 .date {

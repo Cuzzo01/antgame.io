@@ -52,7 +52,7 @@ const RunHistoryTab = props => {
             ))}
             {!hasGrabbedAllValidPrevRuns ? (
               <div className={styles.loadMore} onClick={() => addRuns(10)}>
-                Load More{">>"}
+                Load More {">>"}
               </div>
             ) : (
               <div>No {previousRuns.length > 0 ? "More " : ""}Loadable Runs</div>
