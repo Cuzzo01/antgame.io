@@ -74,6 +74,20 @@
     "time pr";
 }
 
+.runEntryRowDisabled {
+  border-radius: 5px;
+  width: 95%;
+  display: grid;
+  margin: 2.5px 5px;
+  padding: 2px;
+  grid-template-areas:
+  "date score"
+  "time pr";
+  border: 2px gray solid;
+  background-color: transparent;
+  color: gray;
+}
+
 .loadMore:hover {
   cursor: pointer;
 }

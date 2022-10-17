@@ -166,30 +166,21 @@ class ChallengeHandler {
       }
       this.loadingConfig = true;
 
-      this.configPromise = getChallengeConfig(this._challengeID).then(challengeConfig => {
-        if (this._gamemode === "challenge") {
+      if (this._gamemode === "challenge") {
+        this.configPromise = getChallengeConfig(this._challengeID).then(config => {
           this.loadingConfig = false;
-          this.config = challengeConfig;
+          this.config = config;
           this.getRecords();
-          return challengeConfig;
-        } else if (this._gamemode === "replay") {
-          if (challengeConfig.active) {
-            return getReplayConfig(this._challengeID).then(config => {
-              this.loadingConfig = false;
-              this.config = config;
-              this.getRecords();
-              return config;
-            });
-          } else {
-            return getReplayConfig(this._challengeID).then(config => {
-              this.loadingConfig = false;
-              this.config = config;
-              this.getRecords();
-              return config;
-            });
-          }
-        }
-      });
+          return config;
+        });
+      } else if (this._gamemode === "replay") {
+        this.configPromise = getReplayConfig(this._challengeID).then(config => {
+          this.loadingConfig = false;
+          this.config = config;
+          this.getRecords();
+          return config;
+        });
+      }
     }
 
     return this.configPromise;

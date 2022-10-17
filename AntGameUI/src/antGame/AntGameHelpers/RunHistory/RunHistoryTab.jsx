@@ -4,9 +4,8 @@ import { getPreviousRunData } from "../../Challenge/ChallengeService";
 import styles from "./RunHistoryTab.module.css";
 import ChallengeHandler from "../../Challenge/ChallengeHandler";
 
-const RunHistoryTab = props => {
-  var challengeId = props.challengeID;
-  const oppositeGameMode = props.gameMode === "replay" ? "Challenge" : "Replay";
+const RunHistoryTab = ({challengeId, loadRunHandler, gameMode, disabled}) => {
+  const oppositeGameMode = gameMode === "replay" ? "Challenge" : "Replay";
 
   const [hasGrabbedAllValidPrevRuns, setHasGrabbedAllValidPrevRuns] = useState(null);
   const [pageIndex, setPageIndex] = useState(1);
@@ -48,7 +47,7 @@ const RunHistoryTab = props => {
           )}
           <div className={styles.runsList}>
             {previousRuns.map((value, index) => (
-              <RunEntry run={value} key={index} action={run => props.loadRunHandler(run)} />
+              <RunEntry run={value} key={index} disabled={disabled} loadRun={run => loadRunHandler(run)} />
             ))}
             {!hasGrabbedAllValidPrevRuns ? (
               <div className={styles.loadMore} onClick={() => addRuns(10)}>
@@ -67,22 +66,27 @@ const RunHistoryTab = props => {
   );
 };
 
-const RunEntry = props => {
-  const run = props.run;
+const RunEntry = ({run, disabled, loadRun}) => {
 
   const dateValue = new Date(run.submissionTime);
 
+  let style = styles.runEntryRow;
+  let action = () => loadRun(run);
+
+  if(disabled){
+    style = styles.runEntryRowDisabled;
+    action = null;
+  }
+
   return (
-    <div className={styles.runEntryRow} onClick={() => props.action(run)}>
+    <div className={style} onClick={action}>
       <div className={styles.date}>{dateValue.toLocaleDateString()}</div>
       <div className={styles.score}>{run.score}</div>
       <div className={styles.time}>{dateValue.toLocaleTimeString()}</div>
-      {run.pr ? (
+      {run.pr && (
         <div className={styles.tags}>
           <span className={styles.prText}>PR</span>
         </div>
-      ) : (
-        <></>
       )}
     </div>
   );

@@ -530,7 +530,6 @@ export default class AntGame extends React.Component {
   };
 
   loadRunHandler = run => {
-    if (this.state.playState) return;
     this.reset();
     ChallengeHandler.loadRun(run);
     this.setState({ emptyMap: false });
@@ -577,9 +576,10 @@ export default class AntGame extends React.Component {
           <div className={cssStyles.innerWindow}>
             {this.showHistoryTab && !AuthHandler.isAnon && (
               <RunHistoryTab
-                challengeID={this.challengeID}
+                challengeId={this.challengeID}
                 loadRunHandler={run => this.loadRunHandler(run)}
                 gameMode={this.gamemode}
+                disabled={this.state.playState}
               ></RunHistoryTab>
             )}
             <Sketch setup={this.setup} draw={this.draw} />
