@@ -34,7 +34,7 @@ export class RunHistoryDao {
   ) {
     const challengeObjectID = TryParseObjectID(challengeId, "challengeID", "RunHistoryDao");
     const userObjectID = TryParseObjectID(userId, "userID", "RunHistoryDao");
-    const recordsToSkip = pageLength * page;
+    const recordsToSkip = pageLength * (page - 1);
 
     const collection = await this.getCollection();
 
@@ -65,7 +65,9 @@ export class RunHistoryDao {
       .limit(pageLength)
       .toArray()) as unknown as RunEntityProjection[];
 
-    const runs = result?.map(runData => {
+      if (!result) return [];
+
+    const runs = result.map(runData => {
       return {
         locations: runData.details.homeLocations,
         amounts: runData.details.homeAmounts,
@@ -76,6 +78,6 @@ export class RunHistoryDao {
       };
     });
 
-    return { runs, pageLength };
+    return runs;
   }
 }

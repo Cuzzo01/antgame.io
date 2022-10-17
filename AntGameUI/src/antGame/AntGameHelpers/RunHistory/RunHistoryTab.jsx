@@ -9,7 +9,7 @@ const RunHistoryTab = props => {
   const oppositeGameMode = props.gameMode === "replay" ? "Challenge" : "Replay";
 
   const [hasGrabbedAllValidPrevRuns, setHasGrabbedAllValidPrevRuns] = useState(null);
-  const [pageIndex, setPageIndex] = useState(0);
+  const [pageIndex, setPageIndex] = useState(1);
   const [previousRuns, setPreviousRuns] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -19,7 +19,7 @@ const RunHistoryTab = props => {
         challengeId,
         pageIndex,
       }).then(result => {
-        setHasGrabbedAllValidPrevRuns(result.runs.length < result.pageLength);
+        setHasGrabbedAllValidPrevRuns(result.reachedEndOfBatch);
         setPreviousRuns([...previousRuns, ...result.runs]);
         setPageIndex(prev => prev + 1);
       });

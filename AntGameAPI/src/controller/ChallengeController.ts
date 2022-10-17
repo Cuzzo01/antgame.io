@@ -716,7 +716,12 @@ export class ChallengeController {
         page,
         pageLength
       );
-      res.send(result);
+
+      if(result.length === 0) {
+        res.send(204);
+      }
+
+      res.send({runs: result, reachedEndOfBatch : result.length < pageLength});
     } catch (e) {
       Logger.logError("ChallengeController.getRunHistory", e as Error);
       res.send(500);
