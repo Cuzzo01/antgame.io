@@ -84,14 +84,12 @@ export default function GameMenu({
         <SettingButton key="clear" text="Clear" handler={clearMapHandler} disabled={playState} />
       )}
       {(ChallengeHandler.records.pr || ChallengeHandler.config.prData) && (
-        <>
           <SettingButton
             key="PR"
             text="Load PR"
             handler={() => loadRecordHandler("pr")}
             disabled={playState}
           />
-        </>
       )}
       {ChallengeHandler.config.wrData && (
         <SettingButton
@@ -103,7 +101,6 @@ export default function GameMenu({
       )}
       {ChallengeHandler.records.pr && (
         <SettingButton
-          className={flashReset ? cssStyles.flashing : ""}
           text={"History"}
           handler={toggleShowHistory}
           disabled={playState && IsChallenge}

@@ -89,17 +89,17 @@ export default class AntGame extends React.Component {
 
     this.gamemode = this.context.mode;
     if (this.gamemode === "challenge" || this.gamemode === "replay") {
-      const challengeID = this.context.challengeID;
+      this.challengeID = this.context.challengeID;
       this.challengeHandler = ChallengeHandler;
       this.challengeHandler.gamemode = this.gamemode;
-      this.challengeHandler.challengeID = challengeID;
+      this.challengeHandler.challengeID = this.challengeID;
       this.challengeHandler.mapHandler = this.mapHandler;
       this.challengeHandler.timerHandler = this.timerHandler;
       this.challengeHandler.antHandler = this.antHandler;
       this.challengeHandler.getConfig().then(config => {
-        if (challengeID.toLowerCase() === "daily") {
+        if (this.challengeID.toLowerCase() === "daily") {
           document.title = "Daily Challenge - AntGame";
-          this.dailyChallengeId = config.id;
+          this.challengeID = config.id;
         } else document.title = `${config.name} - AntGame`;
       });
 
@@ -183,7 +183,7 @@ export default class AntGame extends React.Component {
     }
   };
 
-  readyToUpdateCanvasBounds() {
+  readyToUpdateCanvasBounds = () => {
     let biggerThanMarginButSmallerThanHistoryTab = 100;
 
     const readyToOpen =
@@ -575,14 +575,12 @@ export default class AntGame extends React.Component {
             />
           </div>
           <div className={cssStyles.innerWindow}>
-            {this.showHistoryTab && !AuthHandler.isAnon ? (
+            {this.showHistoryTab && !AuthHandler.isAnon && (
               <RunHistoryTab
-                challengeID={this.dailyChallengeId ?? this.context.challengeID}
+                challengeID={this.challengeID}
                 loadRunHandler={run => this.loadRunHandler(run)}
                 gameMode={this.gamemode}
               ></RunHistoryTab>
-            ) : (
-              <></>
             )}
             <Sketch setup={this.setup} draw={this.draw} />
           </div>
