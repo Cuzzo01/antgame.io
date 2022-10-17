@@ -13,44 +13,45 @@ const RunHistoryTab = ({challengeId, loadRunHandler, gameMode, disabled}) => {
   const [loading, setLoading] = useState(true);
 
   const addRuns = useCallback(async () => {
-    if (!hasGrabbedAllValidPrevRuns) {
       getPreviousRunData({
         challengeId,
         pageIndex,
       }).then(result => {
         if (result) {
           setHasGrabbedAllValidPrevRuns(result.reachedEndOfBatch);
-          setPreviousRuns([...previousRuns, ...result.runs]);
-          setPageIndex(prev => prev + 1);
+          setPreviousRuns( prev => [...prev, ...result.runs]);
         } else {
           setHasGrabbedAllValidPrevRuns(true);
         }
       });
-    }
-  }, [challengeId, hasGrabbedAllValidPrevRuns, pageIndex, previousRuns]);
+  }, [challengeId, pageIndex]);
 
   useEffect(() => {
     addRuns().then(() => setLoading(false));
-  }, []);
+  }, [addRuns]);
 
   const doneLoading = () => {
     return !loading && hasGrabbedAllValidPrevRuns !== null;
   };
 
+  const oppositeGameModeAllowed = () => {
+    return !(!ChallengeHandler.config.active && oppositeGameMode === "Challenge");
+  }
+
   return (
     <div className={styles.container}>
       {doneLoading() ? (
         <>
-          <h2 className={styles.title}>Last {previousRuns?.length} Runs</h2>
-          {!(!ChallengeHandler.config.active && oppositeGameMode === "Challenge") && (
-            <a href={`/${oppositeGameMode}/${challengeId}`}>{oppositeGameMode}</a>
+          <h2 className={styles.title}>Last {previousRuns.length} Run{previousRuns.length > 1 && "s"}</h2>
+          {oppositeGameModeAllowed() && (
+            <a href={`/${oppositeGameMode.toLowerCase()}/${challengeId}`}>{oppositeGameMode}</a>
           )}
           <div className={styles.runsList}>
             {previousRuns.map((value, index) => (
               <RunEntry run={value} key={index} disabled={disabled} loadRun={run => loadRunHandler(run)} />
             ))}
             {!hasGrabbedAllValidPrevRuns ? (
-              <div className={styles.loadMore} onClick={() => addRuns(10)}>
+              <div className={styles.loadMore} onClick={() => setPageIndex(pageIndex + 1)}>
                 Load More {">>"}
               </div>
             ) : (
