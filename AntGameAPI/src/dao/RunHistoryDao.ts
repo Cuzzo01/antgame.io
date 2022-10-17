@@ -61,6 +61,7 @@ export class RunHistoryDao {
         submissionTime: runData.submissionTime,
         score: runData.score,
         pr: runData.tagTypes?.includes("pr") ?? false,
+        wr: runData.tagTypes?.includes("wr") ?? false,
       };
     }) ?? [];
 

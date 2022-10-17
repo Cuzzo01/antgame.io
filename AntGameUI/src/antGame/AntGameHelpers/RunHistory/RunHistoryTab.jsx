@@ -83,9 +83,10 @@ const RunEntry = ({run, disabled, loadRun}) => {
       <div className={styles.date}>{dateValue.toLocaleDateString()}</div>
       <div className={styles.score}>{run.score}</div>
       <div className={styles.time}>{dateValue.toLocaleTimeString()}</div>
-      {run.pr && (
+      {(run.pr || run.wr) && (
         <div className={styles.tags}>
-          <span className={styles.prText}>PR</span>
+          {run.pr && (<span className={styles.prText}>PR</span>)}
+          {run.wr && (<span className={styles.wrText}>WR</span>)}
         </div>
       )}
     </div>

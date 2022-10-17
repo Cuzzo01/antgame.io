@@ -82,7 +82,7 @@
   padding: 2px;
   grid-template-areas:
   "date score"
-  "time pr";
+  "time tags";
   border: 2px gray solid;
   background-color: transparent;
   color: gray;
@@ -103,16 +103,26 @@
 .time {
   grid-area: time;
 }
+
 .score {
   grid-area: score;
 }
-.pr {
-  grid-area: pr;
+
+.tags {
+  grid-area: tags;
+  display: flex;
+  justify-content: center;
 }
 
 .prText {
   color: white;
   background-color: #1e8449;
   padding: 0.1em;
-  margin: 10px;
+  margin: 2px;
+}
+.wrText {
+  color: white;
+  background-color: #884ea0;
+  padding: 0.1em;
+  margin: 2px;
 }
