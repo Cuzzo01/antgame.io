@@ -30,11 +30,13 @@ export class ReplayConfigHelper {
           homeLocations: number[][];
           homeAmounts: { [location: string]: number };
           seed: number;
+          score: number;
         };
         return {
           locations: prRunData.homeLocations,
           amounts: prRunData.homeAmounts,
           seed: prRunData.seed,
+          score: prRunData.score
         };
       }
     }
@@ -46,11 +48,13 @@ export class ReplayConfigHelper {
           homeLocations: number[][];
           homeAmounts: { [location: string]: number };
           seed: number;
+          score: number;
         };
         return {
           locations: wrRunData.homeLocations,
           amounts: wrRunData.homeAmounts,
           seed: wrRunData.seed,
+          score: wrRunData.score
         };
       }
     }

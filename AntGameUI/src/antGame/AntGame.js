@@ -531,7 +531,7 @@ export default class AntGame extends React.Component {
 
   loadRunHandler = run => {
     this.reset();
-    ChallengeHandler.loadRun(run);
+    ChallengeHandler.loadRun({...run, username: AuthHandler.username});
     this.setState({ emptyMap: false });
     if (this.gamemode === "replay") {
       this.setState({ replayLabel: ChallengeHandler.replayLabel });

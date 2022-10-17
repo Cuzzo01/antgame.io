@@ -87,11 +87,9 @@ class ChallengeHandler {
       this.loadRun(this.prInfo);
     } else if (this._gamemode === "replay") {
       if (type === "pr") {
-        const prData = this.config.prData;
-        this.loadRun({ ...prData, score: this.records.pr }, type);
+        this.loadRun({...this.config.prData, username: AuthHandler.username}, type);
       } else if (type === "wr") {
-        const wrData = this.config.wrData;
-        this.loadRun({ ...wrData, score: this.records.wr?.score }, type);
+        this.loadRun({...this.config.wrData, username: this.records.wr.name}, type);
       }
     }
   }
@@ -100,7 +98,7 @@ class ChallengeHandler {
     this._mapHandler.clearMap();
     if (this._gamemode === "replay") {
       this._runSeed = run.seed;
-      this.setReplayLabel(type, run.score);
+      this.setReplayLabel(type, run.score, run.username);
     }
     this._mapHandler.setHomeLocations({
       locations: run.locations,
@@ -108,22 +106,11 @@ class ChallengeHandler {
     });
   }
 
-  setReplayLabel(type, score) {
-    if (type === "wr") {
-      const username = this.records.wr?.name;
+  setReplayLabel(type, score, username) {
+    this._label = `${username} - ${score}`;
 
-      this._label = `${username} - ${score} | WR`;
-    } else if (type === "pr") {
-      const username = AuthHandler.username;
-
-      this._label = `${username} - ${score} | PR`;
-    } else {
-      const username = AuthHandler.username;
-
-      this._label = `${username} - ${score}`;
-    }
-    if (this._label.includes("undefined")) {
-      this._label = "";
+    if(type) {
+      this._label += `| ${type.toUpperCase()}`;
     }
   }
 

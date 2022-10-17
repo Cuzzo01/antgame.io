@@ -71,7 +71,7 @@
   padding: 2px;
   grid-template-areas:
     "date score"
-    "time pr";
+    "time tags";
 }
 
 .runEntryRowDisabled {
