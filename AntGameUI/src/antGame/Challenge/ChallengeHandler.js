@@ -49,7 +49,7 @@ class ChallengeHandler {
   }
 
   set config(config) {
-    if (config.active === false && AuthHandler.isAdmin !== true) {
+    if (config.active === false && AuthHandler.isAdmin !== true && this._gamemode === 'challenge') {
       window.location = "/";
     }
     this._config = config;
