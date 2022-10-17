@@ -339,7 +339,6 @@ export class AdminController {
       const id = req.params.id;
 
       const newBanned = request.banned;
-      const newShowOnLeaderboard = request.showOnLeaderboard;
       const newBanMessage = request.banMessage;
 
       const patchRequest: Record<string, unknown> = {};
@@ -350,15 +349,6 @@ export class AdminController {
         } else {
           patchRequest.banned = newBanned;
           if (!newBanned) patchRequest.banInfo = {};
-        }
-      }
-
-      if (newShowOnLeaderboard !== undefined) {
-        if (typeof newShowOnLeaderboard !== "boolean") {
-          res.sendStatus(400);
-          return;
-        } else {
-          patchRequest.showOnLeaderboard = newShowOnLeaderboard;
         }
       }
 

@@ -3,9 +3,9 @@ import { ResultCacheWrapper } from "./ResultCacheWrapper";
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { FullChampionshipConfig } from "../models/FullChampionshipConfig";
 import { getChallengeByChallengeId } from "../dao/ChallengeDao";
-import { getUsernameByID } from "../dao/UserDao";
 import { getChampionshipDetailsFromDB } from "../dao/ChampionshipDao";
 import { ObjectId } from "mongodb";
+import { UserDao } from "../dao/UserDao";
 
 export class ObjectIDToNameHandler {
   private static cache: ObjectIDtoNameCache;
@@ -18,8 +18,11 @@ export class ObjectIDToNameHandler {
 }
 
 class ObjectIDtoNameCache extends ResultCacheWrapper<string> {
+  private _userDao: UserDao;
+
   constructor() {
     super({ name: "ObjectIDToNameHandler" });
+    this._userDao = new UserDao();
   }
 
   get size() {
@@ -49,7 +52,7 @@ class ObjectIDtoNameCache extends ResultCacheWrapper<string> {
       type: "Username",
       getTimeToCache: () => this.timeToCache,
       fetchMethod: async () => {
-        return (await getUsernameByID(id)) as string;
+        return await this._userDao.getUsernameById(id);
       },
       logFormatter: result => result,
     });

@@ -12,7 +12,7 @@ import {
   setLastAwarded,
   updateUserPointsTotal,
 } from "../dao/ChampionshipDao";
-import { addBadgeToUser } from "../dao/UserDao";
+import { UserDao } from "../dao/UserDao";
 import { LeaderboardHandler } from "../handler/LeaderboardHandler";
 import { UserHandler } from "../handler/UserHandler";
 import { BadgeDataGenerator } from "../helpers/BadgeDataGenerator";
@@ -28,6 +28,7 @@ const LeaderboardCache = LeaderboardHandler.getCache();
 const UserCache = UserHandler.getCache();
 
 const _challengeRecordDao = new ChallengeRecordDao();
+const _userDao = new UserDao();
 
 const pointsMap = [
   { type: "rank", value: 1, points: 50 },
@@ -213,7 +214,7 @@ export class ChampionshipOrchestrator {
     }
 
     for (const badge of badges) {
-      await addBadgeToUser(badge.userID, badge.badgeData);
+      await _userDao.addBadgeToUser(badge.userID, badge.badgeData);
       UserCache.unsetItem(badge.userID);
     }
   }
