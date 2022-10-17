@@ -39,6 +39,7 @@ import { ChallengeRecordEntity } from "../dao/entities/ChallengeRecordEntity";
 import { RunHistoryDao } from "../dao/RunHistoryDao";
 import { LeaderboardEntryWithUsername } from "../models/LeaderboardEntryWithUsername";
 import { ReplayConfig } from "../models/ReplayConfig";
+import { ReplayConfigHelper } from "../helpers/ReplayConfigHelper";
 
 const Logger = LoggerProvider.getInstance();
 const FlagCache = FlagHandler.getCache();
@@ -379,14 +380,14 @@ export class ChallengeController {
         prData: undefined,
       };
 
-      toReturn.mapPath = await ChallengeController.getMapPath(config);
+      toReturn.mapPath = await ReplayConfigHelper.getMapPath(config);
 
       if(!config.active) {
-        toReturn.wrData = await ChallengeController.getWrData(id);
+        toReturn.wrData = await ReplayConfigHelper.getWrData(id);
       }
 
       if (!user.anon) {
-        toReturn.prData = await ChallengeController.getPrData(id, user);
+        toReturn.prData = await ReplayConfigHelper.getPrData(id, user);
       }
 
       res.send(toReturn);
@@ -687,51 +688,6 @@ export class ChallengeController {
       Logger.logError("ChallengeController.getRunHistory", e as Error);
       res.status(500);
       res.send("Get run history failed");
-    }
-  }
-
-  private static async getMapPath(config: FullChallengeConfig) {
-    if (config.mapID) {
-      const mapData = await MapCache.getMapData({ mapID: config.mapID.toString() });
-      if (await FlagCache.getFlagValue("use-spaces-proxy")) {
-        return `https://antgame.io/assets/${mapData.url}`;
-      } else {
-        return `https://antgame.nyc3.digitaloceanspaces.com/${mapData.url}`;
-      }
-    } else {
-      return config.mapPath;
-    }
-  }
-
-  private static async getPrData(id: string, user: AuthToken) {
-    const prRunInfo = await LeaderboardCache.getChallengeEntryByUserID(id, user.id);
-    if (prRunInfo) {
-      const prRunData = (await getRunDataByRunId(prRunInfo.runID)) as {
-        homeLocations: number[][];
-        homeAmounts: { [location: string]: number };
-        seed: number;
-      };
-      return {
-        locations: prRunData.homeLocations,
-        amounts: prRunData.homeAmounts,
-        seed: prRunData.seed,
-      };
-    }
-  }
-
-  private static async getWrData(id: string) {
-    const wrRunInfo = await LeaderboardCache.getChallengeEntryByRank(id, 1);
-    if (wrRunInfo) {
-      const wrRunData = (await getRunDataByRunId(wrRunInfo.runID)) as {
-        homeLocations: number[][];
-        homeAmounts: { [location: string]: number };
-        seed: number;
-      };
-      return {
-        locations: wrRunData.homeLocations,
-        amounts: wrRunData.homeAmounts,
-        seed: wrRunData.seed,
-      };
     }
   }
 }
