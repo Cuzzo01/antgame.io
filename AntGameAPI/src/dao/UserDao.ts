@@ -11,7 +11,7 @@ export class UserDao {
   private async getCollection() {
     if (!this._collection) {
       const connection = await MongoConnection.open();
-      this._collection = connection.db("challenges").collection("challenge-records");
+      this._collection = connection.db("challenges").collection("users");
     }
     return this._collection;
   }
