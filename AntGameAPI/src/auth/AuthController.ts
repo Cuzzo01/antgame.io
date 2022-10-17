@@ -180,7 +180,6 @@ export class AuthController {
         passHash: hashedPassword,
         admin: false,
         challengeDetails: [],
-        showOnLeaderboard: true,
         email: email.length > 0 && email,
         registrationData: {
           clientID: clientID,

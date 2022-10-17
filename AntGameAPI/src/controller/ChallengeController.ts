@@ -10,7 +10,6 @@ import {
   submitRun,
   updateChallengeRecord,
 } from "../dao/ChallengeDao";
-import { shouldShowUserOnLeaderboard } from "../dao/UserDao";
 import { ActiveChallengesHandler } from "../handler/ActiveChallengesHandler";
 import { FlagHandler } from "../handler/FlagHandler";
 import { LeaderboardHandler } from "../handler/LeaderboardHandler";
@@ -247,20 +246,17 @@ export class ChallengeController {
           if (isPB) {
             const recordEmpty = challengeRecord && Object.keys(challengeRecord).length === 0;
             if (recordEmpty || challengeRecord.score < runData.Score) {
-              const showUser = await shouldShowUserOnLeaderboard(user.id);
-              if (showUser) {
-                isWorldRecord = true;
-                await updateChallengeRecord(
-                  runData.challengeID,
-                  runData.Score,
-                  user.username,
-                  user.id,
-                  runID
-                );
+              isWorldRecord = true;
+              await updateChallengeRecord(
+                runData.challengeID,
+                runData.Score,
+                user.username,
+                user.id,
+                runID
+              );
 
-                await addTagToRun(runID, { type: "wr" });
-                ActiveChallengesCache.unsetItem();
-              }
+              await addTagToRun(runID, { type: "wr" });
+              ActiveChallengesCache.unsetItem();
             }
           }
 

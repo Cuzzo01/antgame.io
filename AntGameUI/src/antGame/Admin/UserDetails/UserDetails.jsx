@@ -29,12 +29,6 @@ const UserDetails = ({ id }) => {
     });
   };
 
-  const setShowOnLeaderboard = newShowOnLeaderboard => {
-    patchUserDetails(id, { showOnLeaderboard: newShowOnLeaderboard }).then(result => {
-      setDetails(result);
-    });
-  };
-
   const setBanMessage = newMessage => {
     patchUserDetails(id, { banMessage: newMessage }).then(result => {
       setDetails(result);
@@ -50,7 +44,6 @@ const UserDetails = ({ id }) => {
           </h4>
           <div className={adminStyles.divSection}>
             <h5>Details</h5>
-            <p>ShowOnLeaderboard: {boolToString(details.showOnLeaderboard)}</p>
             <p>Admin: {boolToString(details.admin)}</p>
             <p>Banned: {boolToString(details.banned)}</p>
             {details.banInfo?.message && <span>Ban Reason: {details.banInfo.message}</span>}
@@ -82,9 +75,6 @@ const UserDetails = ({ id }) => {
             <h5>Actions</h5>
             <Button onClick={() => setBanned(!details.banned)}>
               {details.banned ? "Unban User" : "Ban User"}
-            </Button>
-            <Button onClick={() => setShowOnLeaderboard(!details.showOnLeaderboard)}>
-              {details.showOnLeaderboard ? "Hide on Leaderboard" : "Show on Leaderboard"}
             </Button>
           </div>
           {details.banned && (

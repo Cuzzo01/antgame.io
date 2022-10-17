@@ -130,7 +130,6 @@ const UserDetailsProjection = {
   username: 1,
   loginRecords: 1,
   admin: 1,
-  showOnLeaderboard: 1,
   banned: 1,
   registrationData: 1,
   email: 1,

@@ -18,7 +18,6 @@ const getAuthDetailsByUsername = async username => {
     username: result.username,
     passHash: result.passHash,
     admin: result.admin,
-    showOnLeaderboard: result.showOnLeaderboard,
     banned: result.banned,
     banInfo: result.banInfo,
   };
@@ -41,7 +40,6 @@ const saveNewUser = async userObject => {
     passHash: userObject.passHash,
     admin: userObject.admin,
     challengeDetails: [],
-    showOnLeaderboard: true,
     registrationData: userObject.registrationData,
   };
   if (userObject.email.length > 0) newUser.email = userObject.email;
