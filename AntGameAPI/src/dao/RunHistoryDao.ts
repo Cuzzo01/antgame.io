@@ -36,7 +36,9 @@ export class RunHistoryDao {
           projection: {
             details: {
               homeLocations: 1,
-              snapshots: "$details.snapshots",
+              finalSnapshot: {
+                $arrayElemAt: ["$details.snapshots", -1],
+              },
               seed: 1,
             },
             tagTypes: "$tags.type",
@@ -55,7 +57,7 @@ export class RunHistoryDao {
       result?.map(runData => {
         return {
           locations: runData.details.homeLocations,
-          amounts: runData.details.snapshots?.at(1)?.at(5),
+          amounts: runData.details.finalSnapshot?.at(5),
           seed: runData.details.seed,
           submissionTime: runData.submissionTime,
           score: runData.score,
