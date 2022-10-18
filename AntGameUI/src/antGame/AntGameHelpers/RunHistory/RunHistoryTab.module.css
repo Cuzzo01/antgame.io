@@ -35,6 +35,7 @@
 .runsList::-webkit-scrollbar-thumb {
   border-radius: 15px;
   background: lightgray;
+  border: 2px black solid;
 }
 
 .title {
