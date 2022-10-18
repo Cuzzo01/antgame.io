@@ -35,7 +35,10 @@ import { GenerateChallengeLeaderboardData } from "../helpers/LeaderboardHelper";
 import { LeaderboardEntry } from "../models/LeaderboardEntry";
 import { ChallengeRecordDao } from "../dao/ChallengeRecordDao";
 import { ChallengeRecordEntity } from "../dao/entities/ChallengeRecordEntity";
+import { RunHistoryDao } from "../dao/RunHistoryDao";
 import { LeaderboardEntryWithUsername } from "../models/LeaderboardEntryWithUsername";
+import { ReplayConfig } from "../models/ReplayConfig";
+import { ReplayConfigHelper } from "../helpers/ReplayConfigHelper";
 
 const Logger = LoggerProvider.getInstance();
 const FlagCache = FlagHandler.getCache();
@@ -47,6 +50,7 @@ const DailyChallengeCache = DailyChallengeHandler.getCache();
 const ObjectIDToNameCache = ObjectIDToNameHandler.getCache();
 
 const _challengeRecordDao = new ChallengeRecordDao();
+const _runHistoryDao = new RunHistoryDao();
 
 export class ChallengeController {
   static async postRun(req: Request, res: Response) {
@@ -356,66 +360,30 @@ export class ChallengeController {
         return;
       }
 
-      if (config.active) {
+      if (!(config.active || config.dailyChallenge)) {
         res.status(400);
-        res.send("Challenge still active");
+        res.send("This challenge is inactive");
         return;
       }
 
-      if (!config.dailyChallenge) {
-        res.status(400);
-        res.send("Replay only allowed on daily challenges");
-        return;
-      }
-
-      const toReturn = {
+      const toReturn: ReplayConfig = {
         id: config.id,
         seconds: config.seconds,
         name: config.name,
+        active: config.active,
         mapPath: undefined,
         wrData: undefined,
         prData: undefined,
       };
 
-      if (config.mapID) {
-        const mapData = await MapCache.getMapData({ mapID: config.mapID.toString() });
-        if (await FlagCache.getFlagValue("use-spaces-proxy")) {
-          toReturn.mapPath = `https://antgame.io/assets/${mapData.url}`;
-        } else {
-          toReturn.mapPath = `https://antgame.nyc3.digitaloceanspaces.com/${mapData.url}`;
-        }
-      } else {
-        toReturn.mapPath = config.mapPath;
-      }
+      toReturn.mapPath = await ReplayConfigHelper.getMapPath(config);
 
-      const wrRunInfo = await LeaderboardCache.getChallengeEntryByRank(id, 1);
-      if (wrRunInfo) {
-        const wrRunData = (await getRunDataByRunId(wrRunInfo.runID)) as {
-          homeLocations: number[][];
-          homeAmounts: { [location: string]: number };
-          seed: number;
-        };
-        toReturn.wrData = {
-          locations: wrRunData.homeLocations,
-          amounts: wrRunData.homeAmounts,
-          seed: wrRunData.seed,
-        };
+      if (!config.active) {
+        toReturn.wrData = await ReplayConfigHelper.getWrData(id);
       }
 
       if (!user.anon) {
-        const prRunInfo = await LeaderboardCache.getChallengeEntryByUserID(id, user.id);
-        if (prRunInfo) {
-          const prRunData = (await getRunDataByRunId(prRunInfo.runID)) as {
-            homeLocations: number[][];
-            homeAmounts: { [location: string]: number };
-            seed: number;
-          };
-          toReturn.prData = {
-            locations: prRunData.homeLocations,
-            amounts: prRunData.homeAmounts,
-            seed: prRunData.seed,
-          };
-        }
+        toReturn.prData = await ReplayConfigHelper.getPrData(id, user);
       }
 
       res.send(toReturn);
@@ -683,6 +651,39 @@ export class ChallengeController {
       Logger.logError("ChallengeController.GetPRHomeLocations", e as Error);
       res.status(500);
       res.send("Get leader board failed");
+    }
+  }
+
+  static async getRunHistory(req: Request, res: Response) {
+    try {
+      if (RejectIfAnon(req, res)) return;
+      const user = req.user as AuthToken;
+      const challengeId: string = req.params.id;
+      let page: number;
+      try {
+        page = parseInt(req.params.page);
+      } catch (e) {
+        res.sendStatus(400);
+        return;
+      }
+      const pageLength = await FlagCache.getIntFlag("batch-size.run-history");
+
+      const result = await _runHistoryDao.getRunsByUserIdAndChallengeId(
+        user.id,
+        challengeId,
+        page,
+        pageLength
+      );
+
+      if (result.length === 0) {
+        res.sendStatus(204);
+      } else {
+        res.send({ runs: result, reachedEndOfBatch: result.length < pageLength });
+      }
+    } catch (e) {
+      Logger.logError("ChallengeController.getRunHistory", e as Error);
+      res.status(500);
+      res.send("Get run history failed");
     }
   }
 }

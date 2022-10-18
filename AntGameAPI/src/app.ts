@@ -128,6 +128,7 @@ app.get("/challenge/:id/replay", ChallengeController.getReplayConfig);
 app.get("/challenge/:id/pr", ChallengeController.getPRHomeLocations);
 app.get("/challenges/active", ChallengeController.getActiveChallenges);
 app.get("/challenge/:id/leaderboard/:page", ChallengeController.getLeaderboard);
+app.get("/challenge/:id/runs/:page", ChallengeController.getRunHistory);
 
 app.get("/public/activeChallenges", PublicController.getActiveChallenges);
 app.get("/public/challengeLeaderboard/:id/:page", PublicController.getChallengeLeaderboard);

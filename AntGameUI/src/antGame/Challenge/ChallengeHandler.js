@@ -49,7 +49,7 @@ class ChallengeHandler {
   }
 
   set config(config) {
-    if (config.active === false && AuthHandler.isAdmin !== true) {
+    if (config.active === false && AuthHandler.isAdmin !== true && this._gamemode === "challenge") {
       window.location = "/";
     }
     this._config = config;
@@ -76,42 +76,41 @@ class ChallengeHandler {
     return this.artifact?.PB === true;
   }
 
-  async loadRun(type) {
+  async lookupAndLoadRun(type) {
     this._mapHandler.clearMap();
-    if (type === "pr") {
-      if (this._gamemode === "challenge") {
-        if (this.prInfo === false) {
-          const info = await getPRInfo(this.config.id);
-          if (this.prInfo === null) return;
-          this.prInfo = info;
-        }
-
-        this._mapHandler.setHomeLocations(this.prInfo);
-      } else if (this._gamemode === "replay") {
-        const prData = this.config.prData;
-        this._runSeed = prData.seed;
-        this._mapHandler.setHomeLocations({ locations: prData.locations, amounts: prData.amounts });
-        this.setReplayLabel("pr");
+    if (this._gamemode === "challenge") {
+      if (this.prInfo === false) {
+        const info = await getPRInfo(this.config.id);
+        if (this.prInfo === null) return;
+        this.prInfo = info;
       }
-    } else if (type === "wr") {
-      const wrData = this.config.wrData;
-      this._runSeed = wrData.seed;
-      this._mapHandler.setHomeLocations({ locations: wrData.locations, amounts: wrData.amounts });
-      this.setReplayLabel("wr");
+      this.loadRun(this.prInfo);
+    } else if (this._gamemode === "replay") {
+      if (type === "pr") {
+        this.loadRun({ ...this.config.prData, username: AuthHandler.username }, type);
+      } else if (type === "wr") {
+        this.loadRun({ ...this.config.wrData, username: this.records.wr.name }, type);
+      }
     }
   }
 
-  setReplayLabel(type) {
-    if (type === "wr") {
-      const username = this.records.wr.name;
-      const score = this.records.wr.score;
+  loadRun(run, type) {
+    this._mapHandler.clearMap();
+    if (this._gamemode === "replay") {
+      this._runSeed = run.seed;
+      this.setReplayLabel(type, run.score, run.username);
+    }
+    this._mapHandler.setHomeLocations({
+      locations: run.locations,
+      amounts: run.amounts,
+    });
+  }
 
-      this._label = `${username} - ${score} | WR`;
-    } else if (type === "pr") {
-      const username = AuthHandler.username;
-      const score = this.records.pr;
+  setReplayLabel(type, score, username) {
+    this._label = `${username} - ${score}`;
 
-      this._label = `${username} - ${score} | PR`;
+    if (type) {
+      this._label += `| ${type.toUpperCase()}`;
     }
   }
 
@@ -153,6 +152,7 @@ class ChallengeHandler {
         this.challengeID = Config.ChallengeID;
       }
       this.loadingConfig = true;
+
       if (this._gamemode === "challenge") {
         this.configPromise = getChallengeConfig(this._challengeID).then(config => {
           this.loadingConfig = false;
@@ -168,8 +168,9 @@ class ChallengeHandler {
           return config;
         });
       }
-      return this.configPromise;
     }
+
+    return this.configPromise;
   }
 
   async getRecords() {

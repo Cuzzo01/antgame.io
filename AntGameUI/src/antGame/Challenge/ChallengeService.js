@@ -132,3 +132,10 @@ export async function getSeed({ homeLocations }) {
     .then(res => res.data.seed)
     .catch(() => false);
 }
+
+export async function getPreviousRunData({ challengeId, pageIndex }) {
+  return axios
+    .get(`/api/challenge/${challengeId}/runs/${pageIndex}`)
+    .then(res => res.data)
+    .catch(() => []);
+}
