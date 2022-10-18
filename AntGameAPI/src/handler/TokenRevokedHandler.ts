@@ -1,9 +1,9 @@
-import { isUserAdmin, isUserBanned } from "../dao/UserDao";
 import { LoggerProvider } from "../LoggerTS";
 import { FlagHandler } from "./FlagHandler";
 import { ResultCacheWrapper } from "./ResultCacheWrapper";
 
 import { TokenRevokedData } from "../models/TokenRevokedData";
+import { UserDao } from "../dao/UserDao";
 
 const Logger = LoggerProvider.getInstance();
 const FlagCache = FlagHandler.getCache();
@@ -20,9 +20,11 @@ export class TokenRevokedHandler {
 
 class TokenRevokedCache extends ResultCacheWrapper<TokenRevokedData> {
   private tokenRevokedTime: number;
+  private _userDao: UserDao;
 
   constructor() {
     super({ name: "TokenRevokedHandler" });
+    this._userDao = new UserDao();
   }
 
   get size() {
@@ -39,9 +41,9 @@ class TokenRevokedCache extends ResultCacheWrapper<TokenRevokedData> {
       id: userID,
       getTimeToCache: async () => await FlagCache.getIntFlag("time-between-token-checks"),
       fetchMethod: async () => {
-        const IsBanned = (await isUserBanned(userID)) as boolean;
+        const IsBanned = await this._userDao.isUserBanned(userID);
         let IsAdmin = false;
-        if (adminClaim) IsAdmin = (await isUserAdmin(userID)) as boolean;
+        if (adminClaim) IsAdmin = await this._userDao.isUserAdmin(userID);
         return { banned: IsBanned, admin: IsAdmin };
       },
     });

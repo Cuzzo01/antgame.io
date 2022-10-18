@@ -20,7 +20,7 @@ export default function MenuBar({
   clearMapHandler,
   loadMapHandler,
   saveMapHandler,
-  loadPRHandler,
+  loadRecordHandler,
   time,
   timerActive,
   homeOnMap,
@@ -33,6 +33,7 @@ export default function MenuBar({
   replayLabel,
   speed,
   setSpeed,
+  toggleShowHistory,
 }) {
   const gameMode = useContext(GameModeContext);
   const IsSandbox = gameMode.mode === "sandbox";
@@ -53,9 +54,10 @@ export default function MenuBar({
         clearMapHandler={clearMapHandler}
         loadMapHandler={loadMapHandler}
         saveMapHandler={saveMapHandler}
-        loadPRHandler={loadPRHandler}
+        loadRecordHandler={loadRecordHandler}
         speed={speed}
         setSpeed={setSpeed}
+        toggleShowHistory={toggleShowHistory}
       />
       <div className={challengeStyleBar ? styles.challengeMiddle : styles.middle}>
         {challengeStyleBar && (

@@ -19,6 +19,7 @@ import { DrawAnts } from "./AntGameHelpers/Graphics/AntGraphics";
 import { MapGraphics } from "./AntGameHelpers/Graphics/MapGraphics";
 import { TrailGraphics } from "./AntGameHelpers/Graphics/TrailGraphics";
 import AuthHandler from "./Auth/AuthHandler";
+import RunHistoryTab from "./AntGameHelpers/RunHistory/RunHistoryTab";
 
 let canvasW, canvasH;
 
@@ -58,6 +59,9 @@ export default class AntGame extends React.Component {
       emptyMap = false;
     }
 
+    this.showHistoryTab = false;
+    this.showHistoryTabSwitched = false;
+
     this.state = {
       emptyMap: emptyMap,
       playState: false,
@@ -85,16 +89,18 @@ export default class AntGame extends React.Component {
 
     this.gamemode = this.context.mode;
     if (this.gamemode === "challenge" || this.gamemode === "replay") {
-      const challengeID = this.context.challengeID;
+      this.challengeID = this.context.challengeID;
       this.challengeHandler = ChallengeHandler;
       this.challengeHandler.gamemode = this.gamemode;
-      this.challengeHandler.challengeID = challengeID;
+      this.challengeHandler.challengeID = this.challengeID;
       this.challengeHandler.mapHandler = this.mapHandler;
       this.challengeHandler.timerHandler = this.timerHandler;
       this.challengeHandler.antHandler = this.antHandler;
       this.challengeHandler.getConfig().then(config => {
-        if (challengeID.toLowerCase() === "daily") document.title = "Daily Challenge - AntGame";
-        else document.title = `${config.name} - AntGame`;
+        if (this.challengeID.toLowerCase() === "daily") {
+          document.title = "Daily Challenge - AntGame";
+          this.challengeID = config.id;
+        } else document.title = `${config.name} - AntGame`;
       });
 
       this.setState({
@@ -168,9 +174,23 @@ export default class AntGame extends React.Component {
   };
 
   setCanvasBounds = p5 => {
-    this.windowSize = [p5.windowWidth, p5.windowHeight];
-    canvasW = p5.windowWidth - this.parentRef.offsetLeft * 2;
-    canvasH = p5.windowHeight - this.parentRef.offsetTop - 20;
+    if (this.readyToUpdateCanvasBounds()) {
+      this.windowSize = [p5.windowWidth, p5.windowHeight];
+      canvasW = p5.windowWidth - this.parentRef.offsetLeft - 16;
+      canvasH = p5.windowHeight - this.parentRef.offsetTop - 20;
+
+      this.showHistoryTabSwitched = false;
+    }
+  };
+
+  readyToUpdateCanvasBounds = () => {
+    let biggerThanMarginButSmallerThanHistoryTab = 100;
+
+    const readyToOpen =
+      this.showHistoryTab && this.parentRef.offsetLeft > biggerThanMarginButSmallerThanHistoryTab;
+    const readyToClose =
+      !this.showHistoryTab && this.parentRef.offsetLeft < biggerThanMarginButSmallerThanHistoryTab;
+    return readyToOpen || readyToClose;
   };
 
   setupAndInitialize = () => {
@@ -181,7 +201,11 @@ export default class AntGame extends React.Component {
   draw = p5 => {
     if (this.imageToSave !== "") this.handleImageSave(p5);
 
-    if (p5.windowWidth !== this.windowSize[0] || p5.windowHeight !== this.windowSize[1]) {
+    if (
+      p5.windowWidth !== this.windowSize[0] ||
+      p5.windowHeight !== this.windowSize[1] ||
+      this.showHistoryTabSwitched
+    ) {
       this.resizeCanvas(p5);
       this.containerRef.current.style.height = this.windowSize[1];
       this.mapDrawer.drawFullMap({ map: this.mapHandler.map });
@@ -348,6 +372,10 @@ export default class AntGame extends React.Component {
 
       this.setMapUiUpdate(500);
       this.toggleTimer(true);
+      if (!IsReplay) {
+        this.showHistoryTab = false;
+        this.showHistoryTabSwitched = true;
+      }
 
       const ticksPerSecond = FrameRate * 1.5;
       const updateRate = Math.round(1000 / ticksPerSecond);
@@ -414,6 +442,11 @@ export default class AntGame extends React.Component {
         foodReturned: this.mapHandler.percentFoodReturned,
       });
     }
+  };
+
+  toggleShowHistoryTab = () => {
+    this.showHistoryTab = !this.showHistoryTab;
+    this.showHistoryTabSwitched = true;
   };
 
   setTime = time => {
@@ -486,11 +519,20 @@ export default class AntGame extends React.Component {
     this.setState({ showChallengeModal: false });
   };
 
-  loadRunHandler = type => {
+  loadRecordHandler = type => {
     this.reset();
-    ChallengeHandler.loadRun(type).then(result => {
+    ChallengeHandler.lookupAndLoadRun(type).then(result => {
       if (result !== false && this.state.emptyMap) this.setState({ emptyMap: false });
     });
+    if (this.gamemode === "replay") {
+      this.setState({ replayLabel: ChallengeHandler.replayLabel });
+    }
+  };
+
+  loadRunHandler = run => {
+    this.reset();
+    ChallengeHandler.loadRun({ ...run, username: AuthHandler.username });
+    this.setState({ emptyMap: false });
     if (this.gamemode === "replay") {
       this.setState({ replayLabel: ChallengeHandler.replayLabel });
     }
@@ -524,13 +566,24 @@ export default class AntGame extends React.Component {
               getMapName={() => this.mapHandler.mapName}
               foodReturned={this.state.foodReturned}
               homeOnMap={this.state.homeOnMap}
-              loadPRHandler={this.loadRunHandler}
+              loadRecordHandler={this.loadRecordHandler}
               replayLabel={this.state.replayLabel}
               speed={this.state.speed}
               setSpeed={this.setGameSpeed}
+              toggleShowHistory={this.toggleShowHistoryTab}
             />
           </div>
-          <Sketch setup={this.setup} draw={this.draw} />
+          <div className={cssStyles.innerWindow}>
+            {this.showHistoryTab && !AuthHandler.isAnon && (
+              <RunHistoryTab
+                challengeId={this.challengeID}
+                loadRunHandler={run => this.loadRunHandler(run)}
+                gameMode={this.gamemode}
+                disabled={this.state.playState}
+              ></RunHistoryTab>
+            )}
+            <Sketch setup={this.setup} draw={this.draw} />
+          </div>
         </div>
       </div>
     );

@@ -80,6 +80,7 @@ export async function getLeaderboard(challengeID, pageNumber) {
   return axios
     .get(`/api/challenge/${challengeID}/leaderboard/${pageNumber}`)
     .then(res => {
+      if (res.status === 204) return null;
       return res.data;
     })
     .catch(error => {
@@ -92,6 +93,7 @@ export async function getPublicLeaderboard(challengeID, pageNumber) {
   return axios
     .get(`/api/public/challengeLeaderboard/${challengeID}/${pageNumber}`)
     .then(res => {
+      if (res.status === 204) return null;
       return res.data;
     })
     .catch(error => {
@@ -129,4 +131,11 @@ export async function getSeed({ homeLocations }) {
     .post("/api/seed", { homeLocations })
     .then(res => res.data.seed)
     .catch(() => false);
+}
+
+export async function getPreviousRunData({ challengeId, pageIndex }) {
+  return axios
+    .get(`/api/challenge/${challengeId}/runs/${pageIndex}`)
+    .then(res => res.data)
+    .catch(() => []);
 }

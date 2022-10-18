@@ -1,5 +1,4 @@
-import { ObjectId } from "mongodb";
-import { getUserBadgesByID, getUserDetailsByUsername } from "../dao/UserDao";
+import { UserDao } from "../dao/UserDao";
 import { TimeHelper } from "../helpers/TimeHelperTS";
 import { LoggerProvider } from "../LoggerTS";
 import { RawUserBadge } from "../models/RawUserBadge";
@@ -22,8 +21,11 @@ export class UserHandler {
 }
 
 class UserCache extends ResultCacheWrapper<UserBadge[] | UserInfoResponse> {
+  private _userDao: UserDao;
+
   constructor() {
     super({ name: "UserHandler" });
+    this._userDao = new UserDao();
   }
 
   get size() {
@@ -41,7 +43,7 @@ class UserCache extends ResultCacheWrapper<UserBadge[] | UserInfoResponse> {
       fetchMethod: async id => {
         let badges: RawUserBadge[];
         try {
-          badges = (await getUserBadgesByID(id)) as RawUserBadge[];
+          badges = await this._userDao.getUserBadgesByID(id);
         } catch (e) {
           Logger.logError("UserHandler.getBadges", e as Error);
           return [];
@@ -71,13 +73,7 @@ class UserCache extends ResultCacheWrapper<UserBadge[] | UserInfoResponse> {
       id: username,
       type: "Info",
       fetchMethod: async username => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        const result = (await getUserDetailsByUsername(username)) as {
-          _id: ObjectId;
-          username: string;
-          joinDate: Date | false;
-          badges: UserBadge[];
-        };
+        const result = await this._userDao.getUserDetailsByUsername(username);
 
         let joinDate: string;
         if (result.joinDate) joinDate = TimeHelper.getJoinDateDisplay(result.joinDate);

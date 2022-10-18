@@ -3,29 +3,44 @@ import styles from "./ChallengeModal.module.css";
 import ChallengeHandler from "../../Challenge/ChallengeHandler";
 import AuthHandler from "../../Auth/AuthHandler";
 import GenericModal from "../../Helpers/GenericModal";
-import { getFlag } from "../../Helpers/FlagService";
+import { useCallback } from "react";
 
 const ChallengeModal = props => {
   const [isWrRun, setIsWrRun] = useState(false);
   const [records, setRecords] = useState();
   const [showRateLimitMessage, setShowRateLimitMessage] = useState(false);
   const [showRejectedMessage, setShowRejectedMessage] = useState(false);
-  const [showAd, setShowAd] = useState(false);
+  const [closeMessage, setCloseMessage] = useState("Close");
+
+  const updateCloseMessage = useCallback(() => {
+    const score = props.challengeHandler?.score;
+    if (score) {
+      const scoreIsNice = score.toString().endsWith("69");
+      const scoreIsDoubleNice = score.toString().match(/69/gm)?.length === 2;
+
+      let message = "Close";
+      if (scoreIsDoubleNice) message = "Nice, Nice";
+      else if (scoreIsNice) message = "Nice";
+
+      setCloseMessage(message);
+    }
+  }, [props.challengeHandler?.score]);
+
+  const handleRunResponse = useCallback(
+    response => {
+      if (response === false) {
+        setIsWrRun(false);
+        setShowRateLimitMessage(false);
+        setShowRejectedMessage(false);
+      } else if (response.isWrRun) setIsWrRun(true);
+      else if (response === "rateLimit") setShowRateLimitMessage(true);
+      else if (response === "rejected") setShowRejectedMessage(true);
+      updateCloseMessage();
+    },
+    [updateCloseMessage]
+  );
 
   useEffect(() => {
-    if (props.show) {
-      const shouldShowAd = !props.challengeHandler?.isPB && window.loadGameAds !== undefined;
-      if (shouldShowAd)
-        getFlag("enable.results-modal-ads").then(value => {
-          if (value) {
-            setShowAd(true);
-            if (!window.GameAdsRenew) window.loadGameAds();
-            window.GameAdsRenew("gameadsbanner");
-          } else setShowAd(false);
-        });
-      else setShowAd(false);
-    }
-
     const runResponseId = ChallengeHandler.addRunResponseListener(response =>
       handleRunResponse(response)
     );
@@ -35,25 +50,14 @@ const ChallengeModal = props => {
       ChallengeHandler.removeRunResponseListener(runResponseId);
       ChallengeHandler.removeRecordListener(recordID);
     };
-  }, [props.show, props.challengeHandler?.isPB]);
+  }, [props.show, props.challengeHandler?.isPB, handleRunResponse]);
 
-  const handleRunResponse = response => {
-    if (response === false) {
-      setIsWrRun(false);
-      setShowRateLimitMessage(false);
-      setShowRejectedMessage(false);
-    } else if (response.isWrRun) setIsWrRun(true);
-    else if (response === "rateLimit") setShowRateLimitMessage(true);
-    else if (response === "rejected") setShowRejectedMessage(true);
-  };
-
-  const scoreIsNice = props.challengeHandler?.score.toString().endsWith("69");
   return (
     <div>
       {props.show ? (
         <GenericModal
           alwaysShow
-          closeMessage={scoreIsNice ? "Nice" : "Close"}
+          closeMessage={closeMessage}
           title={`Results: ${props.challengeHandler?.config.name}`}
           onHide={() => props.closeModal()}
           body={
@@ -102,12 +106,6 @@ const ChallengeModal = props => {
               </div>
               <h5 className={styles.score}>Score</h5>
               <h5>{props.challengeHandler?.score}</h5>
-              {showAd ? (
-                <div className={styles.ad}>
-                  <p>Advertisement</p>
-                  <div id="gameadsbanner" />
-                </div>
-              ) : null}
             </div>
           }
         />

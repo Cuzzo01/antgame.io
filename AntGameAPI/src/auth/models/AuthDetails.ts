@@ -5,7 +5,6 @@ export interface AuthDetails {
   username: string;
   passHash: string;
   admin: boolean;
-  showOnLeaderboard: boolean;
   banned: boolean;
   banInfo: BanInfo;
 }
