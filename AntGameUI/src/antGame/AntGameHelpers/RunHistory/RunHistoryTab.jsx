@@ -29,18 +29,16 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
   useEffect(() => {
     addRuns().then(() => setLoading(false));
   }, [addRuns]);
-
-  const doneLoading = () => {
-    return !loading && hasGrabbedAllValidPrevRuns !== null;
-  };
-
+  
   const oppositeGameModeAllowed = () => {
     return !(!ChallengeHandler.config.active && oppositeGameMode === "Challenge");
   };
-
+  
+  const doneLoading = !loading && hasGrabbedAllValidPrevRuns !== null;
+  
   return (
     <div className={styles.container}>
-      {doneLoading() ? (
+      {doneLoading ? (
         <>
           <h2 className={styles.title}>
             Last {previousRuns.length} Run{previousRuns.length > 1 && "s"}
