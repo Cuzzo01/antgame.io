@@ -84,12 +84,12 @@ export default function GameMenu({
         <SettingButton key="clear" text="Clear" handler={clearMapHandler} disabled={playState} />
       )}
       {(ChallengeHandler.records.pr || ChallengeHandler.config.prData) && (
-          <SettingButton
-            key="PR"
-            text="Load PR"
-            handler={() => loadRecordHandler("pr")}
-            disabled={playState}
-          />
+        <SettingButton
+          key="PR"
+          text="Load PR"
+          handler={() => loadRecordHandler("pr")}
+          disabled={playState}
+        />
       )}
       {ChallengeHandler.config.wrData && (
         <SettingButton

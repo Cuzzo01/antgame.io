@@ -2,7 +2,7 @@ export interface RunEntityProjection {
   details: {
     homeLocations: number[][];
     seed: number;
-    snapshots: any[][];
+    snapshots: (number | { [key: string]: number })[][];
   };
   submissionTime: Date;
   score: number;

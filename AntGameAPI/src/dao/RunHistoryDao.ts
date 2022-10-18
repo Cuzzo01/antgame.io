@@ -51,17 +51,18 @@ export class RunHistoryDao {
       .limit(pageLength)
       .toArray()) as unknown as RunEntityProjection[];
 
-    return result?.map(runData => {
-      return {
-        locations: runData.details.homeLocations,
-        amounts: runData.details.snapshots?.at(1)?.at(5),
-        seed: runData.details.seed,
-        submissionTime: runData.submissionTime,
-        score: runData.score,
-        pr: runData.tagTypes?.includes("pr") ?? false,
-        wr: runData.tagTypes?.includes("wr") ?? false,
-      };
-    }) ?? [];
-
+    return (
+      result?.map(runData => {
+        return {
+          locations: runData.details.homeLocations,
+          amounts: runData.details.snapshots?.at(1)?.at(5),
+          seed: runData.details.seed,
+          submissionTime: runData.submissionTime,
+          score: runData.score,
+          pr: runData.tagTypes?.includes("pr") ?? false,
+          wr: runData.tagTypes?.includes("wr") ?? false,
+        };
+      }) ?? []
+    );
   }
 }

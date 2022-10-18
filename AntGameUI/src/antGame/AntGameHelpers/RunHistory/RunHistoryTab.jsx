@@ -4,7 +4,7 @@ import { getPreviousRunData } from "../../Challenge/ChallengeService";
 import styles from "./RunHistoryTab.module.css";
 import ChallengeHandler from "../../Challenge/ChallengeHandler";
 
-const RunHistoryTab = ({challengeId, loadRunHandler, gameMode, disabled}) => {
+const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
   const oppositeGameMode = gameMode === "replay" ? "Challenge" : "Replay";
 
   const [hasGrabbedAllValidPrevRuns, setHasGrabbedAllValidPrevRuns] = useState(null);
@@ -13,17 +13,17 @@ const RunHistoryTab = ({challengeId, loadRunHandler, gameMode, disabled}) => {
   const [loading, setLoading] = useState(true);
 
   const addRuns = useCallback(async () => {
-      getPreviousRunData({
-        challengeId,
-        pageIndex,
-      }).then(result => {
-        if (result) {
-          setHasGrabbedAllValidPrevRuns(result.reachedEndOfBatch);
-          setPreviousRuns( prev => [...prev, ...result.runs]);
-        } else {
-          setHasGrabbedAllValidPrevRuns(true);
-        }
-      });
+    getPreviousRunData({
+      challengeId,
+      pageIndex,
+    }).then(result => {
+      if (result) {
+        setHasGrabbedAllValidPrevRuns(result.reachedEndOfBatch);
+        setPreviousRuns(prev => [...prev, ...result.runs]);
+      } else {
+        setHasGrabbedAllValidPrevRuns(true);
+      }
+    });
   }, [challengeId, pageIndex]);
 
   useEffect(() => {
@@ -36,19 +36,26 @@ const RunHistoryTab = ({challengeId, loadRunHandler, gameMode, disabled}) => {
 
   const oppositeGameModeAllowed = () => {
     return !(!ChallengeHandler.config.active && oppositeGameMode === "Challenge");
-  }
+  };
 
   return (
     <div className={styles.container}>
       {doneLoading() ? (
         <>
-          <h2 className={styles.title}>Last {previousRuns.length} Run{previousRuns.length > 1 && "s"}</h2>
+          <h2 className={styles.title}>
+            Last {previousRuns.length} Run{previousRuns.length > 1 && "s"}
+          </h2>
           {oppositeGameModeAllowed() && (
             <a href={`/${oppositeGameMode.toLowerCase()}/${challengeId}`}>{oppositeGameMode}</a>
           )}
           <div className={styles.runsList}>
             {previousRuns.map((value, index) => (
-              <RunEntry run={value} key={index} disabled={disabled} loadRun={run => loadRunHandler(run)} />
+              <RunEntry
+                run={value}
+                key={index}
+                disabled={disabled}
+                loadRun={run => loadRunHandler(run)}
+              />
             ))}
             {!hasGrabbedAllValidPrevRuns ? (
               <div className={styles.loadMore} onClick={() => setPageIndex(pageIndex + 1)}>
@@ -67,14 +74,13 @@ const RunHistoryTab = ({challengeId, loadRunHandler, gameMode, disabled}) => {
   );
 };
 
-const RunEntry = ({run, disabled, loadRun}) => {
-
+const RunEntry = ({ run, disabled, loadRun }) => {
   const dateValue = new Date(run.submissionTime);
 
   let style = styles.runEntryRow;
   let action = () => loadRun(run);
 
-  if(disabled){
+  if (disabled) {
     style = styles.runEntryRowDisabled;
     action = null;
   }
@@ -86,8 +92,8 @@ const RunEntry = ({run, disabled, loadRun}) => {
       <div className={styles.time}>{dateValue.toLocaleTimeString()}</div>
       {(run.pr || run.wr) && (
         <div className={styles.tags}>
-          {run.pr && (<span className={styles.prText}>PR</span>)}
-          {run.wr && (<span className={styles.wrText}>WR</span>)}
+          {run.pr && <span className={styles.prText}>PR</span>}
+          {run.wr && <span className={styles.wrText}>WR</span>}
         </div>
       )}
     </div>

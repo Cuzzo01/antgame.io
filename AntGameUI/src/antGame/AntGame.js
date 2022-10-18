@@ -191,7 +191,7 @@ export default class AntGame extends React.Component {
     const readyToClose =
       !this.showHistoryTab && this.parentRef.offsetLeft < biggerThanMarginButSmallerThanHistoryTab;
     return readyToOpen || readyToClose;
-  }
+  };
 
   setupAndInitialize = () => {
     this.mapDrawer.setupMap(canvasW, canvasH);
@@ -531,7 +531,7 @@ export default class AntGame extends React.Component {
 
   loadRunHandler = run => {
     this.reset();
-    ChallengeHandler.loadRun({...run, username: AuthHandler.username});
+    ChallengeHandler.loadRun({ ...run, username: AuthHandler.username });
     this.setState({ emptyMap: false });
     if (this.gamemode === "replay") {
       this.setState({ replayLabel: ChallengeHandler.replayLabel });

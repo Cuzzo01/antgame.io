@@ -49,7 +49,7 @@ class ChallengeHandler {
   }
 
   set config(config) {
-    if (config.active === false && AuthHandler.isAdmin !== true && this._gamemode === 'challenge') {
+    if (config.active === false && AuthHandler.isAdmin !== true && this._gamemode === "challenge") {
       window.location = "/";
     }
     this._config = config;
@@ -87,9 +87,9 @@ class ChallengeHandler {
       this.loadRun(this.prInfo);
     } else if (this._gamemode === "replay") {
       if (type === "pr") {
-        this.loadRun({...this.config.prData, username: AuthHandler.username}, type);
+        this.loadRun({ ...this.config.prData, username: AuthHandler.username }, type);
       } else if (type === "wr") {
-        this.loadRun({...this.config.wrData, username: this.records.wr.name}, type);
+        this.loadRun({ ...this.config.wrData, username: this.records.wr.name }, type);
       }
     }
   }
@@ -109,7 +109,7 @@ class ChallengeHandler {
   setReplayLabel(type, score, username) {
     this._label = `${username} - ${score}`;
 
-    if(type) {
+    if (type) {
       this._label += `| ${type.toUpperCase()}`;
     }
   }

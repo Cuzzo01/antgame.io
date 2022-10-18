@@ -79,8 +79,8 @@
   margin: 2.5px 5px;
   padding: 2px;
   grid-template-areas:
-  "date score"
-  "time tags";
+    "date score"
+    "time tags";
   border: 2px gray solid;
   background-color: transparent;
   color: gray;

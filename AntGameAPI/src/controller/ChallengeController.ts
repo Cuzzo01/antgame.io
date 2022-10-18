@@ -382,7 +382,7 @@ export class ChallengeController {
 
       toReturn.mapPath = await ReplayConfigHelper.getMapPath(config);
 
-      if(!config.active) {
+      if (!config.active) {
         toReturn.wrData = await ReplayConfigHelper.getWrData(id);
       }
 
@@ -679,10 +679,10 @@ export class ChallengeController {
         pageLength
       );
 
-      if(result.length === 0) {
+      if (result.length === 0) {
         res.sendStatus(204);
       } else {
-        res.send({runs: result, reachedEndOfBatch : result.length < pageLength});
+        res.send({ runs: result, reachedEndOfBatch: result.length < pageLength });
       }
     } catch (e) {
       Logger.logError("ChallengeController.getRunHistory", e as Error);
