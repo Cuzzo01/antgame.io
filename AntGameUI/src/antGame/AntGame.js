@@ -34,7 +34,7 @@ const FrameRate = Config.FrameRate;
 const PreloadMap = Config.PreloadMap;
 
 export default class AntGame extends React.Component {
-  static contextType = GameModeContext; //TODO: question - does this do anything?
+  static contextType = GameModeContext;
 
   constructor(props) {
     super(props);

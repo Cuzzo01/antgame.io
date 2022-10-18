@@ -36,9 +36,6 @@
   border-radius: 15px;
   background: lightgray;
 }
-.runsList::-webkit-scrollbar-track {
-  border-radius: 30px;
-}
 
 .title {
   font-family: "Courier Prime Bold";
