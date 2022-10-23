@@ -6,17 +6,20 @@ const MapBounds = [
   Config.MapBounds[0] * TrailMapOverSampleRate,
   Config.MapBounds[1] * TrailMapOverSampleRate,
 ];
-const TrailDiameter = Config.TrailDiameter;
+// const TrailDiameter = Config.TrailDiameter;
+// const TrailSize = 2
 
 export class TrailGraphics {
   constructor(color) {
     this.clean = true;
-    this.pointsToDraw = [];
+    // this.pointsToDraw = [];
+    this.pointsToUpdate = {};
     this.color = color;
   }
 
   get hasPointsToDraw() {
-    return this.pointsToDraw.length > 0;
+    // return this.pointsToDraw.length > 0;
+    return Object.keys(this.pointsToUpdate).length > 0
   }
 
   set graphics(graphics) {
@@ -32,21 +35,46 @@ export class TrailGraphics {
     this.setPixelDensity();
   }
 
-  addPointToDraw(trailXY) {
-    this.pointsToDraw.push(trailXY);
+  addPointToUpdate(trailXY, strength) {
+    const key = `${trailXY[0]},${trailXY[1]}`
+    this.pointsToUpdate[key] = strength
   }
 
   drawPoints() {
-    this.pointsToDraw.forEach(trailXY => {
-      const canvasXY = this.trailXYToCanvasXY(trailXY);
-      this._graphics.circle(canvasXY[0], canvasXY[1], TrailDiameter);
-    });
-    this.pointsToDraw = [];
+    let counter = 0
+    console.log(`Drawing ${Object.keys(this.pointsToUpdate).length} points`)
+    for (const key of Object.keys(this.pointsToUpdate)) {
+      if (counter > 2000) {
+        console.log("aborting", Object.keys(this.pointsToUpdate).length)
+        return
+      }
+      const strength = this.pointsToUpdate[key]
+      const trailXY = key.split(',').map(string => parseInt(string))
+      const canvasXY = this.trailXYToCanvasXY(trailXY)
+      this.eraseCell(canvasXY)
+      this.color.setAlpha(Math.round(strength * 100))
+      this._graphics.fill(this.color)
+      this._graphics.rect(canvasXY[0], canvasXY[1], this.size[0], this.size[1])
+      delete this.pointsToUpdate[key]
+      counter++
+    }
+    // this.pointsToDraw.forEach(trailXY => {
+    //   const canvasXY = this.trailXYToCanvasXY(trailXY);
+    //   this._graphics.circle(canvasXY[0], canvasXY[1], TrailDiameter);
+    // });
+    // this.pointsToDraw = [];
   }
 
   clear() {
     this._graphics.clear();
   }
+
+  eraseCell(canvasXY) {
+    this._graphics.erase();
+    this._graphics.rect(canvasXY[0], canvasXY[1], this.size[0], this.size[1])
+    this._graphics.noErase();
+  }
+
 
   decayTrail() {
     this._graphics.blendMode(this.decayMode);
@@ -66,12 +94,13 @@ export class TrailGraphics {
     const drawableWidth = this.canvasBounds[0] - BorderWeight;
     const drawableHeight = this.canvasBounds[1] - BorderWeight;
     this.pixelDensity = [drawableWidth / MapBounds[0], drawableHeight / MapBounds[1]];
+    this.size = [Math.ceil(this.pixelDensity[0]), Math.ceil(this.pixelDensity[1])]
   }
 
   trailXYToCanvasXY(mapXY) {
     return [
-      BorderWeight + mapXY[0] * this.pixelDensity[0] + this.pixelDensity[0] / 2,
-      BorderWeight + mapXY[1] * this.pixelDensity[1] + this.pixelDensity[1] / 2,
+      Math.round(BorderWeight + mapXY[0] * this.pixelDensity[0] + this.pixelDensity[0] / 2),
+      Math.round(BorderWeight + mapXY[1] * this.pixelDensity[1] + this.pixelDensity[1] / 2),
     ];
   }
 }

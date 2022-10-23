@@ -27,21 +27,26 @@ export class TrailHandler {
 
   dropPoint(mapXY, transparency) {
     const trailXY = this.mapXYToTrailXY(mapXY);
-    if (this.trailGraphics) this.trailGraphics.addPointToDraw(trailXY);
     if (this.clean) this.clean = false;
     const strength = Math.round(110 * (1 - transparency) + 25);
 
     const intTrailXY = MapXYToInt(trailXY);
     const maxValue = 1500 * (1 - transparency) + 100;
     // const maxValue = 3000 * (1 - transparency) + 100;
+    // debugger; 
     for (let xOffset = -TrailMapOverSampleRate; xOffset <= TrailMapOverSampleRate; xOffset++) {
       for (let yOffset = -TrailMapOverSampleRate; yOffset <= TrailMapOverSampleRate; yOffset++) {
         const point = [intTrailXY[0] + xOffset, intTrailXY[1] + yOffset];
         if (strength && this.trailXYInBounds(point)) {
+          // const adjustedStrength = Math.sqrt(Math.pow(xOffset, 2) + Math.pow(yOffset, 2));
+          const strengthAdjustment = (7 - (Math.abs(xOffset) + Math.abs(yOffset))) / 7;
           const currentValue = this.trailMap[point[0]][point[1]];
           if (currentValue < maxValue) {
-            const newValue = currentValue + strength;
-            this.trailMap[point[0]][point[1]] = newValue > maxValue ? maxValue : newValue;
+            const newValue = currentValue + Math.round(strength * strengthAdjustment);
+            const valueToSet = newValue > maxValue ? maxValue : newValue;
+            this.trailMap[point[0]][point[1]] = valueToSet;
+            if (this.trailGraphics)
+              this.trailGraphics.addPointToUpdate(point, valueToSet / maxValue);
           }
         }
       }
