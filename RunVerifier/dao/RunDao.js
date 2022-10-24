@@ -22,13 +22,18 @@ const getNewUserPB = async ({ userID, challengeID, oldPBRunID }) => {
 };
 
 const getRunToVerify = async () => {
-  const collection = await getCollection("runs");
+  const collection = await getCollection("runs-to-verify");
   const result = await collection.findOneAndUpdate(
-    { toVerify: true, "verification.startTime": null },
-    { $set: { "verification.startTime": new Date() } },
-    { sort: { "verification.priority": 1 } }
+    { startTime: null },
+    { $set: { startTime: new Date() } },
+    { sort: { priority: 1 } }
   );
-  return result.value;
+
+  if (!result.value) return null;
+  const verifyInfo = result.value;
+
+  const runsCollection = await getCollection("runs");
+  return runsCollection.findOne({ _id: verifyInfo.runId });
 };
 
 const getRunDetailsByID = async ({ runID }) => {
@@ -50,22 +55,30 @@ const addTagToRun = async ({ id, tag }) => {
 const unsetToVerifyFlagAndSetFinishTime = async ({ runID }) => {
   const runObjectID = TryParseObjectID(runID, "RunID");
 
-  const collection = await getCollection("runs");
-  await collection.updateOne(
+  const collection = await getCollection("runs-to-verify");
+  const result = await collection.findOneAndDelete({ runId: runObjectID });
+  const verifyInfo = result.value;
+
+  const runsCollection = await getCollection("runs");
+  await runsCollection.updateOne(
     { _id: runObjectID },
-    { $unset: { toVerify: "" }, $set: { "verification.finishTime": new Date() } }
+    {
+      $unset: { toVerify: "" },
+      $set: {
+        verification: {
+          finishTime: new Date(),
+          startTime: verifyInfo.startTime,
+        },
+      },
+    }
   );
 };
 
 const fixOrphanedRuns = async ({ cutoffTime }) => {
-  const collection = await getCollection("runs");
+  const collection = await getCollection("runs-to-verify");
   const result = await collection.updateMany(
-    {
-      "verification.startTime": { $lt: cutoffTime },
-      "verification.finishTime": null,
-      toVerify: true,
-    },
-    { $unset: { "verification.startTime": null }, $inc: { "verification.resets": 1 } }
+    { startTime: { $lt: cutoffTime } },
+    { $unset: { startTime: null }, $inc: { resets: 1 } }
   );
   return result.modifiedCount;
 };

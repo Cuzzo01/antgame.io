@@ -223,11 +223,14 @@ const addChampionshipIDToConfig = async (configID, championshipID) => {
 const markRunForVerification = async ({ runID, priority = 10 }) => {
   const runObjectID = TryParseObjectID(runID, "RunID", "ChallengeDao");
 
-  const collection = await getCollection("runs");
-  await collection.updateOne(
+  const runsCollection = await getCollection("runs");
+  await runsCollection.updateOne(
     { _id: runObjectID },
     { $set: { toVerify: true, "verification.priority": priority } }
   );
+
+  const collection = await getCollection("runs-to-verify");
+  await collection.insertOne({ runId: runObjectID, priority });
 };
 
 const addSolutionImageToRun = async ({ runID, imagePath }) => {
