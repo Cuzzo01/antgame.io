@@ -40,14 +40,8 @@ export class TrailGraphics {
     this.pointsToUpdate[key] = strength
   }
 
-  drawPoints() {
-    let counter = 0
-    console.log(`Drawing ${Object.keys(this.pointsToUpdate).length} points`)
+  drawPoints(trailHandler) {
     for (const key of Object.keys(this.pointsToUpdate)) {
-      if (counter > 2000) {
-        console.log("aborting", Object.keys(this.pointsToUpdate).length)
-        return
-      }
       const strength = this.pointsToUpdate[key]
       const trailXY = key.split(',').map(string => parseInt(string))
       const canvasXY = this.trailXYToCanvasXY(trailXY)
@@ -56,13 +50,7 @@ export class TrailGraphics {
       this._graphics.fill(this.color)
       this._graphics.rect(canvasXY[0], canvasXY[1], this.size[0], this.size[1])
       delete this.pointsToUpdate[key]
-      counter++
     }
-    // this.pointsToDraw.forEach(trailXY => {
-    //   const canvasXY = this.trailXYToCanvasXY(trailXY);
-    //   this._graphics.circle(canvasXY[0], canvasXY[1], TrailDiameter);
-    // });
-    // this.pointsToDraw = [];
   }
 
   clear() {

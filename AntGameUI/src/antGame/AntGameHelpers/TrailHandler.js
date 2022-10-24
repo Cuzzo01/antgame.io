@@ -8,10 +8,15 @@ const TrailBounds = [
 
 export class TrailHandler {
   constructor(mapHandler, trailGraphics) {
+    this.pointsToUpdate = {}
     this.mapHandler = mapHandler;
     if (trailGraphics) this.trailGraphics = trailGraphics;
     else this.trailGraphics = false;
     this.buildTrailMap();
+  }
+
+  get hasPointsToDraw() {
+    return Object.keys(this.pointsToUpdate).length > 0
   }
 
   buildTrailMap() {
@@ -33,7 +38,6 @@ export class TrailHandler {
     const intTrailXY = MapXYToInt(trailXY);
     const maxValue = 1500 * (1 - transparency) + 100;
     // const maxValue = 3000 * (1 - transparency) + 100;
-    // debugger; 
     for (let xOffset = -TrailMapOverSampleRate; xOffset <= TrailMapOverSampleRate; xOffset++) {
       for (let yOffset = -TrailMapOverSampleRate; yOffset <= TrailMapOverSampleRate; yOffset++) {
         const point = [intTrailXY[0] + xOffset, intTrailXY[1] + yOffset];
@@ -45,8 +49,9 @@ export class TrailHandler {
             const newValue = currentValue + Math.round(strength * strengthAdjustment);
             const valueToSet = newValue > maxValue ? maxValue : newValue;
             this.trailMap[point[0]][point[1]] = valueToSet;
-            if (this.trailGraphics)
-              this.trailGraphics.addPointToUpdate(point, valueToSet / maxValue);
+            this.pointsToUpdate[`${mapXY[0]},${mapXY[1]}`] = true;
+            // if (this.trailGraphics)
+            //   this.trailGraphics.addPointToUpdate(point, valueToSet / maxValue);
           }
         }
       }
