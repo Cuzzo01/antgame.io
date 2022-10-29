@@ -331,6 +331,13 @@ export default class AntGame extends React.Component {
     this.brushType = type;
   };
 
+  setCompatibilityDate = (date) => {
+    this.homeTrailHandler.compatibilityDate = date;
+    this.foodTrailHandler.compatibilityDate = date;
+    this.mapHandler.compatibilityDate = date;
+    this.antHandler.compatibilityDate = date;
+  }
+
   updatePlayState = async state => {
     const IsChallenge = this.gamemode === "challenge";
     const IsReplay = this.gamemode === "replay";
@@ -345,12 +352,15 @@ export default class AntGame extends React.Component {
         let seed = Math.round(Math.random() * 1e8);
         if (IsChallenge) {
           if (!AuthHandler.isAnon) {
-            seed = await this.challengeHandler.getSeed({
+            const seedInfo = await this.challengeHandler.getSeed({
               homeLocations: this.mapHandler.homeLocations,
             });
-            if (seed === false) {
+            if (seedInfo === false) {
               // TODO: Make modal to explain rate limit
               return;
+            } else {
+              seed = seedInfo.seed
+              this.setCompatibilityDate(seedInfo.compatibilityDate)
             }
           } else {
             this.challengeHandler._runSeed = seed;
@@ -358,6 +368,7 @@ export default class AntGame extends React.Component {
           this.challengeHandler.handleStart(this.mapHandler.homeLocations);
         } else if (IsReplay) {
           seed = this.challengeHandler._runSeed;
+          this.setCompatibilityDate(this.challengeHandler._compatibilityDate)
         }
         this.antHandler.spawnAnts({
           homeTrailHandler: this.homeTrailHandler,

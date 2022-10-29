@@ -58,6 +58,10 @@ export class MapHandler {
     this._shouldDrawFoodAmounts = value;
   }
 
+  set compatibilityDate(date) {
+    
+  }
+
   get shouldDrawFoodAmounts() {
     return this._shouldDrawFoodAmounts;
   }

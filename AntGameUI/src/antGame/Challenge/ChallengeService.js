@@ -129,7 +129,9 @@ export async function getDailyChallengeList() {
 export async function getSeed({ homeLocations }) {
   return axios
     .post("/api/seed", { homeLocations })
-    .then(res => res.data.seed)
+    .then(res => {
+      return { seed: res.data.seed, compatibilityDate: res.data.compatibilityDate };
+    })
     .catch(() => false);
 }
 

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { AuthToken } from "../auth/models/AuthToken";
+import { CompatibilityService } from "../bll/CompatibilityService";
 import { SeedBrokerProvider } from "../bll/SeedBroker";
 import { LoggerProvider } from "../LoggerTS";
 
@@ -24,7 +25,9 @@ export class SeedController {
         return;
       }
 
-      res.send({ seed });
+      const compatibilityDate = CompatibilityService.getCompatibilityDate(new Date())
+
+      res.send({ seed, compatibilityDate });
     } catch (e) {
       Logger.logError("SeedController.getSeed", e as Error);
       res.sendStatus(500);

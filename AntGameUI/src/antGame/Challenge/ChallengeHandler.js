@@ -298,9 +298,11 @@ class ChallengeHandler {
   }
 
   async getSeed({ homeLocations }) {
-    const seed = await getSeed({ homeLocations });
-    if (seed) this._runSeed = seed;
-    return seed;
+    const data = await getSeed({ homeLocations });
+    if (data.seed) this._runSeed = data.seed;
+    if (data.compatibilityDate) this._compatibilityDate = data.compatibilityDate
+    else this._compatibilityDate = false
+    return data;
   }
 }
 
