@@ -29,7 +29,6 @@ export class TrailGraphics {
     this.color = this._graphics.color(this.color);
     this._graphics.fill(this.color);
     this._graphics.noStroke();
-
     this.decayMode = this._graphics.REMOVE;
     this.drawMode = this._graphics.BLEND;
     this.setPixelDensity();
@@ -41,12 +40,13 @@ export class TrailGraphics {
   }
 
   drawPoints(trailHandler) {
+    this.pointsToUpdate = trailHandler.pointsToUpdate
     for (const key of Object.keys(this.pointsToUpdate)) {
-      const strength = this.pointsToUpdate[key]
       const trailXY = key.split(',').map(string => parseInt(string))
+      const strength = trailHandler.trailMap[trailXY[0]][trailXY[1]] / 1600
       const canvasXY = this.trailXYToCanvasXY(trailXY)
       this.eraseCell(canvasXY)
-      this.color.setAlpha(Math.round(strength * 100))
+      this.color.setAlpha(Math.round(strength * 250))
       this._graphics.fill(this.color)
       this._graphics.rect(canvasXY[0], canvasXY[1], this.size[0], this.size[1])
       delete this.pointsToUpdate[key]

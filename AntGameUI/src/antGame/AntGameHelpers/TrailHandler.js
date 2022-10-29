@@ -8,7 +8,7 @@ const TrailBounds = [
 
 export class TrailHandler {
   constructor(mapHandler, trailGraphics) {
-    this.pointsToUpdate = {}
+    this.pointsToUpdate = {};
     this.mapHandler = mapHandler;
     if (trailGraphics) this.trailGraphics = trailGraphics;
     else this.trailGraphics = false;
@@ -16,7 +16,7 @@ export class TrailHandler {
   }
 
   get hasPointsToDraw() {
-    return Object.keys(this.pointsToUpdate).length > 0
+    return Object.keys(this.pointsToUpdate).length > 0;
   }
 
   buildTrailMap() {
@@ -38,18 +38,20 @@ export class TrailHandler {
     const intTrailXY = MapXYToInt(trailXY);
     const maxValue = 1500 * (1 - transparency) + 100;
     // const maxValue = 3000 * (1 - transparency) + 100;
+    const distanceOffset = TrailMapOverSampleRate * 2 + 1;
     for (let xOffset = -TrailMapOverSampleRate; xOffset <= TrailMapOverSampleRate; xOffset++) {
       for (let yOffset = -TrailMapOverSampleRate; yOffset <= TrailMapOverSampleRate; yOffset++) {
         const point = [intTrailXY[0] + xOffset, intTrailXY[1] + yOffset];
         if (strength && this.trailXYInBounds(point)) {
-          // const adjustedStrength = Math.sqrt(Math.pow(xOffset, 2) + Math.pow(yOffset, 2));
-          const strengthAdjustment = (7 - (Math.abs(xOffset) + Math.abs(yOffset))) / 7;
+          const distance = Math.abs(xOffset) + Math.abs(yOffset);
+          const strengthAdjustment = (distanceOffset - distance) / distanceOffset;
+          const adjustedStrength = Math.round(strength * strengthAdjustment);
           const currentValue = this.trailMap[point[0]][point[1]];
           if (currentValue < maxValue) {
-            const newValue = currentValue + Math.round(strength * strengthAdjustment);
+            const newValue = currentValue + adjustedStrength;
             const valueToSet = newValue > maxValue ? maxValue : newValue;
             this.trailMap[point[0]][point[1]] = valueToSet;
-            this.pointsToUpdate[`${mapXY[0]},${mapXY[1]}`] = true;
+            this.pointsToUpdate[`${intTrailXY[0]},${intTrailXY[1]}`] = true;
             // if (this.trailGraphics)
             //   this.trailGraphics.addPointToUpdate(point, valueToSet / maxValue);
           }
