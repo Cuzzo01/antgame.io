@@ -1,12 +1,9 @@
 export class CompatibilityUtility {
-  // static GetTestValue(date) {
-  //     const goLiveDate = this.GetGoLive(2022, 11, 6)
-  //     if (this.IsFeatureLive(goLiveDate, date)) {
-  //         return true
-  //     } else {
-  //         return false
-  //     }
-  // }
+  static NewTrailStrengthGoLive = this.GetGoLive(2022, 11, 6);
+
+  static UseNewTrailStrength(compatibilityDate) {
+    return this.IsFeatureLive(this.NewTrailStrengthGoLive, compatibilityDate);
+  }
 
   static GetGoLive(year, month, day) {
     return new Date(year, month - 1, day);
