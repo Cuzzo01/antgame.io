@@ -5,7 +5,6 @@ export const Config = {
   debug: false,
   gridSpacing: 10,
   AntSize: 10,
-  TrailDiameter: 3,
   ViewDistance: 2,
   TrailDropRate: 5,
   AntsToSpawn: 1000,
@@ -15,7 +14,6 @@ export const Config = {
   // debug: true,
   // gridSpacing: 25,
   // AntSize: 35,
-  // TrailDiameter: 10,
   // TrailDropRate: 15,
   // AntsToSpawn: 4,
   // //////

@@ -14,10 +14,6 @@ export class TrailGraphics {
     this.color = color;
   }
 
-  get hasPointsToDraw() {
-    return Object.keys(this.pointsToUpdate).length > 0
-  }
-
   set graphics(graphics) {
     this._graphics = graphics;
 
