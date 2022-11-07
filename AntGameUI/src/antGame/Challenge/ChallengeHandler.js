@@ -98,6 +98,7 @@ class ChallengeHandler {
     this._mapHandler.clearMap();
     if (this._gamemode === "replay") {
       this._runSeed = run.seed;
+      this._compatibilityDate = run.compatibilityDate;
       this.setReplayLabel(type, run.score, run.username);
     }
     this._mapHandler.setHomeLocations({
@@ -252,7 +253,7 @@ class ChallengeHandler {
       FoodPerCell: this._mapHandler.foodPerCell,
       DirtPerCell: this._mapHandler.dirtPerCell,
       seed: this._runSeed,
-      compatibilityDate: this._compatibilityDate
+      compatibilityDate: this._compatibilityDate,
     };
 
     this.artifact.Timing.SystemStopTime = new Date().getTime();
@@ -301,8 +302,8 @@ class ChallengeHandler {
   async getSeed({ homeLocations }) {
     const data = await getSeed({ homeLocations });
     if (data.seed) this._runSeed = data.seed;
-    if (data.compatibilityDate) this._compatibilityDate = data.compatibilityDate
-    else this._compatibilityDate = false
+    if (data.compatibilityDate) this._compatibilityDate = data.compatibilityDate;
+    else this._compatibilityDate = false;
     return data;
   }
 }

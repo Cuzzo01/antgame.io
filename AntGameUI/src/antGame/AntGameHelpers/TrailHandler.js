@@ -16,7 +16,6 @@ export class TrailHandler {
 
   set compatibilityDate(date) {
     this._compatibilityDate = date;
-    console.log(this._compatibilityDate)
   }
 
   buildTrailMap() {

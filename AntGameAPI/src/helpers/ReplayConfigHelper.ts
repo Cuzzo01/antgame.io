@@ -38,7 +38,7 @@ export class ReplayConfigHelper {
         amounts: prRunData.homeAmounts,
         seed: prRunData.seed,
         score: prRunData.score,
-        compatibilityDate: prRunData.compatibilityDate ?? null
+        compatibilityDate: prRunData.compatibilityDate ?? null,
       };
     }
   }
@@ -58,7 +58,7 @@ export class ReplayConfigHelper {
         amounts: wrRunData.homeAmounts,
         seed: wrRunData.seed,
         score: wrRunData.score,
-        compatibilityDate: wrRunData.compatibilityDate
+        compatibilityDate: wrRunData.compatibilityDate,
       };
     }
   }

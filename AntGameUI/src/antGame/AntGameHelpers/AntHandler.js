@@ -1,6 +1,5 @@
 import { Config } from "../config";
 import { Ant } from "./Ant";
-import { CompatibilityUtility } from "./CompatibilityUtility";
 
 const Brushes = Config.brushes;
 const AntsToSpawn = Config.AntsToSpawn;
@@ -46,8 +45,6 @@ export class AntsHandler {
     if (this.deterministicMode) {
       seed = "1";
     }
-
-    console.log(CompatibilityUtility.GetTestValue(this._compatibilityDate))
 
     const map = mapHandler.map;
     this.ants = [];

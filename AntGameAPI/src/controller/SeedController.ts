@@ -25,7 +25,7 @@ export class SeedController {
         return;
       }
 
-      const compatibilityDate = CompatibilityService.getCompatibilityDate(new Date())
+      const compatibilityDate = CompatibilityService.getCompatibilityDate(new Date());
 
       res.send({ seed, compatibilityDate });
     } catch (e) {

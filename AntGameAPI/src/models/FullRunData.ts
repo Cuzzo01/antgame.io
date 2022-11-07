@@ -16,7 +16,7 @@ export interface FullRunData {
     seed: number;
     seedCreateDate: Date;
     snapshots?: unknown;
-    compatibilityDate: string
+    compatibilityDate: string;
   };
   tags: RunTag[];
   IP?: string;

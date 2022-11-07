@@ -23,7 +23,8 @@ export function VerifyArtifact(p: {
 
   if (!HasExpectedSnapshots(p.runData)) return "missing snapshots";
 
-  if (!IsAllowedCompatibilityDate(p.runData.GameConfig.compatibilityDate)) return "non-allowed compatibility date"
+  if (!IsAllowedCompatibilityDate(p.runData.GameConfig.compatibilityDate))
+    return "non-allowed compatibility date";
 
   const systemElapsedTimeResult = SystemElapsedTimeLongerThanConfigTime(p.runData);
   if (systemElapsedTimeResult !== true)
@@ -40,16 +41,15 @@ export function VerifyArtifact(p: {
   return "verified";
 }
 
-const IsAllowedCompatibilityDate = (compatibilityDate) => {
-  debugger
+const IsAllowedCompatibilityDate = compatibilityDate => {
   if (compatibilityDate === CompatibilityService.getCompatibilityDate(new Date())) return true;
 
   const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1)
+  yesterday.setDate(yesterday.getDate() - 1);
   if (compatibilityDate === CompatibilityService.getCompatibilityDate(yesterday)) return true;
-  
-  return false
-}
+
+  return false;
+};
 
 const HasExpectedSnapshots = (runData: RunArtifact) => {
   if (!runData.Snapshots.start || !runData.Snapshots.finish) return false;
