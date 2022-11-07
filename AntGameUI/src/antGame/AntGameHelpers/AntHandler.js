@@ -1,5 +1,6 @@
 import { Config } from "../config";
 import { Ant } from "./Ant";
+import { CompatibilityUtility } from "./CompatibilityUtility";
 
 const Brushes = Config.brushes;
 const AntsToSpawn = Config.AntsToSpawn;
@@ -15,6 +16,10 @@ export class AntsHandler {
 
   get antsSpawned() {
     return this.ants.length !== 0;
+  }
+
+  set compatibilityDate(date) {
+    this._compatibilityDate = date;
   }
 
   handleKeyDown(event) {
@@ -42,6 +47,8 @@ export class AntsHandler {
       seed = "1";
     }
 
+    console.log(CompatibilityUtility.GetTestValue(this._compatibilityDate))
+
     const map = mapHandler.map;
     this.ants = [];
     const homeCells = mapHandler.homeCellCount;
@@ -62,7 +69,8 @@ export class AntsHandler {
                 homeTrailHandler,
                 foodTrailHandler,
                 Brushes.find(brush => brush.value === map[x][y]),
-                `${seed}-${i}`
+                `${seed}-${i}`,
+                this._compatibilityDate
               )
             );
           }

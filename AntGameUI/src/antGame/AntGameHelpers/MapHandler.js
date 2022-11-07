@@ -59,7 +59,7 @@ export class MapHandler {
   }
 
   set compatibilityDate(date) {
-    
+    this._compatibilityDate = date;
   }
 
   get shouldDrawFoodAmounts() {

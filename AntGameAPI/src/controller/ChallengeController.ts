@@ -174,6 +174,7 @@ export class ChallengeController {
             timing: runData.Timing,
             foodConsumed: runData.FoodConsumed,
             seed: runData.GameConfig.seed,
+            compatibilityDate: runData.GameConfig.compatibilityDate,
             seedCreateDate,
           },
           tags: runTags,

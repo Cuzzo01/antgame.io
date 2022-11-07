@@ -1,3 +1,4 @@
+import { CompatibilityService } from "../bll/CompatibilityService";
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { HomeFoodAmounts, RunArtifact } from "../models/RunArtifact";
 
@@ -22,6 +23,8 @@ export function VerifyArtifact(p: {
 
   if (!HasExpectedSnapshots(p.runData)) return "missing snapshots";
 
+  if (!IsAllowedCompatibilityDate(p.runData.GameConfig.compatibilityDate)) return "non-allowed compatibility date"
+
   const systemElapsedTimeResult = SystemElapsedTimeLongerThanConfigTime(p.runData);
   if (systemElapsedTimeResult !== true)
     return `system elapsed time shorter than config time : ${systemElapsedTimeResult}`;
@@ -35,6 +38,17 @@ export function VerifyArtifact(p: {
     return `reported config did not match expected : ${ConfigMatchResult}`;
 
   return "verified";
+}
+
+const IsAllowedCompatibilityDate = (compatibilityDate) => {
+  debugger
+  if (compatibilityDate === CompatibilityService.getCompatibilityDate(new Date())) return true;
+
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1)
+  if (compatibilityDate === CompatibilityService.getCompatibilityDate(yesterday)) return true;
+  
+  return false
 }
 
 const HasExpectedSnapshots = (runData: RunArtifact) => {

@@ -22,6 +22,7 @@ export interface GameConfig {
   FoodPerCell: number;
   DirtPerCell: number;
   seed: number;
+  compatibilityDate: string;
 }
 
 export interface HomeFoodAmounts {

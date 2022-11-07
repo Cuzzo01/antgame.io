@@ -252,6 +252,7 @@ class ChallengeHandler {
       FoodPerCell: this._mapHandler.foodPerCell,
       DirtPerCell: this._mapHandler.dirtPerCell,
       seed: this._runSeed,
+      compatibilityDate: this._compatibilityDate
     };
 
     this.artifact.Timing.SystemStopTime = new Date().getTime();
