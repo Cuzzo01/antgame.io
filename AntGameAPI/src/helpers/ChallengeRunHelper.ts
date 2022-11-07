@@ -12,6 +12,7 @@ export function VerifyArtifact(p: {
   clientID: string;
   challengeConfig: FullChallengeConfig;
   mapPath: string;
+  isDaily: boolean;
 }): string {
   if (p.runData.ClientID !== p.clientID)
     return `non-matching clientID : (${p.clientID}, ${p.runData.ClientID})`;
@@ -23,7 +24,7 @@ export function VerifyArtifact(p: {
 
   if (!HasExpectedSnapshots(p.runData)) return "missing snapshots";
 
-  if (!IsAllowedCompatibilityDate(p.runData.GameConfig.compatibilityDate))
+  if (!IsAllowedCompatibilityDate(p.runData.GameConfig.compatibilityDate, p.isDaily))
     return "non-allowed compatibility date";
 
   const systemElapsedTimeResult = SystemElapsedTimeLongerThanConfigTime(p.runData);
@@ -41,12 +42,13 @@ export function VerifyArtifact(p: {
   return "verified";
 }
 
-const IsAllowedCompatibilityDate = compatibilityDate => {
+const IsAllowedCompatibilityDate = (compatibilityDate, isDaily) => {
   if (compatibilityDate === CompatibilityService.getCompatibilityDate(new Date())) return true;
 
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
-  if (compatibilityDate === CompatibilityService.getCompatibilityDate(yesterday)) return true;
+  if (!isDaily && compatibilityDate === CompatibilityService.getCompatibilityDate(yesterday))
+    return true;
 
   return false;
 };

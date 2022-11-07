@@ -100,6 +100,7 @@ export class ChallengeController {
           clientID: user.clientID,
           challengeConfig,
           mapPath,
+          isDaily: challengeConfig.dailyChallenge ?? false,
         });
       } catch (e) {
         Logger.logError("ChallengeController.PostRun", e as Error);
