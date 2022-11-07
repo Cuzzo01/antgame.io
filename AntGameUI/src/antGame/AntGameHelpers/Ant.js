@@ -19,13 +19,22 @@ const WallValue = Brushes.find(brush => brush.name === "Wall").value;
 const TrailDropRate = Config.TrailDropRate;
 
 export class Ant {
-  constructor(pos, mapHandler, homeTrailHandler, foodTrailHandler, homeBrush, id) {
+  constructor(
+    pos,
+    mapHandler,
+    homeTrailHandler,
+    foodTrailHandler,
+    homeBrush,
+    id,
+    compatibilityDate
+  ) {
     this.rng = seedrandom(id);
     this._pos = pos;
     this.mapHandler = mapHandler;
     this.homeTrailHandler = homeTrailHandler;
     this.foodTrailHandler = foodTrailHandler;
     this.homeBrush = homeBrush;
+    this.compatibilityDate = compatibilityDate;
     this._angle = this.rng.quick() * (Math.PI * 2);
     this._front = 0;
     this._left = 0;

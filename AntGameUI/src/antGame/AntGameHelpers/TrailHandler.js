@@ -15,6 +15,10 @@ export class TrailHandler {
     this.buildTrailMap();
   }
 
+  set compatibilityDate(date) {
+    this._compatibilityDate = date;
+  }
+
   get hasPointsToDraw() {
     return Object.keys(this.pointsToUpdate).length > 0;
   }

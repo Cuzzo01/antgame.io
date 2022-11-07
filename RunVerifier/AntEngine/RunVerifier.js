@@ -30,6 +30,7 @@ const VerifyRun = async ({ run }) => {
     homeLocations: run.details.homeLocations,
     seed: run.details.seed,
     time: challengeDetails.seconds,
+    compatibilityDate: run.details.compatibilityDate ?? null,
   });
 
   const isWrRun = run.tags.findIndex(t => t.type === "wr") > -1;

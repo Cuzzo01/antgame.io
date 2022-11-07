@@ -6,7 +6,7 @@ const { Config } = require("./Config");
 const TrailDecayRate = Config.TrailDecayInterval;
 
 class GameRunner {
-  static SimulateRun({ mapData, homeLocations, time, seed }) {
+  static SimulateRun({ mapData, homeLocations, time, seed, compatibilityDate }) {
     homeLocations.forEach(location => {
       mapData[location[0]][location[1]] = "h";
     });
@@ -14,11 +14,15 @@ class GameRunner {
     const mapHandler = new MapHandler();
     mapHandler.map = mapData;
     mapHandler.prepareForStart();
+    mapHandler.compatibilityDate = compatibilityDate;
 
     const homeTrailHandler = new TrailHandler(mapHandler);
+    homeTrailHandler.compatibilityDate = compatibilityDate;
     const foodTrailHandler = new TrailHandler(mapHandler);
+    foodTrailHandler.compatibilityDate = compatibilityDate;
 
     const antHandler = new AntsHandler(mapHandler);
+    antHandler.compatibilityDate = compatibilityDate;
     antHandler.spawnAnts({ foodTrailHandler, homeTrailHandler, mapHandler, seed });
 
     const numOfUpdates = time * 1.5 * 30;

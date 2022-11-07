@@ -31,12 +31,14 @@ export class ReplayConfigHelper {
         homeAmounts: { [location: string]: number };
         seed: number;
         score: number;
+        compatibilityDate: string;
       };
       return {
         locations: prRunData.homeLocations,
         amounts: prRunData.homeAmounts,
         seed: prRunData.seed,
         score: prRunData.score,
+        compatibilityDate: prRunData.compatibilityDate ?? null,
       };
     }
   }
@@ -49,12 +51,14 @@ export class ReplayConfigHelper {
         homeAmounts: { [location: string]: number };
         seed: number;
         score: number;
+        compatibilityDate: string;
       };
       return {
         locations: wrRunData.homeLocations,
         amounts: wrRunData.homeAmounts,
         seed: wrRunData.seed,
         score: wrRunData.score,
+        compatibilityDate: wrRunData.compatibilityDate,
       };
     }
   }
