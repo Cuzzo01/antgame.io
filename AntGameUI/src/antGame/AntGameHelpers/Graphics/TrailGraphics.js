@@ -6,19 +6,15 @@ const MapBounds = [
   Config.MapBounds[0] * TrailMapOverSampleRate,
   Config.MapBounds[1] * TrailMapOverSampleRate,
 ];
-// const TrailDiameter = Config.TrailDiameter;
-// const TrailSize = 2
 
 export class TrailGraphics {
   constructor(color) {
     this.clean = true;
-    // this.pointsToDraw = [];
     this.pointsToUpdate = {};
     this.color = color;
   }
 
   get hasPointsToDraw() {
-    // return this.pointsToDraw.length > 0;
     return Object.keys(this.pointsToUpdate).length > 0
   }
 
@@ -32,11 +28,6 @@ export class TrailGraphics {
     this.decayMode = this._graphics.REMOVE;
     this.drawMode = this._graphics.BLEND;
     this.setPixelDensity();
-  }
-
-  addPointToUpdate(trailXY, strength) {
-    const key = `${trailXY[0]},${trailXY[1]}`
-    this.pointsToUpdate[key] = strength
   }
 
   drawPoints(trailHandler) {
