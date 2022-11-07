@@ -1,3 +1,4 @@
+import { CompatibilityService } from "../bll/CompatibilityService";
 import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { HomeFoodAmounts, RunArtifact } from "../models/RunArtifact";
 
@@ -11,6 +12,7 @@ export function VerifyArtifact(p: {
   clientID: string;
   challengeConfig: FullChallengeConfig;
   mapPath: string;
+  isDaily: boolean;
 }): string {
   if (p.runData.ClientID !== p.clientID)
     return `non-matching clientID : (${p.clientID}, ${p.runData.ClientID})`;
@@ -21,6 +23,9 @@ export function VerifyArtifact(p: {
     return "non matching reported and final snapshot score";
 
   if (!HasExpectedSnapshots(p.runData)) return "missing snapshots";
+
+  if (!IsAllowedCompatibilityDate(p.runData.GameConfig.compatibilityDate, p.isDaily))
+    return "non-allowed compatibility date";
 
   const systemElapsedTimeResult = SystemElapsedTimeLongerThanConfigTime(p.runData);
   if (systemElapsedTimeResult !== true)
@@ -36,6 +41,17 @@ export function VerifyArtifact(p: {
 
   return "verified";
 }
+
+const IsAllowedCompatibilityDate = (compatibilityDate, isDaily) => {
+  if (compatibilityDate === CompatibilityService.getCompatibilityDate(new Date())) return true;
+
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  if (!isDaily && compatibilityDate === CompatibilityService.getCompatibilityDate(yesterday))
+    return true;
+
+  return false;
+};
 
 const HasExpectedSnapshots = (runData: RunArtifact) => {
   if (!runData.Snapshots.start || !runData.Snapshots.finish) return false;

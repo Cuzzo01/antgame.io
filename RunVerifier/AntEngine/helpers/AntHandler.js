@@ -16,6 +16,10 @@ class AntsHandler {
     return this.ants.length !== 0;
   }
 
+  set compatibilityDate(date) {
+    this._compatibilityDate = date;
+  }
+
   updateAnts() {
     this.ants.forEach(ant => {
       ant.getNewAngle();
@@ -45,7 +49,8 @@ class AntsHandler {
                 homeTrailHandler,
                 foodTrailHandler,
                 Brushes.find(brush => brush.value === map[x][y]),
-                `${seed}-${i}`
+                `${seed}-${i}`,
+                this._compatibilityDate
               )
             );
           }

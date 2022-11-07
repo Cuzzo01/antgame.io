@@ -161,6 +161,7 @@ const getRunDataByRunId = async id => {
           },
           solutionImage: 1,
           seed: 1,
+          compatibilityDate: 1,
         },
         tags: 1,
         challengeID: 1,
@@ -186,6 +187,7 @@ const getRunDataByRunId = async id => {
     solutionImage: result.details.solutionImage,
     seed: result.details.seed,
     runNumber,
+    compatibilityDate: result.details.compatibilityDate,
   };
 };
 
