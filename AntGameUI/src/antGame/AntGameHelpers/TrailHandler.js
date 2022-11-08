@@ -14,6 +14,10 @@ export class TrailHandler {
     this.buildTrailMap();
   }
 
+  set compatibilityDate(date) {
+    this._compatibilityDate = date;
+  }
+
   buildTrailMap() {
     this.trailMap = [];
     for (let x = 0; x < TrailBounds[0]; x++) {

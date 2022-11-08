@@ -100,6 +100,7 @@ export class ChallengeController {
           clientID: user.clientID,
           challengeConfig,
           mapPath,
+          isDaily: challengeConfig.dailyChallenge ?? false,
         });
       } catch (e) {
         Logger.logError("ChallengeController.PostRun", e as Error);
@@ -174,6 +175,7 @@ export class ChallengeController {
             timing: runData.Timing,
             foodConsumed: runData.FoodConsumed,
             seed: runData.GameConfig.seed,
+            compatibilityDate: runData.GameConfig.compatibilityDate,
             seedCreateDate,
           },
           tags: runTags,
