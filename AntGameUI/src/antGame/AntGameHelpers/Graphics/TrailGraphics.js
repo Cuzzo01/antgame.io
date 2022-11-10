@@ -6,17 +6,10 @@ const MapBounds = [
   Config.MapBounds[0] * TrailMapOverSampleRate,
   Config.MapBounds[1] * TrailMapOverSampleRate,
 ];
-const TrailDiameter = Config.TrailDiameter;
 
 export class TrailGraphics {
   constructor(color) {
-    this.clean = true;
-    this.pointsToDraw = [];
     this.color = color;
-  }
-
-  get hasPointsToDraw() {
-    return this.pointsToDraw.length > 0;
   }
 
   set graphics(graphics) {
@@ -26,26 +19,33 @@ export class TrailGraphics {
     this.color = this._graphics.color(this.color);
     this._graphics.fill(this.color);
     this._graphics.noStroke();
-
     this.decayMode = this._graphics.REMOVE;
     this.drawMode = this._graphics.BLEND;
     this.setPixelDensity();
   }
 
-  addPointToDraw(trailXY) {
-    this.pointsToDraw.push(trailXY);
-  }
-
-  drawPoints() {
-    this.pointsToDraw.forEach(trailXY => {
+  drawPoints(trailHandler) {
+    const pointsToUpdate = trailHandler.pointsToUpdate;
+    for (const key of Object.keys(pointsToUpdate)) {
+      const trailXY = key.split(",").map(string => parseInt(string));
+      const strength = trailHandler.trailMap[trailXY[0]][trailXY[1]] / 1600;
       const canvasXY = this.trailXYToCanvasXY(trailXY);
-      this._graphics.circle(canvasXY[0], canvasXY[1], TrailDiameter);
-    });
-    this.pointsToDraw = [];
+      this.eraseCell(canvasXY);
+      this.color.setAlpha(Math.round(strength * 200) + 25);
+      this._graphics.fill(this.color);
+      this._graphics.rect(canvasXY[0], canvasXY[1], this.size[0], this.size[1]);
+      delete pointsToUpdate[key];
+    }
   }
 
   clear() {
     this._graphics.clear();
+  }
+
+  eraseCell(canvasXY) {
+    this._graphics.erase();
+    this._graphics.rect(canvasXY[0], canvasXY[1], this.size[0], this.size[1]);
+    this._graphics.noErase();
   }
 
   decayTrail() {
@@ -66,12 +66,13 @@ export class TrailGraphics {
     const drawableWidth = this.canvasBounds[0] - BorderWeight;
     const drawableHeight = this.canvasBounds[1] - BorderWeight;
     this.pixelDensity = [drawableWidth / MapBounds[0], drawableHeight / MapBounds[1]];
+    this.size = [Math.ceil(this.pixelDensity[0]), Math.ceil(this.pixelDensity[1])];
   }
 
   trailXYToCanvasXY(mapXY) {
     return [
-      BorderWeight + mapXY[0] * this.pixelDensity[0] + this.pixelDensity[0] / 2,
-      BorderWeight + mapXY[1] * this.pixelDensity[1] + this.pixelDensity[1] / 2,
+      Math.round(BorderWeight + mapXY[0] * this.pixelDensity[0] + this.pixelDensity[0] / 2),
+      Math.round(BorderWeight + mapXY[1] * this.pixelDensity[1] + this.pixelDensity[1] / 2),
     ];
   }
 }

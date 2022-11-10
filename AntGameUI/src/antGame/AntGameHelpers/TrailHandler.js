@@ -1,13 +1,14 @@
 import { Config } from "../config";
+import { CompatibilityUtility } from "./CompatibilityUtility";
 
 const TrailMapOverSampleRate = 3;
 const TrailBounds = [
   Config.MapBounds[0] * TrailMapOverSampleRate,
   Config.MapBounds[1] * TrailMapOverSampleRate,
 ];
-
 export class TrailHandler {
   constructor(mapHandler, trailGraphics) {
+    this.pointsToUpdate = {};
     this.mapHandler = mapHandler;
     if (trailGraphics) this.trailGraphics = trailGraphics;
     else this.trailGraphics = false;
@@ -16,6 +17,10 @@ export class TrailHandler {
 
   set compatibilityDate(date) {
     this._compatibilityDate = date;
+  }
+
+  get hasPointsToDraw() {
+    return Object.keys(this.pointsToUpdate).length > 0;
   }
 
   buildTrailMap() {
@@ -31,21 +36,27 @@ export class TrailHandler {
 
   dropPoint(mapXY, transparency) {
     const trailXY = this.mapXYToTrailXY(mapXY);
-    if (this.trailGraphics) this.trailGraphics.addPointToDraw(trailXY);
     if (this.clean) this.clean = false;
     const strength = Math.round(110 * (1 - transparency) + 25);
 
     const intTrailXY = MapXYToInt(trailXY);
     const maxValue = 1500 * (1 - transparency) + 100;
-    // const maxValue = 3000 * (1 - transparency) + 100;
+    const distanceOffset = TrailMapOverSampleRate * 2 + 1;
     for (let xOffset = -TrailMapOverSampleRate; xOffset <= TrailMapOverSampleRate; xOffset++) {
       for (let yOffset = -TrailMapOverSampleRate; yOffset <= TrailMapOverSampleRate; yOffset++) {
         const point = [intTrailXY[0] + xOffset, intTrailXY[1] + yOffset];
         if (strength && this.trailXYInBounds(point)) {
+          const distance = Math.abs(xOffset) + Math.abs(yOffset);
+          const strengthAdjustment = (distanceOffset - distance) / distanceOffset;
+          const adjustedStrength = Math.round(strength * strengthAdjustment);
           const currentValue = this.trailMap[point[0]][point[1]];
           if (currentValue < maxValue) {
-            const newValue = currentValue + strength;
+            const newValue = CompatibilityUtility.UseNewTrailStrength(this._compatibilityDate)
+              ? currentValue + adjustedStrength
+              : currentValue + strength;
+
             this.trailMap[point[0]][point[1]] = newValue > maxValue ? maxValue : newValue;
+            this.pointsToUpdate[`${intTrailXY[0]},${intTrailXY[1]}`] = true;
           }
         }
       }
