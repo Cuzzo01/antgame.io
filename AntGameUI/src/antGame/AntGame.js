@@ -20,6 +20,7 @@ import { MapGraphics } from "./AntGameHelpers/Graphics/MapGraphics";
 import { TrailGraphics } from "./AntGameHelpers/Graphics/TrailGraphics";
 import AuthHandler from "./Auth/AuthHandler";
 import RunHistoryTab from "./AntGameHelpers/RunHistory/RunHistoryTab";
+import { CompatibilityHelper } from "./Helpers/CompatabilityHelper";
 
 let canvasW, canvasH;
 
@@ -366,6 +367,9 @@ export default class AntGame extends React.Component {
             }
           } else {
             this.challengeHandler._runSeed = seed;
+            const compatibilityDate = CompatibilityHelper.getCompatibilityDate(new Date());
+            this.challengeHandler._compatibilityDate = compatibilityDate;
+            this.setCompatibilityDate(compatibilityDate);
           }
           this.challengeHandler.handleStart(this.mapHandler.homeLocations);
         } else if (IsReplay) {
