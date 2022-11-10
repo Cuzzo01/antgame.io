@@ -344,6 +344,7 @@ export default class AntGame extends React.Component {
   updatePlayState = async state => {
     const IsChallenge = this.gamemode === "challenge";
     const IsReplay = this.gamemode === "replay";
+    const IsSandbox = this.gamemode === "sandbox"
     if (state) {
       if (this.state.emptyMap) return;
       if (this.mapHandler.homeCellCount === 0) return;
@@ -375,6 +376,8 @@ export default class AntGame extends React.Component {
         } else if (IsReplay) {
           seed = this.challengeHandler._runSeed;
           this.setCompatibilityDate(this.challengeHandler._compatibilityDate);
+        } else if (IsSandbox) {
+          this.setCompatibilityDate(CompatibilityHelper.getCompatibilityDate(new Date()))
         }
         this.antHandler.spawnAnts({
           homeTrailHandler: this.homeTrailHandler,

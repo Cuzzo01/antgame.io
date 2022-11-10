@@ -1,5 +1,5 @@
 export class CompatibilityUtility {
-  static NewTrailStrengthGoLive = this.GetGoLive(2022, 11, 6);
+  static NewTrailStrengthGoLive = this.GetGoLive(2022, 11, 9);
 
   static UseNewTrailStrength(compatibilityDate) {
     return this.IsFeatureLive(this.NewTrailStrengthGoLive, compatibilityDate);

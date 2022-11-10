@@ -31,7 +31,7 @@ export class TrailGraphics {
       const strength = trailHandler.trailMap[trailXY[0]][trailXY[1]] / 1600;
       const canvasXY = this.trailXYToCanvasXY(trailXY);
       this.eraseCell(canvasXY);
-      this.color.setAlpha(Math.round(strength * 250));
+      this.color.setAlpha(Math.round(strength * 200) + 25);
       this._graphics.fill(this.color);
       this._graphics.rect(canvasXY[0], canvasXY[1], this.size[0], this.size[1]);
       delete pointsToUpdate[key];
