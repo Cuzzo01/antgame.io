@@ -136,6 +136,7 @@ app.get("/public/dailyList", PublicController.getDailyChallenges);
 app.get("/public/gsgp", PublicController.getGsgpData);
 app.get("/public/badges/:id", PublicController.getUserBadges);
 app.get("/public/user/:username", PublicController.getUserInfo);
+app.get("/public/goLiveData", PublicController.getCompatibilityGoLiveDates);
 
 app.post("/seed", getSeedLimiter, SeedController.getSeed);
 

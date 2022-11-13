@@ -1,16 +1,35 @@
-export class CompatibilityUtility {
-  static NewTrailStrengthGoLive = this.GetGoLive(2022, 11, 9);
+import axios from "axios";
 
-  static UseNewTrailStrength(compatibilityDate) {
-    return this.IsFeatureLive(this.NewTrailStrengthGoLive, compatibilityDate);
+export class CompatibilityUtility {
+  static GoLiveDates = {
+    NonUniformTrailStrength: false,
+  };
+
+  static {
+    this.PopulateGoLiveDates();
   }
 
-  static GetGoLive(year, month, day) {
-    return new Date(year, month - 1, day);
+  static async PopulateGoLiveDates() {
+    try {
+      const goLiveDatesResponse = (await axios.get("/api/public/goLiveData")).data;
+      for (const goLiveData of goLiveDatesResponse) {
+        if (this.GoLiveDates[goLiveData.featureName] === false) {
+          this.GoLiveDates[goLiveData.featureName] = this.ParseCompatibilityDate(goLiveData.goLive);
+        }
+      }
+    } catch (e) {
+      console.error("Unable to pull compatibility go live dates");
+    }
+  }
+
+  static UseNonUniformTrailStrength(compatibilityDate) {
+    return this.IsFeatureLive(this.GoLiveDates.NonUniformTrailStrength, compatibilityDate);
   }
 
   static IsFeatureLive(goLiveDate, compatibilityDate) {
-    if (compatibilityDate === null) return false;
+    if (goLiveDate === false) return true;
+    else if (compatibilityDate === null) return false;
+
     const parsedCompatibilityDate = this.ParseCompatibilityDate(compatibilityDate);
     return parsedCompatibilityDate >= goLiveDate;
   }
@@ -20,6 +39,6 @@ export class CompatibilityUtility {
     const year = dateArr[0];
     const month = dateArr[1] - 1;
     const day = dateArr[2];
-    return new Date(year, month, day);
+    return new Date(Date.UTC(year, month, day));
   }
 }

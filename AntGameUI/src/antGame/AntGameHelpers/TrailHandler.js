@@ -51,7 +51,9 @@ export class TrailHandler {
           const adjustedStrength = Math.round(strength * strengthAdjustment);
           const currentValue = this.trailMap[point[0]][point[1]];
           if (currentValue < maxValue) {
-            const newValue = CompatibilityUtility.UseNewTrailStrength(this._compatibilityDate)
+            const newValue = CompatibilityUtility.UseNonUniformTrailStrength(
+              this._compatibilityDate
+            )
               ? currentValue + adjustedStrength
               : currentValue + strength;
 
