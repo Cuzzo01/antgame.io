@@ -213,6 +213,12 @@ export class PublicController {
   static async getCompatibilityGoLiveDates(req: Request, res: Response) {
     try {
       const goLiveDates = await CompatibilityGoLiveCache.getGoLiveDates();
+      const ttl = CompatibilityGoLiveCache.getTimeToExpire();
+
+      const maxAge = await FlagCache.getIntFlag("cache-time.go-live-dates-sec");
+      const age = maxAge - ttl;
+      res.set("Cache-Control", `public, max-age=${maxAge}`);
+      res.set("Age", age.toString());
 
       res.send(goLiveDates);
     } catch (e) {

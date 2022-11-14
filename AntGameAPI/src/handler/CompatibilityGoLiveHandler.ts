@@ -1,6 +1,9 @@
 import { CompatibilityGoLiveDao } from "../dao/CompatibilityGoLiveDao";
 import { GoLiveDateEntity } from "../dao/entities/GoLiveDateEntity";
+import { FlagHandler } from "./FlagHandler";
 import { ResultCacheWrapper } from "./ResultCacheWrapper";
+
+const FlagCache = FlagHandler.getCache();
 
 export class CompatibilityGoLiveHandler {
   private static cache: CompatibilityGoLiveCache;
@@ -23,11 +26,15 @@ class CompatibilityGoLiveCache extends ResultCacheWrapper<GoLiveDateEntity[]> {
   async getGoLiveDates() {
     return await this.getOrFetchValue({
       id: "",
-      getTimeToCache: () => 3600,
+      getTimeToCache: async () => await FlagCache.getIntFlag("cache-time.go-live-dates-sec"),
       logFormatter: () => "",
       fetchMethod: async () => {
         return await this.goLiveDateDao.getGoLiveDates();
       },
     });
+  }
+
+  public getTimeToExpire() {
+    return super.getTimeToExpire("");
   }
 }
