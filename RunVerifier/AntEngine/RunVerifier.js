@@ -3,6 +3,7 @@ const { getChallengeDetailsByID } = require("../dao/ChallengeDao");
 const MapHandler = require("../handler/MapHandler");
 const { GenerateRecordImage } = require("../service/AntGameApi");
 const { GameRunner } = require("./GameRunner");
+const { CompatibilityUtility } = require("./helpers/CompatibilityUtility");
 
 const VerifyRun = async ({ run }) => {
   const challengeDetails = await getChallengeDetailsByID({ challengeID: run.challengeID });
@@ -25,6 +26,7 @@ const VerifyRun = async ({ run }) => {
     }
   }
 
+  await CompatibilityUtility.PopulateGoLiveDates();
   const { score: simulatedScore, foodEaten } = GameRunner.SimulateRun({
     mapData,
     homeLocations: run.details.homeLocations,

@@ -1,16 +1,40 @@
-class CompatibilityUtility {
-  static NewTrailStrengthGoLive = this.GetGoLive(2022, 11, 6);
+const axios = require("axios");
+const { GetCompatibilityGoLiveDates } = require("../../service/AntGameApi");
 
-  static UseNewTrailStrength(compatibilityDate) {
-    return this.IsFeatureLive(this.NewTrailStrengthGoLive, compatibilityDate);
+class CompatibilityUtility {
+  static DatesLoaded = false;
+  static GoLiveDates = {
+    NonUniformTrailStrength: false,
+  };
+
+  static {
+    this.PopulateGoLiveDates();
   }
-  
-  static GetGoLive(year, month, day) {
-    return new Date(year, month - 1, day);
+
+  static async PopulateGoLiveDates() {
+    try {
+      
+      const goLiveDataList = await GetCompatibilityGoLiveDates();
+      for (const goLiveData of goLiveDataList) {
+        if (this.GoLiveDates[goLiveData.featureName] === false) {
+          this.GoLiveDates[goLiveData.featureName] = this.ParseCompatibilityDate(goLiveData.goLive);
+        }
+      }
+      this.DatesLoaded = true;
+    } catch (e) {
+      throw new Error("Unable to fetch goLiveDates");
+    }
+  }
+
+  static UseNonUniformTrailStrength(compatibilityDate) {
+    return this.IsFeatureLive(this.GoLiveDates.NonUniformTrailStrength, compatibilityDate);
   }
 
   static IsFeatureLive(goLiveDate, compatibilityDate) {
-    if (compatibilityDate === null) return false;
+    if (!this.DatesLoaded) return true;
+    else if (goLiveDate === false) return false;
+    else if (compatibilityDate === null) return false;
+
     const parsedCompatibilityDate = this.ParseCompatibilityDate(compatibilityDate);
     return parsedCompatibilityDate >= goLiveDate;
   }

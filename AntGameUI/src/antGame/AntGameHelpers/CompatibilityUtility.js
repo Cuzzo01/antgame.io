@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export class CompatibilityUtility {
+  static DatesLoaded = false;
   static GoLiveDates = {
     NonUniformTrailStrength: false,
   };
@@ -17,6 +18,7 @@ export class CompatibilityUtility {
           this.GoLiveDates[goLiveData.featureName] = this.ParseCompatibilityDate(goLiveData.goLive);
         }
       }
+      this.DatesLoaded = true;
     } catch (e) {
       console.error("Unable to pull compatibility go live dates");
     }
@@ -27,7 +29,8 @@ export class CompatibilityUtility {
   }
 
   static IsFeatureLive(goLiveDate, compatibilityDate) {
-    if (goLiveDate === false) return true;
+    if (!this.DatesLoaded) return true;
+    else if (goLiveDate === false) return false;
     else if (compatibilityDate === null) return false;
 
     const parsedCompatibilityDate = this.ParseCompatibilityDate(compatibilityDate);
@@ -39,6 +42,6 @@ export class CompatibilityUtility {
     const year = dateArr[0];
     const month = dateArr[1] - 1;
     const day = dateArr[2];
-    return new Date(Date.UTC(year, month, day));
+    return new Date(year, month, day);
   }
 }
