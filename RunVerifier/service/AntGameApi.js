@@ -50,18 +50,26 @@ const GenerateRecordImage = async ({ runID, foodEaten }) => {
     .post(`${basePath}/service/recordImage`, { runID, foodEaten }, { headers })
     .catch(e => Logger.logError("AntGameAPI.GenerateRecordImage", e));
 };
+
+const GetCompatibilityGoLiveDates = async () => {
+  const basePath = GetBasePath();
+
+  const headers = GetAuthConfig();
+
+  return axios.get(`${basePath}/public/goLiveData`, { headers }).then(res => res.data);
+};
 module.exports = {
   GetFlag,
   ClearLeaderboard,
   ClearWorldRecordsCache,
   TestApiConnection,
   GenerateRecordImage,
+  GetCompatibilityGoLiveDates
 };
 
 const GetBasePath = () => {
-  if (process.env.environment === "PROD") return "https://antgame.io/api";
-  if (process.env.environment === "DEV") return "https://dev.antgame.io/api";
-  else return "http://localhost:8080";
+  if (!process.env.antapi_basePath) throw new Error("Not able to pull API base path");
+  else return process.env.antapi_basePath;
 };
 
 const GetAuthConfig = () => {
@@ -73,5 +81,6 @@ const GetAuthConfig = () => {
   return {
     Authorization: authToken,
     "service-id": serviceName,
+    clientid: "run-verifier"
   };
 };

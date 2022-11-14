@@ -1,19 +1,38 @@
-export class CompatibilityUtility {
-  // static GetTestValue(date) {
-  //     const goLiveDate = this.GetGoLive(2022, 11, 6)
-  //     if (this.IsFeatureLive(goLiveDate, date)) {
-  //         return true
-  //     } else {
-  //         return false
-  //     }
-  // }
+import axios from "axios";
 
-  static GetGoLive(year, month, day) {
-    return new Date(year, month - 1, day);
+export class CompatibilityUtility {
+  static DatesLoaded = false;
+  static GoLiveDates = {
+    NonUniformTrailStrength: false,
+  };
+
+  static {
+    this.PopulateGoLiveDates();
+  }
+
+  static async PopulateGoLiveDates() {
+    try {
+      const goLiveDatesResponse = (await axios.get("/api/public/goLiveData")).data;
+      for (const goLiveData of goLiveDatesResponse) {
+        if (this.GoLiveDates[goLiveData.featureName] === false) {
+          this.GoLiveDates[goLiveData.featureName] = this.ParseCompatibilityDate(goLiveData.goLive);
+        }
+      }
+      this.DatesLoaded = true;
+    } catch (e) {
+      console.error("Unable to pull compatibility go live dates");
+    }
+  }
+
+  static UseNonUniformTrailStrength(compatibilityDate) {
+    return this.IsFeatureLive(this.GoLiveDates.NonUniformTrailStrength, compatibilityDate);
   }
 
   static IsFeatureLive(goLiveDate, compatibilityDate) {
-    if (compatibilityDate === null) return false;
+    if (!this.DatesLoaded) return true;
+    else if (goLiveDate === false) return false;
+    else if (compatibilityDate === null) return false;
+
     const parsedCompatibilityDate = this.ParseCompatibilityDate(compatibilityDate);
     return parsedCompatibilityDate >= goLiveDate;
   }

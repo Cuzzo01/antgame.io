@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getUserLoginCount } from "../dao/AdminDao";
 import { getDailyChallengesInReverseOrder } from "../dao/ChallengeDao";
 import { ActiveChallengesHandler } from "../handler/ActiveChallengesHandler";
+import { CompatibilityGoLiveHandler } from "../handler/CompatibilityGoLiveHandler";
 import { DailyChallengeHandler } from "../handler/DailyChallengeHandler";
 import { FlagHandler } from "../handler/FlagHandler";
 import { ObjectIDToNameHandler } from "../handler/ObjectIDToNameHandler";
@@ -16,6 +17,8 @@ const DailyChallengeCache = DailyChallengeHandler.getCache();
 const ObjectIDToNameCache = ObjectIDToNameHandler.getCache();
 const UserCache = UserHandler.getCache();
 const FlagCache = FlagHandler.getCache();
+const CompatibilityGoLiveCache = CompatibilityGoLiveHandler.getCache();
+
 export class PublicController {
   static async getActiveChallenges(req: Request, res: Response): Promise<void> {
     try {
@@ -203,6 +206,23 @@ export class PublicController {
       res.send(userDetails);
     } catch (e) {
       Logger.logError("UserController.getUserInfo", e as Error);
+      res.send(500);
+    }
+  }
+
+  static async getCompatibilityGoLiveDates(req: Request, res: Response) {
+    try {
+      const goLiveDates = await CompatibilityGoLiveCache.getGoLiveDates();
+      const ttl = CompatibilityGoLiveCache.getTimeToExpire();
+
+      const maxAge = await FlagCache.getIntFlag("cache-time.go-live-dates-sec");
+      const age = maxAge - ttl;
+      res.set("Cache-Control", `public, max-age=${maxAge}`);
+      res.set("Age", age.toString());
+
+      res.send(goLiveDates);
+    } catch (e) {
+      Logger.logError("UserController.getGoLiveDates", e as Error);
       res.send(500);
     }
   }
