@@ -4,6 +4,7 @@ export class CompatibilityUtility {
   static DatesLoaded = false;
   static GoLiveDates = {
     NonUniformTrailStrength: false,
+    RevertNonUniformTrailStrength: false,
   };
 
   static {
@@ -25,7 +26,9 @@ export class CompatibilityUtility {
   }
 
   static UseNonUniformTrailStrength(compatibilityDate) {
-    return this.IsFeatureLive(this.GoLiveDates.NonUniformTrailStrength, compatibilityDate);
+    if (this.IsFeatureLive(this.GoLiveDates.RevertNonUniformTrailStrength, compatibilityDate))
+      return false;
+    else return this.IsFeatureLive(this.GoLiveDates.NonUniformTrailStrength, compatibilityDate);
   }
 
   static IsFeatureLive(goLiveDate, compatibilityDate) {
