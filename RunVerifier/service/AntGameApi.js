@@ -64,7 +64,7 @@ module.exports = {
   ClearWorldRecordsCache,
   TestApiConnection,
   GenerateRecordImage,
-  GetCompatibilityGoLiveDates,
+  GetCompatibilityGoLiveDates
 };
 
 const GetBasePath = () => {
@@ -81,6 +81,6 @@ const GetAuthConfig = () => {
   return {
     Authorization: authToken,
     "service-id": serviceName,
-    clientid: "run-verifier",
+    clientid: "run-verifier"
   };
 };
