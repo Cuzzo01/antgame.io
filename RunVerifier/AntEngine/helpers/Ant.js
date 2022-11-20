@@ -41,7 +41,7 @@ class Ant {
     this._ahead = 0;
     this._right = 0;
     this.hasFood = false;
-    this.dropsToSkip = CompatibilityUtility.StartWithDropsToSkip(this.compatibilityDate) ? 25 : 0;
+    this.dropsToSkip = CompatibilityUtility.StartWithDropsToSkip(compatibilityDate) ? 25 : 0;
     this.compatibilityDate = compatibilityDate;
     this.distanceTraveled = 0;
     this.cumulativeAngle = 0;

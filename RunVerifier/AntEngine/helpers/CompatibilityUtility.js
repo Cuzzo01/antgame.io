@@ -16,7 +16,7 @@ class CompatibilityUtility {
     try {
       const goLiveDataList = await GetCompatibilityGoLiveDates();
       for (const goLiveData of goLiveDataList) {
-        if (this.GoLiveDates[goLiveData.featureName] === false) {
+        if (this.GoLiveDates[goLiveData.featureName] !== undefined) {
           this.GoLiveDates[goLiveData.featureName] = this.ParseCompatibilityDate(goLiveData.goLive);
         }
       }

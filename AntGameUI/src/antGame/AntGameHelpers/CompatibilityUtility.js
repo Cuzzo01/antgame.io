@@ -16,7 +16,7 @@ export class CompatibilityUtility {
     try {
       const goLiveDatesResponse = (await axios.get("/api/public/goLiveData")).data;
       for (const goLiveData of goLiveDatesResponse) {
-        if (this.GoLiveDates[goLiveData.featureName] === false) {
+        if (this.GoLiveDates[goLiveData.featureName] !== undefined) {
           this.GoLiveDates[goLiveData.featureName] = this.ParseCompatibilityDate(goLiveData.goLive);
         }
       }
