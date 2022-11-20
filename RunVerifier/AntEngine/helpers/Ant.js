@@ -1,6 +1,5 @@
 const { Config } = require("../Config");
 const seedrandom = require("seedrandom");
-const { CompatibilityUtility } = require("./CompatibilityUtility");
 
 const ViewDistance = Config.ViewDistance;
 const ViewAngle = toRad(Config.ViewAngle);
@@ -41,7 +40,7 @@ class Ant {
     this._ahead = 0;
     this._right = 0;
     this.hasFood = false;
-    this.dropsToSkip = CompatibilityUtility.StartWithDropsToSkip(this.compatibilityDate) ? 25 : 0;
+    this.dropsToSkip = 0;
     this.compatibilityDate = compatibilityDate;
     this.distanceTraveled = 0;
     this.cumulativeAngle = 0;
