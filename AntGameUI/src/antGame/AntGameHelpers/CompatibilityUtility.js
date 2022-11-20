@@ -5,6 +5,7 @@ export class CompatibilityUtility {
   static GoLiveDates = {
     NonUniformTrailStrength: false,
     RevertNonUniformTrailStrength: false,
+    StartWithDropsToSkip: false,
   };
 
   static {
@@ -23,6 +24,10 @@ export class CompatibilityUtility {
     } catch (e) {
       console.error("Unable to pull compatibility go live dates");
     }
+  }
+
+  static StartWithDropsToSkip(compatibilityDate) {
+    return this.IsFeatureLive(this.GoLiveDates.StartWithDropsToSkip, compatibilityDate);
   }
 
   static UseNonUniformTrailStrength(compatibilityDate) {
