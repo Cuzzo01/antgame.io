@@ -4,6 +4,8 @@ export class CompatibilityUtility {
   static DatesLoaded = false;
   static GoLiveDates = {
     NonUniformTrailStrength: false,
+    RevertNonUniformTrailStrength: false,
+    StartWithDropsToSkip: false,
   };
 
   static {
@@ -24,8 +26,14 @@ export class CompatibilityUtility {
     }
   }
 
+  static StartWithDropsToSkip(compatibilityDate) {
+    return this.IsFeatureLive(this.GoLiveDates.StartWithDropsToSkip, compatibilityDate);
+  }
+
   static UseNonUniformTrailStrength(compatibilityDate) {
-    return this.IsFeatureLive(this.GoLiveDates.NonUniformTrailStrength, compatibilityDate);
+    if (this.IsFeatureLive(this.GoLiveDates.RevertNonUniformTrailStrength, compatibilityDate))
+      return false;
+    else return this.IsFeatureLive(this.GoLiveDates.NonUniformTrailStrength, compatibilityDate);
   }
 
   static IsFeatureLive(goLiveDate, compatibilityDate) {
