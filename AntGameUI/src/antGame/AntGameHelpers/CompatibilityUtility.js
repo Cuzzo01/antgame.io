@@ -6,6 +6,7 @@ export class CompatibilityUtility {
     NonUniformTrailStrength: false,
     RevertNonUniformTrailStrength: false,
     StartWithDropsToSkip: false,
+    NonLinearTrailDecay: false,
   };
 
   static {
@@ -24,6 +25,10 @@ export class CompatibilityUtility {
     } catch (e) {
       console.error("Unable to pull compatibility go live dates");
     }
+  }
+
+  static UseNonLinearTrailDecay(compatibilityDate) {
+    return this.IsFeatureLive(this.GoLiveDates.NonLinearTrailDecay, compatibilityDate);
   }
 
   static StartWithDropsToSkip(compatibilityDate) {

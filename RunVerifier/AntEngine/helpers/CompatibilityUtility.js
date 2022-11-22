@@ -6,6 +6,7 @@ class CompatibilityUtility {
     NonUniformTrailStrength: false,
     RevertNonUniformTrailStrength: false,
     StartWithDropsToSkip: false,
+    NonLinearTrailDecay: false,
   };
 
   static {
@@ -24,6 +25,10 @@ class CompatibilityUtility {
     } catch (e) {
       throw new Error("Unable to fetch goLiveDates");
     }
+  }
+
+  static UseNonLinearTrailDecay(compatibilityDate) {
+    return this.IsFeatureLive(this.GoLiveDates.NonLinearTrailDecay, compatibilityDate);
   }
 
   static StartWithDropsToSkip(compatibilityDate) {
