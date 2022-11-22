@@ -318,7 +318,11 @@ export class Ant {
         }
         let transparency = 0;
         if (this.distanceTraveled > TrailDecayRange) transparency = 1;
-        else transparency = this.distanceTraveled / TrailDecayRange;
+        else {
+          transparency = this.distanceTraveled / TrailDecayRange;
+          if (CompatibilityUtility.UseNonLinearTrailDecay(this.compatibilityDate))
+            transparency = (Math.pow(0.15, transparency) - 1) / (0.15 - 1);
+        }
         if (transparency < TrailTransparencyFloor) transparency = 0;
         if (this.hasFood) this.foodTrailHandler.dropPoint(newPos, transparency);
         else this.homeTrailHandler.dropPoint(newPos, transparency);
