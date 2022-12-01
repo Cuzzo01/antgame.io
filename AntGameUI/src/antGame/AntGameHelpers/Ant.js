@@ -47,9 +47,11 @@ export class Ant {
     this.cumulativeAngle = 0;
     this.currentCell = "";
     this.foodChanged = false;
-    this.isLoggyBoi = false;
+    this.lastMaxScores = []
+    this.isLoggyBoi = Math.random() > 0.999;
     if (this.isLoggyBoi) {
-      this.logID = Math.round(Math.random() * 10);
+      this.logID = Math.round(Math.random() * 50).toString().padStart(2, "0");
+      console.log(this.logID)
     }
   }
 
@@ -197,11 +199,36 @@ export class Ant {
       }
     }
 
+    const maxScore = Math.max(leftScore, aheadScore, rightScore)
+    if (this.isLoggyBoi && Math.random() > 0.9) console.log(new Date().getTime(), this.logID, maxScore.toString().padStart(4, "0"), this.lockedOnTrail)
+    if (this.rng.quick() > 0.75 && this.isWalkingWrongWay(maxScore)) return true
     if (aheadScore >= leftScore && aheadScore >= rightScore) return this.takeAction("a");
     if (rightScore === leftScore) this.rng.quick() < 0.5 ? this.turnLeft() : this.turnRight();
     if (rightScore > leftScore) this.turnRight();
     if (leftScore > rightScore) this.turnLeft();
     return true;
+  }
+
+  isWalkingWrongWay(maxScore) {
+    const LastMaxScoresToSave = 20
+    const SliceSize = Math.round(LastMaxScoresToSave / 2)
+    this.lastMaxScores.push(maxScore)
+    if (this.lastMaxScores.length <= LastMaxScoresToSave) return false
+    this.lastMaxScores.shift();
+
+    if (maxScore < 500) return false
+
+    const recentScores = [...this.lastMaxScores].slice(SliceSize)
+    const recentAvg = recentScores.reduce((acc, cur) => acc + cur) / recentScores.length
+    const oldScores = [...this.lastMaxScores].slice(0, SliceSize)
+    const oldAvg = oldScores.reduce((acc, cur) => acc + cur) / oldScores.length
+
+    if (recentAvg < 500 || oldAvg < 500) return false
+    if (recentAvg * 1.1 >= oldAvg) return false
+    if (this.isLoggyBoi) console.log(new Date().getTime(), this.logID, "wrong way", maxScore, recentAvg.toFixed(), oldAvg.toFixed())
+    this.lastMaxScores = []
+    this.reverse()
+    return true
   }
 
   handleStringScores(leftScore, aheadScore, rightScore) {
@@ -292,6 +319,7 @@ export class Ant {
   abortTrip() {
     this.dropsToSkip = 10;
     this._angle = this.rng.quick() * (Math.PI * 2);
+    this.lastMaxScores = []
   }
 
   moveToNewPosition(dropPoint) {
@@ -359,14 +387,14 @@ export class Ant {
             this.mapHandler.returnFood(pos);
             this.foodChange();
           } else {
-            this.distanceTraveled = 0;
+            this.resetDistanceTraveled();
           }
         } else if (newCell === FoodValue) {
           if (!this.hasFood) {
             this.mapHandler.takeFood(pos);
             this.foodChange();
           } else {
-            this.distanceTraveled = 0;
+            this.resetDistanceTraveled();
             this.bounceOffWall(0);
             return false;
           }
@@ -391,10 +419,16 @@ export class Ant {
     this.foodChanged = true;
     this.hasFood = !this.hasFood;
     this.dropsToSkip = 0;
-    this.distanceTraveled = 0;
     this.cumulativeAngle = 0;
     if (this.lockedOnTrail) this.lockedOnTrail = false;
+    this.resetDistanceTraveled()
     this.reverse();
+  }
+
+  resetDistanceTraveled() {
+    this.distanceTraveled = 0;
+    this.lastMaxScores = []
+    if (this.isLoggyBoi) console.log(new Date().getTime(), this.logID, "reset distance")
   }
 }
 
