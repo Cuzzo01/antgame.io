@@ -4,11 +4,15 @@ import ReactTooltip from "react-tooltip";
 import { TrophyIcon } from "../AntGameHelpers/Icons";
 import styles from "./User.module.css";
 import BadgeService from "./BadgeService";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import GenericModal from "../Helpers/GenericModal";
+import { UserPage } from "./UserPage/UserPage";
 
 const Username = ({ name, id, showBorder = true, adminLink = false }) => {
   const [badges, setBadges] = useState(false);
   const [nameStyles, setNameStyles] = useState({});
+  const [showUserPage, setShowUserPage] = useState(false);
+  const history = useHistory();
 
   const populateBadges = useCallback(async () => {
     if (id === undefined) return;
@@ -56,38 +60,52 @@ const Username = ({ name, id, showBorder = true, adminLink = false }) => {
     else setNameStyles({});
   }, [id, showBorder]);
 
+  const handleUsernameClick = useCallback(() => {
+    if (adminLink) history.push(`/admin/user/${id}`);
+    else setShowUserPage(true);
+  }, [adminLink, history, id]);
+
   useEffect(() => {
     ReactTooltip.rebuild();
     populateBadges();
   }, [populateBadges]);
 
   if (badges === false) {
+    if (!adminLink) return <span className={styles.baseBadge}>{name}</span>;
+
     return (
-      <span className={styles.baseBadge}>
-        <Link className={styles.link} to={adminLink ? `/admin/user/${id}` : `/user/${name}`}>
-          {name}
-        </Link>
+      <span className={styles.baseBadge} onClick={handleUsernameClick}>
+        {name}
       </span>
     );
   }
 
   const tooltipName = `${name}${Math.round(Math.random() * 1e10)}`;
   return (
-    <span
-      className={`${styles.baseBadge} ${styles.active}`}
-      style={{ ...nameStyles }}
-      data-tip=""
-      data-for={tooltipName}
-      data-delay-show="250"
-      data-delay-hide="250"
-    >
-      <Link className={styles.link} to={adminLink ? `/admin/user/${id}` : `/user/${name}`}>
+    <>
+      <span
+        className={`${styles.baseBadge} ${styles.active}`}
+        style={{ ...nameStyles }}
+        data-tip=""
+        data-for={tooltipName}
+        data-delay-show="250"
+        data-delay-hide="250"
+        onClick={handleUsernameClick}
+      >
         {name}
         <ReactTooltip effect="solid" id={tooltipName} className={styles.tooltip}>
           {badges}
         </ReactTooltip>
-      </Link>
-    </span>
+      </span>
+      {showUserPage && (
+        <GenericModal
+          body={<UserPage username={name} />}
+          onHide={() => {
+            setShowUserPage(false);
+          }}
+        />
+      )}
+    </>
   );
 };
 export default Username;

@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import styles from "./UserPage.module.css";
 import { GetUserDetails } from "../UserService";
 import { TrophyIcon } from "../../AntGameHelpers/Icons";
-import { useHistory } from "react-router-dom";
+import loaderGif from "../../../assets/thumbnailLoader.gif";
 
 export const UserPage = ({ username }) => {
-  const history = useHistory();
   const [userDetails, setUserDetails] = useState(false);
 
   useEffect(() => {
@@ -15,7 +14,13 @@ export const UserPage = ({ username }) => {
     });
   }, [username]);
 
-  if (!userDetails) return <div />;
+  if (!userDetails)
+    return (
+      <div className={styles.loader}>
+        <img src={loaderGif} alt="Loader" />
+      </div>
+    );
+
   return (
     <div className={styles.container}>
       <div className={styles.titleRow}>
@@ -34,12 +39,6 @@ export const UserPage = ({ username }) => {
             <h4>No Badges</h4>
           </div>
         )}
-      </div>
-      <div className={styles.hr} />
-      <div className={styles.center}>
-        <div className={styles.link} onClick={() => history.goBack()}>
-          Back
-        </div>
       </div>
     </div>
   );

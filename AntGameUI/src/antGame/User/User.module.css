@@ -19,6 +19,7 @@
 
 .active {
   background-color: #a9cce3;
+  cursor: pointer;
 }
 
 .badgeRow svg {
@@ -41,10 +42,4 @@
 
 .badgeRow > span {
   margin-top: 0.15em;
-}
-
-.link,
-.link:hover {
-  color: inherit;
-  text-decoration: none;
 }
