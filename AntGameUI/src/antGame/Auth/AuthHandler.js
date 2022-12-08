@@ -76,14 +76,14 @@ class AuthHandler {
       },
       error => {
         const onLogin = window.location.pathname.includes("/login");
-        const isGoLiveDataRequest = error.config.url === "/api/public/goLiveData";
+        const onSandbox = window.location.pathname.includes("sandbox");
         const is500SeriesError = Math.floor(error.response?.status / 10) === 50;
 
         if (error.response?.status === 401 && !onLogin) {
           this.logout();
           const pathBack = window.location.pathname;
           window.location.replace(`/login?redirect=${pathBack}`);
-        } else if (is500SeriesError && !isGoLiveDataRequest) {
+        } else if (is500SeriesError && !onSandbox) {
           window.location = "/error";
         }
         return Promise.reject(error);
