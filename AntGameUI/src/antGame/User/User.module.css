@@ -15,11 +15,11 @@
 .baseBadge {
   padding: 0.05em 0.15em;
   border-radius: 0.25em;
+  cursor: pointer;
 }
 
 .active {
   background-color: #a9cce3;
-  cursor: pointer;
 }
 
 .badgeRow svg {

@@ -70,21 +70,11 @@ const Username = ({ name, id, showBorder = true, adminLink = false }) => {
     populateBadges();
   }, [populateBadges]);
 
-  if (badges === false) {
-    if (!adminLink) return <span className={styles.baseBadge}>{name}</span>;
-
-    return (
-      <span className={styles.baseBadge} onClick={handleUsernameClick}>
-        {name}
-      </span>
-    );
-  }
-
   const tooltipName = `${name}${Math.round(Math.random() * 1e10)}`;
   return (
     <>
       <span
-        className={`${styles.baseBadge} ${styles.active}`}
+        className={`${styles.baseBadge} ${badges.length ? styles.active : ""}`}
         style={{ ...nameStyles }}
         data-tip=""
         data-for={tooltipName}

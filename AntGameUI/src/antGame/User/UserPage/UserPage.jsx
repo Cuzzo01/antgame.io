@@ -9,7 +9,6 @@ export const UserPage = ({ username }) => {
 
   useEffect(() => {
     GetUserDetails(username).then(userDetails => {
-      document.title = `${userDetails.username} - AntGame.io`;
       setUserDetails(userDetails);
     });
   }, [username]);
