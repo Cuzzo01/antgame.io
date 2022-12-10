@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { isApiHealthy } from "../AntApiService";
 import styles from "./ErrorPage.module.css";
 
 const ErrorPage = () => {
@@ -6,11 +7,7 @@ const ErrorPage = () => {
   const [apiOnline, setApiOnline] = useState(false);
 
   const checkForApiHealthy = useCallback(() => {
-    return fetch("/api/health")
-      .then(res => {
-        setApiOnline(res.status === 200);
-      })
-      .catch(() => false);
+    return isApiHealthy().then(isHealthy => setApiOnline(isHealthy));
   }, []);
 
   useEffect(() => {
@@ -30,19 +27,10 @@ const ErrorPage = () => {
       <h1>Error</h1>
       <h4>Whoops, the ants may be having issues.</h4>
       <br />
-      <p>Checking API Health...</p>
       {!loading && (
         <>
           <p>Looks like the server is {apiOnline ? "online" : "offline"}</p>
-          {apiOnline ? (
-            <>
-              <a href="/">Go home</a>
-            </>
-          ) : (
-            <>
-              <a href="/sandbox">Play sandbox mode?</a>
-            </>
-          )}
+          {apiOnline ? <a href="/">Go home</a> : <a href="/sandbox">Play sandbox mode?</a>}
         </>
       )}
     </div>

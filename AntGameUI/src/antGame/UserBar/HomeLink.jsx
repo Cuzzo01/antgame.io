@@ -1,17 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { isApiHealthy } from "../AntApiService";
 
 export const HomeLink = () => {
   const [apiOnline, setApiOnline] = useState(true);
 
   const checkForApiHealthy = useCallback(() => {
-    return fetch("/api/health")
-      .then(res => {
-        const isApiOnline = res.status === 200;
-        setApiOnline(isApiOnline);
-        return isApiOnline;
-      })
-      .catch(() => false);
+    isApiHealthy().then(isHealthy => setApiOnline(isHealthy));
   }, []);
 
   useEffect(() => {
