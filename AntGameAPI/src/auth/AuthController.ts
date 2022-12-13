@@ -107,6 +107,23 @@ export class AuthController {
     }
   }
 
+  static async deleteRefreshToken(req: Request, res: Response): Promise<void> {
+    try {
+      const tokenString = (req.cookies as { refresh_token: string }).refresh_token;
+
+      const deleteResult = await _refreshTokenDao.deleteTokenRecord(tokenString)
+
+      res.clearCookie("refresh_token")
+
+      if (deleteResult) res.sendStatus(204)
+      else res.sendStatus(404)
+    } catch (e) {
+      Logger.logError("AuthController.deleteRefreshToken", e as Error);
+      res.status(500);
+      res.send("Delete failed");
+    }
+  }
+
   static async getAccessToken(req: Request, res: Response): Promise<void> {
     try {
       const clientId = req.headers["client_id"] as string;
@@ -114,12 +131,15 @@ export class AuthController {
       const clientIP = GetIpAddress(req);
 
       if (!clientId || !tokenString) {
-        res.sendStatus(401);
+        res.status(401)
+        res.send("Incomplete auth request");
+        return
       }
 
       const refreshToken = await _refreshTokenDao.getTokenRecord(tokenString);
       if (refreshToken === false) {
-        res.sendStatus(401);
+        res.status(401)
+        res.send("Unknown refresh token")
         return;
       }
 
@@ -133,6 +153,12 @@ export class AuthController {
         admin: userDetails.admin,
         clientID: clientId,
       };
+
+      res.cookie("refresh_token", refreshToken.token, {
+        expires: newExpiresAt,
+        secure: true,
+        sameSite: "strict",
+      });
 
       const token = TokenHandler.generateAccessToken(tokenObject);
       res.send(token);

@@ -1,6 +1,12 @@
 import jwt_decode from "jwt-decode";
 import axios from "axios";
-import { getToken, getAnonToken, reportSpacesLoadTime } from "./AuthService";
+import {
+  getAccessToken,
+  getAnonToken,
+  getRefreshToken,
+  logout,
+  reportSpacesLoadTime,
+} from "./AuthService";
 import { sendRunArtifact } from "../Challenge/ChallengeService";
 import { getFlag } from "../Helpers/FlagService";
 import { v4 as uuidV4 } from "uuid";
@@ -22,6 +28,7 @@ class AuthHandler {
       } else {
         this.jwt = "";
         localStorage.removeItem("jwt");
+        this.pullNewAccessToken();
       }
     }
   }
@@ -39,6 +46,10 @@ class AuthHandler {
 
   get loggedIn() {
     return this._loggedIn;
+  }
+
+  set loggedIn(loggedIn) {
+    this._loggedIn = loggedIn;
   }
 
   get isAnon() {
@@ -74,13 +85,13 @@ class AuthHandler {
         }
         return response;
       },
-      error => {
+      async error => {
         const onLogin = window.location.pathname.includes("/login");
         const isGoLiveDataRequest = error.config.url === "/api/public/goLiveData";
         const is500SeriesError = Math.floor(error.response?.status / 10) === 50;
 
         if (error.response?.status === 401 && !onLogin) {
-          this.logout();
+          await this.logout();
           const pathBack = window.location.pathname;
           window.location.replace(`/login?redirect=${pathBack}`);
         } else if (is500SeriesError && !isGoLiveDataRequest) {
@@ -108,7 +119,7 @@ class AuthHandler {
         this.checkForUpdatedToken();
         config.headers.Authorization = `Bearer ${this.token}`;
       }
-      config.headers.clientId = this.clientID;
+      config.headers.client_id = this.clientID;
       return config;
     });
   }
@@ -118,16 +129,28 @@ class AuthHandler {
     if (savedToken !== this.jwt) this.token = savedToken;
   }
 
-  login(username, password) {
-    return getToken(username, password, this.clientID)
-      .then(result => {
-        this._loggedIn = true;
-        this.jwt = result;
-        this.decodedToken = jwt_decode(this.jwt);
-        localStorage.setItem("jwt", this.jwt);
-        localStorage.setItem("checkForMOTD", true);
+  async pullNewAccessToken() {
+    const jwt = await getAccessToken();
 
-        this.checkForAndSendUnsentArtifacts();
+    if (jwt === false) {
+      this.loggedIn = false;
+    }
+
+    this.token = jwt;
+    this.loggedIn = true;
+    this.checkForAndSendUnsentArtifacts();
+  }
+
+  login(username, password) {
+    return getRefreshToken(username, password, this.clientID)
+      .then(async () => {
+        this.loggedIn = true;
+        // this.jwt = result;
+        // this.decodedToken = jwt_decode(this.jwt);
+        // localStorage.setItem("jwt", this.jwt);
+        localStorage.setItem("checkForMOTD", true);
+        await this.pullNewAccessToken();
+        // this.checkForAndSendUnsentArtifacts();
 
         return { value: true };
       })
@@ -165,10 +188,11 @@ class AuthHandler {
     }
   }
 
-  logout() {
+  async logout() {
     this._loggedIn = false;
     this.jwt = "";
     localStorage.removeItem("jwt");
+    await logout();
   }
 
   loginAnon() {
