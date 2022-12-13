@@ -73,7 +73,7 @@ class UserCache extends ResultCacheWrapper<UserBadge[] | UserInfoResponse> {
       id: username,
       type: "Info",
       fetchMethod: async username => {
-        const result = await this._userDao.getUserDetailsByUsername(username);
+        const result = await this._userDao.getUserDetails(username);
 
         let joinDate: string;
         if (result.joinDate) joinDate = TimeHelper.getJoinDateDisplay(result.joinDate);

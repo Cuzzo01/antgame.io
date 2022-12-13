@@ -37,6 +37,17 @@ export const loginLimiter = rateLimit({
   skipFailedRequests: true,
 });
 
+export const accessTokenLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  max: 20,
+  message: "Only 20 access tokens per user, per 5 minutes allowed",
+  skip: async () => !(await FlagCache.getBoolFlag("enable.access-token-limiter")),
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: req => req.header("client_id"),
+  skipFailedRequests: true,
+});
+
 export const failedLoginLimiter = rateLimit({
   windowMs: 30 * 60 * 1000,
   max: 100,

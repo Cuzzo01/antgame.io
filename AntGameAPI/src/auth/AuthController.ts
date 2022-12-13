@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { WithId } from "mongodb";
 import { GetIpAddress } from "../helpers/IpHelper";
 import { LoggerProvider } from "../LoggerTS";
 import { PasswordHandler } from "./PasswordHandler";
@@ -6,6 +7,9 @@ import { TokenHandlerProvider } from "./WebTokenHandler";
 import { IsAllowedUsername, RegistrationDataSatisfiesCriteria } from "./RegistrationHelper";
 import { FlagHandler } from "../handler/FlagHandler";
 import { getAuthDetailsByUsername, IsUsernameTaken, logLogin, saveNewUser } from "./AuthDao";
+import { RefreshTokenDao } from "./dao/RefreshTokenDao";
+import { UserDao } from "../dao/UserDao";
+import { GetRefreshToken, GetRefreshTokenExpiresAt } from "./AuthHelpers";
 
 import { AuthDetails } from "./models/AuthDetails";
 import { AuthToken } from "./models/AuthToken";
@@ -17,25 +21,25 @@ const Logger = LoggerProvider.getInstance();
 const TokenHandler = TokenHandlerProvider.getHandler();
 const FlagCache = FlagHandler.getCache();
 
+const _userDao = new UserDao();
+const _refreshTokenDao = new RefreshTokenDao();
+
 export class AuthController {
   static async verifyLogin(req: Request, res: Response): Promise<void> {
     try {
       const request = req.body as LoginRequest;
-      const username = request.user;
-      const password = request.pass;
-      const clientID = request.clientID;
       const clientIP = GetIpAddress(req);
 
-      if (!username || !password || !clientID) {
+      if (!request.user || !request.pass || !request.clientID) {
         res.sendStatus(400);
         return;
       }
 
-      const authDetails = (await getAuthDetailsByUsername(username)) as AuthDetails | false;
+      const authDetails = (await getAuthDetailsByUsername(request.user)) as AuthDetails | false;
       if (authDetails === false) {
         Logger.logAuthEvent({
           event: "login failed - no matching username",
-          username: username,
+          username: request.user,
           ip: clientIP,
         });
         res.status(404);
@@ -43,58 +47,105 @@ export class AuthController {
         return;
       }
 
-      if (await PasswordHandler.checkPassword(password, authDetails.passHash)) {
-        if (authDetails.banned === true) {
-          Logger.logAuthEvent({
-            event: "login failed - account banned",
-            username: authDetails.username,
-            userID: authDetails.id,
-            ip: clientIP,
-          });
-          res.status(403);
-          const response: LoginResponse = { banned: true };
-          if (authDetails.banInfo) response.message = authDetails.banInfo.message;
-          res.send(response);
-          return;
-        }
-
-        if (authDetails.admin === false) {
-          const allowLogin = await FlagCache.getBoolFlag("allow-logins");
-          if (allowLogin !== true) {
-            res.status(405);
-            res.send("logins are disabled");
-            return;
-          }
-        }
-
-        await logLogin(authDetails.id, clientIP, clientID);
-        const tokenObject: AuthToken = {
-          id: authDetails.id,
-          username: authDetails.username,
-          admin: authDetails.admin,
-          clientID: clientID,
-        };
-        const token = TokenHandler.generateAccessToken(tokenObject);
-        res.send(token);
+      const validLogin = await PasswordHandler.checkPassword(request.pass, authDetails.passHash);
+      if (!validLogin) {
         Logger.logAuthEvent({
-          event: "successful login",
+          event: "login failed - bad password",
           username: authDetails.username,
-          userID: authDetails.id,
+          userID: authDetails._id.toString(),
           ip: clientIP,
-          clientID: clientID,
         });
+        res.status(401);
+        res.send("Invalid login");
         return;
       }
-      Logger.logAuthEvent({
-        event: "login failed - bad password",
-        username: authDetails.username,
-        userID: authDetails.id,
-        ip: clientIP,
+
+      const loginsEnabled = await FlagCache.getBoolFlag("allow-logins");
+      if (authDetails.admin === false && !loginsEnabled) {
+        res.status(405);
+        res.send("logins are disabled");
+        return;
+      }
+
+      if (authDetails.banned === true) {
+        Logger.logAuthEvent({
+          event: "login failed - account banned",
+          username: authDetails.username,
+          userID: authDetails._id.toString(),
+          ip: clientIP,
+        });
+        res.status(403);
+        const response: LoginResponse = { banned: true };
+        if (authDetails.banInfo) response.message = authDetails.banInfo.message;
+        res.send(response);
+        return;
+      }
+
+      await logLogin(authDetails._id.toString(), clientIP, request.clientID);
+
+      const refreshToken = await GetRefreshToken(authDetails._id, request.clientID);
+      await _refreshTokenDao.saveNewToken(refreshToken);
+
+      res.cookie("refresh_token", refreshToken.token, {
+        expires: refreshToken.expiresAt,
+        secure: true,
+        sameSite: "strict",
       });
-      res.status(401);
-      res.send("Invalid login");
+      res.sendStatus(204);
+
+      Logger.logAuthEvent({
+        event: "issued refresh token",
+        username: authDetails.username,
+        userID: authDetails._id.toString(),
+        ip: clientIP,
+        clientID: request.clientID,
+      });
     } catch (e) {
       Logger.logError("AuthController.verifyLogin", e as Error);
+      res.status(500);
+      res.send("Login failed");
+    }
+  }
+
+  static async getAccessToken(req: Request, res: Response): Promise<void> {
+    try {
+      const clientId = req.headers["client_id"] as string;
+      const tokenString = (req.cookies as { refresh_token: string }).refresh_token;
+      const clientIP = GetIpAddress(req);
+
+      if (!clientId || !tokenString) {
+        res.sendStatus(401);
+      }
+
+      const refreshToken = await _refreshTokenDao.getTokenRecord(tokenString);
+      if (refreshToken === false) {
+        res.sendStatus(401);
+        return;
+      }
+
+      const newExpiresAt = await GetRefreshTokenExpiresAt();
+      await _refreshTokenDao.renewRefreshToken(tokenString, newExpiresAt);
+
+      const userDetails = await _userDao.getUserDetails(undefined, refreshToken.userId);
+      const tokenObject: AuthToken = {
+        id: refreshToken.userId.toString(),
+        username: userDetails.username,
+        admin: userDetails.admin,
+        clientID: clientId,
+      };
+
+      const token = TokenHandler.generateAccessToken(tokenObject);
+      res.send(token);
+
+      Logger.logAuthEvent({
+        event: "issued access token",
+        username: userDetails.username,
+        userID: userDetails._id.toString(),
+        ip: clientIP,
+        clientID: clientId,
+      });
+    } catch (e) {
+      Logger.logError("AuthController.getAccessToken", e as Error);
       res.status(500);
       res.send("Login failed");
     }
@@ -191,7 +242,7 @@ export class AuthController {
 
       const user = (await getAuthDetailsByUsername(username)) as AuthDetails;
       const tokenObject: AuthToken = {
-        id: user.id,
+        id: user._id.toString(),
         username: user.username,
         admin: user.admin,
         clientID: clientID,

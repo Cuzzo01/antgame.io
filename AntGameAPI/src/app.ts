@@ -11,11 +11,13 @@ import "./tracing";
 import express, { Request, Response } from "express";
 import jwt from "express-jwt";
 import responseTime from "response-time";
+import cookieParser from "cookie-parser";
 
 import { RejectNotAdmin, ServiceEndpointAuth } from "./auth/AuthHelpers";
 import { TokenHandlerProvider } from "./auth/WebTokenHandler";
 import { JwtResultHandler, ResponseLogger, TokenVerifier } from "./helpers/Middleware";
 import {
+  accessTokenLimiter,
   failedLoginLimiter,
   getSeedLimiter,
   loginLimiter,
@@ -43,9 +45,7 @@ const port = 8080;
 const TokenHandler = TokenHandlerProvider.getHandler();
 
 const UnauthenticatedRoutes = [
-  "/auth/login",
-  "/auth/anonToken",
-  "/auth/register",
+  /\/auth\//,
   /\/flag\//,
   /\/service\//,
   /\/public\//,
@@ -118,6 +118,7 @@ app.get("/time", (_: Request, res: Response) => res.send({ now: Date.now() }));
 app.get("/map", RejectNotAdmin, MapController.getRandomMap);
 
 app.post("/auth/login", failedLoginLimiter, loginLimiter, AuthController.verifyLogin);
+app.post("/auth/accessToken", accessTokenLimiter, cookieParser(), AuthController.getAccessToken);
 app.post("/auth/anonToken", AuthController.getAnonymousToken);
 app.post("/auth/register", registrationLimiter, AuthController.registerUser);
 
