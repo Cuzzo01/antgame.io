@@ -30,7 +30,7 @@ class AuthHandler {
         localStorage.removeItem("jwt");
         this.pullNewAccessToken();
       }
-    }
+    } else this.pullNewAccessToken();
   }
 
   set token(newToken) {
@@ -137,20 +137,18 @@ class AuthHandler {
     }
 
     this.token = jwt;
+    const forceReload = !this.loggedIn;
     this.loggedIn = true;
     this.checkForAndSendUnsentArtifacts();
+    if (forceReload) window.location.reload();
   }
 
   login(username, password) {
     return getRefreshToken(username, password, this.clientID)
       .then(async () => {
         this.loggedIn = true;
-        // this.jwt = result;
-        // this.decodedToken = jwt_decode(this.jwt);
-        // localStorage.setItem("jwt", this.jwt);
         localStorage.setItem("checkForMOTD", true);
         await this.pullNewAccessToken();
-        // this.checkForAndSendUnsentArtifacts();
 
         return { value: true };
       })
