@@ -111,12 +111,12 @@ export class AuthController {
     try {
       const tokenString = (req.cookies as { refresh_token: string }).refresh_token;
 
-      const deleteResult = await _refreshTokenDao.deleteTokenRecord(tokenString)
+      const deleteResult = await _refreshTokenDao.deleteTokenRecord(tokenString);
 
-      res.clearCookie("refresh_token")
+      res.clearCookie("refresh_token");
 
-      if (deleteResult) res.sendStatus(204)
-      else res.sendStatus(404)
+      if (deleteResult) res.sendStatus(204);
+      else res.sendStatus(404);
     } catch (e) {
       Logger.logError("AuthController.deleteRefreshToken", e as Error);
       res.status(500);
@@ -131,16 +131,23 @@ export class AuthController {
       const clientIP = GetIpAddress(req);
 
       if (!clientId || !tokenString) {
-        res.status(401)
+        res.status(401);
         res.send("Incomplete auth request");
-        return
+        return;
       }
 
       const refreshToken = await _refreshTokenDao.getTokenRecord(tokenString);
       if (refreshToken === false) {
-        res.status(401)
-        res.clearCookie("refresh_token")
-        res.send("Unknown refresh token")
+        res.status(401);
+        res.clearCookie("refresh_token");
+        res.send("Unknown refresh token");
+        return;
+      }
+
+      if (refreshToken.clientId !== clientId) {
+        res.status(401);
+        res.clearCookie("refresh_token");
+        res.send("Non-matching clientId");
         return;
       }
 

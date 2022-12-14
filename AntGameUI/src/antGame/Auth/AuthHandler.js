@@ -66,17 +66,17 @@ class AuthHandler {
   }
 
   get isAnon() {
-    if (this.loggedIn) return this.decodedToken.anon === true;
+    if (this.loggedIn && this.decodedToken) return this.decodedToken.anon === true;
     else return null;
   }
 
   get isAdmin() {
-    if (this.loggedIn) return this.decodedToken.admin === true;
+    if (this.loggedIn && this.decodedToken) return this.decodedToken.admin === true;
     return null;
   }
 
   get username() {
-    if (this.loggedIn) return this.decodedToken.username;
+    if (this.loggedIn && this.decodedToken) return this.decodedToken.username;
     else return null;
   }
 

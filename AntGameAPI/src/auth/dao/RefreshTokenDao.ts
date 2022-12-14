@@ -31,9 +31,9 @@ export class RefreshTokenDao {
   public async deleteTokenRecord(token: string) {
     const collection = await this.getCollection();
 
-    const result = await collection.deleteOne({ token })
+    const result = await collection.deleteOne({ token });
 
-    return result.deletedCount === 1
+    return result.deletedCount === 1;
   }
 
   public async renewRefreshToken(token: string, expiresAt: Date) {
