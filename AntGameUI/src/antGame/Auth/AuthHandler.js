@@ -1,5 +1,6 @@
 import jwt_decode from "jwt-decode";
 import axios from "axios";
+import Cookies from "js-cookie";
 import {
   getAccessToken,
   getAnonToken,
@@ -12,25 +13,27 @@ import { getFlag } from "../Helpers/FlagService";
 import { v4 as uuidV4 } from "uuid";
 
 const TwoHoursInMilliseconds = 1000 * 60 * 60 * 2;
+const HalfHourInSeconds = 60 * 30;
 
 class AuthHandler {
   constructor() {
-    this._loggedIn = false;
+    this._loggedIn = this.isRefreshTokenSet;
 
     this.configureInterceptors();
 
-    this.jwt = localStorage.getItem("jwt");
-    if (this.jwt) {
-      const decodedToken = jwt_decode(this.jwt);
-      if (decodedToken.exp * 1000 > new Date().getTime()) {
-        this._loggedIn = true;
-        this.decodedToken = decodedToken;
-      } else {
-        this.jwt = "";
+    const jwt = localStorage.getItem("jwt");
+    if (!jwt) this.pullNewAccessToken();
+    else {
+      const decodedToken = jwt_decode(jwt);
+      const tokenExpired = decodedToken.exp * 1000 < new Date().getTime();
+
+      if (tokenExpired) {
         localStorage.removeItem("jwt");
         this.pullNewAccessToken();
+      } else {
+        this.token = jwt;
       }
-    } else this.pullNewAccessToken();
+    }
   }
 
   set token(newToken) {
@@ -41,7 +44,17 @@ class AuthHandler {
   }
 
   get token() {
+    if (this.decodedToken) {
+      const halfHourFromNow = new Date().getTime() / 1000 + HalfHourInSeconds;
+      const token30MinFromExpiring = this.decodedToken.exp < halfHourFromNow;
+      if (!this.pullingToken && token30MinFromExpiring) this.pullNewAccessToken();
+    }
+
     return this.jwt;
+  }
+
+  get isRefreshTokenSet() {
+    return Cookies.get("refresh_token") !== undefined;
   }
 
   get loggedIn() {
@@ -131,17 +144,20 @@ class AuthHandler {
   }
 
   async pullNewAccessToken() {
+    if (!this.isRefreshTokenSet) return;
+
+    this.pullingToken = true;
     const jwt = await getAccessToken();
 
     if (jwt === false) {
       this.loggedIn = false;
+      return;
     }
 
-    this.token = jwt;
     const forceReload = !this.loggedIn;
-    this.loggedIn = true;
-    this.checkForAndSendUnsentArtifacts();
+    this.token = jwt;
     if (forceReload) window.location.reload();
+    this.pullingToken = false;
   }
 
   login(username, password) {
@@ -191,7 +207,8 @@ class AuthHandler {
     this._loggedIn = false;
     this.jwt = "";
     localStorage.removeItem("jwt");
-    await logout();
+
+    if (this.isRefreshTokenSet) await logout();
   }
 
   loginAnon() {

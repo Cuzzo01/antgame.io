@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./LoginPage.module.css";
 import globalStyles from "../../Helpers/GenericStyles.module.css";
 import AuthHandler from "../AuthHandler";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { getFlag } from "../../Helpers/FlagService";
 import { useForm } from "react-hook-form";
 
@@ -19,7 +19,6 @@ const LoginPage = props => {
   const [allowRegistration, setAllowRegistration] = useState(false);
   const [disableSubmit, setDisableSubmit] = useState(false);
   const [allowAnon, setAllowAnon] = useState(true);
-  const history = useHistory();
   const location = useLocation();
 
   useEffect(() => {

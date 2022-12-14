@@ -139,6 +139,7 @@ export class AuthController {
       const refreshToken = await _refreshTokenDao.getTokenRecord(tokenString);
       if (refreshToken === false) {
         res.status(401)
+        res.clearCookie("refresh_token")
         res.send("Unknown refresh token")
         return;
       }
