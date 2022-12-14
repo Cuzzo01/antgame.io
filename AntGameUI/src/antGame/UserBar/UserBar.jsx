@@ -4,6 +4,7 @@ import PersonalRecord from "./PersonalRecord";
 import WorldRecord from "./WorldRecord";
 import { Link } from "react-router-dom";
 import Username from "../User/Username";
+import { HomeLink } from "./HomeLink";
 
 const UserBar = ({ showRecords, showLinkToSandbox, showLinkHome }) => {
   return (
@@ -11,7 +12,7 @@ const UserBar = ({ showRecords, showLinkToSandbox, showLinkHome }) => {
       <div className={styles.personalRecord}>{showRecords ? <PersonalRecord /> : null}</div>
       <div className={styles.worldRecord}>
         {showRecords && <WorldRecord />}
-        {showLinkHome && <Link to="/">Home</Link>}
+        {showLinkHome && <HomeLink />}
         {showLinkToSandbox && <a href="/sandbox">Sandbox Mode</a>}
       </div>
 

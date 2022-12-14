@@ -87,14 +87,15 @@ class AuthHandler {
       },
       async error => {
         const onLogin = window.location.pathname.includes("/login");
-        const isGoLiveDataRequest = error.config.url === "/api/public/goLiveData";
+        const onSandbox = window.location.pathname.includes("sandbox");
+        const onError = window.location.pathname.includes("error");
         const is500SeriesError = Math.floor(error.response?.status / 10) === 50;
 
         if (error.response?.status === 401 && !onLogin) {
           await this.logout();
           const pathBack = window.location.pathname;
           window.location.replace(`/login?redirect=${pathBack}`);
-        } else if (is500SeriesError && !isGoLiveDataRequest) {
+        } else if (is500SeriesError && !onSandbox && !onError) {
           window.location = "/error";
         }
         return Promise.reject(error);

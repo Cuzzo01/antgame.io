@@ -33,6 +33,7 @@ export const setAttributes = ({
   username = undefined,
 }) => {
   const activeSpan = TelemAPI.trace.getSpan(TelemAPI.context.active());
+  if (!activeSpan) return;
   if (userID) activeSpan.setAttribute("user.id", userID);
   if (clientID) activeSpan.setAttribute("user.clientID", clientID);
   if (username) activeSpan.setAttribute("user.name", username);
