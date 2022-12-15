@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { getFlag } from "./FlagService";
 import styles from "./GenericStyles.module.css";
-import GitHubLogo from "./githubLogo.png";
-import DiscordLogo from "./discordLogo.png";
+import GitHubLogo from "./graphics/githubLogo.png";
+import DiscordLogo from "./graphics/discordLogo.png";
+import RedditLogo from "./graphics/redditLogo.png";
 
 const Footer = () => {
   const [shouldShow, setShouldShow] = useState(false);
@@ -29,6 +30,9 @@ const Footer = () => {
               </a>
               <a href="https://github.com/Cuzzo01/antgame.io" target="_blank" rel="noreferrer">
                 <img src={GitHubLogo} alt="GitHub logo" />
+              </a>
+              <a href="https://www.reddit.com/r/AntGame/" target="_blank" rel="noreferrer">
+                <img src={RedditLogo} alt="Reddit logo" />
               </a>
             </div>
           </div>
