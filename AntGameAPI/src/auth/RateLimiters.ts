@@ -74,7 +74,7 @@ export const failedDeleteTokenLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 5,
   message: "Only 5 failed access token delete requests per IP, per minute",
-  skip: async () => !(await FlagCache.getBoolFlag("enable.failed-access-token-limiter")),
+  skip: async () => !(await FlagCache.getBoolFlag("enable.failed-delete-token-limiter")),
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: req => GetIpAddress(req),
