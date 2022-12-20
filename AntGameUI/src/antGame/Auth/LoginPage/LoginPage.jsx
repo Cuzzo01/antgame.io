@@ -146,7 +146,7 @@ const LoginPage = () => {
             <input type="submit" style={{ display: "none" }} />
             <div className={styles.rememberCheckBox}>
               <input {...register("rememberMe")} type="checkbox" id="remember" />
-              <label for="remember">Remember me</label>
+              <label htmlFor="remember">Remember me</label>
             </div>
             <div className={styles.buttonBar}>
               {allowAnon ? (

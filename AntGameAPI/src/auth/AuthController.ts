@@ -95,7 +95,15 @@ export class AuthController {
         secure: true,
         sameSite: "strict",
       });
-      res.sendStatus(204);
+
+      const tokenObject: AuthToken = {
+        id: refreshToken.userId.toString(),
+        username: authDetails.username,
+        admin: authDetails.admin && false,
+        clientID: request.clientID,
+      };
+      const token = await TokenHandler.generateAccessToken(tokenObject);
+      res.send(token);
 
       Logger.logAuthEvent({
         event: "issued refresh token",
@@ -172,7 +180,7 @@ export class AuthController {
         sameSite: "strict",
       });
 
-      const token = TokenHandler.generateAccessToken(tokenObject);
+      const token = await TokenHandler.generateAccessToken(tokenObject);
       res.send(token);
 
       Logger.logAuthEvent({
@@ -207,7 +215,7 @@ export class AuthController {
         return;
       }
       Logger.logAuthEvent({ event: "Issued anon token", clientID: data.clientID, ip: clientIP });
-      const token = TokenHandler.generateAccessToken({
+      const token = await TokenHandler.generateAccessToken({
         clientID: data.clientID,
         anon: true,
         admin: false,
@@ -285,7 +293,7 @@ export class AuthController {
         admin: user.admin,
         clientID: clientID,
       };
-      const token = TokenHandler.generateAccessToken(tokenObject);
+      const token = await TokenHandler.generateAccessToken(tokenObject);
       res.send(token);
     } catch (e) {
       Logger.logError("AuthController.registerUser", e as Error);

@@ -162,10 +162,9 @@ class AuthHandler {
 
   login(username, password, persistLogin) {
     return getRefreshToken(username, password, persistLogin, this.clientID)
-      .then(async () => {
-        this.loggedIn = true;
+      .then(async accessToken => {
+        this.token = accessToken;
         localStorage.setItem("checkForMOTD", true);
-        await this.pullNewAccessToken();
 
         return { value: true };
       })
