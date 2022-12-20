@@ -98,7 +98,7 @@ export class AuthController {
       const tokenObject: AuthToken = {
         id: refreshToken.userId.toString(),
         username: authDetails.username,
-        admin: authDetails.admin && false,
+        admin: authDetails.admin,
         clientID: request.clientID,
       };
       const token = await TokenHandler.generateAccessToken(tokenObject);
@@ -169,7 +169,7 @@ export class AuthController {
       const tokenObject: AuthToken = {
         id: refreshToken.userId.toString(),
         username: userDetails.username,
-        admin: userDetails.admin && false,
+        admin: userDetails.admin,
         clientID: clientId,
       };
 
