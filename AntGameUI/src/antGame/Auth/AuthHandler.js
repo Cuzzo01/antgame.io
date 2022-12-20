@@ -17,7 +17,7 @@ const HalfHourInSeconds = 60 * 30;
 
 class AuthHandler {
   constructor() {
-    this.loggedIn = false;
+    this._loggedIn = false;
 
     this.configureInterceptors();
 
@@ -37,7 +37,7 @@ class AuthHandler {
   }
 
   set token(newToken) {
-    this.loggedIn = true;
+    this._loggedIn = true;
     this.jwt = newToken;
     this.decodedToken = jwt_decode(this.jwt);
     localStorage.setItem("jwt", this.jwt);
@@ -61,22 +61,18 @@ class AuthHandler {
     return this._loggedIn;
   }
 
-  set loggedIn(loggedIn) {
-    this._loggedIn = loggedIn;
-  }
-
   get isAnon() {
-    if (this.loggedIn && this.decodedToken) return this.decodedToken.anon === true;
+    if (this.loggedIn) return this.decodedToken.anon === true;
     else return null;
   }
 
   get isAdmin() {
-    if (this.loggedIn && this.decodedToken) return this.decodedToken.admin === true;
+    if (this.loggedIn) return this.decodedToken.admin === true;
     return null;
   }
 
   get username() {
-    if (this.loggedIn && this.decodedToken) return this.decodedToken.username;
+    if (this.loggedIn) return this.decodedToken.username;
     else return null;
   }
 
@@ -150,7 +146,7 @@ class AuthHandler {
     const jwt = await getAccessToken();
 
     if (jwt === false) {
-      this.loggedIn = false;
+      this._loggedIn = false;
       return;
     }
 
@@ -203,7 +199,7 @@ class AuthHandler {
   }
 
   async logout() {
-    this.loggedIn = false;
+    this._loggedIn = false;
     this.jwt = "";
     localStorage.removeItem("jwt");
 
@@ -212,7 +208,7 @@ class AuthHandler {
 
   loginAnon() {
     return getAnonToken(this.clientID).then(result => {
-      this.loggedIn = true;
+      this._loggedIn = true;
       this.jwt = result;
       this.decodedToken = jwt_decode(this.jwt);
       localStorage.setItem("jwt", this.jwt);
