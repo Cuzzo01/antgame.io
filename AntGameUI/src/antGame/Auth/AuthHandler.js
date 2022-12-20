@@ -17,7 +17,7 @@ const HalfHourInSeconds = 60 * 30;
 
 class AuthHandler {
   constructor() {
-    this._loggedIn = false;
+    this.loggedIn = false;
 
     this.configureInterceptors();
 
@@ -37,7 +37,7 @@ class AuthHandler {
   }
 
   set token(newToken) {
-    this._loggedIn = true;
+    this.loggedIn = true;
     this.jwt = newToken;
     this.decodedToken = jwt_decode(this.jwt);
     localStorage.setItem("jwt", this.jwt);
@@ -203,7 +203,7 @@ class AuthHandler {
   }
 
   async logout() {
-    this._loggedIn = false;
+    this.loggedIn = false;
     this.jwt = "";
     localStorage.removeItem("jwt");
 
@@ -212,7 +212,7 @@ class AuthHandler {
 
   loginAnon() {
     return getAnonToken(this.clientID).then(result => {
-      this._loggedIn = true;
+      this.loggedIn = true;
       this.jwt = result;
       this.decodedToken = jwt_decode(this.jwt);
       localStorage.setItem("jwt", this.jwt);
