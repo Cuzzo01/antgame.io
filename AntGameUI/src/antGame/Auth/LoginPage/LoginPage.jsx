@@ -6,7 +6,7 @@ import { Link, useLocation } from "react-router-dom";
 import { getFlag } from "../../Helpers/FlagService";
 import { useForm } from "react-hook-form";
 
-const LoginPage = props => {
+const LoginPage = () => {
   const {
     register,
     formState: { errors },
@@ -50,7 +50,7 @@ const LoginPage = props => {
   function onSubmit(data) {
     setDisableSubmit(true);
     if (formState === "loading") return;
-    AuthHandler.login(data.username, data.password).then(result => {
+    AuthHandler.login(data.username, data.password, data.rememberMe).then(result => {
       if (result.value === true) redirectOut();
       else if (result.value === false) setFormState("error");
       else if (result.value === "no user") setFormState("no user");
@@ -144,6 +144,10 @@ const LoginPage = props => {
               </div>
             )}
             <input type="submit" style={{ display: "none" }} />
+            <div className={styles.rememberCheckBox}>
+              <input {...register("rememberMe")} type="checkbox" id="remember" />
+              <label for="remember">Remember me</label>
+            </div>
             <div className={styles.buttonBar}>
               {allowAnon ? (
                 <div

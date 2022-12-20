@@ -83,7 +83,11 @@ export class AuthController {
 
       await logLogin(authDetails._id.toString(), clientIP, request.clientID);
 
-      const refreshToken = await GetRefreshToken(authDetails._id, request.clientID);
+      const refreshToken = await GetRefreshToken(
+        authDetails._id,
+        request.clientID,
+        request.persistLogin
+      );
       await _refreshTokenDao.saveNewToken(refreshToken);
 
       res.cookie("refresh_token", refreshToken.token, {
@@ -151,14 +155,14 @@ export class AuthController {
         return;
       }
 
-      const newExpiresAt = await GetRefreshTokenExpiresAt();
+      const newExpiresAt = await GetRefreshTokenExpiresAt(refreshToken.longLivedToken);
       await _refreshTokenDao.renewRefreshToken(tokenString, newExpiresAt);
 
       const userDetails = await _userDao.getUserDetails(undefined, refreshToken.userId);
       const tokenObject: AuthToken = {
         id: refreshToken.userId.toString(),
         username: userDetails.username,
-        admin: userDetails.admin,
+        admin: userDetails.admin && false,
         clientID: clientId,
       };
 

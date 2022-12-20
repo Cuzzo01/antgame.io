@@ -68,8 +68,13 @@ export const ServiceEndpointAuth = async (req: Request, res: Response, next: Nex
   next();
 };
 
-export const GetRefreshTokenExpiresAt = async () => {
-  const tokenAge = await FlagCache.getIntFlag("auth.refresh-token-age.hours");
+export const GetRefreshTokenExpiresAt = async (persistLogin: boolean) => {
+  let tokenAge: number;
+  if (persistLogin) {
+    tokenAge = await FlagCache.getIntFlag("auth.long-refresh-token-age.hours");
+  } else {
+    tokenAge = await FlagCache.getIntFlag("auth.short-refresh-token-age.hours");
+  }
 
   const expiresAt = new Date();
   expiresAt.setHours(expiresAt.getHours() + tokenAge);
@@ -77,15 +82,20 @@ export const GetRefreshTokenExpiresAt = async () => {
   return expiresAt;
 };
 
-export const GetRefreshToken = async (userId: ObjectId, clientId: string) => {
+export const GetRefreshToken = async (
+  userId: ObjectId,
+  clientId: string,
+  persistLogin: boolean
+) => {
   const token = crypto.randomBytes(32).toString("hex");
 
   const toReturn: RefreshTokenEntity = {
-    expiresAt: await GetRefreshTokenExpiresAt(),
+    expiresAt: await GetRefreshTokenExpiresAt(persistLogin),
     createdAt: new Date(),
     token,
     userId,
     clientId,
+    longLivedToken: persistLogin,
   };
   return toReturn;
 };

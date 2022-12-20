@@ -1,8 +1,8 @@
 import axios from "axios";
 
-export async function getRefreshToken(username, password, clientID) {
+export async function getRefreshToken(username, password, persistLogin, clientID) {
   return axios
-    .post("/api/auth/login", { user: username, pass: password, clientID: clientID })
+    .post("/api/auth/login", { user: username, pass: password, persistLogin, clientID })
     .then(res => {
       return res.data;
     });

@@ -6,4 +6,5 @@ export interface RefreshTokenEntity {
   userId: ObjectId;
   expiresAt: Date;
   createdAt: Date;
+  longLivedToken: boolean;
 }

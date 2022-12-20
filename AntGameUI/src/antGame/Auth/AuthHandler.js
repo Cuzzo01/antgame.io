@@ -17,7 +17,7 @@ const HalfHourInSeconds = 60 * 30;
 
 class AuthHandler {
   constructor() {
-    this._loggedIn = this.isRefreshTokenSet;
+    this._loggedIn = false;
 
     this.configureInterceptors();
 
@@ -160,8 +160,8 @@ class AuthHandler {
     this.pullingToken = false;
   }
 
-  login(username, password) {
-    return getRefreshToken(username, password, this.clientID)
+  login(username, password, persistLogin) {
+    return getRefreshToken(username, password, persistLogin, this.clientID)
       .then(async () => {
         this.loggedIn = true;
         localStorage.setItem("checkForMOTD", true);
