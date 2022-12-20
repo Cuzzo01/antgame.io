@@ -37,6 +37,17 @@ export const loginLimiter = rateLimit({
   skipFailedRequests: true,
 });
 
+export const failedLoginLimiter = rateLimit({
+  windowMs: 30 * 60 * 1000,
+  max: 100,
+  message: "Only 100 failed logins per IP, per 30 minutes allowed",
+  skip: async () => await FlagCache.getBoolFlag("disable-failed-login-limiter"),
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: req => GetIpAddress(req),
+  skipSuccessfulRequests: true,
+});
+
 export const accessTokenLimiter = rateLimit({
   windowMs: 5 * 60 * 1000,
   max: 20,
@@ -48,11 +59,11 @@ export const accessTokenLimiter = rateLimit({
   skipFailedRequests: true,
 });
 
-export const failedLoginLimiter = rateLimit({
-  windowMs: 30 * 60 * 1000,
-  max: 100,
-  message: "Only 100 failed logins per IP, per 30 minutes allowed",
-  skip: async () => await FlagCache.getBoolFlag("disable-failed-login-limiter"),
+export const failedAccessTokenLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  message: "Only 10 failed access token requests per IP, per minute",
+  skip: async () => !(await FlagCache.getBoolFlag("enable.failed-access-token-limiter")),
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: req => GetIpAddress(req),

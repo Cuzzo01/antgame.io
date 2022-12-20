@@ -18,6 +18,7 @@ import { TokenHandlerProvider } from "./auth/WebTokenHandler";
 import { JwtResultHandler, ResponseLogger, TokenVerifier } from "./helpers/Middleware";
 import {
   accessTokenLimiter,
+  failedAccessTokenLimiter,
   failedLoginLimiter,
   getSeedLimiter,
   loginLimiter,
@@ -119,7 +120,13 @@ app.get("/map", RejectNotAdmin, MapController.getRandomMap);
 
 app.post("/auth/login", failedLoginLimiter, loginLimiter, AuthController.verifyLogin);
 app.delete("/auth/login", cookieParser(), AuthController.deleteRefreshToken);
-app.post("/auth/accessToken", accessTokenLimiter, cookieParser(), AuthController.getAccessToken);
+app.post(
+  "/auth/accessToken",
+  failedAccessTokenLimiter,
+  accessTokenLimiter,
+  cookieParser(),
+  AuthController.getAccessToken
+);
 app.post("/auth/anonToken", AuthController.getAnonymousToken);
 app.post("/auth/register", registrationLimiter, AuthController.registerUser);
 

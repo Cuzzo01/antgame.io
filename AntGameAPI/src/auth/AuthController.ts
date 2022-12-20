@@ -46,6 +46,13 @@ export class AuthController {
         return;
       }
 
+      const loginsEnabled = await FlagCache.getBoolFlag("allow-logins");
+      if (authDetails.admin === false && !loginsEnabled) {
+        res.status(405);
+        res.send("logins are disabled");
+        return;
+      }
+
       const validLogin = await PasswordHandler.checkPassword(request.pass, authDetails.passHash);
       if (!validLogin) {
         Logger.logAuthEvent({
@@ -56,13 +63,6 @@ export class AuthController {
         });
         res.status(401);
         res.send("Invalid login");
-        return;
-      }
-
-      const loginsEnabled = await FlagCache.getBoolFlag("allow-logins");
-      if (authDetails.admin === false && !loginsEnabled) {
-        res.status(405);
-        res.send("logins are disabled");
         return;
       }
 
