@@ -19,6 +19,7 @@ import { JwtResultHandler, ResponseLogger, TokenVerifier } from "./helpers/Middl
 import {
   accessTokenLimiter,
   failedAccessTokenLimiter,
+  failedDeleteTokenLimiter,
   failedLoginLimiter,
   getSeedLimiter,
   loginLimiter,
@@ -119,7 +120,12 @@ app.get("/time", (_: Request, res: Response) => res.send({ now: Date.now() }));
 app.get("/map", RejectNotAdmin, MapController.getRandomMap);
 
 app.post("/auth/login", failedLoginLimiter, loginLimiter, AuthController.verifyLogin);
-app.delete("/auth/login", cookieParser(), AuthController.deleteRefreshToken);
+app.delete(
+  "/auth/login",
+  failedDeleteTokenLimiter,
+  cookieParser(),
+  AuthController.deleteRefreshToken
+);
 app.post(
   "/auth/accessToken",
   failedAccessTokenLimiter,
