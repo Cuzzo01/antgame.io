@@ -48,6 +48,39 @@ export const failedLoginLimiter = rateLimit({
   skipSuccessfulRequests: true,
 });
 
+export const accessTokenLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  max: 20,
+  message: "Only 20 access tokens per user, per 5 minutes allowed",
+  skip: async () => !(await FlagCache.getBoolFlag("enable.access-token-limiter")),
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: req => req.header("client_id"),
+  skipFailedRequests: true,
+});
+
+export const failedAccessTokenLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 5,
+  message: "Only 5 failed access token requests per IP, per minute",
+  skip: async () => !(await FlagCache.getBoolFlag("enable.failed-access-token-limiter")),
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: req => GetIpAddress(req),
+  skipSuccessfulRequests: true,
+});
+
+export const failedDeleteTokenLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 5,
+  message: "Only 5 failed access token delete requests per IP, per minute",
+  skip: async () => !(await FlagCache.getBoolFlag("enable.failed-delete-token-limiter")),
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: req => GetIpAddress(req),
+  skipSuccessfulRequests: true,
+});
+
 export const registrationLimiter = rateLimit({
   windowMs: 30 * 60 * 1000,
   max: 10,

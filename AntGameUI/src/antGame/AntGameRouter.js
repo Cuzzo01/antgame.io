@@ -9,6 +9,7 @@ import UserBar from "./UserBar/UserBar";
 import ChallengeList from "./Challenge/List/ChallengeList";
 import MOTD from "./MOTD/Motd";
 import { UserPage } from "./User/UserPage/UserPage";
+import { useState } from "react";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
@@ -24,74 +25,78 @@ const ChampionshipDetails = lazy(() =>
 const Footer = lazy(() => import("./Helpers/Footer"));
 
 const AntGameRouter = () => {
+  const [showPage] = useState(AuthHandler._loggedIn || !AuthHandler.isRefreshTokenSet);
+
   return (
-    <Suspense fallback={<div></div>}>
-      <BrowserRouter>
-        <Switch>
-          <Route path="/sandbox">
-            <GameModeContext.Provider value={{ mode: "sandbox" }}>
-              <AntGame mapToLoad={PreloadMapPath} />
-            </GameModeContext.Provider>
-            <UserBar showLinkHome />
-          </Route>
-          <Route exact path="/challenge/:id">
-            <ChallengeMap />
-            <UserBar showRecords />
-          </Route>
-          <Route exact path="/replay/:id">
-            <ReplayPage />
-            <UserBar showRecords />
-          </Route>
-          <Route>
-            <div className={styles.windowContainer}>
-              <Switch>
-                <Route exact path="/error">
-                  <ErrorPage />
-                </Route>
-                <Route path="/admin">
-                  <AdminPath />
-                  <UserBar />
-                </Route>
-                <Route path="/register">
-                  <RegistrationPage />
-                </Route>
-                <Route path="/map/:mapName">
-                  <LoadMapFromParams />
-                </Route>
-                <Route>
-                  <Switch>
-                    <Route exact path="/">
-                      <MOTD />
-                      <ChallengeList />
-                      <UserBar showLinkToSandbox />
-                    </Route>
-                    <Route path="/login">
-                      <LoginPage />
-                    </Route>
-                    <Route path="/challenge/:id/leaderboard/:page?">
-                      <Leaderboard />
-                      <UserBar />
-                    </Route>
-                    <Route exact path="/championship/:id">
-                      <ChampionshipDetails />
-                      <UserBar />
-                    </Route>
-                    <Route exact path="/user/:username">
-                      <UserPageRoute />
-                      <UserBar />
-                    </Route>
-                    <Route path="/">
-                      <Redirect to="/" />
-                    </Route>
-                  </Switch>
-                  <Footer />
-                </Route>
-              </Switch>
-            </div>
-          </Route>
-        </Switch>
-      </BrowserRouter>
-    </Suspense>
+    showPage && (
+      <Suspense fallback={<div></div>}>
+        <BrowserRouter>
+          <Switch>
+            <Route path="/sandbox">
+              <GameModeContext.Provider value={{ mode: "sandbox" }}>
+                <AntGame mapToLoad={PreloadMapPath} />
+              </GameModeContext.Provider>
+              <UserBar showLinkHome />
+            </Route>
+            <Route exact path="/challenge/:id">
+              <ChallengeMap />
+              <UserBar showRecords />
+            </Route>
+            <Route exact path="/replay/:id">
+              <ReplayPage />
+              <UserBar showRecords />
+            </Route>
+            <Route>
+              <div className={styles.windowContainer}>
+                <Switch>
+                  <Route exact path="/error">
+                    <ErrorPage />
+                  </Route>
+                  <Route path="/admin">
+                    <AdminPath />
+                    <UserBar />
+                  </Route>
+                  <Route path="/register">
+                    <RegistrationPage />
+                  </Route>
+                  <Route path="/map/:mapName">
+                    <LoadMapFromParams />
+                  </Route>
+                  <Route>
+                    <Switch>
+                      <Route exact path="/">
+                        <MOTD />
+                        <ChallengeList />
+                        <UserBar showLinkToSandbox />
+                      </Route>
+                      <Route path="/login">
+                        <LoginPage />
+                      </Route>
+                      <Route path="/challenge/:id/leaderboard/:page?">
+                        <Leaderboard />
+                        <UserBar />
+                      </Route>
+                      <Route exact path="/championship/:id">
+                        <ChampionshipDetails />
+                        <UserBar />
+                      </Route>
+                      <Route exact path="/user/:username">
+                        <UserPageRoute />
+                        <UserBar />
+                      </Route>
+                      <Route path="/">
+                        <Redirect to="/" />
+                      </Route>
+                    </Switch>
+                    <Footer />
+                  </Route>
+                </Switch>
+              </div>
+            </Route>
+          </Switch>
+        </BrowserRouter>
+      </Suspense>
+    )
   );
 };
 

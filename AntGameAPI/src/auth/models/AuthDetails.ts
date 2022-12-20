@@ -1,7 +1,7 @@
+import { ObjectId } from "mongodb";
+
 export interface AuthDetails {
-  // TODO: this sucks, don't leave it
-  _id?: string;
-  id?: string;
+  _id?: ObjectId;
   username: string;
   passHash: string;
   admin: boolean;

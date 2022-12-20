@@ -7,7 +7,7 @@ class ExpiringResult {
   getValue = () => {
     if (this.value !== [null, null] && this.isActive()) {
       return this.value;
-    } else throw "getValue called on expired result";
+    } else throw new Error("getValue called on expired result");
   };
 
   isActive = () => {
