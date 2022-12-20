@@ -45,7 +45,7 @@ export const JwtResultHandler = function (
 
 export const TokenVerifier = async function (req: Request, res: Response, next: NextFunction) {
   try {
-    const clientIdHeader = req.header("clientId");
+    const clientIdHeader = req.header("client_id");
     if (clientIdHeader) {
       setAttributes({ clientID: clientIdHeader });
     }

@@ -1,8 +1,8 @@
 import axios from "axios";
 
-export async function getToken(username, password, clientID) {
+export async function getRefreshToken(username, password, persistLogin, clientID) {
   return axios
-    .post("/api/auth/login", { user: username, pass: password, clientID: clientID })
+    .post("/api/auth/login", { user: username, pass: password, persistLogin, clientID })
     .then(res => {
       return res.data;
     });
@@ -32,6 +32,20 @@ export async function registerAccount(username, password, email, clientID) {
         window.location = "/error";
       }
     });
+}
+
+export async function getAccessToken() {
+  return axios
+    .post("/api/auth/accessToken")
+    .then(res => res.data)
+    .catch(() => false);
+}
+
+export async function logout() {
+  return axios
+    .delete("/api/auth/login")
+    .then(() => true)
+    .catch(() => false);
 }
 
 export async function reportSpacesLoadTime(time, path, status) {

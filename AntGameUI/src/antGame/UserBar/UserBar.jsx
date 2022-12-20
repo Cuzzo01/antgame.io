@@ -23,8 +23,8 @@ const UserBar = ({ showRecords, showLinkToSandbox, showLinkHome }) => {
             <Link
               className={styles.loginLink}
               to={`/login?redirect=${window.location.pathname}`}
-              onClick={() => {
-                AuthHandler.logout();
+              onClick={async () => {
+                await AuthHandler.logout();
               }}
             >
               Login
@@ -40,8 +40,8 @@ const UserBar = ({ showRecords, showLinkToSandbox, showLinkHome }) => {
             <Link
               className={styles.loginLink}
               to="/"
-              onClick={() => {
-                AuthHandler.logout();
+              onClick={async () => {
+                await AuthHandler.logout();
                 if (window.location.pathname === "/") window.location.reload();
               }}
             >

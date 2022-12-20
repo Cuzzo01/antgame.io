@@ -68,3 +68,14 @@
 .inputField input {
   width: 100%;
 }
+
+.rememberCheckBox {
+  display: flex;
+  align-items: center;
+}
+
+.rememberCheckBox input {
+  margin-right: 0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+}

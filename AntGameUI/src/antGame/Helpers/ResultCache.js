@@ -8,7 +8,7 @@ class ResultCache {
   getValue(name) {
     const eResult = this.cache[name];
     if (eResult) return eResult.getValue();
-    throw "getValue called on unset name";
+    throw new Error("getValue called on unset name");
   }
 
   setItem(name, value, timeToCache_sec) {

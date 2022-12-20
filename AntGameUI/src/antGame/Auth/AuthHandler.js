@@ -1,11 +1,19 @@
 import jwt_decode from "jwt-decode";
 import axios from "axios";
-import { getToken, getAnonToken, reportSpacesLoadTime } from "./AuthService";
+import Cookies from "js-cookie";
+import {
+  getAccessToken,
+  getAnonToken,
+  getRefreshToken,
+  logout,
+  reportSpacesLoadTime,
+} from "./AuthService";
 import { sendRunArtifact } from "../Challenge/ChallengeService";
 import { getFlag } from "../Helpers/FlagService";
 import { v4 as uuidV4 } from "uuid";
 
 const TwoHoursInMilliseconds = 1000 * 60 * 60 * 2;
+const HalfHourInSeconds = 60 * 30;
 
 class AuthHandler {
   constructor() {
@@ -13,15 +21,17 @@ class AuthHandler {
 
     this.configureInterceptors();
 
-    this.jwt = localStorage.getItem("jwt");
-    if (this.jwt) {
-      const decodedToken = jwt_decode(this.jwt);
-      if (decodedToken.exp * 1000 > new Date().getTime()) {
-        this._loggedIn = true;
-        this.decodedToken = decodedToken;
-      } else {
-        this.jwt = "";
+    const jwt = localStorage.getItem("jwt");
+    if (!jwt) this.pullNewAccessToken();
+    else {
+      const decodedToken = jwt_decode(jwt);
+      const tokenExpired = decodedToken.exp * 1000 < new Date().getTime();
+
+      if (tokenExpired) {
         localStorage.removeItem("jwt");
+        this.pullNewAccessToken();
+      } else {
+        this.token = jwt;
       }
     }
   }
@@ -34,7 +44,17 @@ class AuthHandler {
   }
 
   get token() {
+    if (this.decodedToken) {
+      const halfHourFromNow = new Date().getTime() / 1000 + HalfHourInSeconds;
+      const token30MinFromExpiring = this.decodedToken.exp < halfHourFromNow;
+      if (!this.pullingToken && token30MinFromExpiring) this.pullNewAccessToken();
+    }
+
     return this.jwt;
+  }
+
+  get isRefreshTokenSet() {
+    return Cookies.get("refresh_token") !== undefined;
   }
 
   get loggedIn() {
@@ -74,14 +94,14 @@ class AuthHandler {
         }
         return response;
       },
-      error => {
+      async error => {
         const onLogin = window.location.pathname.includes("/login");
         const onSandbox = window.location.pathname.includes("sandbox");
         const onError = window.location.pathname.includes("error");
         const is500SeriesError = Math.floor(error.response?.status / 10) === 50;
 
         if (error.response?.status === 401 && !onLogin) {
-          this.logout();
+          await this.logout();
           const pathBack = window.location.pathname;
           window.location.replace(`/login?redirect=${pathBack}`);
         } else if (is500SeriesError && !onSandbox && !onError) {
@@ -109,7 +129,7 @@ class AuthHandler {
         this.checkForUpdatedToken();
         config.headers.Authorization = `Bearer ${this.token}`;
       }
-      config.headers.clientId = this.clientID;
+      config.headers.client_id = this.clientID;
       return config;
     });
   }
@@ -119,16 +139,28 @@ class AuthHandler {
     if (savedToken !== this.jwt) this.token = savedToken;
   }
 
-  login(username, password) {
-    return getToken(username, password, this.clientID)
-      .then(result => {
-        this._loggedIn = true;
-        this.jwt = result;
-        this.decodedToken = jwt_decode(this.jwt);
-        localStorage.setItem("jwt", this.jwt);
-        localStorage.setItem("checkForMOTD", true);
+  async pullNewAccessToken() {
+    if (!this.isRefreshTokenSet) return;
 
-        this.checkForAndSendUnsentArtifacts();
+    this.pullingToken = true;
+    const jwt = await getAccessToken();
+
+    if (jwt === false) {
+      this._loggedIn = false;
+      return;
+    }
+
+    const forceReload = !this.loggedIn;
+    this.token = jwt;
+    if (forceReload) window.location.reload();
+    this.pullingToken = false;
+  }
+
+  login(username, password, persistLogin) {
+    return getRefreshToken(username, password, persistLogin, this.clientID)
+      .then(async accessToken => {
+        this.token = accessToken;
+        localStorage.setItem("checkForMOTD", true);
 
         return { value: true };
       })
@@ -166,10 +198,12 @@ class AuthHandler {
     }
   }
 
-  logout() {
+  async logout() {
     this._loggedIn = false;
     this.jwt = "";
     localStorage.removeItem("jwt");
+
+    if (this.isRefreshTokenSet) await logout();
   }
 
   loginAnon() {

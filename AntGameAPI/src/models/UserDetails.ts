@@ -6,4 +6,5 @@ export interface UserDetails {
   username: string;
   badges: UserBadge[];
   joinDate?: Date | false;
+  admin?: boolean;
 }

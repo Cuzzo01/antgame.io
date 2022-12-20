@@ -54,18 +54,22 @@ export class UserDao {
     else return result.badges;
   }
 
-  public async getUserDetailsByUsername(username: string) {
+  public async getUserDetails(username?: string, userId?: ObjectId) {
     const collection = await this.getCollection();
-    const result = await collection.findOne(
-      { username_lower: username },
-      { projection: { _id: 1, username: 1, "registrationData.date": 1, badges: 1 } }
-    );
+    const queryObject: { username_lower?: string; _id?: ObjectId } = {};
+    if (username) queryObject.username_lower = username;
+    else if (userId) queryObject._id = userId;
+
+    const result = await collection.findOne(queryObject, {
+      projection: { _id: 1, username: 1, "registrationData.date": 1, badges: 1, admin: 1 },
+    });
 
     if (!result) return null;
-    const toReturn = <UserDetails>{
+    const toReturn: UserDetails = {
       _id: result._id,
       username: result.username,
       badges: result.badges,
+      admin: result.admin,
     };
     if (result.registrationData) toReturn.joinDate = result.registrationData.date;
     else toReturn.joinDate = false;
