@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { WithId } from "mongodb";
 import { GetIpAddress } from "../helpers/IpHelper";
 import { LoggerProvider } from "../LoggerTS";
 import { PasswordHandler } from "./PasswordHandler";
