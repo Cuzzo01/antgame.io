@@ -34,7 +34,7 @@ export class AuthController {
         return;
       }
 
-      if (request.persistLogin === undefined) request.persistLogin = false
+      if (request.persistLogin === undefined) request.persistLogin = false;
 
       const authDetails = (await getAuthDetailsByUsername(request.user)) as AuthDetails | false;
       if (authDetails === false) {
