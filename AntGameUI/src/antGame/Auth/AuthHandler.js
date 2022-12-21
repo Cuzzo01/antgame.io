@@ -44,11 +44,15 @@ class AuthHandler {
   }
 
   get token() {
-    if (this.decodedToken) {
-      const halfHourFromNow = new Date().getTime() / 1000 + HalfHourInSeconds;
-      const token30MinFromExpiring = this.decodedToken.exp < halfHourFromNow;
-      if (!this.pullingToken && token30MinFromExpiring) this.pullNewAccessToken();
-    }
+    if (!this.jwt) return false;
+
+    const nowInSeconds = new Date().getTime() / 1000;
+    const tokenExpireTime = this.decodedToken.exp;
+    const tokenExpired = tokenExpireTime < nowInSeconds;
+    if (tokenExpired) return false;
+
+    const token30MinFromExpiring = tokenExpireTime < nowInSeconds + HalfHourInSeconds;
+    if (!this.pullingToken && token30MinFromExpiring) this.pullNewAccessToken();
 
     return this.jwt;
   }
@@ -98,9 +102,17 @@ class AuthHandler {
         const onLogin = window.location.pathname.includes("/login");
         const onSandbox = window.location.pathname.includes("sandbox");
         const onError = window.location.pathname.includes("error");
-        const is500SeriesError = Math.floor(error.response?.status / 10) === 50;
 
-        if (error.response?.status === 401 && !onLogin) {
+        const errorStatus = error.response?.status;
+        const is401Error = errorStatus === 401;
+        const is500SeriesError = Math.floor(errorStatus / 10) === 50;
+
+        if (is401Error && this.isRefreshTokenSet) {
+          if (this.pullingToken) await this.accessTokenPromise;
+          else await this.pullNewAccessToken();
+
+          return axios(error.config);
+        } else if (is401Error && !onLogin) {
           await this.logout();
           const pathBack = window.location.pathname;
           window.location.replace(`/login?redirect=${pathBack}`);
@@ -126,7 +138,7 @@ class AuthHandler {
         return config;
       }
       if (this.token) {
-        this.checkForUpdatedToken();
+        await this.checkForUpdatedToken();
         config.headers.Authorization = `Bearer ${this.token}`;
       }
       config.headers.client_id = this.clientID;
@@ -141,9 +153,11 @@ class AuthHandler {
 
   async pullNewAccessToken() {
     if (!this.isRefreshTokenSet) return;
+    if (this.pullingToken) return;
 
     this.pullingToken = true;
-    const jwt = await getAccessToken();
+    this.accessTokenPromise = getAccessToken();
+    const jwt = await this.accessTokenPromise;
 
     if (jwt === false) {
       this._loggedIn = false;

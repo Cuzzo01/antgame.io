@@ -6,7 +6,6 @@ import UploadMapButton from "../UploadMapButton";
 import { GameModeContext } from "../../../GameModeContext";
 import ChallengeHandler from "../../../Challenge/ChallengeHandler";
 import cssStyles from "./GameMenu.module.css";
-import { getFlag } from "../../../Helpers/FlagService";
 import { useHistory } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
 import genericStyles from "../../../Helpers/GenericStyles.module.css";
@@ -25,20 +24,13 @@ export default function GameMenu({
   toggleShowHistory,
 }) {
   const [flashReset, setFlashReset] = useState(false);
-  const [disablePlay, setDisablePlay] = useState(true);
+  const [disablePlay, setDisablePlay] = useState(false);
   const [sandBoxButtons, setSandBoxButtons] = useState(false);
   const gameMode = useContext(GameModeContext);
   const history = useHistory();
 
   useEffect(() => {
     if (flashReset === true) setTimeout(() => setFlashReset(false), 900);
-    if (gameMode.mode === "challenge") {
-      getFlag("allow-challenge-runs").then(value => {
-        if (value === true) setDisablePlay(false);
-      });
-    } else {
-      setDisablePlay(false);
-    }
 
     const buttons = [];
     if (mapClear)
