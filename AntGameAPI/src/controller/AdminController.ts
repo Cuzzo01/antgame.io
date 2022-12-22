@@ -349,6 +349,8 @@ export class AdminController {
         } else {
           patchRequest.banned = newBanned;
           if (!newBanned) patchRequest.banInfo = {};
+          TokenRevokedCache.unsetItem(id);
+          LeaderboardCache.unsetAll();
         }
       }
 

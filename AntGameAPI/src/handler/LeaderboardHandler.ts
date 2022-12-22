@@ -12,8 +12,10 @@ import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { FullChampionshipConfig } from "../models/FullChampionshipConfig";
 import { RawLeaderboardEntry } from "../models/RawLeaderboardEntry";
 import { ChallengeRecordDao } from "../dao/ChallengeRecordDao";
+import { TokenRevokedHandler } from "./TokenRevokedHandler";
 
 const FlagCache = FlagHandler.getCache();
+const TokenRevokedCache = TokenRevokedHandler.getCache();
 
 export class LeaderboardHandler {
   private static cache: LeaderboardCache;
@@ -74,6 +76,7 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
         const rawLeaderboard = await this._challengeRecordDao.getChallengeLeaderboard(id);
         const toReturn: RawLeaderboardEntry[] = [];
         for (const entry of rawLeaderboard) {
+          if (await TokenRevokedCache.isUserBanned(entry.userId.toString())) continue;
           toReturn.push({
             _id: entry.userId,
             pb: entry.score,
