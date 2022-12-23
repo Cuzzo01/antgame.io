@@ -61,8 +61,8 @@ class TokenRevokedCache extends ResultCacheWrapper<TokenRevokedData | boolean> {
     return (await this.getOrFetchValue({
       id: `${userID}-ban`,
       fetchMethod: async () => await this._userDao.isUserBanned(userID),
-      getTimeToCache: async () => FlagCache.getIntFlag("time-between-token-checks"),
-      cacheTimeFuzzRatio: 0.2,
+      getTimeToCache: () => 86400,
+      cacheTimeFuzzRatio: 0.75,
     })) as boolean;
   }
 

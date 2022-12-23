@@ -55,7 +55,7 @@ const UnauthenticatedRoutes = [
   "/time",
 ];
 
-initializeScheduledTasks();
+void initializeScheduledTasks();
 
 app.use(responseTime(ResponseLogger));
 app.use(express.json());
