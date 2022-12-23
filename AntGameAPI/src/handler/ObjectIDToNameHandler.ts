@@ -29,15 +29,12 @@ class ObjectIDtoNameCache extends ResultCacheWrapper<string> {
     return super.getSize();
   }
 
-  get timeToCache() {
-    return Math.round(43200 * (1 - Math.random() * 0.1));
-  }
-
   async getChallengeName(id: ObjectId | string): Promise<string> {
     return await this.getOrFetchValue({
       id: id.toString(),
       type: "Challenge",
-      getTimeToCache: () => this.timeToCache,
+      getTimeToCache: () => 43200,
+      cacheTimeFuzzRatio: 0.1,
       fetchMethod: async () => {
         const config = (await getChallengeByChallengeId(id)) as FullChallengeConfig;
         return config.name;
@@ -50,7 +47,8 @@ class ObjectIDtoNameCache extends ResultCacheWrapper<string> {
     return await this.getOrFetchValue({
       id: id.toString(),
       type: "Username",
-      getTimeToCache: () => this.timeToCache,
+      getTimeToCache: () => 43200,
+      cacheTimeFuzzRatio: 0.1,
       fetchMethod: async () => {
         return await this._userDao.getUsernameById(id);
       },
@@ -62,7 +60,8 @@ class ObjectIDtoNameCache extends ResultCacheWrapper<string> {
     return await this.getOrFetchValue({
       id: id.toString(),
       type: "Championship",
-      getTimeToCache: () => this.timeToCache,
+      getTimeToCache: () => 43200,
+      cacheTimeFuzzRatio: 0.1,
       fetchMethod: async () => {
         const championship = (await getChampionshipDetailsFromDB(id)) as FullChampionshipConfig;
         return championship.name;

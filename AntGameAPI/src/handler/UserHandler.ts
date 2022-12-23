@@ -59,11 +59,8 @@ class UserCache extends ResultCacheWrapper<UserBadge[] | UserInfoResponse> {
           };
         });
       },
-      getTimeToCache: async () => {
-        const maxTimeToCache = await FlagCache.getIntFlag("time-to-cache-badges-internal");
-        const cacheTime = Math.round(maxTimeToCache * (1 - Math.random() * 0.2));
-        return cacheTime;
-      },
+      getTimeToCache: async () => await FlagCache.getIntFlag("time-to-cache-badges-internal"),
+      cacheTimeFuzzRatio: 0.2,
       logFormatter: () => "",
     })) as UserBadge[];
   }
@@ -85,11 +82,8 @@ class UserCache extends ResultCacheWrapper<UserBadge[] | UserInfoResponse> {
           badges: result.badges,
         };
       },
-      getTimeToCache: async () => {
-        const maxTimeToCache = await FlagCache.getIntFlag("cache-time.user-info");
-        const cacheTime = Math.round(maxTimeToCache * (1 - Math.random() * 0.2));
-        return cacheTime;
-      },
+      getTimeToCache: async () => await FlagCache.getIntFlag("time-to-cache-badges-internal"),
+      cacheTimeFuzzRatio: 0.2,
       logFormatter: () => "",
     })) as UserInfoResponse;
   }

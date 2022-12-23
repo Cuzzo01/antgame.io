@@ -43,11 +43,6 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
     super.unsetAll();
   }
 
-  getTimeToCache: () => Promise<number> = async () => {
-    const maxTime = await FlagCache.getIntFlag("time-to-cache-leaderboards");
-    return Math.round(maxTime * (1 - Math.random() * 0.2));
-  };
-
   unsetItem(id: string) {
     super.unsetItem(id);
     const rawID = `${id}-raw`;
@@ -63,7 +58,8 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
         const rawLeaderboard = await this.getRawChallengeLeaderboard(id);
         return rawLeaderboard.slice(0, 15);
       },
-      getTimeToCache: this.getTimeToCache,
+      getTimeToCache: async () => await FlagCache.getIntFlag("time-to-cache-leaderboards"),
+      cacheTimeFuzzRatio: 0.2,
       logFormatter: () => "",
     })) as RawLeaderboardEntry[];
   }
@@ -85,7 +81,8 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
         }
         return toReturn;
       },
-      getTimeToCache: this.getTimeToCache,
+      getTimeToCache: async () => await FlagCache.getIntFlag("time-to-cache-leaderboards"),
+      cacheTimeFuzzRatio: 0.2,
       logFormatter: value => (Array.isArray(value) ? `Length: ${value.length}` : ""),
     })) as RawLeaderboardEntry[];
   }
@@ -139,7 +136,8 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
 
         return toReturn;
       },
-      getTimeToCache: this.getTimeToCache,
+      getTimeToCache: async () => await FlagCache.getIntFlag("time-to-cache-leaderboards"),
+      cacheTimeFuzzRatio: 0.2,
       logFormatter: () => "",
     })) as ChampionshipResponse;
   }
@@ -151,7 +149,8 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
       fetchMethod: async () => {
         return (await getLeaderboardByChampionshipID(id)) as RawLeaderboardEntry[];
       },
-      getTimeToCache: this.getTimeToCache,
+      getTimeToCache: async () => await FlagCache.getIntFlag("time-to-cache-leaderboards"),
+      cacheTimeFuzzRatio: 0.2,
       logFormatter: value => (Array.isArray(value) ? `Length: ${value.length}` : ""),
     })) as RawLeaderboardEntry[];
   }
