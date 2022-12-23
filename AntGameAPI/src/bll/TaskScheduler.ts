@@ -6,7 +6,9 @@ import { handleDailyChallengeChange } from "./DailyChallengeCron";
 
 const Logger = LoggerProvider.getInstance();
 
-export const initializeScheduledTasks = () => {
+export const initializeScheduledTasks = async () => {
+  await RefreshActiveChallengeCache();
+
   if (process.env.environment !== "LOCAL") {
     const dailyChallengeJob = scheduleJob({ hour: 12, minute: 0 }, handleDailyChallengeChange);
     Logger.logCronMessage(
