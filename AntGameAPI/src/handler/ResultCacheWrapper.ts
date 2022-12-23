@@ -26,6 +26,7 @@ export class ResultCacheWrapper<T> {
     fetchMethod: (id?: string) => Promise<T>;
     getTimeToCache: () => Promise<number> | number;
     logFormatter?: (result: T) => string;
+    cacheTimeFuzzRatio?: number;
   }) {
     const startTime = new Date();
 
@@ -48,7 +49,12 @@ export class ResultCacheWrapper<T> {
     } else {
       try {
         const result = await params.fetchMethod(params.id);
-        const timeToCache = await params.getTimeToCache();
+
+        let timeToCache = await params.getTimeToCache();
+        if (params.cacheTimeFuzzRatio) {
+          timeToCache = Math.round((1 - Math.random() * params.cacheTimeFuzzRatio) * timeToCache);
+        }
+
         this.resultCache.setItem(params.id, result, timeToCache);
 
         const resolvedResult = await Promise.resolve(result);
