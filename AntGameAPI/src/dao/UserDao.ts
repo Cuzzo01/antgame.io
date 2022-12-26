@@ -23,7 +23,7 @@ export class UserDao {
     const result = await collection.findOne({ _id: id }, { projection: { banned: 1 } });
 
     if (!result) return true;
-    return result.banned;
+    return result.banned === true;
   }
 
   public async isUserAdmin(id: ObjectId | string) {
