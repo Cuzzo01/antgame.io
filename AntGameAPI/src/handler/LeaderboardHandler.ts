@@ -70,9 +70,14 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
       type: "Raw challenge",
       fetchMethod: async () => {
         const rawLeaderboard = await this._challengeRecordDao.getChallengeLeaderboard(id);
+
+        const userIds = rawLeaderboard.flatMap(entry => entry.userId.toString());
+        const bannedList = await this.GetUserBannedStatus(userIds);
+
         const toReturn: RawLeaderboardEntry[] = [];
         for (const entry of rawLeaderboard) {
-          if (await TokenRevokedCache.isUserBanned(entry.userId.toString())) continue;
+          const userBanned = bannedList[entry.userId.toString()];
+          if (userBanned) continue;
           toReturn.push({
             _id: entry.userId,
             pb: entry.score,
@@ -162,4 +167,19 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
     return { found: true, entry: leaderboardArr[index], rank: index + 1 };
   }
   //#endregion
+
+  private async GetUserBannedStatus(userIds: string[]): Promise<{ [userId: string]: boolean }> {
+    const promiseList = userIds.flatMap(async id => {
+      const banned = await TokenRevokedCache.isUserBanned(id);
+      return { id, banned };
+    });
+
+    const results = await Promise.all(promiseList);
+    const toReturn = {};
+
+    for (const result of results) {
+      toReturn[result.id] = result.banned;
+    }
+    return toReturn;
+  }
 }

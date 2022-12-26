@@ -4,7 +4,7 @@ import { LoggerProvider } from "../LoggerTS";
 const Logger = LoggerProvider.getInstance();
 
 export class ResultCacheWrapper<T> {
-  private resultCache: ResultCache<T>;
+  private resultCache: ResultCache<Promise<T>>;
   private name: string;
 
   constructor(options: { name: string }) {
@@ -16,7 +16,7 @@ export class ResultCacheWrapper<T> {
     return this.resultCache.getCount();
   }
 
-  protected itemIsSet(id: string): boolean {
+  protected itemIsSet(id: string) {
     return this.resultCache.isSetAndActive(id);
   }
 
@@ -48,7 +48,8 @@ export class ResultCacheWrapper<T> {
       return toReturn;
     } else {
       try {
-        const result = await params.fetchMethod(params.id);
+        const result = params.fetchMethod(params.id);
+        this.resultCache.setItem(params.id, result, 10);
 
         let timeToCache = await params.getTimeToCache();
         if (params.cacheTimeFuzzRatio) {
