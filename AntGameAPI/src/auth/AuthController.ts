@@ -128,7 +128,7 @@ export class AuthController {
 
       Logger.logAuthEvent({
         event: `call to delete refresh token - ${deleteResult ? "" : "un"}successful`,
-        ip: GetIpAddress(req)
+        ip: GetIpAddress(req),
       });
 
       res.clearCookie("refresh_token");
@@ -150,7 +150,7 @@ export class AuthController {
       if (!clientId || !tokenString) {
         Logger.logAuthEvent({
           event: "received incomplete refresh access token request",
-          ip: clientIP
+          ip: clientIP,
         });
         res.status(401);
         res.send("Incomplete auth request");
@@ -161,7 +161,7 @@ export class AuthController {
       if (refreshToken === false) {
         Logger.logAuthEvent({
           event: "received unknown refresh token",
-          ip: clientIP
+          ip: clientIP,
         });
         res.status(401);
         res.clearCookie("refresh_token");
