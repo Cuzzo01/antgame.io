@@ -27,8 +27,6 @@ export class UserDao {
   }
 
   public async isUserBannedBatch(ids: ObjectId[]) {
-    if (!ids.length) throw new Error("isUserBannedBatch called with empty list");
-
     const collection = await this.getCollection();
     const result = await collection.find({ _id: { $in: ids }, banned: true }).toArray();
 
