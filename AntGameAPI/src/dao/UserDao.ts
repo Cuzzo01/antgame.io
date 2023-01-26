@@ -26,6 +26,15 @@ export class UserDao {
     return result.banned === true;
   }
 
+  public async isUserBannedBatch(ids: ObjectId[]) {
+    if (!ids.length) throw new Error("isUserBannedBatch called with empty list");
+
+    const collection = await this.getCollection();
+    const result = await collection.find({ _id: { $in: ids }, banned: true }).toArray();
+
+    return result.map(user => user._id.toString());
+  }
+
   public async isUserAdmin(id: ObjectId | string) {
     if (typeof id === "string") id = TryParseObjectID(id, "UserId", "UserDao.isUserAdmin");
 

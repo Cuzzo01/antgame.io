@@ -18,7 +18,7 @@ export class TokenRevokedHandler {
   }
 }
 
-class TokenRevokedCache extends ResultCacheWrapper<TokenRevokedData | boolean> {
+class TokenRevokedCache extends ResultCacheWrapper<TokenRevokedData> {
   private tokenRevokedTime: number;
   private _userDao: UserDao;
 
@@ -37,16 +37,16 @@ class TokenRevokedCache extends ResultCacheWrapper<TokenRevokedData | boolean> {
       return false;
     }
 
-    const result = (await this.getOrFetchValue({
+    const result = await this.getOrFetchValue({
       id: userID,
       getTimeToCache: async () => await FlagCache.getIntFlag("time-between-token-checks"),
       fetchMethod: async () => {
-        const IsBanned = await this.isUserBanned(userID);
+        const IsBanned = await this._userDao.isUserBanned(userID);
         let IsAdmin = false;
         if (adminClaim) IsAdmin = await this._userDao.isUserAdmin(userID);
         return { banned: IsBanned, admin: IsAdmin };
       },
-    })) as TokenRevokedData;
+    });
 
     let IsValid = false;
     if (adminClaim) {
@@ -57,22 +57,12 @@ class TokenRevokedCache extends ResultCacheWrapper<TokenRevokedData | boolean> {
     return IsValid;
   }
 
-  async isUserBanned(userID: string): Promise<boolean> {
-    return (await this.getOrFetchValue({
-      id: `${userID}-ban`,
-      fetchMethod: async () => await this._userDao.isUserBanned(userID),
-      getTimeToCache: () => 86400,
-      cacheTimeFuzzRatio: 0.75,
-    })) as boolean;
-  }
-
   async AreLoginsEnabled(): Promise<boolean> {
     return await FlagCache.getBoolFlag("allow-logins");
   }
 
   public unsetItem(id: string): void {
     super.unsetItem(id);
-    super.unsetItem(`${id}-ban`);
   }
 
   RevokeTokens(): void {

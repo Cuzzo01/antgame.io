@@ -12,10 +12,9 @@ import { FullChallengeConfig } from "../models/FullChallengeConfig";
 import { FullChampionshipConfig } from "../models/FullChampionshipConfig";
 import { RawLeaderboardEntry } from "../models/RawLeaderboardEntry";
 import { ChallengeRecordDao } from "../dao/ChallengeRecordDao";
-import { TokenRevokedHandler } from "./TokenRevokedHandler";
+import { UserDao } from "../dao/UserDao";
 
 const FlagCache = FlagHandler.getCache();
-const TokenRevokedCache = TokenRevokedHandler.getCache();
 
 export class LeaderboardHandler {
   private static cache: LeaderboardCache;
@@ -29,10 +28,12 @@ export class LeaderboardHandler {
 
 class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | ChampionshipResponse> {
   private _challengeRecordDao: ChallengeRecordDao;
+  private _userDao: UserDao;
 
   constructor() {
     super({ name: "LeaderboardHandler" });
     this._challengeRecordDao = new ChallengeRecordDao();
+    this._userDao = new UserDao();
   }
 
   get size() {
@@ -71,12 +72,12 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
       fetchMethod: async () => {
         const rawLeaderboard = await this._challengeRecordDao.getChallengeLeaderboard(id);
 
-        const userIds = rawLeaderboard.flatMap(entry => entry.userId.toString());
-        const bannedList = await this.GetUserBannedStatus(userIds);
+        const userIds = rawLeaderboard.flatMap(entry => entry.userId);
+        const bannedList = await this._userDao.isUserBannedBatch(userIds);
 
         const toReturn: RawLeaderboardEntry[] = [];
         for (const entry of rawLeaderboard) {
-          const userBanned = bannedList[entry.userId.toString()];
+          const userBanned = bannedList.includes(entry.userId.toString());
           if (userBanned) continue;
           toReturn.push({
             _id: entry.userId,
@@ -167,19 +168,4 @@ class LeaderboardCache extends ResultCacheWrapper<RawLeaderboardEntry[] | Champi
     return { found: true, entry: leaderboardArr[index], rank: index + 1 };
   }
   //#endregion
-
-  private async GetUserBannedStatus(userIds: string[]): Promise<{ [userId: string]: boolean }> {
-    const promiseList = userIds.flatMap(async id => {
-      const banned = await TokenRevokedCache.isUserBanned(id);
-      return { id, banned };
-    });
-
-    const results = await Promise.all(promiseList);
-    const toReturn = {};
-
-    for (const result of results) {
-      toReturn[result.id] = result.banned;
-    }
-    return toReturn;
-  }
 }

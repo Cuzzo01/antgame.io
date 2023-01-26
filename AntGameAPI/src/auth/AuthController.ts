@@ -126,8 +126,12 @@ export class AuthController {
 
       const deleteResult = await _refreshTokenDao.deleteTokenRecord(tokenString);
 
-      res.clearCookie("refresh_token");
+      Logger.logAuthEvent({
+        event: `call to delete refresh token - ${deleteResult ? "" : "un"}successful`,
+        ip: GetIpAddress(req),
+      });
 
+      res.clearCookie("refresh_token");
       if (deleteResult) res.sendStatus(204);
       else res.sendStatus(404);
     } catch (e) {
@@ -144,6 +148,10 @@ export class AuthController {
       const clientIP = GetIpAddress(req);
 
       if (!clientId || !tokenString) {
+        Logger.logAuthEvent({
+          event: "received incomplete refresh access token request",
+          ip: clientIP,
+        });
         res.status(401);
         res.send("Incomplete auth request");
         return;
@@ -151,6 +159,10 @@ export class AuthController {
 
       const refreshToken = await _refreshTokenDao.getTokenRecord(tokenString);
       if (refreshToken === false) {
+        Logger.logAuthEvent({
+          event: "received unknown refresh token",
+          ip: clientIP,
+        });
         res.status(401);
         res.clearCookie("refresh_token");
         res.send("Unknown refresh token");
@@ -158,6 +170,11 @@ export class AuthController {
       }
 
       if (refreshToken.clientId !== clientId) {
+        Logger.logAuthEvent({
+          event: "received refresh token with non-matching clientId",
+          ip: clientIP,
+          userID: refreshToken.userId.toString(),
+        });
         res.status(401);
         res.clearCookie("refresh_token");
         res.send("Non-matching clientId");
