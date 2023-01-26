@@ -10,6 +10,7 @@ import ChallengeList from "./Challenge/List/ChallengeList";
 import MOTD from "./MOTD/Motd";
 import { UserPage } from "./User/UserPage/UserPage";
 import { useState } from "react";
+import { useEffect } from "react";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
@@ -103,12 +104,22 @@ const AntGameRouter = () => {
 
 const StripRefQuery = () => {
   const query = useQuery();
-  if (query.has("ref")) query.delete("ref");
 
-  const locationWithoutQuery = window.location.href.split("?")[0];
-  const newLocation = `${locationWithoutQuery}?${query.toString()}`;
+  useEffect(() => {
+    if (query.has("ref")) {
+      debugger;
+      query.delete("ref");
 
-  window.history.replaceState(null, null, newLocation);
+      const locationWithoutQuery = window.location.href.split("?")[0];
+      let newLocation = locationWithoutQuery;
+      if (!query.keys().next().done) {
+        newLocation += `?${query.toString()}`;
+      }
+
+      window.history.replaceState(null, null, newLocation);
+    }
+  }, [query]);
+
   return null;
 };
 
