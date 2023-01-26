@@ -107,7 +107,6 @@ const StripRefQuery = () => {
 
   useEffect(() => {
     if (query.has("ref")) {
-      debugger;
       query.delete("ref");
 
       const locationWithoutQuery = window.location.href.split("?")[0];
