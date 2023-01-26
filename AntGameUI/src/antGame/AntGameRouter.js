@@ -1,9 +1,9 @@
 import { Config } from "./config";
-import { BrowserRouter, Switch, Route, Redirect, useParams } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Redirect, useParams, useLocation } from "react-router-dom";
 import { GameModeContext } from "./GameModeContext";
 import AuthHandler from "./Auth/AuthHandler";
 import styles from "./Helpers/GenericStyles.module.css";
-import { lazy, Suspense } from "react";
+import React, { lazy, Suspense } from "react";
 import ErrorPage from "./ErrorPage/ErrorPage";
 import UserBar from "./UserBar/UserBar";
 import ChallengeList from "./Challenge/List/ChallengeList";
@@ -31,6 +31,7 @@ const AntGameRouter = () => {
     showPage && (
       <Suspense fallback={<div></div>}>
         <BrowserRouter>
+          <StripRefQuery />
           <Switch>
             <Route path="/sandbox">
               <GameModeContext.Provider value={{ mode: "sandbox" }}>
@@ -100,6 +101,17 @@ const AntGameRouter = () => {
   );
 };
 
+const StripRefQuery = () => {
+  const query = useQuery();
+  if (query.has("ref")) query.delete("ref");
+
+  const locationWithoutQuery = window.location.href.split("?")[0];
+  const newLocation = `${locationWithoutQuery}?${query.toString()}`;
+
+  window.history.replaceState(null, null, newLocation);
+  return null;
+};
+
 const AdminPath = () => {
   if (!AuthHandler.loggedIn) return <Redirect to={`/login?redirect=${window.location.pathname}`} />;
   if (!AuthHandler.isAdmin) return <Redirect to={"/"} />;
@@ -148,4 +160,8 @@ const UserPageRoute = () => {
   return <UserPage username={username} />;
 };
 
+function useQuery() {
+  const { search } = useLocation();
+  return React.useMemo(() => new URLSearchParams(search), [search]);
+}
 export default AntGameRouter;
