@@ -348,7 +348,7 @@ export default class AntGame extends React.Component {
     if (state) {
       if (this.state.emptyMap) return;
       if (this.mapHandler.homeCellCount === 0) return;
-      if ((IsChallenge || IsReplay) && this.timerHandler.noTime) return "reset";
+      if ((IsChallenge || IsReplay) && this.timerHandler.noTime) this.reset();
       this.mapHandler.shouldDrawFoodAmounts = false;
       if (!this.antHandler.antsSpawned) {
         this.updateCount = 0;
@@ -512,10 +512,6 @@ export default class AntGame extends React.Component {
     this.mapHandler.shouldDrawFoodAmounts = true;
   };
 
-  resetHandler = () => {
-    this.reset();
-  };
-
   saveImageHandler = imageToSave => {
     this.imageToSave = imageToSave;
   };
@@ -573,7 +569,7 @@ export default class AntGame extends React.Component {
               timerActive={this.state.timerActive}
               playState={this.state.playState}
               playButtonHandler={this.updatePlayState}
-              resetHandler={this.resetHandler}
+              resetHandler={this.reset}
               clearMapHandler={this.clearMap}
               saveMapHandler={this.saveMapHandler}
               mapClear={this.state.emptyMap}
