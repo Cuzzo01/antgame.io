@@ -23,15 +23,12 @@ export default function GameMenu({
   setSpeed,
   toggleShowHistory,
 }) {
-  const [flashReset, setFlashReset] = useState(false);
   const [disablePlay, setDisablePlay] = useState(false);
   const [sandBoxButtons, setSandBoxButtons] = useState(false);
   const gameMode = useContext(GameModeContext);
   const history = useHistory();
 
   useEffect(() => {
-    if (flashReset === true) setTimeout(() => setFlashReset(false), 900);
-
     const buttons = [];
     if (mapClear)
       buttons.push(
@@ -55,7 +52,7 @@ export default function GameMenu({
       }
     }
     setSandBoxButtons(buttons);
-  }, [flashReset, gameMode, loadMapHandler, mapClear, playState, saveMapHandler]);
+  }, [gameMode, loadMapHandler, mapClear, playState, saveMapHandler]);
 
   const IsChallenge = gameMode.mode === "challenge";
   const IsReplay = gameMode.mode === "replay";
@@ -99,12 +96,7 @@ export default function GameMenu({
           disabled={playState && IsChallenge}
         />
       )}
-      <SettingButton
-        className={flashReset ? cssStyles.flashing : ""}
-        text={"Reset"}
-        handler={resetHandler}
-        disabled={playState}
-      />
+      <SettingButton text={"Reset"} handler={resetHandler} disabled={playState} />
       {IsReplay && (
         <SettingButton
           key="speed"
@@ -123,9 +115,8 @@ export default function GameMenu({
         text={playState ? <PauseIcon /> : <PlayIcon />}
         handler={async () => {
           setDisablePlay(true);
-          const result = await playButtonHandler(!playState);
+          await playButtonHandler(!playState);
           setDisablePlay(false);
-          if (result === "reset") setFlashReset(true);
         }}
       />
     </div>

@@ -43,3 +43,7 @@
 .badgeRow > span {
   margin-top: 0.15em;
 }
+
+.adminLink {
+  text-decoration: none;
+}

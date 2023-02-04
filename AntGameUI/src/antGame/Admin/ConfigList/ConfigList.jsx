@@ -16,8 +16,10 @@ const ConfigList = props => {
       const orderConfigs = configs.filter(config => config.order);
       const noOrderConfigs = configs.filter(config => !config.order);
 
+      noOrderConfigs.reverse();
+
       const orderList = generateConfigList(orderConfigs);
-      const noOrderList = generateConfigList(noOrderConfigs);
+      const noOrderList = generateConfigList(noOrderConfigs.slice(0, 14));
 
       setOrderConfigList(orderList);
       setNoOrderConfigList(noOrderList);
