@@ -12,7 +12,7 @@ const PersonalRecord = props => {
     const url = new URL(window.location);
     const pathArr = url.pathname.split("/");
     const challengeId = pathArr[pathArr.length - 1];
-    let listenerID = 0;
+    let listenerID;
     if (AuthHandler.isAnon) {
       setContent("Login to track PRs");
       setLoading(false);
@@ -39,7 +39,7 @@ const PersonalRecord = props => {
     }
 
     return () => {
-      ChallengeHandler.removeRecordListener(listenerID);
+      if (listenerID !== null) ChallengeHandler.removeRecordListener(listenerID);
     };
   }, [loading]);
 
