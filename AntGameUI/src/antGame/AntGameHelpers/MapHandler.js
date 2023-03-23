@@ -43,6 +43,8 @@ export class MapHandler {
     this._shouldDrawFoodAmounts = true;
     this.shouldDrawHomeAmounts = false;
     this.homeAmountsDrawn = false;
+
+    window.setHomeLocations = this.setHomeLocations;
   }
 
   set gameMode(mode) {

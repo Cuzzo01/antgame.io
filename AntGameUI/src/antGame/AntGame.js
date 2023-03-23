@@ -107,6 +107,8 @@ export default class AntGame extends React.Component {
       this.setState({
         showChallengeModal: false,
       });
+    } else if (this.gamemode === "sandbox") {
+      document.title = "Sandbox Mode - AntGame";
     }
 
     this.mapHandler.gameMode = this.gamemode;
