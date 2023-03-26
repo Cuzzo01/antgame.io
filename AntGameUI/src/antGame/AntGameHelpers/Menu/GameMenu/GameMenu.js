@@ -148,7 +148,7 @@ const SettingButton = ({ handler, className, disabled, text }) => {
           setTimeout(() => setClickable(true), 100);
         }
       }}
-      onTouchEnd={e => e.target.click()}
+      onTouchEnd={e => e.target?.click()}
     >
       {text}
     </span>
