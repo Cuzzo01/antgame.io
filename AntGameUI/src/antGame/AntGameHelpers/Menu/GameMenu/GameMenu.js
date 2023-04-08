@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { isMobile } from "react-device-detect";
 
 import { PlayIcon, PauseIcon, BackIcon } from "../../Icons";
 import UploadMapButton from "../UploadMapButton";
@@ -89,7 +88,7 @@ export default function GameMenu({
           disabled={playState}
         />
       )}
-      {!isMobile && ChallengeHandler.records.pr && (
+      {ChallengeHandler.records.pr && (
         <SettingButton
           text={"History"}
           handler={toggleShowHistory}
