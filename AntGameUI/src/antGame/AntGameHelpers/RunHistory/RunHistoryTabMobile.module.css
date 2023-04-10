@@ -59,6 +59,17 @@
   border: 2px black solid;
 }
 
+.pageNumber {
+  width: fit-content;
+  background-color: lightgray;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 2px 15px;
+  border-radius: 5px;
+  border: 2px black solid;
+  cursor: default;
+}
+
 .runEntryRow {
   border-radius: 5px;
   border: 2px black solid;
@@ -110,6 +121,7 @@
   grid-area: tags;
   display: flex;
   justify-content: center;
+  line-height: 100%;
 }
 
 .prText {
@@ -123,4 +135,8 @@
   background-color: #884ea0;
   padding: 0.1em;
   margin: 2px;
+}
+
+.pagingBar {
+  display: flex;
 }

@@ -596,7 +596,7 @@ export default class AntGame extends React.Component {
           <div className={cssStyles.innerWindow}>
             {this.showHistoryTab && !AuthHandler.isAnon && (
               <>
-              {!isMobile ? (<RunHistoryTabMobile
+              {true ? (<RunHistoryTabMobile
                 challengeId={this.challengeID}
                 loadRunHandler={run => this.loadRunHandler(run)}
                 gameMode={this.gamemode}
