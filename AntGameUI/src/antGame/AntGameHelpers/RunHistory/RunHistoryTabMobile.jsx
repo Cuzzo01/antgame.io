@@ -173,7 +173,7 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
                 ) : (
                   <></>
                   )}
-                {(!hasGrabbedAllValidPrevRuns || (lastPage !== null && mobilePageIndex === lastPage)) ? (
+                {(!hasGrabbedAllValidPrevRuns || (lastPage !== null && mobilePageIndex !== lastPage)) ? (
                   <div
                     className={styles.loadMore}
                     onClick={() => goToMobilePage(mobilePageIndex + 1, apiPageIndex)}
