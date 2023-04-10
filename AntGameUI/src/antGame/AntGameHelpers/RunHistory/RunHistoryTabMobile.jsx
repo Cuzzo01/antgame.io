@@ -43,7 +43,7 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
   //   }
   // }, [mobilePageIndex, allPreviousRuns, numRunsLoaded]);
 
-  const loadMoreRuns = async (numToLoad, startingPage) => {
+  const loadMoreRuns = useCallback(async (numToLoad, startingPage) => {
     var runsLoaded = 0;
     var hasLoadedAllRuns = false;
 
@@ -69,7 +69,7 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
     setHasGrabbedAllValidPrevRuns(hasLoadedAllRuns);
     setApiPageIndex(apiPage);
     return additionalRuns;
-  };
+  }, [challengeId]);
 
   const goToMobilePage = useCallback(async (page, apiPage) => {
     var mobileNumberNeededPerPage = Math.floor((window.innerHeight - 190) / 65);
@@ -81,7 +81,7 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
       allRunsCopy = [...allRunsCopy, ...(await loadMoreRuns(totalNumberNeeded - numRunsLoaded, apiPage))];
     } 
 
-var subsetForMobile = allRunsCopy.slice(
+    var subsetForMobile = allRunsCopy.slice(
         (page - 1) * mobileNumberNeededPerPage,
         page * mobileNumberNeededPerPage
       )
