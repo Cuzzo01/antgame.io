@@ -13,10 +13,37 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
   const [mobilePageIndex, setMobilePageIndex] = useState(1);
   const [allPreviousRuns, setAllPreviousRuns] = useState([]);
   const [lastPage, setLastPage] = useState(null);
+  const [anotherPage, setAnotherPage] = useState(true);
   const [numRunsLoaded, setNumRunsLoaded] = useState(0);
   const [mobileCurrentRuns, setMobileCurrentRuns] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const checkAnotherPage = useCallback((hasLoadedAllRuns) => {
+    if(!hasLoadedAllRuns){
+      console.log('havent grabbed all');
+      return true;
+    }
+    var mobileNumberNeeded = Math.floor((window.innerHeight - 230) / 62);
+
+    var lastMobilePageIndex = Math.ceil(numRunsLoaded / mobileNumberNeeded);
+    console.log(mobileNumberNeeded, lastMobilePageIndex, mobilePageIndex, numRunsLoaded);
+
+    setAnotherPage(mobilePageIndex === lastMobilePageIndex);
+  }, [ mobilePageIndex, numRunsLoaded]);
+
+  // const anotherPageExists = ({mobilePage, runsLoaded, hasLoadedAllRuns}) => {
+  //   if(!hasLoadedAllRuns){
+  //     console.log('havent grabbed all');
+  //     return true;
+  //   }
+  //   var mobileNumberNeeded = Math.floor((window.innerHeight - 230) / 62);
+
+  //   var lastMobilePageIndex = Math.ceil(runsLoaded / mobileNumberNeeded);
+  //   console.log(mobileNumberNeeded, lastMobilePageIndex, mobilePage, numRunsLoaded);
+
+  //   return (mobilePage === lastMobilePageIndex);
+  // }
+  
   const loadMoreRuns = useCallback(
     async (numToLoad, startingPage) => {
       var runsLoaded = 0;
@@ -42,6 +69,7 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
       setAllPreviousRuns(prev => [...prev, ...additionalRuns]);
       setNumRunsLoaded(prev => prev + runsLoaded);
       setHasGrabbedAllValidPrevRuns(hasLoadedAllRuns);
+      checkAnotherPage(hasLoadedAllRuns);
       setApiPageIndex(apiPage);
       return additionalRuns;
     },
@@ -50,7 +78,7 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
 
   const goToMobilePage = useCallback(
     async (page, apiPage) => {
-      var mobileNumberNeededPerPage = Math.floor((window.innerHeight - 180) / 65);
+      var mobileNumberNeededPerPage = Math.floor((window.innerHeight - 230) / 62);
       var totalNumberNeeded = mobileNumberNeededPerPage * page;
       var haveEnough = totalNumberNeeded <= numRunsLoaded;
 
@@ -66,8 +94,11 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
         (page - 1) * mobileNumberNeededPerPage,
         page * mobileNumberNeededPerPage
       );
-
       if (subsetForMobile.length < mobileNumberNeededPerPage) {
+        var numExtraNeeded = mobileNumberNeededPerPage - subsetForMobile.length;
+        for (var i = 0; i < numExtraNeeded; i++) {
+          subsetForMobile.push(null);
+        }
         setLastPage(page);
       }
       setMobileCurrentRuns([...subsetForMobile]);
@@ -81,7 +112,8 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
     console.log("in init runs");
     const initialRuns = [];
 
-    var mobileNumberNeeded = Math.floor((window.innerHeight - 190) / 65);
+    var mobileNumberNeeded = Math.floor((window.innerHeight - 230) / 62);
+    console.log(window.innerHeight, mobileNumberNeeded, window.innerHeight - 230);
     var runsLoaded = 0;
     var hasLoadedAllRuns = false;
     var apiPage = 1;
@@ -103,11 +135,16 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
     setAllPreviousRuns(initialRuns);
     setNumRunsLoaded(runsLoaded);
     setHasGrabbedAllValidPrevRuns(hasLoadedAllRuns);
+    checkAnotherPage(hasLoadedAllRuns);
     setApiPageIndex(apiPage);
 
     var subsetForMobile = initialRuns.slice(0, mobileNumberNeeded);
 
     if (subsetForMobile.length < mobileNumberNeeded) {
+      var numExtraNeeded = mobileNumberNeeded - subsetForMobile.length;
+      for (var i = 0; i < numExtraNeeded; i++) {
+        subsetForMobile.push(null);
+      }
       setLastPage(1);
     }
     setMobileCurrentRuns([...subsetForMobile]);
@@ -124,6 +161,7 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
   };
 
   const doneLoading = !loading && hasGrabbedAllValidPrevRuns !== null;
+
 
   return (
     <div className={styles.container}>
@@ -142,30 +180,24 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
                 loadRun={run => loadRunHandler(run)}
               />
             ))}
-            <div className={styles.pagingBar}>
-              {mobilePageIndex !== 1 && (
-                <div
-                  className={styles.loadMore}
-                  onClick={() => goToMobilePage(mobilePageIndex - 1, apiPageIndex)}
-                >
-                  {"<<"}
-                </div>
-              )}
-              <div className={styles.pageNumber}>
-                <> {mobilePageIndex} </>
-              </div>
-              {(!hasGrabbedAllValidPrevRuns ||
-                (lastPage !== null && mobilePageIndex !== lastPage)) && (
-                <div
-                  className={styles.loadMore}
-                  onClick={() => goToMobilePage(mobilePageIndex + 1, apiPageIndex)}
-                >
-                  {">>"}
-                </div>
-              )}
-            </div>
           </div>
-          <div className={styles.bottombar} />
+          <div className={styles.pagingBar}>
+        {mobilePageIndex !== 1 ? (
+          <span className={styles.link} onClick={() => goToMobilePage(mobilePageIndex - 1, apiPageIndex)}>
+            &lt;&lt;
+          </span>
+        ) : (
+          <span>&nbsp;&nbsp;</span>
+        )}
+        <span> {mobilePageIndex} </span>
+        {anotherPage ? (
+          <span className={styles.link} onClick={() => goToMobilePage(mobilePageIndex + 1, apiPageIndex)}>
+            &gt;&gt;
+          </span>
+        ) : (
+          <span>&nbsp;&nbsp;</span>
+        )}
+    </div>
         </>
       ) : (
         <div className={styles.loading}>Loading...</div>
@@ -175,6 +207,9 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
 };
 
 const RunEntry = ({ run, disabled, loadRun }) => {
+  if (!run) {
+    return <div className={styles.runEntryRowEmpty}></div>;
+  }
   const dateValue = new Date(run.submissionTime);
 
   let style = styles.runEntryRow;

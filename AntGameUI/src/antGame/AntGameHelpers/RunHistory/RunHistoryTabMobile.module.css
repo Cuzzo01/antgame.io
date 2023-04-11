@@ -4,7 +4,7 @@
   margin-right: 10px;
   margin-bottom: 10px;
   padding: 5px;
-  height: 100%;
+  height: calc(100vh - 100px);
   overflow: hidden;
   justify-items: center;
   display: flex;
@@ -22,7 +22,8 @@
   display: flex;
   width: 100%;
   flex-direction: column;
-  height: calc(100vh - 200px);
+  justify-content: space-evenly;
+  height: 100%;
   overflow-y: auto;
   align-items: center;
 }
@@ -40,7 +41,7 @@
 
 .title {
   font-family: "Courier Prime Bold";
-  margin: 5px;
+  margin: 2.5px;
   height: max-content;
   max-height: 40px;
 }
@@ -50,17 +51,22 @@
 }
 
 .loadMore {
-  width: fit-content;
+  width: 3.5em;
   background-color: lightgray;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  padding: 2px 15px;
+  margin: 10px;
+  padding: 2px;
   border-radius: 5px;
   border: 2px black solid;
 }
 
+.loadMoreEmpty {
+  width: 3.5em;
+  margin: 10px;
+  padding: 2px;
+}
+
 .pageNumber {
-  width: fit-content;
+  width: 3em;
   background-color: lightgray;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -70,17 +76,30 @@
   cursor: default;
 }
 
+.link {
+  text-decoration: underline;
+  color: blue;
+  cursor: pointer;
+}
+
 .runEntryRow {
   border-radius: 5px;
   border: 2px black solid;
   width: 95%;
+  height: 58px;
   display: grid;
   background-color: lightgray;
-  margin: 2.5px 5px;
+  margin: 2px 5px;
   padding: 2px;
   grid-template-areas:
     "date score"
     "time tags";
+}
+
+.runEntryRowEmpty {
+  margin: 2px 5px;
+  width: 95%;
+  height: 58px;
 }
 
 .runEntryRowDisabled {
@@ -138,5 +157,10 @@
 }
 
 .pagingBar {
+  margin: 2px 5px;
+  width: 95%;
+  font-family: "Courier Prime Bold";
+  flex: 0;
   display: flex;
+  justify-content: space-between;
 }
