@@ -1,7 +1,6 @@
 import React, { createRef } from "react";
 import Sketch from "react-p5";
 import { disableBodyScroll, enableBodyScroll } from "body-scroll-lock";
-import { isMobile } from "react-device-detect";
 
 import { Config } from "./config";
 
@@ -20,9 +19,8 @@ import { DrawAnts } from "./AntGameHelpers/Graphics/AntGraphics";
 import { MapGraphics } from "./AntGameHelpers/Graphics/MapGraphics";
 import { TrailGraphics } from "./AntGameHelpers/Graphics/TrailGraphics";
 import AuthHandler from "./Auth/AuthHandler";
-import RunHistoryTab from "./AntGameHelpers/RunHistory/RunHistoryTab";
 import { CompatibilityHelper } from "./Helpers/CompatabilityHelper";
-import RunHistoryTabMobile from "./AntGameHelpers/RunHistory/RunHistoryTabMobile";
+import RunHistoryTab from "./AntGameHelpers/RunHistory/RunHistoryTab";
 
 let canvasW, canvasH;
 
@@ -595,20 +593,12 @@ export default class AntGame extends React.Component {
           </div>
           <div className={cssStyles.innerWindow}>
             {this.showHistoryTab && !AuthHandler.isAnon && (
-              <>
-              {true ? (<RunHistoryTabMobile
+              <RunHistoryTab
                 challengeId={this.challengeID}
                 loadRunHandler={run => this.loadRunHandler(run)}
                 gameMode={this.gamemode}
                 disabled={this.state.playState}
-              ></RunHistoryTabMobile>) : (<RunHistoryTab
-                challengeId={this.challengeID}
-                loadRunHandler={run => this.loadRunHandler(run)}
-                gameMode={this.gamemode}
-                disabled={this.state.playState}
-              ></RunHistoryTab>)}
-              </>
-              
+              ></RunHistoryTab>
             )}
             <Sketch setup={this.setup} draw={this.draw} />
           </div>
