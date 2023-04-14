@@ -29,7 +29,6 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
           challengeId,
           pageIndex: apiPage,
         });
-        console.log("runs back");
         apiPage++;
         if (result) {
           additionalRuns.push(...result.runs);
@@ -49,9 +48,7 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
   );
 
   const setSubsetForMobile = useCallback((mobilePage, runs) => {
-    console.log("here!", mobilePage, runs, (mobilePage - 1) * mobileNumberNeededPerPage, mobileNumberNeededPerPage);
     var subsetForMobile = runs.slice((mobilePage - 1) * mobileNumberNeededPerPage, (mobilePage - 1) * mobileNumberNeededPerPage + mobileNumberNeededPerPage);
-    console.log('subset post slice', subsetForMobile);
 
     if (subsetForMobile.length < mobileNumberNeededPerPage) {
       var numExtraNeeded = mobileNumberNeededPerPage - subsetForMobile.length;
@@ -59,7 +56,6 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
         subsetForMobile.push(null);
       }
     }
-    console.log('subset', subsetForMobile);
     setMobileCurrentRuns([...subsetForMobile]);
   }, [mobileNumberNeededPerPage]);
 
@@ -77,20 +73,14 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
       }
 
       setSubsetForMobile(page, allRunsCopy);
-
-      console.log("mobile page", page);
       setMobilePageIndex(page);
     },
     [mobileNumberNeededPerPage, numRunsLoaded, allPreviousRuns, setSubsetForMobile, loadMoreRuns]
   );
 
-
-
   const setInitialRuns = useCallback(async () => {
     const initialRuns = await loadMoreRuns(mobileNumberNeededPerPage, 1);
-
     setSubsetForMobile(1, initialRuns);
-    console.log(initialRuns);
   }, [loadMoreRuns, mobileNumberNeededPerPage, setSubsetForMobile]);
 
   useEffect(() => {
@@ -102,7 +92,6 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
   };
 
   const doneLoading = !loading && hasGrabbedAllValidPrevRuns !== null;
-  
   const morePages = !hasGrabbedAllValidPrevRuns || (mobilePageIndex !== Math.ceil(numRunsLoaded / mobileNumberNeededPerPage))
 
   return (
