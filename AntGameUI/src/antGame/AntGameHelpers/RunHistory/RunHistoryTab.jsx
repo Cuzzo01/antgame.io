@@ -130,7 +130,7 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
         ) : (
           <span>&nbsp;&nbsp;</span>
         )}
-    </div>
+        </div>
         </>
       ) : (
         <div className={styles.loading}>Loading...</div>

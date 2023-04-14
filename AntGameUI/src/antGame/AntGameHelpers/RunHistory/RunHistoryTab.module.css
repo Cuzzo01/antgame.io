@@ -46,36 +46,6 @@
   max-height: 40px;
 }
 
-.bottombar {
-  height: 10px;
-}
-
-.loadMore {
-  width: 3.5em;
-  background-color: lightgray;
-  margin: 10px;
-  padding: 2px;
-  border-radius: 5px;
-  border: 2px black solid;
-}
-
-.loadMoreEmpty {
-  width: 3.5em;
-  margin: 10px;
-  padding: 2px;
-}
-
-.pageNumber {
-  width: 3em;
-  background-color: lightgray;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  padding: 2px 15px;
-  border-radius: 5px;
-  border: 2px black solid;
-  cursor: default;
-}
-
 .link {
   text-decoration: underline;
   color: blue;
