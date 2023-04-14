@@ -48,7 +48,9 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
   );
 
   const setSubsetForMobile = useCallback((mobilePage, runs) => {
-    var subsetForMobile = runs.slice((mobilePage - 1) * mobileNumberNeededPerPage, (mobilePage - 1) * mobileNumberNeededPerPage + mobileNumberNeededPerPage);
+    var start = (mobilePage - 1) * mobileNumberNeededPerPage;
+    var end = start + mobileNumberNeededPerPage;
+    var subsetForMobile = runs.slice(start, end);
 
     if (subsetForMobile.length < mobileNumberNeededPerPage) {
       var numExtraNeeded = mobileNumberNeededPerPage - subsetForMobile.length;
