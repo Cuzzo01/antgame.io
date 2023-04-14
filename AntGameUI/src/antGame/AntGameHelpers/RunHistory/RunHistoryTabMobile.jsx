@@ -15,6 +15,7 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
   const [numRunsLoaded, setNumRunsLoaded] = useState(0);
   const [mobileCurrentRuns, setMobileCurrentRuns] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [mobileNumberNeededPerPage, ] = useState(Math.floor((window.innerHeight - 230) / 62));
 
   const loadMoreRuns = useCallback(
     async (numToLoad, startingPage) => {
@@ -47,9 +48,23 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
     [challengeId]
   );
 
+  const setSubsetForMobile = useCallback((mobilePage, runs) => {
+    console.log("here!", mobilePage, runs, (mobilePage - 1) * mobileNumberNeededPerPage, mobileNumberNeededPerPage);
+    var subsetForMobile = runs.slice((mobilePage - 1) * mobileNumberNeededPerPage, (mobilePage - 1) * mobileNumberNeededPerPage + mobileNumberNeededPerPage);
+    console.log('subset post slice', subsetForMobile);
+
+    if (subsetForMobile.length < mobileNumberNeededPerPage) {
+      var numExtraNeeded = mobileNumberNeededPerPage - subsetForMobile.length;
+      for (var i = 0; i < numExtraNeeded; i++) {
+        subsetForMobile.push(null);
+      }
+    }
+    console.log('subset', subsetForMobile);
+    setMobileCurrentRuns([...subsetForMobile]);
+  }, [mobileNumberNeededPerPage]);
+
   const goToMobilePage = useCallback(
     async (page, apiPage) => {
-      var mobileNumberNeededPerPage = Math.floor((window.innerHeight - 230) / 62);
       var totalNumberNeeded = mobileNumberNeededPerPage * page;
       var haveEnough = totalNumberNeeded <= numRunsLoaded;
 
@@ -61,64 +76,22 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
         ];
       }
 
-      var subsetForMobile = allRunsCopy.slice(
-        (page - 1) * mobileNumberNeededPerPage,
-        page * mobileNumberNeededPerPage
-      );
-      if (subsetForMobile.length < mobileNumberNeededPerPage) {
-        var numExtraNeeded = mobileNumberNeededPerPage - subsetForMobile.length;
-        for (var i = 0; i < numExtraNeeded; i++) {
-          subsetForMobile.push(null);
-        }
-      }
-      setMobileCurrentRuns([...subsetForMobile]);
+      setSubsetForMobile(page, allRunsCopy);
+
       console.log("mobile page", page);
       setMobilePageIndex(page);
     },
-    [numRunsLoaded, allPreviousRuns, loadMoreRuns]
+    [mobileNumberNeededPerPage, numRunsLoaded, allPreviousRuns, setSubsetForMobile, loadMoreRuns]
   );
 
+
+
   const setInitialRuns = useCallback(async () => {
-    console.log("in init runs");
-    const initialRuns = [];
+    const initialRuns = await loadMoreRuns(mobileNumberNeededPerPage, 1);
 
-    var mobileNumberNeeded = Math.floor((window.innerHeight - 230) / 62);
-    console.log(window.innerHeight, mobileNumberNeeded, window.innerHeight - 230);
-    var runsLoaded = 0;
-    var hasLoadedAllRuns = false;
-    var apiPage = 1;
-    while (runsLoaded < mobileNumberNeeded && !hasLoadedAllRuns) {
-      var result = await getPreviousRunData({
-        challengeId,
-        pageIndex: apiPage,
-      });
-      console.log("runs back");
-      apiPage++;
-      if (result) {
-        initialRuns.push(...result.runs);
-        runsLoaded += result.runs.length;
-        hasLoadedAllRuns = result.reachedEndOfBatch;
-      } else {
-        hasLoadedAllRuns = true;
-      }
-    }
-    setAllPreviousRuns(initialRuns);
-    setNumRunsLoaded(runsLoaded);
-    setHasGrabbedAllValidPrevRuns(hasLoadedAllRuns);
-    setApiPageIndex(apiPage);
-
-    var subsetForMobile = initialRuns.slice(0, mobileNumberNeeded);
-
-    if (subsetForMobile.length < mobileNumberNeeded) {
-      var numExtraNeeded = mobileNumberNeeded - subsetForMobile.length;
-      for (var i = 0; i < numExtraNeeded; i++) {
-        subsetForMobile.push(null);
-      }
-    }
-    setMobileCurrentRuns([...subsetForMobile]);
+    setSubsetForMobile(1, initialRuns);
     console.log(initialRuns);
-    console.log(subsetForMobile);
-  }, [challengeId]);
+  }, [loadMoreRuns, mobileNumberNeededPerPage, setSubsetForMobile]);
 
   useEffect(() => {
     setInitialRuns().then(() => setLoading(false));
@@ -130,7 +103,7 @@ const RunHistoryTabMobile = ({ challengeId, loadRunHandler, gameMode, disabled }
 
   const doneLoading = !loading && hasGrabbedAllValidPrevRuns !== null;
   
-  const morePages = !hasGrabbedAllValidPrevRuns || (mobilePageIndex !== Math.ceil(numRunsLoaded / Math.floor((window.innerHeight - 230) / 62)))
+  const morePages = !hasGrabbedAllValidPrevRuns || (mobilePageIndex !== Math.ceil(numRunsLoaded / mobileNumberNeededPerPage))
 
   return (
     <div className={styles.container}>
