@@ -405,33 +405,40 @@ export default class AntGame extends React.Component {
       this.lastGameUpdateRunTime = new Date();
       let catchUpUpdates = 0;
       let keepGoing = true;
+      let cumulativeError = 0;
       this.gameLoopInterval = setInterval(() => {
         const timeSinceLastRun = new Date().getTime() - this.lastGameUpdateRunTime.getTime();
-        if (timeSinceLastRun > 200 && this.gamemode === "challenge") {
-          const missedUpdates = Math.floor(timeSinceLastRun / updateRate);
-          catchUpUpdates += missedUpdates;
-        } else {
-          let updates = this.gameSpeed;
-          if (catchUpUpdates) {
-            updates = this.determineUpdateCount(catchUpUpdates);
-            catchUpUpdates -= updates;
+        this.lastGameUpdateRunTime = new Date();
+
+        const updateError = timeSinceLastRun / updateRate - 1;
+        cumulativeError += updateError;
+        if (timeSinceLastRun > 200) return;
+        if (cumulativeError > 1) {
+          const additionalUpdates = Math.floor(cumulativeError);
+          catchUpUpdates += additionalUpdates;
+          cumulativeError -= additionalUpdates;
+        }
+
+        let updates = this.gameSpeed;
+        if (catchUpUpdates) {
+          const updateCount = this.determineUpdateCount(catchUpUpdates);
+          updates += updateCount;
+          catchUpUpdates -= updateCount;
+        }
+        for (let count = 0; count < updates && keepGoing; count++) {
+          this.updateCount++;
+          this.antHandler.updateAnts();
+          if (this.updateCount % TrailDecayRate === 0) {
+            this.foodTrailHandler.decayTrailMap();
+            this.foodTrailDrawer.decayTrail();
+            this.homeTrailHandler.decayTrailMap();
+            this.homeTrailDrawer.decayTrail();
           }
-          for (let count = 0; count < updates && keepGoing; count++) {
-            this.updateCount++;
-            this.antHandler.updateAnts();
-            if (this.updateCount % TrailDecayRate === 0) {
-              this.foodTrailHandler.decayTrailMap();
-              this.foodTrailDrawer.decayTrail();
-              this.homeTrailHandler.decayTrailMap();
-              this.homeTrailDrawer.decayTrail();
-            }
-            if (this.state.timerActive && this.updateCount % ticksPerSecond === 0) {
-              if (this.challengeHandler) this.challengeHandler.updateCount = this.updateCount;
-              if (!this.timerHandler.tickTime()) keepGoing = false;
-            }
+          if (this.state.timerActive && this.updateCount % ticksPerSecond === 0) {
+            if (this.challengeHandler) this.challengeHandler.updateCount = this.updateCount;
+            if (!this.timerHandler.tickTime()) keepGoing = false;
           }
         }
-        this.lastGameUpdateRunTime = new Date();
       }, updateRate);
     } else {
       clearInterval(this.challengeSnapshotInterval);
@@ -443,15 +450,15 @@ export default class AntGame extends React.Component {
   };
 
   determineUpdateCount = catchUpUpdates => {
-    if (catchUpUpdates > 900) return 10;
-    else if (catchUpUpdates > 800) return 9;
-    else if (catchUpUpdates > 700) return 8;
-    else if (catchUpUpdates > 600) return 7;
-    else if (catchUpUpdates > 500) return 6;
-    else if (catchUpUpdates > 400) return 5;
-    else if (catchUpUpdates > 300) return 4;
-    else if (catchUpUpdates > 200) return 3;
-    else if (catchUpUpdates > 100) return 2;
+    if (catchUpUpdates > 450) return 10;
+    else if (catchUpUpdates > 400) return 9;
+    else if (catchUpUpdates > 350) return 8;
+    else if (catchUpUpdates > 300) return 7;
+    else if (catchUpUpdates > 250) return 6;
+    else if (catchUpUpdates > 200) return 5;
+    else if (catchUpUpdates > 150) return 4;
+    else if (catchUpUpdates > 100) return 3;
+    else if (catchUpUpdates > 50) return 2;
     else return 1;
   };
 

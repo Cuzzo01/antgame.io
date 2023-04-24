@@ -6,4 +6,10 @@
   <url>
     <loc>https://antgame.io/sandbox</loc>
   </url>
+  <url>
+    <loc>https://antgame.io/challenge/daily/leaderboard</loc>
+  </url>
+  <url>
+    <loc>https://antgame.io/challenge/daily</loc>
+  </url>
 </urlset>

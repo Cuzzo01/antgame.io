@@ -352,8 +352,12 @@ export class ChallengeController {
 
   static async getReplayConfig(req: Request, res: Response) {
     try {
-      const id: string | ObjectId = req.params.id;
+      let id: string | ObjectId = req.params.id;
       const user = req.user as AuthToken;
+
+      if (id.toLowerCase() === "daily") {
+        id = (await DailyChallengeCache.getActiveDailyChallenge()).toString();
+      }
 
       const config = (await getChallengeByChallengeId(id)) as FullChallengeConfig | false;
       if (config === false) {
