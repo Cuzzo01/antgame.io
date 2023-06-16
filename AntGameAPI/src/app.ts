@@ -18,6 +18,7 @@ import { TokenHandlerProvider } from "./auth/WebTokenHandler";
 import { JwtResultHandler, ResponseLogger, TokenVerifier } from "./helpers/Middleware";
 import {
   accessTokenLimiter,
+  badgeRateLimiter,
   failedAccessTokenLimiter,
   failedDeleteTokenLimiter,
   failedLoginLimiter,
@@ -32,7 +33,6 @@ import { PublicController } from "./controller/PublicController";
 import { AuthController } from "./auth/AuthController";
 import { SeedController } from "./controller/SeedController";
 import { ReportController } from "./controller/ReportController";
-import { UserController } from "./controller/UserController";
 import { MapController } from "./controller/MapController";
 import { ChampionshipController } from "./controller/ChampionshipController";
 import { ServiceController } from "./controller/ServiceController";
@@ -149,15 +149,13 @@ app.get("/public/activeChallenges", PublicController.getActiveChallenges);
 app.get("/public/challengeLeaderboard/:id/:page", PublicController.getChallengeLeaderboard);
 app.get("/public/dailyList", PublicController.getDailyChallenges);
 app.get("/public/gsgp", PublicController.getGsgpData);
-app.get("/public/badges/:id", PublicController.getUserBadges);
+app.post("/public/badges", badgeRateLimiter, PublicController.getUserBadges);
 app.get("/public/user/:username", PublicController.getUserInfo);
 app.get("/public/goLiveData", PublicController.getCompatibilityGoLiveDates);
 
 app.post("/seed", getSeedLimiter, SeedController.getSeed);
 
 app.get("/championship/:id", ChampionshipController.getLeaderboard);
-
-app.post("/badges", UserController.getUserBadges);
 
 app.post("/report/assets", reportLimiter, ReportController.reportAssetLoad);
 
