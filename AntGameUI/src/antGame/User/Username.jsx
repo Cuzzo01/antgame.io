@@ -84,9 +84,11 @@ const Username = ({ name, id, showBorder = true, adminLink = false }) => {
         onClick={adminLink ? undefined : () => setShowUserPage(true)}
       >
         {name}
-        <ReactTooltip effect="solid" id={tooltipName} className={styles.tooltip}>
-          {badges}
-        </ReactTooltip>
+        {badges && (
+          <ReactTooltip effect="solid" id={tooltipName} className={styles.tooltip}>
+            {badges}
+          </ReactTooltip>
+        )}
       </span>
       {showUserPage && (
         <GenericModal
