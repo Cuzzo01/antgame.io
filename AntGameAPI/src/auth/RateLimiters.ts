@@ -109,5 +109,5 @@ export const badgeRateLimiter = rateLimit({
   skip: async () => await FlagCache.getBoolFlag("disable-account-creation-limiter"),
   standardHeaders: true,
   legacyHeaders: false,
-  keyGenerator: req => req.user ? (req.user as AuthToken).id : GetIpAddress(req),
-})
+  keyGenerator: req => (req.user ? (req.user as AuthToken).id : GetIpAddress(req)),
+});
