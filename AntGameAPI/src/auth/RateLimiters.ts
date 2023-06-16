@@ -96,9 +96,18 @@ export const reportLimiter = rateLimit({
   windowMs: 6 * 60 * 60 * 1000,
   max: 100,
   message: "Only 100 reports per user, per 6 hours allowed",
-  skip: async () => await FlagCache.getBoolFlag("disable-account-creation-limiter"),
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: req => GetIpAddress(req),
   skipFailedRequests: true,
+});
+
+export const badgeRateLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  message: "Only 10 requests per user, per 1 min allowed",
+  skip: async () => await FlagCache.getBoolFlag("disable-account-creation-limiter"),
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: req => (req.user ? (req.user as AuthToken).id : GetIpAddress(req)),
 });
