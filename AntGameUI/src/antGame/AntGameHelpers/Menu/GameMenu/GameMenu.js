@@ -32,7 +32,11 @@ export default function GameMenu({
     const buttons = [];
     if (mapClear)
       buttons.push(
-        <UploadMapButton key="upload" styles={styles.button} loadMapHandler={loadMapHandler} />
+        <UploadMapButton
+          key="upload"
+          className={`${genericStyles.divButton} ${cssStyles.button}`}
+          loadMapHandler={loadMapHandler}
+        />
       );
     else {
       var isInIframe = window.self !== window.top;
@@ -123,15 +127,14 @@ export default function GameMenu({
   );
 }
 
-const SettingButton = ({ handler, className, disabled, text }) => {
+const SettingButton = ({ handler, className = "", disabled, text }) => {
   const [clickAble, setClickable] = useState(true);
 
   if (disabled) {
     return (
       <span
-        className={`${genericStyles.divButton} ${cssStyles.buttonDisabled} ${className}`}
+        className={`${genericStyles.divButton} ${cssStyles.buttonDisabled} ${cssStyles.button} ${className}`}
         disabled={disabled}
-        style={styles.button}
       >
         {text}
       </span>
@@ -140,7 +143,6 @@ const SettingButton = ({ handler, className, disabled, text }) => {
   return (
     <span
       className={`${genericStyles.divButton} ${cssStyles.button} ${className}`}
-      style={styles.button}
       onClick={() => {
         if (clickAble) {
           setClickable(false);
@@ -153,13 +155,4 @@ const SettingButton = ({ handler, className, disabled, text }) => {
       {text}
     </span>
   );
-};
-
-const styles = {
-  button: {
-    marginLeft: "0.2rem",
-    borderRadius: "5px",
-    padding: "0.25rem 0.5rem",
-    letterSpacing: "-0.05rem",
-  },
 };
