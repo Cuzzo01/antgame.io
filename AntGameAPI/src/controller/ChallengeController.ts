@@ -115,7 +115,9 @@ export class ChallengeController {
 
       let seedCreateDate: Date;
       if (!user.anon) {
-        const minAgeSeconds = challengeConfig.seconds - Math.ceil(challengeConfig.seconds * 0.02);
+        const minGameTime = challengeConfig.seconds / 2
+        const marginOfError = Math.round(minGameTime * 0.05)
+        const minAgeSeconds = minGameTime - marginOfError;
         const { isValid, message, seedCreateTime } = await SeedBroker.checkSeed({
           seed: runData.GameConfig.seed,
           userID: user.id,
