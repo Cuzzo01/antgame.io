@@ -141,6 +141,10 @@ class ChallengeHandler {
     this.runResponseListeners[id] = null;
   }
 
+  clearResendTimeout() {
+    if (this.resendTimeout) clearTimeout(this.resendTimeout);
+  }
+
   async getConfig() {
     if (this._config) return this._config;
     if (this.loadingConfig) return this.configPromise;
@@ -265,21 +269,19 @@ class ChallengeHandler {
     this.artifact.Score = this.score;
     this.artifact.ClientID = AuthHandler.clientID;
 
-    console.log("here");
     this.sendArtifact();
     mapHandler.setHomeAmounts(mapHandler.homeFoodCounts);
   }
 
   async sendArtifact() {
     try {
-      console.log("there");
       const { result, resetTime } = await sendRunArtifact(this.artifact);
 
-      // if (result === "rateLimit") {
-      //   console.log(this.resendTimeout, resetTime);
-      //   if (this.resendTimeout) clearTimeout(this.resendTimeout);
-      //   this.resendTimeout = setTimeout(() => this.sendArtifact(), resetTime * 1000);
-      // }
+      if (result === "rateLimit") {
+        console.log(this.resendTimeout, resetTime);
+        if (this.resendTimeout) clearTimeout(this.resendTimeout);
+        this.resendTimeout = setTimeout(() => this.sendArtifact(), resetTime * 1000);
+      }
 
       this.notifyRunResponseListener(result, resetTime);
 
