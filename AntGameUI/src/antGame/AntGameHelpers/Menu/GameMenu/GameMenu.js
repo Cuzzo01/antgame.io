@@ -97,13 +97,13 @@ export default function GameMenu({
         />
       )}
       <SettingButton text={"Reset"} handler={resetHandler} disabled={playState} />
-      {IsReplay && (
+      {(IsReplay || IsChallenge) && (
         <SettingButton
           key="speed"
           text={`${speed}x`}
           handler={() => {
             const newSpeed = 2 * speed;
-            if (newSpeed > 8) setSpeed(1);
+            if ((IsReplay && newSpeed > 8) || (IsChallenge && newSpeed > 2)) setSpeed(1);
             else setSpeed(newSpeed);
           }}
         />

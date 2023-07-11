@@ -4,14 +4,23 @@ export async function sendRunArtifact(artifact) {
   return axios
     .post("/api/challenge/artifact", { data: artifact })
     .then(res => {
-      return res.data;
+      return { result: res.data };
     })
     .catch(err => {
       if (err.response.status === 409) window.location = "/";
-      else if (err.response.status === 429) return "rateLimit";
-      else if (err.response.status === 418) {
+      else if (err.response.status === 429) {
+        return {
+          result: "rateLimit",
+          resetTime: parseInt(err.response.headers["ratelimit-reset"]) + 1,
+        };
+      } else if (err.response.status === 418) {
+        try {
+          if (window.clarity) window.clarity("set", "run rejected");
+        } catch (e) {
+          console.error(e);
+        }
         setTimeout(() => window.location.reload(), 10000);
-        return "rejected";
+        return { result: "rejected" };
       } else window.location.reload();
     });
 }
