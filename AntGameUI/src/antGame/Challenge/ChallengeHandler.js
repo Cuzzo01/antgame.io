@@ -278,7 +278,6 @@ class ChallengeHandler {
       const { result, resetTime } = await sendRunArtifact(this.artifact);
 
       if (result === "rateLimit") {
-        console.log(this.resendTimeout, resetTime);
         if (this.resendTimeout) clearTimeout(this.resendTimeout);
         this.resendTimeout = setTimeout(() => this.sendArtifact(), resetTime * 1000);
       }

@@ -50,20 +50,21 @@ const ChallengeModal = props => {
       else if (showRateLimitMessage) {
         setRateLimitMessage(<>The run has been resubmitted successfully!</>);
       }
-      updateCloseMessage();
     },
-    [updateCloseMessage, showRateLimitMessage]
+    [showRateLimitMessage]
   );
 
   useEffect(() => {
     const runResponseId = ChallengeHandler.addRunResponseListener(handleRunResponse);
     const recordID = ChallengeHandler.addRecordListener(setRecords);
 
+    updateCloseMessage();
+
     return () => {
       ChallengeHandler.removeRunResponseListener(runResponseId);
       ChallengeHandler.removeRecordListener(recordID);
     };
-  }, [handleRunResponse]);
+  }, [handleRunResponse, updateCloseMessage]);
 
   useEffect(() => {
     if (!props.show) ChallengeHandler.clearResendTimeout();

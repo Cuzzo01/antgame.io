@@ -14,11 +14,6 @@ export async function sendRunArtifact(artifact) {
           resetTime: parseInt(err.response.headers["ratelimit-reset"]) + 1,
         };
       } else if (err.response.status === 418) {
-        try {
-          if (window.clarity) window.clarity("set", "run rejected");
-        } catch (e) {
-          console.error(e);
-        }
         setTimeout(() => window.location.reload(), 10000);
         return { result: "rejected" };
       } else window.location.reload();
