@@ -105,7 +105,7 @@ const ReportedConfigMatchesExpectedConfig = (
 const SystemElapsedTimeLongerThanConfigTime = (runData: RunArtifact) => {
   const systemElapsedTimeMilis = runData.Timing.SystemStopTime - runData.Timing.SystemStartTime;
   const systemElapsedTimeSecs = Math.round(systemElapsedTimeMilis / 1000);
-  const minTimeElapsed = runData.GameConfig.Time;
+  const minTimeElapsed = Math.floor(runData.GameConfig.Time / 2);
   const marginOfError = Math.round(minTimeElapsed * 0.05);
   if (systemElapsedTimeSecs < minTimeElapsed - marginOfError)
     return `(${systemElapsedTimeSecs}, ${minTimeElapsed - marginOfError})`;
