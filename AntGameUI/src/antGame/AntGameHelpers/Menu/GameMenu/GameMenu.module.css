@@ -22,7 +22,7 @@
   letter-spacing: -0.05rem;
 }
 
-@media (max-width: 1255px) {
+@media (max-width: 1265px) {
   .button,
   .buttonDisabled {
     font-size: 0.85rem;
