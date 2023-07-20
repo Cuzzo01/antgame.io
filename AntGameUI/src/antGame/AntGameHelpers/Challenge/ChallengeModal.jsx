@@ -4,16 +4,18 @@ import ChallengeHandler from "../../Challenge/ChallengeHandler";
 import AuthHandler from "../../Auth/AuthHandler";
 import GenericModal from "../../Helpers/GenericModal";
 import { useCallback } from "react";
+import Countdown from "react-countdown";
 
 const ChallengeModal = props => {
   const [isWrRun, setIsWrRun] = useState(false);
   const [records, setRecords] = useState();
   const [showRateLimitMessage, setShowRateLimitMessage] = useState(false);
+  const [rateLimitMessage, setRateLimitMessage] = useState(false);
   const [showRejectedMessage, setShowRejectedMessage] = useState(false);
   const [closeMessage, setCloseMessage] = useState("Close");
 
   const updateCloseMessage = useCallback(() => {
-    const score = props.challengeHandler?.score;
+    const score = ChallengeHandler.score;
     if (score) {
       const scoreIsNice = score.toString().endsWith("69");
       const scoreIsDoubleNice = score.toString().match(/69/gm)?.length === 2;
@@ -24,33 +26,49 @@ const ChallengeModal = props => {
 
       setCloseMessage(message);
     }
-  }, [props.challengeHandler?.score]);
+  }, []);
 
   const handleRunResponse = useCallback(
-    response => {
+    (response, resetTime) => {
       if (response === false) {
         setIsWrRun(false);
         setShowRateLimitMessage(false);
         setShowRejectedMessage(false);
-      } else if (response.isWrRun) setIsWrRun(true);
-      else if (response === "rateLimit") setShowRateLimitMessage(true);
-      else if (response === "rejected") setShowRejectedMessage(true);
-      updateCloseMessage();
+      } else if (response === "rateLimit") {
+        const resetDate = new Date();
+        resetDate.setSeconds(resetDate.getSeconds() + resetTime);
+
+        setRateLimitMessage(
+          <>
+            This run didn't count. If you keep this window open, it will be resubmitted
+            <Countdown date={resetDate} intervalDelay={1000} renderer={renderer} />.
+          </>
+        );
+        setShowRateLimitMessage(true);
+      } else if (response === "rejected") setShowRejectedMessage(true);
+      else if (response.isWrRun) setIsWrRun(true);
+      else if (showRateLimitMessage) {
+        setRateLimitMessage(<>The run has been resubmitted successfully!</>);
+      }
     },
-    [updateCloseMessage]
+    [showRateLimitMessage]
   );
 
   useEffect(() => {
-    const runResponseId = ChallengeHandler.addRunResponseListener(response =>
-      handleRunResponse(response)
-    );
-    const recordID = ChallengeHandler.addRecordListener(records => setRecords(records));
+    const runResponseId = ChallengeHandler.addRunResponseListener(handleRunResponse);
+    const recordID = ChallengeHandler.addRecordListener(setRecords);
+
+    updateCloseMessage();
 
     return () => {
       ChallengeHandler.removeRunResponseListener(runResponseId);
       ChallengeHandler.removeRecordListener(recordID);
     };
-  }, [props.show, props.challengeHandler?.isPB, handleRunResponse]);
+  }, [handleRunResponse, updateCloseMessage]);
+
+  useEffect(() => {
+    if (!props.show) ChallengeHandler.clearResendTimeout();
+  }, [props.show]);
 
   return (
     <div>
@@ -76,10 +94,10 @@ const ChallengeModal = props => {
                 {showRateLimitMessage ? (
                   <div>
                     <h3>Whoa There</h3>
-                    <span>
-                      You're submitting runs too fast. <strong>This run did not count.</strong> You
-                      can submit two runs per minute. You can submit runs again in 60 seconds.
-                    </span>
+                    <span>You're submitting runs too fast. You can submit 3 runs per minute.</span>
+                    <br />
+                    <br />
+                    {rateLimitMessage}
                   </div>
                 ) : null}
                 {showRejectedMessage ? (
@@ -115,3 +133,15 @@ const ChallengeModal = props => {
 };
 
 export default ChallengeModal;
+
+const renderer = ({ minutes, seconds, completed }) => {
+  if (completed) {
+    return " now";
+  }
+
+  let secondsLeft = 0;
+  if (minutes) secondsLeft += minutes * 60;
+  secondsLeft += seconds;
+
+  return ` in ${secondsLeft} seconds`;
+};
