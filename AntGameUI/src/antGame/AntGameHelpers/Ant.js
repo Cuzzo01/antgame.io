@@ -47,7 +47,8 @@ export class Ant {
     this.cumulativeAngle = 0;
     this.currentCell = "";
     this.foodChanged = false;
-    this.isLoggyBoi = false;
+    this.maxScores = [];
+    this.isLoggyBoi = Math.random() > 0.999;
     if (this.isLoggyBoi) {
       this.logID = Math.round(Math.random() * 10);
     }
@@ -176,6 +177,27 @@ export class Ant {
     if (this.dropsToSkip !== 0) return false;
     if (aheadScore === 0 && leftScore === 0 && rightScore === 0) return false;
 
+    if (this.rng.quick() > 0.95) {
+      const maxScore = Math.max(leftScore, aheadScore, rightScore);
+      this.maxScores.push(maxScore);
+      const maxLength = 50;
+      const halfLength = Math.round(maxLength / 2);
+      if (this.maxScores.length > maxLength) {
+        this.maxScores.shift();
+        const recentAvg =
+          this.maxScores.slice(0, halfLength).reduce((prev, curr) => prev + curr) / halfLength;
+        const oldAvg =
+          this.maxScores.slice(halfLength).reduce((prev, curr) => prev + curr) / halfLength;
+        if (oldAvg > 1000 && oldAvg * 0.9 > recentAvg) {
+          if (this.isLoggyBoi)
+            console.log(this.logID, oldAvg * 0.9 > recentAvg, oldAvg, recentAvg * 0.9);
+          this.maxScores = [];
+          this.reverse();
+          return false;
+        }
+      }
+    }
+
     if (aheadScore > 1550) {
       if (!this.lockedOnTrail) this.lockedOnTrail = true;
       if (this.missedCount) this.missedCount = 0;
@@ -185,6 +207,7 @@ export class Ant {
 
       let resetMissed = false;
       if (this.missedCount > 25 && this.hasFood) {
+        if (this.isLoggyBoi) console.log("missed with food");
         resetMissed = true;
         this.reverse();
       } else if (this.missedCount > 15 && !this.hasFood) {
@@ -233,7 +256,12 @@ export class Ant {
 
   isObjective(item) {
     if (this.hasFood) {
-      return item === this.homeBrush.value;
+      const isObjective = item === this.homeBrush.value;
+      if (isObjective) {
+        if (this.isLoggyBoi && !this.lockedOnTrail) console.log("saw home not locked");
+        if (!this.lockedOnTrail) this.lockedOnTrail = true;
+      }
+      return isObjective;
     } else {
       return item === FoodValue;
     }
