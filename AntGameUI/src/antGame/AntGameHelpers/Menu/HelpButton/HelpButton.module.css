@@ -18,3 +18,15 @@
 .center {
   margin: 0 auto;
 }
+
+@media (max-width: 630px) {
+  .button {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 470px) {
+  .button {
+    font-size: 0.6rem;
+  }
+}

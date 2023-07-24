@@ -7,9 +7,9 @@ import { LoginRequest } from "./models/LoginRequest";
 const FlagCache = FlagHandler.getCache();
 
 export const runSubmissionLimiter = rateLimit({
-  windowMs: 2 * 60 * 1000,
-  max: 4,
-  message: "Only 2 runs per user, per minute allowed",
+  windowMs: 60 * 1000,
+  max: 3,
+  message: "Only 3 runs per user, per minute allowed",
   standardHeaders: true,
   legacyHeaders: false,
   skip: req => (req.user as AuthToken).anon,
@@ -106,7 +106,6 @@ export const badgeRateLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 10,
   message: "Only 10 requests per user, per 1 min allowed",
-  skip: async () => await FlagCache.getBoolFlag("disable-account-creation-limiter"),
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: req => (req.user ? (req.user as AuthToken).id : GetIpAddress(req)),
