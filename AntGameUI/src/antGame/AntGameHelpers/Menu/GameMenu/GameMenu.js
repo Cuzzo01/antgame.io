@@ -102,9 +102,16 @@ export default function GameMenu({
           key="speed"
           text={`${speed}x`}
           handler={() => {
-            const newSpeed = 2 * speed;
-            if (newSpeed > 8) setSpeed(1);
-            else setSpeed(newSpeed);
+            if (IsReplay) {
+              let newSpeed = speed >= 8 ? 1 : 2 * speed;
+              setSpeed(newSpeed);
+            } else if (IsChallenge) {
+              if (speed !== 1) setSpeed(1);
+              else {
+                const maxSpeed = Math.floor(ChallengeHandler.config.seconds / 20);
+                setSpeed(maxSpeed);
+              }
+            }
           }}
         />
       )}
