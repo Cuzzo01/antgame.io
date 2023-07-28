@@ -35,6 +35,7 @@ class Ant {
     this.homeTrailHandler = homeTrailHandler;
     this.foodTrailHandler = foodTrailHandler;
     this.homeBrush = homeBrush;
+    this.compatibilityDate = compatibilityDate;
     this._angle = this.rng.quick() * (Math.PI * 2);
     this._front = 0;
     this._left = 0;
@@ -42,7 +43,6 @@ class Ant {
     this._right = 0;
     this.hasFood = false;
     this.dropsToSkip = CompatibilityUtility.StartWithDropsToSkip(compatibilityDate) ? 25 : 0;
-    this.compatibilityDate = compatibilityDate;
     this.distanceTraveled = 0;
     this.cumulativeAngle = 0;
     this.currentCell = "";
@@ -380,6 +380,7 @@ class Ant {
             this.foodChange();
           } else {
             this.distanceTraveled = 0;
+            this.maxScores = [];
           }
         } else if (newCell === FoodValue) {
           if (!this.hasFood) {

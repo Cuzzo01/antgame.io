@@ -41,7 +41,7 @@ export class TrailHandler {
 
     const intTrailXY = MapXYToInt(trailXY);
     // TODO: This should be rounded
-    const maxValue = 500 * (1 - transparency) + 100;
+    const maxValue = 1500 * (1 - transparency) + 100;
     const distanceOffset = TrailMapOverSampleRate * 2 + 1;
     for (let xOffset = -TrailMapOverSampleRate; xOffset <= TrailMapOverSampleRate; xOffset++) {
       for (let yOffset = -TrailMapOverSampleRate; yOffset <= TrailMapOverSampleRate; yOffset++) {

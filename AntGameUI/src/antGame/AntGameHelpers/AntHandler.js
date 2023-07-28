@@ -43,7 +43,7 @@ export class AntsHandler {
 
   async spawnAnts({ homeTrailHandler, foodTrailHandler, mapHandler, seed }) {
     if (this.deterministicMode) {
-      seed = "1";
+      seed = 1;
     }
 
     const map = mapHandler.map;
