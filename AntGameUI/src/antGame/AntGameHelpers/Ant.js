@@ -177,21 +177,19 @@ export class Ant {
     if (this.dropsToSkip !== 0) return false;
     if (aheadScore === 0 && leftScore === 0 && rightScore === 0) return false;
 
-    if (this.rng.quick() > 0.95) {
-      const maxScore = Math.max(leftScore, aheadScore, rightScore);
-      this.maxScores.push(maxScore);
-      const maxLength = 50;
-      const halfLength = Math.round(maxLength / 2);
-      if (this.maxScores.length > maxLength) {
-        this.maxScores.shift();
+    const maxScore = Math.max(leftScore, aheadScore, rightScore);
+    this.maxScores.push(maxScore);
+    const maxLength = 20;
+    const halfLength = Math.round(maxLength / 2);
+    if (this.maxScores.length > maxLength) {
+      this.maxScores.shift();
+      if (this.rng.quick() > 0.75) {
         const recentAvg =
-          this.maxScores.slice(0, halfLength).reduce((prev, curr) => prev + curr) / halfLength;
-        const oldAvg =
           this.maxScores.slice(halfLength).reduce((prev, curr) => prev + curr) / halfLength;
-        if (oldAvg > 1000 && oldAvg * 0.9 > recentAvg) {
-          if (this.isLoggyBoi)
-            console.log(this.logID, oldAvg * 0.9 > recentAvg, oldAvg, recentAvg * 0.9);
-          this.maxScores = [];
+        const oldAvg =
+          this.maxScores.slice(0, halfLength).reduce((prev, curr) => prev + curr) / halfLength;
+        if (oldAvg > 1000 && oldAvg / recentAvg > 1.2) {
+          if (this.isLoggyBoi) this.maxScores = [];
           this.reverse();
           return false;
         }
@@ -388,6 +386,7 @@ export class Ant {
             this.foodChange();
           } else {
             this.distanceTraveled = 0;
+            this.maxScores = [];
           }
         } else if (newCell === FoodValue) {
           if (!this.hasFood) {
@@ -421,6 +420,7 @@ export class Ant {
     this.dropsToSkip = 0;
     this.distanceTraveled = 0;
     this.cumulativeAngle = 0;
+    this.maxScores = [];
     if (this.lockedOnTrail) this.lockedOnTrail = false;
     this.reverse();
   }
