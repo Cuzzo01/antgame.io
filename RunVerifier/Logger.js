@@ -1,12 +1,13 @@
 class Logger {
   constructor() {
-    this.logger = require("logzio-nodejs").createLogger({
-      token: process.env.logzio_token,
-      protocol: "https",
-      host: "listener.logz.io",
-      port: "8071",
-      type: "RunVerifier",
-    });
+    if (process.env.logzio_token)
+      this.logger = require("logzio-nodejs").createLogger({
+        token: process.env.logzio_token,
+        protocol: "https",
+        host: "listener.logz.io",
+        port: "8071",
+        type: "RunVerifier",
+      });
   }
 
   init() {
