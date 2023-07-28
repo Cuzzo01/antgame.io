@@ -47,6 +47,7 @@ class Ant {
     this.cumulativeAngle = 0;
     this.currentCell = "";
     this.foodChanged = false;
+    this.maxScores = [];
   }
 
   get x() {
@@ -172,6 +173,25 @@ class Ant {
     if (this.dropsToSkip !== 0) return false;
     if (aheadScore === 0 && leftScore === 0 && rightScore === 0) return false;
 
+    const maxScore = Math.max(leftScore, aheadScore, rightScore);
+    this.maxScores.push(maxScore);
+    const maxLength = 20;
+    const halfLength = Math.round(maxLength / 2);
+    if (this.maxScores.length > maxLength) {
+      this.maxScores.shift();
+      if (this.rng.quick() > 0.75) {
+        const recentAvg =
+          this.maxScores.slice(halfLength).reduce((prev, curr) => prev + curr) / halfLength;
+        const oldAvg =
+          this.maxScores.slice(0, halfLength).reduce((prev, curr) => prev + curr) / halfLength;
+        if (oldAvg > 1000 && oldAvg / recentAvg > 1.2) {
+          this.maxScores = [];
+          this.reverse();
+          return false;
+        }
+      }
+    }
+
     if (aheadScore > 1550) {
       if (!this.lockedOnTrail) this.lockedOnTrail = true;
       if (this.missedCount) this.missedCount = 0;
@@ -229,7 +249,11 @@ class Ant {
 
   isObjective(item) {
     if (this.hasFood) {
-      return item === this.homeBrush.value;
+      const isObjective = item === this.homeBrush.value;
+      if (isObjective) {
+        if (!this.lockedOnTrail) this.lockedOnTrail = true;
+      }
+      return isObjective;
     } else {
       return item === FoodValue;
     }
@@ -389,6 +413,7 @@ class Ant {
     this.dropsToSkip = 0;
     this.distanceTraveled = 0;
     this.cumulativeAngle = 0;
+    this.maxScores = [];
     if (this.lockedOnTrail) this.lockedOnTrail = false;
     this.reverse();
   }

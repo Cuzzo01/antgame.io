@@ -189,7 +189,7 @@ export class Ant {
         const oldAvg =
           this.maxScores.slice(0, halfLength).reduce((prev, curr) => prev + curr) / halfLength;
         if (oldAvg > 1000 && oldAvg / recentAvg > 1.2) {
-          if (this.isLoggyBoi) this.maxScores = [];
+          this.maxScores = [];
           this.reverse();
           return false;
         }
@@ -205,7 +205,6 @@ export class Ant {
 
       let resetMissed = false;
       if (this.missedCount > 25 && this.hasFood) {
-        if (this.isLoggyBoi) console.log("missed with food");
         resetMissed = true;
         this.reverse();
       } else if (this.missedCount > 15 && !this.hasFood) {
@@ -256,7 +255,6 @@ export class Ant {
     if (this.hasFood) {
       const isObjective = item === this.homeBrush.value;
       if (isObjective) {
-        if (this.isLoggyBoi && !this.lockedOnTrail) console.log("saw home not locked");
         if (!this.lockedOnTrail) this.lockedOnTrail = true;
       }
       return isObjective;
