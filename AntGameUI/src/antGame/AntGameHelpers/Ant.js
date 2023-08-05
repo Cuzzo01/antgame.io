@@ -190,7 +190,8 @@ export class Ant {
           this.maxScores.slice(0, halfLength).reduce((prev, curr) => prev + curr) / halfLength;
         if (oldAvg > 1000 && oldAvg / recentAvg > 1.2) {
           this.maxScores = [];
-          this.reverse();
+          if (this.hasFood) this.reverse();
+          else this.abortTrip();
           return false;
         }
       }

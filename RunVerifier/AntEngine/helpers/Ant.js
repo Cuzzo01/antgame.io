@@ -173,24 +173,26 @@ class Ant {
     if (this.dropsToSkip !== 0) return false;
     if (aheadScore === 0 && leftScore === 0 && rightScore === 0) return false;
 
-    const maxScore = Math.max(leftScore, aheadScore, rightScore);
-    this.maxScores.push(maxScore);
-    const maxLength = 20;
-    const halfLength = Math.round(maxLength / 2);
-    if (this.maxScores.length > maxLength) {
-      this.maxScores.shift();
-      if (this.rng.quick() > 0.75) {
-        const recentAvg =
-          this.maxScores.slice(halfLength).reduce((prev, curr) => prev + curr) / halfLength;
-        const oldAvg =
-          this.maxScores.slice(0, halfLength).reduce((prev, curr) => prev + curr) / halfLength;
-        if (oldAvg > 1000 && oldAvg / recentAvg > 1.2) {
-          this.maxScores = [];
-          this.reverse();
-          return false;
-        }
-      }
-    }
+    // const maxScore = Math.max(leftScore, aheadScore, rightScore);
+    // this.maxScores.push(maxScore);
+    // const maxLength = 20;
+    // const halfLength = Math.round(maxLength / 2);
+    // if (this.maxScores.length > maxLength) {
+    //   this.maxScores.shift();
+    //   if (this.rng.quick() > 0.75) {
+    //     const recentAvg =
+    //       this.maxScores.slice(halfLength).reduce((prev, curr) => prev + curr) / halfLength;
+    //     const oldAvg =
+    //       this.maxScores.slice(0, halfLength).reduce((prev, curr) => prev + curr) / halfLength;
+    //     if (oldAvg > 1000 && oldAvg / recentAvg > 1.2) {
+    //       this.maxScores = [];
+    //       // if (this.hasFood) this.reverse();
+    //       // else this.abortTrip();
+    //       this.reverse();
+    //       return false;
+    //     }
+    //   }
+    // }
 
     if (aheadScore > 1550) {
       if (!this.lockedOnTrail) this.lockedOnTrail = true;
