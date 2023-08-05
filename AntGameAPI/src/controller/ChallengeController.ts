@@ -115,12 +115,11 @@ export class ChallengeController {
 
       let seedCreateDate: Date;
       if (!user.anon) {
-        const minAgeSeconds = challengeConfig.seconds - Math.ceil(challengeConfig.seconds * 0.02);
         const { isValid, message, seedCreateTime } = await SeedBroker.checkSeed({
           seed: runData.GameConfig.seed,
           userID: user.id,
           homeLocations: runData.HomeLocations,
-          minAgeSeconds,
+          minAgeSeconds: 19, // 3 runs per min - 1 second margin of error
         });
         seedCreateDate = seedCreateTime;
 
@@ -352,8 +351,12 @@ export class ChallengeController {
 
   static async getReplayConfig(req: Request, res: Response) {
     try {
-      const id: string | ObjectId = req.params.id;
+      let id: string | ObjectId = req.params.id;
       const user = req.user as AuthToken;
+
+      if (id.toLowerCase() === "daily") {
+        id = (await DailyChallengeCache.getActiveDailyChallenge()).toString();
+      }
 
       const config = (await getChallengeByChallengeId(id)) as FullChallengeConfig | false;
       if (config === false) {

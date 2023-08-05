@@ -64,3 +64,15 @@
   font-size: 1em !important;
   border-left: 0px solid black !important;
 }
+
+@media (max-width: 630px) {
+  .brushMenu {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 470px) {
+  .brushMenu {
+    font-size: 0.65rem;
+  }
+}

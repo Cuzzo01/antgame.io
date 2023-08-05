@@ -141,6 +141,10 @@ class ChallengeHandler {
     this.runResponseListeners[id] = null;
   }
 
+  clearResendTimeout() {
+    if (this.resendTimeout) clearTimeout(this.resendTimeout);
+  }
+
   async getConfig() {
     if (this._config) return this._config;
     if (this.loadingConfig) return this.configPromise;
@@ -197,6 +201,10 @@ class ChallengeHandler {
 
   handleStart(homeLocations) {
     this.notifyRunResponseListener(false);
+    if (this.resendTimeout) {
+      clearTimeout(this.resendTimeout);
+      this.resendTimeout = 0;
+    }
 
     const config = this.config;
     this.artifact = {};
@@ -267,15 +275,20 @@ class ChallengeHandler {
 
   async sendArtifact() {
     try {
-      const response = await sendRunArtifact(this.artifact);
+      const { result, resetTime } = await sendRunArtifact(this.artifact);
 
-      this.notifyRunResponseListener(response);
+      if (result === "rateLimit") {
+        if (this.resendTimeout) clearTimeout(this.resendTimeout);
+        this.resendTimeout = setTimeout(() => this.sendArtifact(), resetTime * 1000);
+      }
 
-      if (response.rank) this.records.rank = response.rank;
-      if (response.playerCount) this.records.playerCount = response.playerCount;
-      if (response.wr) this.records.wr = response.wr;
-      if (response.pr && this.records.pr !== response.pr) {
-        this.records.pr = response.pr;
+      this.notifyRunResponseListener(result, resetTime);
+
+      if (result.rank) this.records.rank = result.rank;
+      if (result.playerCount) this.records.playerCount = result.playerCount;
+      if (result.wr) this.records.wr = result.wr;
+      if (result.pr && this.records.pr !== result.pr) {
+        this.records.pr = result.pr;
         this.prInfo = false;
       }
 
@@ -285,10 +298,10 @@ class ChallengeHandler {
     }
   }
 
-  notifyRunResponseListener(response) {
+  notifyRunResponseListener(response, resetTime) {
     if (this.runResponseListeners)
       this.runResponseListeners.forEach(callback => {
-        if (callback) callback(response);
+        if (callback) callback(response, resetTime);
       });
   }
 

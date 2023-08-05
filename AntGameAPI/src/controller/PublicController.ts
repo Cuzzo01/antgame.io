@@ -10,6 +10,8 @@ import { UserHandler } from "../handler/UserHandler";
 import { GenerateChallengeLeaderboardData } from "../helpers/LeaderboardHelper";
 import { LoggerProvider } from "../LoggerTS";
 import { ActiveChallengeResponse, Records, RecordsEntry } from "../models/ActiveChallengeResponse";
+import { BadgeRequest } from "../models/BadgeRequest";
+import { BadgeResponse } from "../models/BadgeResponse";
 
 const Logger = LoggerProvider.getInstance();
 const ActiveChallengeCache = ActiveChallengesHandler.getCache();
@@ -162,25 +164,23 @@ export class PublicController {
 
   static async getUserBadges(req: Request, res: Response): Promise<void> {
     try {
-      const userID = req.params.id;
+      const request = req.body as BadgeRequest;
+      const userList = request.userList;
 
-      if (!userID) {
+      if (!userList || userList.length > 100) {
         res.sendStatus(400);
         return;
       }
 
-      const badges = await UserCache.getBadges(userID);
-      const ttl = UserCache.getTimeToExpire(userID);
+      const badgeResponse: BadgeResponse = {};
+      for (let i = 0; i < userList.length; i++) {
+        const userID = userList[i];
 
-      if (ttl) {
-        const maxCacheTime = await FlagCache.getIntFlag("time-to-cache-badges-external");
-        const age = maxCacheTime - ttl;
-        res.set(`Cache-Control`, `public, max-age=${maxCacheTime}`);
-        if (age > 0) res.set(`Age`, age.toString());
+        const badges = await UserCache.getBadges(userID);
+        badgeResponse[userID] = badges;
       }
 
-      if (badges) res.send(badges);
-      else res.send([]);
+      res.send(badgeResponse);
     } catch (e) {
       Logger.logError("PublicController.getUserBadges", e as Error);
       res.send(500);

@@ -6,3 +6,15 @@
 .greyedOut {
   color: lightgray;
 }
+
+@media (max-width: 630px) {
+  .container h5 {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 470px) {
+  .container h5 {
+    font-size: 0.7rem;
+  }
+}
