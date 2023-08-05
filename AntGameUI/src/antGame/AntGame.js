@@ -394,10 +394,6 @@ export default class AntGame extends React.Component {
 
       this.setMapUiUpdate(500);
       this.toggleTimer(true);
-      if (!IsReplay) {
-        this.showHistoryTab = false;
-        this.showHistoryTabSwitched = true;
-      }
 
       const ticksPerSecond = FrameRate * 1.5;
       const updateRate = Math.round(1000 / ticksPerSecond);

@@ -93,11 +93,7 @@ export default function GameMenu({
         />
       )}
       {ChallengeHandler.records.pr && (
-        <SettingButton
-          text={"History"}
-          handler={toggleShowHistory}
-          disabled={playState && IsChallenge}
-        />
+        <SettingButton text={"History"} handler={toggleShowHistory} />
       )}
       <SettingButton text={"Reset"} handler={resetHandler} disabled={playState} />
       {(IsReplay || IsChallenge) && (

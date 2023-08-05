@@ -1,30 +1,19 @@
 .container {
   min-width: 300px;
-  width: 20%;
-  margin-right: 10px;
-  margin-bottom: 10px;
   padding: 5px;
-  height: calc(100vh - 100px);
-  overflow: hidden;
-  justify-items: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  align-self: center;
+  display: grid;
+  grid-template-rows: min-content auto min-content;
+  height: 100%;
 }
 
 .loading {
   width: 100%;
-  height: calc(100vh - 150px);
 }
 
 .runsList {
   display: flex;
-  width: 100%;
   flex-direction: column;
-  justify-content: space-evenly;
-  height: 100%;
-  overflow-y: auto;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -41,9 +30,9 @@
 
 .title {
   font-family: "Courier Prime Bold";
-  margin: 2.5px;
+  margin-bottom: 0px;
   height: max-content;
-  max-height: 40px;
+  max-height: 10vh;
 }
 
 .link {
@@ -59,7 +48,6 @@
   height: 58px;
   display: grid;
   background-color: lightgray;
-  margin: 2px 5px;
   padding: 2px;
   grid-template-areas:
     "date score"
@@ -67,7 +55,6 @@
 }
 
 .runEntryRowEmpty {
-  margin: 2px 5px;
   width: 95%;
   height: 58px;
 }
@@ -128,9 +115,7 @@
 
 .pagingBar {
   margin: 2px 5px;
-  width: 95%;
   font-family: "Courier Prime Bold";
-  flex: 0;
   display: flex;
   justify-content: space-between;
 }

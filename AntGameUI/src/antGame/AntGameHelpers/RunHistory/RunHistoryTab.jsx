@@ -15,7 +15,7 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
   const [numRunsLoaded, setNumRunsLoaded] = useState(0);
   const [mobileCurrentRuns, setMobileCurrentRuns] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [mobileNumberNeededPerPage, ] = useState(Math.floor((window.innerHeight - 230) / 62));
+  const [mobileNumberNeededPerPage] = useState(Math.floor((window.innerHeight - 230) / 63));
 
   const loadMoreRuns = useCallback(
     async (numToLoad, startingPage) => {
@@ -47,19 +47,22 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
     [challengeId]
   );
 
-  const setSubsetForMobile = useCallback((mobilePage, runs) => {
-    var start = (mobilePage - 1) * mobileNumberNeededPerPage;
-    var end = start + mobileNumberNeededPerPage;
-    var subsetForMobile = runs.slice(start, end);
+  const setSubsetForMobile = useCallback(
+    (mobilePage, runs) => {
+      var start = (mobilePage - 1) * mobileNumberNeededPerPage;
+      var end = start + mobileNumberNeededPerPage;
+      var subsetForMobile = runs.slice(start, end);
 
-    if (subsetForMobile.length < mobileNumberNeededPerPage) {
-      var numExtraNeeded = mobileNumberNeededPerPage - subsetForMobile.length;
-      for (var i = 0; i < numExtraNeeded; i++) {
-        subsetForMobile.push(null);
+      if (subsetForMobile.length < mobileNumberNeededPerPage) {
+        var numExtraNeeded = mobileNumberNeededPerPage - subsetForMobile.length;
+        for (var i = 0; i < numExtraNeeded; i++) {
+          subsetForMobile.push(null);
+        }
       }
-    }
-    setMobileCurrentRuns([...subsetForMobile]);
-  }, [mobileNumberNeededPerPage]);
+      setMobileCurrentRuns([...subsetForMobile]);
+    },
+    [mobileNumberNeededPerPage]
+  );
 
   const goToMobilePage = useCallback(
     async (page, apiPage) => {
@@ -94,16 +97,20 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
   };
 
   const doneLoading = !loading && hasGrabbedAllValidPrevRuns !== null;
-  const morePages = !hasGrabbedAllValidPrevRuns || (mobilePageIndex !== Math.ceil(numRunsLoaded / mobileNumberNeededPerPage))
+  const morePages =
+    !hasGrabbedAllValidPrevRuns ||
+    mobilePageIndex !== Math.ceil(numRunsLoaded / mobileNumberNeededPerPage);
 
   return (
     <div className={styles.container}>
       {doneLoading ? (
         <>
-          <h2 className={styles.title}>Previous Run{allPreviousRuns.length > 1 && "s"}</h2>
-          {oppositeGameModeAllowed() && (
-            <a href={`/${oppositeGameMode.toLowerCase()}/${challengeId}`}>{oppositeGameMode}</a>
-          )}
+          <div>
+            <h2 className={styles.title}>Previous Run{allPreviousRuns.length > 1 && "s"}</h2>
+            {oppositeGameModeAllowed() && (
+              <a href={`/${oppositeGameMode.toLowerCase()}/${challengeId}`}>{oppositeGameMode}</a>
+            )}
+          </div>
           <div className={styles.runsList}>
             {mobileCurrentRuns.map((value, index) => (
               <RunEntry
@@ -115,22 +122,28 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
             ))}
           </div>
           <div className={styles.pagingBar}>
-        {mobilePageIndex !== 1 ? (
-          <span className={styles.link} onClick={() => goToMobilePage(mobilePageIndex - 1, apiPageIndex)}>
-            &lt;&lt;
-          </span>
-        ) : (
-          <span>&nbsp;&nbsp;</span>
-        )}
-        <span> {mobilePageIndex} </span>
-        {morePages ? (
-          <span className={styles.link} onClick={() => goToMobilePage(mobilePageIndex + 1, apiPageIndex)}>
-            &gt;&gt;
-          </span>
-        ) : (
-          <span>&nbsp;&nbsp;</span>
-        )}
-        </div>
+            {mobilePageIndex !== 1 ? (
+              <span
+                className={styles.link}
+                onClick={() => goToMobilePage(mobilePageIndex - 1, apiPageIndex)}
+              >
+                &lt;&lt;
+              </span>
+            ) : (
+              <span>&nbsp;&nbsp;</span>
+            )}
+            <span> {mobilePageIndex} </span>
+            {morePages ? (
+              <span
+                className={styles.link}
+                onClick={() => goToMobilePage(mobilePageIndex + 1, apiPageIndex)}
+              >
+                &gt;&gt;
+              </span>
+            ) : (
+              <span>&nbsp;&nbsp;</span>
+            )}
+          </div>
         </>
       ) : (
         <div className={styles.loading}>Loading...</div>
