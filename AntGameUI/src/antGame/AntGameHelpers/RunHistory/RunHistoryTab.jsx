@@ -10,12 +10,12 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
 
   const [hasGrabbedAllValidPrevRuns, setHasGrabbedAllValidPrevRuns] = useState(null);
   const [apiPageIndex, setApiPageIndex] = useState(1);
-  const [mobilePageIndex, setMobilePageIndex] = useState(1);
+  const [runsListPageIndex, setPageIndex] = useState(1);
   const [allPreviousRuns, setAllPreviousRuns] = useState([]);
   const [numRunsLoaded, setNumRunsLoaded] = useState(0);
-  const [mobileCurrentRuns, setMobileCurrentRuns] = useState([]);
+  const [currentRunsDisplaying, setCurrentRunsDisplaying] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [mobileNumberNeededPerPage] = useState(Math.floor((window.innerHeight - 230) / 63));
+  const [numberNeededPerPage] = useState(Math.floor((window.innerHeight - 230) / 63));
 
   const loadMoreRuns = useCallback(
     async (numToLoad, startingPage) => {
@@ -47,26 +47,26 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
     [challengeId]
   );
 
-  const setSubsetForMobile = useCallback(
-    (mobilePage, runs) => {
-      var start = (mobilePage - 1) * mobileNumberNeededPerPage;
-      var end = start + mobileNumberNeededPerPage;
-      var subsetForMobile = runs.slice(start, end);
+  const setSubsetToDisplay = useCallback(
+    (page, runs) => {
+      var start = (page - 1) * numberNeededPerPage;
+      var end = start + numberNeededPerPage;
+      var subsetToDisplay = runs.slice(start, end);
 
-      if (subsetForMobile.length < mobileNumberNeededPerPage) {
-        var numExtraNeeded = mobileNumberNeededPerPage - subsetForMobile.length;
+      if (subsetToDisplay.length < numberNeededPerPage) {
+        var numExtraNeeded = numberNeededPerPage - subsetToDisplay.length;
         for (var i = 0; i < numExtraNeeded; i++) {
-          subsetForMobile.push(null);
+          subsetToDisplay.push(null);
         }
       }
-      setMobileCurrentRuns([...subsetForMobile]);
+      setCurrentRunsDisplaying([...subsetToDisplay]);
     },
-    [mobileNumberNeededPerPage]
+    [numberNeededPerPage]
   );
 
-  const goToMobilePage = useCallback(
+  const goToPage = useCallback(
     async (page, apiPage) => {
-      var totalNumberNeeded = mobileNumberNeededPerPage * page;
+      var totalNumberNeeded = numberNeededPerPage * page;
       var haveEnough = totalNumberNeeded <= numRunsLoaded;
 
       var allRunsCopy = [...allPreviousRuns];
@@ -77,16 +77,16 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
         ];
       }
 
-      setSubsetForMobile(page, allRunsCopy);
-      setMobilePageIndex(page);
+      setSubsetToDisplay(page, allRunsCopy);
+      setPageIndex(page);
     },
-    [mobileNumberNeededPerPage, numRunsLoaded, allPreviousRuns, setSubsetForMobile, loadMoreRuns]
+    [numberNeededPerPage, numRunsLoaded, allPreviousRuns, setSubsetToDisplay, loadMoreRuns]
   );
 
   const setInitialRuns = useCallback(async () => {
-    const initialRuns = await loadMoreRuns(mobileNumberNeededPerPage, 1);
-    setSubsetForMobile(1, initialRuns);
-  }, [loadMoreRuns, mobileNumberNeededPerPage, setSubsetForMobile]);
+    const initialRuns = await loadMoreRuns(numberNeededPerPage, 1);
+    setSubsetToDisplay(1, initialRuns);
+  }, [loadMoreRuns, numberNeededPerPage, setSubsetToDisplay]);
 
   useEffect(() => {
     setInitialRuns().then(() => setLoading(false));
@@ -99,20 +99,18 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
   const doneLoading = !loading && hasGrabbedAllValidPrevRuns !== null;
   const morePages =
     !hasGrabbedAllValidPrevRuns ||
-    mobilePageIndex !== Math.ceil(numRunsLoaded / mobileNumberNeededPerPage);
+    runsListPageIndex !== Math.ceil(numRunsLoaded / numberNeededPerPage);
 
   return (
     <div className={styles.container}>
       {doneLoading ? (
         <>
-          <div>
-            <h2 className={styles.title}>Previous Run{allPreviousRuns.length > 1 && "s"}</h2>
-            {oppositeGameModeAllowed() && (
-              <a href={`/${oppositeGameMode.toLowerCase()}/${challengeId}`}>{oppositeGameMode}</a>
-            )}
-          </div>
+          <h2 className={styles.title}>Previous Run{allPreviousRuns.length > 1 && "s"}</h2>
+          {oppositeGameModeAllowed() && (
+            <a href={`/${oppositeGameMode.toLowerCase()}/${challengeId}`}>{oppositeGameMode}</a>
+          )}
           <div className={styles.runsList}>
-            {mobileCurrentRuns.map((value, index) => (
+            {currentRunsDisplaying.map((value, index) => (
               <RunEntry
                 run={value}
                 key={index}
@@ -122,21 +120,21 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
             ))}
           </div>
           <div className={styles.pagingBar}>
-            {mobilePageIndex !== 1 ? (
+            {runsListPageIndex !== 1 ? (
               <span
                 className={styles.link}
-                onClick={() => goToMobilePage(mobilePageIndex - 1, apiPageIndex)}
+                onClick={() => goToPage(runsListPageIndex - 1, apiPageIndex)}
               >
                 &lt;&lt;
               </span>
             ) : (
               <span>&nbsp;&nbsp;</span>
             )}
-            <span> {mobilePageIndex} </span>
+            <span> {runsListPageIndex} </span>
             {morePages ? (
               <span
                 className={styles.link}
-                onClick={() => goToMobilePage(mobilePageIndex + 1, apiPageIndex)}
+                onClick={() => goToPage(runsListPageIndex + 1, apiPageIndex)}
               >
                 &gt;&gt;
               </span>
@@ -168,9 +166,9 @@ const RunEntry = ({ run, disabled, loadRun }) => {
 
   return (
     <div className={style} onClick={action}>
-      <div className={styles.date}>{dateValue.toLocaleDateString()}</div>
-      <div className={styles.score}>{run.score}</div>
-      <div className={styles.time}>{dateValue.toLocaleTimeString()}</div>
+      <span className={styles.date}>{dateValue.toLocaleDateString()}</span>
+      <span className={styles.score}>{run.score}</span>
+      <span className={styles.time}>{dateValue.toLocaleTimeString()}</span>
       {(run.pr || run.wr) && (
         <div className={styles.tags}>
           {run.pr && <span className={styles.prText}>PR</span>}

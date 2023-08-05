@@ -2,7 +2,7 @@
   min-width: 300px;
   padding: 5px;
   display: grid;
-  grid-template-rows: min-content auto min-content;
+  grid-template-rows: min-content min-content auto min-content;
   height: 100%;
 }
 
@@ -32,7 +32,6 @@
   font-family: "Courier Prime Bold";
   margin-bottom: 0px;
   height: max-content;
-  max-height: 10vh;
 }
 
 .link {
@@ -97,7 +96,6 @@
   grid-area: tags;
   display: flex;
   justify-content: center;
-  line-height: 100%;
 }
 
 .prText {
