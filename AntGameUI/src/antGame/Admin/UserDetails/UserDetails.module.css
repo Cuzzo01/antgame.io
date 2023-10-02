@@ -1,6 +1,6 @@
 .loginListItem {
   display: grid;
-  grid-template-columns: auto auto 23em;
+  grid-template-columns: 14rem auto 3rem 6rem;
 }
 
 .challengeListItem {

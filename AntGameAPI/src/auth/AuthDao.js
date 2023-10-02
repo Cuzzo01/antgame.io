@@ -47,7 +47,7 @@ const saveNewUser = async userObject => {
   return result.insertedId;
 };
 
-const logLogin = async (userID, IPAddress, clientID) => {
+const logLogin = async (userID, IPAddress, clientID, type) => {
   const userObjectID = TryParseObjectID(userID, "userID", "AuthDao");
   const collection = await getCollection("users");
   await collection.updateOne(
@@ -61,6 +61,7 @@ const logLogin = async (userID, IPAddress, clientID) => {
               IP: IPAddress,
               clientID: clientID,
               time: new Date(),
+              type: type,
             },
           ],
           $sort: {

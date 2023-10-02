@@ -6,7 +6,7 @@
   margin: 0.5em 0;
   padding: 0.5em;
   display: grid;
-  grid-template-columns: 30% auto 15% 17%;
+  grid-template-columns: 10rem 20rem auto;
   border: 2px solid black;
   border-radius: 1em;
 }
@@ -28,7 +28,8 @@
 }
 
 .titleRow {
+  padding: 0 0.5em;
   font-weight: bold;
   display: grid;
-  grid-template-columns: 30% auto 15% 17%;
+  grid-template-columns: 10rem 20rem auto;
 }
