@@ -3,7 +3,7 @@
   padding: 5px;
   display: grid;
   grid-template-rows: min-content min-content auto min-content;
-  height: 100%;
+  height: inherit;
 }
 
 .loading {

@@ -106,9 +106,9 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
       {doneLoading ? (
         <>
           <h2 className={styles.title}>Previous Run{allPreviousRuns.length > 1 && "s"}</h2>
-          {oppositeGameModeAllowed() && (
+          {oppositeGameModeAllowed() ? (
             <a href={`/${oppositeGameMode.toLowerCase()}/${challengeId}`}>{oppositeGameMode}</a>
-          )}
+          ) : (<span />)}
           <div className={styles.runsList}>
             {currentRunsDisplaying.map((value, index) => (
               <RunEntry
