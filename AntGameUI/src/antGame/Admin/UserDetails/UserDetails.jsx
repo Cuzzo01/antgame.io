@@ -8,6 +8,7 @@ import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { StringEdit } from "../Helpers/Inputs";
 import Username from "../../User/Username";
+import FriendlyClientIdService from "./FriendlyClientIdService";
 
 const UserDetails = ({ id }) => {
   const [details, setDetails] = useState(false);
@@ -63,7 +64,7 @@ const UserDetails = ({ id }) => {
             {details.registrationData ? (
               <div>
                 <p>IP: {getFormattedIpString(details.registrationData.IP)}</p>
-                <p>ClientID: {details.registrationData.clientID}</p>
+                <p>ClientID: {getFriendlyClientId(details.registrationData.clientID)}</p>
                 <p>Date: {GetTimeString(details.registrationData.date)}</p>
                 <p>Email: {details.email ? details.email : "No Email"}</p>
               </div>
@@ -107,11 +108,16 @@ const getLoginsList = loginRecords => {
       <div className={styles.loginListItem}>
         <span title={"Local Time"}>({GetTimeString(record.time)})</span>
         <span className={styles.alignRight}>{getFormattedIpString(record.IP)}</span>
-        <span className={styles.alignRight}>{record.clientID}</span>
+        <span className={styles.alignRight}>{getFriendlyClientId(record.clientID)}</span>
+        <span className={styles.alignRight}>{record.type}</span>
       </div>
     );
   }
   return listToReturn;
+};
+
+const getFriendlyClientId = clientId => {
+  return FriendlyClientIdService.getFriendlyId(clientId);
 };
 
 const getDetailsList = challengeRecords => {

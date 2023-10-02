@@ -27,6 +27,7 @@ const UserList = () => {
         <div className={`${styles.titleRow}`}>
           <span>Username</span>
           <span>Last Login</span>
+          <span>Type</span>
         </div>
       );
     });
@@ -84,6 +85,7 @@ const UsersListElement = ({ theme, user }) => {
         {user.registrationData ? GetTimeString(user.registrationData.date) : null}
         {user.loginRecord ? GetTimeString(user.loginRecord?.time) : null}
       </span>
+      <span>{user.loginRecord?.type}</span>
     </div>
   );
 };

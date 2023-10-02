@@ -82,7 +82,7 @@ export class AuthController {
         return;
       }
 
-      await logLogin(authDetails._id.toString(), clientIP, request.clientID);
+      await logLogin(authDetails._id.toString(), clientIP, request.clientID, "login");
 
       const refreshToken = await GetRefreshToken(
         authDetails._id,
@@ -197,6 +197,8 @@ export class AuthController {
         secure: true,
         sameSite: "strict",
       });
+
+      await logLogin(userDetails._id.toString(), clientIP, clientId, "refresh");
 
       const token = await TokenHandler.generateAccessToken(tokenObject);
       res.send(token);
