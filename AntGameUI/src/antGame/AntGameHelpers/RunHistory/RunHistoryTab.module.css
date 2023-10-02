@@ -1,29 +1,19 @@
 .container {
   min-width: 300px;
-  width: 20%;
-  margin-right: 10px;
-  margin-bottom: 10px;
   padding: 5px;
-  height: 100%;
-  overflow: hidden;
-  justify-items: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  align-self: center;
+  display: grid;
+  grid-template-rows: min-content min-content auto min-content;
+  height: inherit;
 }
 
 .loading {
   width: 100%;
-  height: calc(100vh - 150px);
 }
 
 .runsList {
   display: flex;
-  width: 100%;
   flex-direction: column;
-  height: calc(100vh - 200px);
-  overflow-y: auto;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -40,36 +30,32 @@
 
 .title {
   font-family: "Courier Prime Bold";
-  margin: 5px;
+  margin-bottom: 0px;
   height: max-content;
-  max-height: 40px;
 }
 
-.bottombar {
-  height: 10px;
-}
-
-.loadMore {
-  width: fit-content;
-  background-color: lightgray;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  padding: 2px 15px;
-  border-radius: 5px;
-  border: 2px black solid;
+.link {
+  text-decoration: underline;
+  color: blue;
+  cursor: pointer;
 }
 
 .runEntryRow {
   border-radius: 5px;
   border: 2px black solid;
   width: 95%;
+  height: 58px;
   display: grid;
   background-color: lightgray;
-  margin: 2.5px 5px;
   padding: 2px;
   grid-template-areas:
     "date score"
     "time tags";
+}
+
+.runEntryRowEmpty {
+  width: 95%;
+  height: 58px;
 }
 
 .runEntryRowDisabled {
@@ -116,11 +102,19 @@
   color: white;
   background-color: #1e8449;
   padding: 0.1em;
-  margin: 2px;
+  margin: 0px 2px;
 }
+
 .wrText {
   color: white;
   background-color: #884ea0;
   padding: 0.1em;
-  margin: 2px;
+  margin: 0px 2px;
+}
+
+.pagingBar {
+  margin: 2px 5px;
+  font-family: "Courier Prime Bold";
+  display: flex;
+  justify-content: space-between;
 }

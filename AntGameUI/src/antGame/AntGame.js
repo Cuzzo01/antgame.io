@@ -19,8 +19,8 @@ import { DrawAnts } from "./AntGameHelpers/Graphics/AntGraphics";
 import { MapGraphics } from "./AntGameHelpers/Graphics/MapGraphics";
 import { TrailGraphics } from "./AntGameHelpers/Graphics/TrailGraphics";
 import AuthHandler from "./Auth/AuthHandler";
-import RunHistoryTab from "./AntGameHelpers/RunHistory/RunHistoryTab";
 import { CompatibilityHelper } from "./Helpers/CompatabilityHelper";
+import RunHistoryTab from "./AntGameHelpers/RunHistory/RunHistoryTab";
 
 let canvasW, canvasH;
 
@@ -394,10 +394,6 @@ export default class AntGame extends React.Component {
 
       this.setMapUiUpdate(500);
       this.toggleTimer(true);
-      if (!IsReplay) {
-        this.showHistoryTab = false;
-        this.showHistoryTabSwitched = true;
-      }
 
       const ticksPerSecond = FrameRate * 1.5;
       const updateRate = Math.round(1000 / ticksPerSecond);
