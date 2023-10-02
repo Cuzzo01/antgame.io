@@ -102,13 +102,14 @@
   color: white;
   background-color: #1e8449;
   padding: 0.1em;
-  margin: 2px;
+  margin: 0px 2px;
 }
+
 .wrText {
   color: white;
   background-color: #884ea0;
   padding: 0.1em;
-  margin: 2px;
+  margin: 0px 2px;
 }
 
 .pagingBar {

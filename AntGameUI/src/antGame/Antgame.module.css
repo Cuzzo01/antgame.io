@@ -8,6 +8,6 @@ html {
 }
 
 .innerWindow {
-  display: grid;
-  grid-template-columns: auto auto;
+  display: flex;
+  flex-direction: row;
 }
