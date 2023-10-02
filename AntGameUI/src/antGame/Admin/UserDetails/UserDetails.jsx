@@ -64,7 +64,7 @@ const UserDetails = ({ id }) => {
             {details.registrationData ? (
               <div>
                 <p>IP: {getFormattedIpString(details.registrationData.IP)}</p>
-                <p>ClientID: {details.registrationData.clientID}</p>
+                <p>ClientID: {getFriendlyClientId(details.registrationData.clientID)}</p>
                 <p>Date: {GetTimeString(details.registrationData.date)}</p>
                 <p>Email: {details.email ? details.email : "No Email"}</p>
               </div>
