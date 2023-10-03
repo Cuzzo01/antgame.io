@@ -12,7 +12,7 @@
   "dependencies": {
     "axios": "^0.26.1",
     "logzio-nodejs": "^2.0.3",
-    "mongodb": "^4.4.1",
+    "mongodb": "^4.17.0",
     "node-schedule": "^2.1.0",
     "prettier": "^2.5.1",
     "seedrandom": "^3.0.5",
