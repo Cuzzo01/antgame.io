@@ -5,92 +5,107 @@ import { getPreviousRunData } from "../../Challenge/ChallengeService";
 import styles from "./RunHistoryTab.module.css";
 import ChallengeHandler from "../../Challenge/ChallengeHandler";
 
+class Service {
+  loadAllRuns = async (challengeId) => {
+    var hasLoadedAll = false;
+    var apiPage = 1;
+    var allRuns = [];
+
+    while (!hasLoadedAll) {
+      var result = await getPreviousRunData({
+        challengeId,
+        pageIndex: apiPage,
+      });
+      apiPage++;
+      if (result) {
+        allRuns.push(...result.runs);
+        hasLoadedAll = result.reachedEndOfBatch;
+      } else {
+        hasLoadedAll = true;
+      }
+    }
+    return allRuns;
+  };
+
+  async getRunsBetween(challengeId, start, end) {
+    console.log(start, end);
+    var result = await this.loadAllRuns(challengeId);
+    console.log(result);
+    return { runs: result.slice(start, end), endReached: true, numLoaded: result.length };
+  }
+}
+
 const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
   const oppositeGameMode = gameMode === "replay" ? "Challenge" : "Replay";
 
   const [hasGrabbedAllValidPrevRuns, setHasGrabbedAllValidPrevRuns] = useState(null);
-  const [apiPageIndex, setApiPageIndex] = useState(1);
   const [runsListPageIndex, setPageIndex] = useState(1);
-  const [allPreviousRuns, setAllPreviousRuns] = useState([]);
   const [numRunsLoaded, setNumRunsLoaded] = useState(0);
   const [currentRunsDisplaying, setCurrentRunsDisplaying] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [numberNeededPerPage] = useState(Math.floor((window.innerHeight - 230) / 63));
+  const [numberNeededPerPage, setNumberNeededPerPage] = useState(Math.floor((window.innerHeight - 230) / 63));
+  const [startIndex, setStartIndex] = useState(0);
+  const [service] = useState(new Service());
 
-  const loadMoreRuns = useCallback(
-    async (numToLoad, startingPage) => {
-      var runsLoaded = 0;
-      var hasLoadedAllRuns = false;
 
-      var additionalRuns = [];
-      var apiPage = startingPage;
-      while (runsLoaded < numToLoad && !hasLoadedAllRuns) {
-        var result = await getPreviousRunData({
-          challengeId,
-          pageIndex: apiPage,
-        });
-        apiPage++;
-        if (result) {
-          additionalRuns.push(...result.runs);
-          runsLoaded += result.runs.length;
-          hasLoadedAllRuns = result.reachedEndOfBatch;
-        } else {
-          hasLoadedAllRuns = true;
-        }
-      }
-      setAllPreviousRuns(prev => [...prev, ...additionalRuns]);
-      setNumRunsLoaded(prev => prev + runsLoaded);
-      setHasGrabbedAllValidPrevRuns(hasLoadedAllRuns);
-      setApiPageIndex(apiPage);
-      return additionalRuns;
-    },
-    [challengeId]
-  );
 
-  const setSubsetToDisplay = useCallback(
-    (page, runs) => {
-      var start = (page - 1) * numberNeededPerPage;
-      var end = start + numberNeededPerPage;
-      var subsetToDisplay = runs.slice(start, end);
-
-      if (subsetToDisplay.length < numberNeededPerPage) {
-        var numExtraNeeded = numberNeededPerPage - subsetToDisplay.length;
-        for (var i = 0; i < numExtraNeeded; i++) {
-          subsetToDisplay.push(null);
-        }
-      }
-      setCurrentRunsDisplaying([...subsetToDisplay]);
-    },
-    [numberNeededPerPage]
-  );
 
   const goToPage = useCallback(
-    async (page, apiPage) => {
-      var totalNumberNeeded = numberNeededPerPage * page;
-      var haveEnough = totalNumberNeeded <= numRunsLoaded;
-
-      var allRunsCopy = [...allPreviousRuns];
-      if (!haveEnough) {
-        allRunsCopy = [
-          ...allRunsCopy,
-          ...(await loadMoreRuns(totalNumberNeeded - numRunsLoaded, apiPage)),
-        ];
-      }
-
-      setSubsetToDisplay(page, allRunsCopy);
-      setPageIndex(page);
+    async (page) => {
+      setLoading(true);
+      var start = (page - 1) * numberNeededPerPage;
+      var end = start + numberNeededPerPage;
+      setStartIndex(start);
+      service.getRunsBetween(challengeId, start, end).then((res) => {
+        setHasGrabbedAllValidPrevRuns(res.endReached);
+        setCurrentRunsDisplaying(res.runs);
+        setPageIndex(page);
+        setLoading(false);
+      });
     },
-    [numberNeededPerPage, numRunsLoaded, allPreviousRuns, setSubsetToDisplay, loadMoreRuns]
+    [service, challengeId, numberNeededPerPage]
   );
 
-  const setInitialRuns = useCallback(async () => {
-    const initialRuns = await loadMoreRuns(numberNeededPerPage, 1);
-    setSubsetToDisplay(1, initialRuns);
-  }, [loadMoreRuns, numberNeededPerPage, setSubsetToDisplay]);
+  useEffect(() => {
+    var start = (runsListPageIndex - 1) * numberNeededPerPage;
+    var end = start + numberNeededPerPage;
+    setStartIndex(start);
+    setLoading(true)
+    service.getRunsBetween(challengeId, start, end).then((res) => {
+      if (res.runs.length < 1 && runsListPageIndex > 1) {
+        goToPage(runsListPageIndex - 1);
+        return;
+      }
+      setHasGrabbedAllValidPrevRuns(res.endReached);
+      setCurrentRunsDisplaying(res.runs);
+      setNumRunsLoaded(res.numLoaded);
+      setLoading(false);
+    });
+  }, [service, challengeId, goToPage, numberNeededPerPage, runsListPageIndex]);
+
+  function debounce(fn, ms) {
+    let timer
+    return _ => {
+      clearTimeout(timer)
+      timer = setTimeout(_ => {
+        timer = null
+        fn.apply(this, arguments)
+      }, ms)
+    };
+  }
+
 
   useEffect(() => {
-    setInitialRuns().then(() => setLoading(false));
-  }, [setInitialRuns]);
+    const debouncedResize = debounce(function handleResize() {
+      setNumberNeededPerPage(Math.floor((window.innerHeight - 230) / 63));
+    }, 1000);
+
+    window.addEventListener('resize', debouncedResize);
+    return _ => {
+      window.removeEventListener('resize', debouncedResize)
+
+    }
+  })
 
   const oppositeGameModeAllowed = () => {
     return !(!ChallengeHandler.config.active && oppositeGameMode === "Challenge");
@@ -105,7 +120,7 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
     <div className={styles.container}>
       {doneLoading ? (
         <>
-          <h2 className={styles.title}>Previous Run{allPreviousRuns.length > 1 && "s"}</h2>
+          <h2 className={styles.title}>Previous Run{numRunsLoaded > 1 && "s"}</h2>
           {oppositeGameModeAllowed() ? (
             <a href={`/${oppositeGameMode.toLowerCase()}/${challengeId}`}>{oppositeGameMode}</a>
           ) : (<span />)}
@@ -119,11 +134,12 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
               />
             ))}
           </div>
+          <div className={styles.pagingBar}>{`Runs ${startIndex + 1} - ${startIndex + currentRunsDisplaying.length}`}</div>
           <div className={styles.pagingBar}>
             {runsListPageIndex !== 1 ? (
               <span
                 className={styles.link}
-                onClick={() => goToPage(runsListPageIndex - 1, apiPageIndex)}
+                onClick={() => goToPage(runsListPageIndex - 1)}
               >
                 &lt;&lt;
               </span>
@@ -134,7 +150,7 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
             {morePages ? (
               <span
                 className={styles.link}
-                onClick={() => goToPage(runsListPageIndex + 1, apiPageIndex)}
+                onClick={() => goToPage(runsListPageIndex + 1)}
               >
                 &gt;&gt;
               </span>
