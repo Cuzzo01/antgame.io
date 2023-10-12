@@ -78,27 +78,6 @@ const addNewConfig = async config => {
 };
 //#endregion Configs
 
-//#region Users
-const getRecentlyCreatedUsers = async count => {
-  const collection = await getCollection("users");
-  const result = await collection
-    .find({}, { projection: { username: 1, registrationData: 1, banned: 1 } })
-    .sort({ "registrationData.date": -1 })
-    .limit(count)
-    .toArray();
-  return result;
-};
-
-const getRecentlyLoggedInUsers = async count => {
-  const collection = await getCollection("users");
-  const result = await collection
-    .find({}, { projection: { username: 1, loginRecord: { $first: "$loginRecords" } } })
-    .sort({ "loginRecords.0.time": -1 })
-    .limit(count)
-    .toArray();
-  return result;
-};
-
 const getUserDetailsByID = async id => {
   const userObjectID = TryParseObjectID(id, "UserID", "AdminDao");
 
@@ -234,8 +213,6 @@ module.exports = {
   getConfigDetailsByID,
   updateConfigByID,
   addNewConfig,
-  getRecentlyCreatedUsers,
-  getRecentlyLoggedInUsers,
   getUserDetailsByID,
   updateUserByID,
   getRecentRuns,

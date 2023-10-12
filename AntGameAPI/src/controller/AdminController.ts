@@ -13,8 +13,6 @@ import {
   getFlagDetailsByID,
   getFlagListFromDB,
   getNewAccountCount,
-  getRecentlyCreatedUsers,
-  getRecentlyLoggedInUsers,
   getRecentRuns,
   getRunCount,
   getRunDetailsByID,
@@ -43,6 +41,7 @@ import { PasswordHandler } from "../auth/PasswordHandler";
 import { RunData } from "../models/Admin/RunData";
 import { getOutstandingSeedCount } from "../dao/SeedDao";
 import { ChallengeRecordDao } from "../dao/ChallengeRecordDao";
+import { AdminDao } from "../dao/AdminDaoTS";
 
 const Logger = LoggerProvider.getInstance();
 const LeaderboardCache = LeaderboardHandler.getCache();
@@ -52,6 +51,7 @@ const FlagCache = FlagHandler.getCache();
 const TokenRevokedCache = TokenRevokedHandler.getCache();
 
 const _challengeRecordDao = new ChallengeRecordDao();
+const _adminDao = new AdminDao();
 
 export class AdminController {
   //#region stats
@@ -255,33 +255,38 @@ export class AdminController {
   //#region users
   static async getUsers(req: Request, res: Response) {
     try {
-      const query = req.query as { by: string; count: string };
+      const query = req.query as { by: string; count: string, username?: string, page?: string };
+
+      let pageInt
+      if (query.page)
+        pageInt = parseInt(query.page)
+
+      const count = parseInt(query.count);
+      if (!count) {
+        send400(res, "Must specify count");
+        return;
+      } else if (count > 25) {
+        send400(res, "Count too high");
+        return;
+      }
+
+      let results;
       if (query.by === "recentlyCreated") {
-        const count = parseInt(query.count);
-        if (!count) {
-          send400(res, "Must specify count");
-          return;
-        } else if (count > 25) {
-          send400(res, "Count too high");
-          return;
-        }
-        const results = await getRecentlyCreatedUsers(count);
-        res.send(results);
+        results = await _adminDao.getRecentlyCreatedUsers(count, pageInt);
       } else if (query.by === "recentlyLoggedIn") {
-        const count = parseInt(query.count);
-        if (!count) {
-          send400(res, "Must specify count");
-          return;
-        } else if (count > 25) {
-          send400(res, "Count too high");
-          return;
-        }
-        const results = await getRecentlyLoggedInUsers(count);
-        res.send(results);
+        results = await _adminDao.getRecentlyLoggedInUsers(count, pageInt);
+      } else if (query.by === "username") {
+        let pageInt
+        if (query.page)
+          pageInt = parseInt(query.page)
+
+        results = await _adminDao.getUsersByUsername(query.username, count, pageInt);
       } else {
         send400(res, "Unknown by value");
         return;
       }
+
+      res.send(results);
     } catch (e) {
       Logger.logError("AdminController.getUsers", e);
       res.sendStatus(500);

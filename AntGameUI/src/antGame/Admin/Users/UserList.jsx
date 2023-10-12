@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getRecentlyCreatedUsers, getRecentlyLoggedInUsers } from "../AdminService";
 import { GetTimeString } from "../Helpers/FunctionHelpers";
 import styles from "./UserList.module.css";
@@ -10,42 +10,11 @@ const UserList = () => {
   const [usersToDisplay, setUsersToDisplay] = useState(false);
   const [tableHeader, setTableHeader] = useState();
 
+  useEffect(() => {});
+
   document.title = "User List";
 
-  const getUserList = getBy => {
-    if (getBy === "recentCreate") {
-      getAndSetRecentlyCreated();
-    } else if (getBy === "recentLogin") {
-      getAndSetRecentlyLoggedIn();
-    }
-  };
-
-  const getAndSetRecentlyLoggedIn = () => {
-    getRecentlyLoggedInUsers(15).then(users => {
-      buildAndSetUserList(users);
-      setTableHeader(
-        <div className={`${styles.titleRow}`}>
-          <span>Username</span>
-          <span>Last Login</span>
-          <span>Type</span>
-        </div>
-      );
-    });
-  };
-
-  const getAndSetRecentlyCreated = () => {
-    getRecentlyCreatedUsers(15).then(users => {
-      buildAndSetUserList(users);
-      setTableHeader(
-        <div className={`${styles.titleRow}`}>
-          <span>Username</span>
-          <span>Created</span>
-        </div>
-      );
-    });
-  };
-
-  const buildAndSetUserList = users => {
+  const buildAndSetUserList = useCallback(users => {
     let list = [];
     for (let i = 0; i < users.length; i++) {
       const user = users[i];
@@ -58,7 +27,43 @@ const UserList = () => {
       );
     }
     setUsersToDisplay(list);
-  };
+  }, []);
+
+  const getAndSetRecentlyLoggedIn = useCallback(() => {
+    getRecentlyLoggedInUsers(15).then(users => {
+      buildAndSetUserList(users);
+      setTableHeader(
+        <div className={`${styles.titleRow}`}>
+          <span>Username</span>
+          <span>Last Login</span>
+          <span>Type</span>
+        </div>
+      );
+    });
+  }, [buildAndSetUserList]);
+
+  const getAndSetRecentlyCreated = useCallback(() => {
+    getRecentlyCreatedUsers(15).then(users => {
+      buildAndSetUserList(users);
+      setTableHeader(
+        <div className={`${styles.titleRow}`}>
+          <span>Username</span>
+          <span>Created</span>
+        </div>
+      );
+    });
+  }, [buildAndSetUserList]);
+
+  const getUserList = useCallback(
+    getBy => {
+      if (getBy === "recentCreate") {
+        getAndSetRecentlyCreated();
+      } else if (getBy === "recentLogin") {
+        getAndSetRecentlyLoggedIn();
+      }
+    },
+    [getAndSetRecentlyCreated, getAndSetRecentlyLoggedIn]
+  );
 
   return (
     <div className={styles.container}>
