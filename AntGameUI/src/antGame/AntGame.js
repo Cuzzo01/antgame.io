@@ -600,7 +600,7 @@ export default class AntGame extends React.Component {
                 challengeId={this.challengeID}
                 loadRunHandler={run => this.loadRunHandler(run)}
                 gameMode={this.gamemode}
-                disabled={this.state.playState}
+                runLoadingDisabled={this.state.playState}
               ></RunHistoryTab>
             )}
             <Sketch setup={this.setup} draw={this.draw} />

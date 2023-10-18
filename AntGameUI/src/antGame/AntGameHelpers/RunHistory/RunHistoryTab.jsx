@@ -1,41 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useCallback } from "react";
 
-import { getPreviousRunData } from "../../Challenge/ChallengeService";
 import styles from "./RunHistoryTab.module.css";
 import ChallengeHandler from "../../Challenge/ChallengeHandler";
+import { RunHistoryService } from "./RunHistoryService";
 
-class Service {
-  loadAllRuns = async (challengeId) => {
-    var hasLoadedAll = false;
-    var apiPage = 1;
-    var allRuns = [];
-
-    while (!hasLoadedAll) {
-      var result = await getPreviousRunData({
-        challengeId,
-        pageIndex: apiPage,
-      });
-      apiPage++;
-      if (result) {
-        allRuns.push(...result.runs);
-        hasLoadedAll = result.reachedEndOfBatch;
-      } else {
-        hasLoadedAll = true;
-      }
-    }
-    return allRuns;
-  };
-
-  async getRunsBetween(challengeId, start, end) {
-    console.log(start, end);
-    var result = await this.loadAllRuns(challengeId);
-    console.log(result);
-    return { runs: result.slice(start, end), endReached: true, numLoaded: result.length };
-  }
-}
-
-const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
+const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, runLoadingDisabled }) => {
   const oppositeGameMode = gameMode === "replay" ? "Challenge" : "Replay";
 
   const [hasGrabbedAllValidPrevRuns, setHasGrabbedAllValidPrevRuns] = useState(null);
@@ -43,61 +13,76 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
   const [numRunsLoaded, setNumRunsLoaded] = useState(0);
   const [currentRunsDisplaying, setCurrentRunsDisplaying] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [numberNeededPerPage, setNumberNeededPerPage] = useState(Math.floor((window.innerHeight - 230) / 63));
-  const [startIndex, setStartIndex] = useState(0);
-  const [service] = useState(new Service());
+  const [runHistoryService] = useState(new RunHistoryService(challengeId));
 
+  const getNumberOfRunsToShowPerPage = () => {
+    return Math.floor((window.innerHeight - 230) / 63);
+  }
 
+  const [numberNeededPerPage, setNumberNeededPerPage] = useState(getNumberOfRunsToShowPerPage());
 
+  const appendEmptyPlaceholders = useCallback((runs) => {
+    var countNeeded = getNumberOfRunsToShowPerPage();
+    var extrasNeeded = countNeeded - runs.length;
+    for (var i = 0; i < extrasNeeded; i++) {
+      runs.push(null);
+    }
+    return runs;
+  }, []);
+
+  const getRunIndicesByPage = useCallback((page) => {
+    var countNeeded = getNumberOfRunsToShowPerPage();
+    var start = (page - 1) * countNeeded;
+    var end = start + countNeeded;
+    return { start, end };
+  }, []);
 
   const goToPage = useCallback(
     async (page) => {
       setLoading(true);
-      var start = (page - 1) * numberNeededPerPage;
-      var end = start + numberNeededPerPage;
-      setStartIndex(start);
-      service.getRunsBetween(challengeId, start, end).then((res) => {
+      var { start, end } = getRunIndicesByPage(page);
+      runHistoryService.getRunsBetween(start, end).then((res) => {
         setHasGrabbedAllValidPrevRuns(res.endReached);
-        setCurrentRunsDisplaying(res.runs);
+        setCurrentRunsDisplaying(appendEmptyPlaceholders(res.runs));
         setPageIndex(page);
         setLoading(false);
       });
+
     },
-    [service, challengeId, numberNeededPerPage]
+    [getRunIndicesByPage, runHistoryService, appendEmptyPlaceholders]
   );
 
   useEffect(() => {
-    var start = (runsListPageIndex - 1) * numberNeededPerPage;
-    var end = start + numberNeededPerPage;
-    setStartIndex(start);
+    var { start, end } = getRunIndicesByPage(runsListPageIndex);
+
     setLoading(true)
-    service.getRunsBetween(challengeId, start, end).then((res) => {
+    runHistoryService.getRunsBetween(start, end).then((res) => {
       if (res.runs.length < 1 && runsListPageIndex > 1) {
         goToPage(runsListPageIndex - 1);
         return;
       }
       setHasGrabbedAllValidPrevRuns(res.endReached);
-      setCurrentRunsDisplaying(res.runs);
+      setCurrentRunsDisplaying(appendEmptyPlaceholders(res.runs));
       setNumRunsLoaded(res.numLoaded);
       setLoading(false);
     });
-  }, [service, challengeId, goToPage, numberNeededPerPage, runsListPageIndex]);
-
-  function debounce(fn, ms) {
-    let timer
-    return _ => {
-      clearTimeout(timer)
-      timer = setTimeout(_ => {
-        timer = null
-        fn.apply(this, arguments)
-      }, ms)
-    };
-  }
+  }, [runHistoryService, challengeId, goToPage, numberNeededPerPage, runsListPageIndex, appendEmptyPlaceholders, getRunIndicesByPage]);
 
 
   useEffect(() => {
+    function debounce(fn, ms) {
+      let timer
+      return _ => {
+        clearTimeout(timer)
+        timer = setTimeout(_ => {
+          timer = null
+          fn.apply(this, arguments)
+        }, ms)
+      };
+    }
+
     const debouncedResize = debounce(function handleResize() {
-      setNumberNeededPerPage(Math.floor((window.innerHeight - 230) / 63));
+      setNumberNeededPerPage(getNumberOfRunsToShowPerPage());
     }, 1000);
 
     window.addEventListener('resize', debouncedResize);
@@ -129,12 +114,12 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
               <RunEntry
                 run={value}
                 key={index}
-                disabled={disabled}
+                disabled={runLoadingDisabled}
                 loadRun={run => loadRunHandler(run)}
               />
             ))}
           </div>
-          <div className={styles.pagingBar}>{`Runs ${startIndex + 1} - ${startIndex + currentRunsDisplaying.length}`}</div>
+          <div className={styles.pagingBar}>{`Runs ${getRunIndicesByPage(runsListPageIndex).start + 1} - ${getRunIndicesByPage(runsListPageIndex).start + currentRunsDisplaying.filter(x => x != null).length}`}</div>
           <div className={styles.pagingBar}>
             {runsListPageIndex !== 1 ? (
               <span
