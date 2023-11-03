@@ -42,7 +42,7 @@ const LoginPage = () => {
   function redirectOut() {
     const search = location.search;
     const params = new URLSearchParams(search);
-    const redirectLoc = params.get("redirect");
+    const redirectLoc = encodeURIComponent(params.get("redirect"));
     if (redirectLoc) window.location.replace(redirectLoc);
     else window.location.replace("/");
   }

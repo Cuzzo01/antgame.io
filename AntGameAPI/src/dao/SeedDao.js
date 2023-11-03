@@ -21,7 +21,7 @@ const saveSeed = async ({ seed, userID, homeLocations, expiresAt }) => {
 
 const getSeedData = async ({ seed }) => {
   const collection = await getCollection("seeds");
-  return await collection.findOne({ seed });
+  return await collection.findOne({ seed: { $eq: seed } });
 };
 
 const deleteSeed = async ({ seed }) => {
