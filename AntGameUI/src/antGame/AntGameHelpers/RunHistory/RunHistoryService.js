@@ -27,7 +27,7 @@ export class RunHistoryService {
             await this.loadMoreRuns();
         }
 
-        var runsToSend = this._allRuns.map((run, index) => { return { ...run, index: index + 1} }).slice(start, end);
+        var runsToSend = this._allRuns.map((run, index) => { return { ...run, index: index + 1 } }).slice(start, end);
         return { runs: runsToSend, endReached: this._hasLoadedAllRuns, numLoaded: this._allRuns.length };
     }
 }

@@ -55,7 +55,7 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, runLoadingDisabl
   useEffect(() => {
     var { start, end } = getRunIndicesByPage(runsListPageIndex);
 
-    setLoading(true)
+    setLoading(true);
     runHistoryService.getRunsBetween(start, end).then((res) => {
       if (res.runs.length < 1 && runsListPageIndex > 1) {
         goToPage(runsListPageIndex - 1);
@@ -90,7 +90,7 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, runLoadingDisabl
       window.removeEventListener('resize', debouncedResize)
 
     }
-  })
+  });
 
   const oppositeGameModeAllowed = () => {
     return !(!ChallengeHandler.config.active && oppositeGameMode === "Challenge");
@@ -166,7 +166,7 @@ const RunEntry = ({ run, disabled, loadRun }) => {
 
   return (
     <div className={style} onClick={action}>
-      <span>{run.index})</span>
+      <span>{run.index}</span>
       <div className={styles.runDetails}>
         <span className={styles.date}>{dateValue.toLocaleDateString()}</span>
         <span className={styles.score}>{run.score}</span>
