@@ -103,10 +103,19 @@ export const reportLimiter = rateLimit({
 });
 
 export const badgeRateLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 10,
+  windowMs: 30 * 1000,
+  max: 25,
   message: "Only 10 requests per user, per 1 min allowed",
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: req => (req.user ? (req.user as AuthToken).id : GetIpAddress(req)),
+});
+
+export const generalRateLimiter = rateLimit({
+  windowMs: 30 * 1000,
+  max: 100,
+  message: "Only 10 requests per user, per 1 min allowed",
+  standardHeaders: false,
+  legacyHeaders: false,
+  keyGenerator: req => GetIpAddress(req),
 });
