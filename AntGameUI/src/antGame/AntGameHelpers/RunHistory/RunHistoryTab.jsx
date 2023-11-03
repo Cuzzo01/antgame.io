@@ -119,7 +119,6 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, runLoadingDisabl
               />
             ))}
           </div>
-          <div className={styles.pagingBar}>{`Runs ${getRunIndicesByPage(runsListPageIndex).start + 1} - ${getRunIndicesByPage(runsListPageIndex).start + currentRunsDisplaying.filter(x => x != null).length}`}</div>
           <div className={styles.pagingBar}>
             {runsListPageIndex !== 1 ? (
               <span
@@ -167,15 +166,18 @@ const RunEntry = ({ run, disabled, loadRun }) => {
 
   return (
     <div className={style} onClick={action}>
-      <span className={styles.date}>{dateValue.toLocaleDateString()}</span>
-      <span className={styles.score}>{run.score}</span>
-      <span className={styles.time}>{dateValue.toLocaleTimeString()}</span>
-      {(run.pr || run.wr) && (
-        <div className={styles.tags}>
-          {run.pr && <span className={styles.prText}>PR</span>}
-          {run.wr && <span className={styles.wrText}>WR</span>}
-        </div>
-      )}
+      <span>{run.index})</span>
+      <div className={styles.runDetails}>
+        <span className={styles.date}>{dateValue.toLocaleDateString()}</span>
+        <span className={styles.score}>{run.score}</span>
+        <span className={styles.time}>{dateValue.toLocaleTimeString()}</span>
+        {(run.pr || run.wr) && (
+          <div className={styles.tags}>
+            {run.pr && <span className={styles.prText}>PR</span>}
+            {run.wr && <span className={styles.wrText}>WR</span>}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -2,7 +2,7 @@
   min-width: 300px;
   padding: 5px;
   display: grid;
-  grid-template-rows: min-content min-content auto min-content min-content;
+  grid-template-rows: min-content min-content auto min-content;
   height: inherit;
 }
 
@@ -45,9 +45,15 @@
   border: 2px black solid;
   width: 95%;
   height: 58px;
-  display: grid;
   background-color: lightgray;
   padding: 2px;
+  display: grid;
+  grid-template-columns: 2rem auto;
+  align-items: center;
+}
+
+.runDetails {
+  display: grid;
   grid-template-areas:
     "date score"
     "time tags";
