@@ -22,6 +22,7 @@ import {
   failedAccessTokenLimiter,
   failedDeleteTokenLimiter,
   failedLoginLimiter,
+  generalRateLimiter,
   getSeedLimiter,
   loginLimiter,
   registrationLimiter,
@@ -59,6 +60,7 @@ void initializeScheduledTasks();
 
 app.use(responseTime(ResponseLogger));
 app.use(express.json());
+app.use(generalRateLimiter)
 
 app.use(
   jwt({ secret: TokenHandler.secret, algorithms: ["HS256"] }).unless({
