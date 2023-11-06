@@ -19,7 +19,7 @@ export class ChallengeRecordDao {
 
     const collection = await this.getCollection();
     return await collection
-      .find({ challengeId })
+      .find({ challengeId: { $eq: challengeId } })
       .sort({ score: -1, runId: 1 })
       .limit(recordCount)
       .toArray();
@@ -57,7 +57,7 @@ export class ChallengeRecordDao {
 
     const collection = await this.getCollection();
     await collection.updateOne(
-      { challengeId, userId },
+      { challengeId: { $eq: challengeId }, userId: { $eq: userId } },
       { $set: { runId, score }, $inc: { runs: 1 } }
     );
   }
@@ -67,7 +67,10 @@ export class ChallengeRecordDao {
     if (typeof userId === "string") userId = TryParseObjectID(userId, "userId");
 
     const collection = await this.getCollection();
-    await collection.updateOne({ challengeId, userId }, { $inc: { runs: 1 } });
+    await collection.updateOne(
+      { challengeId: { $eq: challengeId }, userId: { $eq: userId } },
+      { $inc: { runs: 1 } }
+    );
   }
 
   public async getRecord(challengeId: ObjectId | string, userId: ObjectId | string) {
@@ -75,7 +78,7 @@ export class ChallengeRecordDao {
     if (typeof userId === "string") userId = TryParseObjectID(userId, "userId");
 
     const collection = await this.getCollection();
-    return await collection.findOne({ challengeId, userId });
+    return await collection.findOne({ challengeId: { $eq: challengeId }, userId: { $eq: userId } });
   }
 
   public async getUserRecords(userId: ObjectId | string, challengeIdList: ObjectId[]) {

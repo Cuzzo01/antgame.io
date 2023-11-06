@@ -10,7 +10,6 @@ import ChallengeList from "./Challenge/List/ChallengeList";
 import MOTD from "./MOTD/Motd";
 import { UserPage } from "./User/UserPage/UserPage";
 import { useState } from "react";
-import { useEffect } from "react";
 
 const SampleMaps = Config.SampleMaps;
 const PreloadMapPath = Config.SampleMaps[Config.DefaultPreload];
@@ -32,7 +31,6 @@ const AntGameRouter = () => {
     showPage && (
       <Suspense fallback={<div></div>}>
         <BrowserRouter>
-          <StripRefQuery />
           <Switch>
             <Route path="/sandbox">
               <GameModeContext.Provider value={{ mode: "sandbox" }}>
@@ -100,26 +98,6 @@ const AntGameRouter = () => {
       </Suspense>
     )
   );
-};
-
-const StripRefQuery = () => {
-  const query = useQuery();
-
-  useEffect(() => {
-    if (query.has("ref")) {
-      query.delete("ref");
-
-      const locationWithoutQuery = window.location.href.split("?")[0];
-      let newLocation = locationWithoutQuery;
-      if (!query.keys().next().done) {
-        newLocation += `?${query.toString()}`;
-      }
-
-      window.history.replaceState(null, null, newLocation);
-    }
-  }, [query]);
-
-  return null;
 };
 
 const AdminPath = () => {
