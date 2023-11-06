@@ -8,6 +8,7 @@ import {
   sendRunArtifact,
 } from "./ChallengeService";
 import AuthHandler from "../Auth/AuthHandler";
+import EventBus from "../Helpers/EventBus";
 
 class ChallengeHandler {
   constructor() {
@@ -280,6 +281,10 @@ class ChallengeHandler {
       if (result === "rateLimit") {
         if (this.resendTimeout) clearTimeout(this.resendTimeout);
         this.resendTimeout = setTimeout(() => this.sendArtifact(), resetTime * 1000);
+      }
+
+      if (result !== "rateLimit" && result !== "rejected") {
+        EventBus.dispatch("runAccepted", { artifact: this.artifact, response: result });
       }
 
       this.notifyRunResponseListener(result, resetTime);

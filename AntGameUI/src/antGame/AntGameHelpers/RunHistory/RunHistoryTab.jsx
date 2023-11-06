@@ -4,6 +4,7 @@ import { useCallback } from "react";
 import styles from "./RunHistoryTab.module.css";
 import ChallengeHandler from "../../Challenge/ChallengeHandler";
 import { RunHistoryService } from "./RunHistoryService";
+import EventBus from "../../Helpers/EventBus";
 
 const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, runLoadingDisabled }) => {
   const oppositeGameMode = gameMode === "replay" ? "Challenge" : "Replay";
@@ -92,6 +93,26 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, runLoadingDisabl
     }
   });
 
+  useEffect(() => {
+    runHistoryService.registerRunSubmittedListener();
+
+    return _ => {
+      runHistoryService.removeRunSubmittedListener();
+    }
+  }, [runHistoryService]);
+
+  const refreshRuns = useCallback(() => {
+    goToPage(runsListPageIndex);
+  }, [goToPage, runsListPageIndex]);
+
+  useEffect(() => {
+    EventBus.on("runHistoryUpdated", refreshRuns);
+
+    return _ => {
+      EventBus.remove("runHistoryUpdated");
+    }
+  }, [refreshRuns]);
+
   const oppositeGameModeAllowed = () => {
     return !(!ChallengeHandler.config.active && oppositeGameMode === "Challenge");
   };
@@ -170,7 +191,7 @@ const RunEntry = ({ run, disabled, loadRun }) => {
       <div className={styles.runDetails}>
         <span className={styles.date}>{dateValue.toLocaleDateString()}</span>
         <span className={styles.score}>{run.score}</span>
-        <span className={styles.time}>{dateValue.toLocaleTimeString()}</span>
+        <span className={styles.time}>{dateValue.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
         {(run.pr || run.wr) && (
           <div className={styles.tags}>
             {run.pr && <span className={styles.prText}>PR</span>}

@@ -1,4 +1,5 @@
 import { getPreviousRunData } from "../../Challenge/ChallengeService";
+import EventBus from "../../Helpers/EventBus";
 
 export class RunHistoryService {
     constructor(challengeId) {
@@ -29,5 +30,31 @@ export class RunHistoryService {
 
         var runsToSend = this._allRuns.map((run, index) => { return { ...run, index: index + 1 } }).slice(start, end);
         return { runs: runsToSend, endReached: this._hasLoadedAllRuns, numLoaded: this._allRuns.length };
+    }
+
+    pushNewestRunToTop(artifact, response) {
+        var newRun =
+        {
+            locations: artifact.HomeLocations,
+            amounts: JSON.parse(artifact.Snapshots?.finish[5]),
+            seed: artifact.GameConfig.seed,
+            compatibilityDate: artifact.GameConfig.compatibilityDate,
+            submissionTime: artifact.Timing.SystemStopTime,
+            score: artifact.Score,
+            pr: artifact.PB,
+            wr: response.isWrRun
+        };
+
+        this._allRuns = [newRun, ...this._allRuns];
+
+        EventBus.dispatch("runHistoryUpdated", {});
+    }
+
+    registerRunSubmittedListener() {
+        EventBus.on("runAccepted", (data) => this.pushNewestRunToTop(data.artifact, data.response));
+    }
+
+    removeRunSubmittedListener() {
+        EventBus.remove("runAccepted");
     }
 }
