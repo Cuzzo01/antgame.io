@@ -51,10 +51,10 @@ export class RunHistoryService {
     }
 
     registerRunSubmittedListener() {
-        EventBus.on("runAccepted", (data) => this.pushNewestRunToTop(data.artifact, data.response));
+        this._runAcceptedListenerId = EventBus.on("runAccepted", (data) => this.pushNewestRunToTop(data.artifact, data.response));
     }
 
     removeRunSubmittedListener() {
-        EventBus.remove("runAccepted");
+        EventBus.remove("runAccepted", this._runAcceptedListenerId);
     }
 }

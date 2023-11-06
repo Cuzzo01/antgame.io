@@ -106,10 +106,10 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, runLoadingDisabl
   }, [goToPage, runsListPageIndex]);
 
   useEffect(() => {
-    EventBus.on("runHistoryUpdated", refreshRuns);
+    var runHistoryUpdatedListenerId = EventBus.on("runHistoryUpdated", refreshRuns);
 
     return _ => {
-      EventBus.remove("runHistoryUpdated");
+      EventBus.remove("runHistoryUpdated", runHistoryUpdatedListenerId);
     }
   }, [refreshRuns]);
 
