@@ -42,9 +42,18 @@ const LoginPage = () => {
   function redirectOut() {
     const search = location.search;
     const params = new URLSearchParams(search);
-    const redirectLoc = encodeURIComponent(params.get("redirect"));
-    if (redirectLoc) window.location.replace(redirectLoc);
-    else window.location.replace("/");
+    const redirectLoc = params.get("redirect");
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+
+    let redirectUrl;
+    try {
+      redirectUrl = new URL(`${protocol}//${host}${redirectLoc}`);
+    } catch {
+      redirectUrl = `${protocol}//${host}`;
+    }
+
+    window.location.replace(redirectUrl);
   }
 
   function onSubmit(data) {

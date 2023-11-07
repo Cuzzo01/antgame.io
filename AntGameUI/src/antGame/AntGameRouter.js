@@ -1,5 +1,5 @@
 import { Config } from "./config";
-import { BrowserRouter, Switch, Route, Redirect, useParams, useLocation } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Redirect, useParams } from "react-router-dom";
 import { GameModeContext } from "./GameModeContext";
 import AuthHandler from "./Auth/AuthHandler";
 import styles from "./Helpers/GenericStyles.module.css";
@@ -147,9 +147,4 @@ const UserPageRoute = () => {
   let { username } = useParams();
   return <UserPage username={username} />;
 };
-
-function useQuery() {
-  const { search } = useLocation();
-  return React.useMemo(() => new URLSearchParams(search), [search]);
-}
 export default AntGameRouter;
