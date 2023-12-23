@@ -2,7 +2,7 @@ const listeners = new Map();
 
 const EventBus = {
   on(event, callback) {
-    var existingListeners = listeners.get(event) ?? [];
+    var existingListeners = listeners.get(event);
     var id = 0;
     if (!existingListeners) {
       listeners.set(event, []);
@@ -10,7 +10,7 @@ const EventBus = {
       id = existingListeners[existingListeners.length].id;
     }
 
-    listeners.set(event, [...(existingListeners), { id, callback }]);
+    listeners.set(event, [...(listeners.get(event) ?? []), { id, callback }]);
     return id;
   },
   dispatch(event, data) {
@@ -20,12 +20,12 @@ const EventBus = {
     }
   },
   remove(event, id) {
-    var existingListeners = listeners.get(event) ?? [];
+    var existingListeners = listeners.get(event);
     if (existingListeners) {
       listeners.set(event, existingListeners.filter(x => x.id !== id));
     }
 
-    if (existingListeners.length === 0) {
+    if (listeners.get(event).length === 0) {
       listeners.delete(event);
     }
   },
