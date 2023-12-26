@@ -1,13 +1,25 @@
+@media (max-height: 700px) {
+  .container {
+    grid-template-rows: 9vh 5vh auto 6vh;
+  }
+}
+
+@media (min-height: 700px) {
+  .container {
+    grid-template-rows: 5vh 2.5vh auto 3vh;
+  }
+}
+
 .container {
   min-width: 300px;
   padding: 5px;
   display: grid;
-  grid-template-rows: min-content min-content auto min-content;
   height: inherit;
 }
 
 .loading {
   width: 100%;
+  font-size: 2.5vh;
 }
 
 .runsList {
@@ -31,7 +43,9 @@
 .title {
   font-family: "Courier Prime Bold";
   margin-bottom: 0px;
-  height: max-content;
+  height: 100%;
+  font-size: 30px;
+  max-width: 100%;
 }
 
 .link {

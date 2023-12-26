@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useCallback } from "react";
 
 import styles from "./RunHistoryTab.module.css";
@@ -11,18 +11,23 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, runLoadingDisabl
 
   const [hasGrabbedAllValidPrevRuns, setHasGrabbedAllValidPrevRuns] = useState(null);
   const [runsListPageIndex, setPageIndex] = useState(1);
-  const [numRunsLoaded, setNumRunsLoaded] = useState(0);
+  const [numRunsLoaded, setNumRunsLoaded] = useState(null);
   const [currentRunsDisplaying, setCurrentRunsDisplaying] = useState([]);
   const [loading, setLoading] = useState(true);
   const [runHistoryService] = useState(new RunHistoryService(challengeId));
 
+  const runsList = useRef(null);
+
   const getNumberOfRunsToShowPerPage = () => {
-    return Math.floor((window.innerHeight - 230) / 63);
-  }
+    if (!runsList?.current?.offsetHeight) {
+      return undefined;
+    }
+    return Math.floor(runsList.current.offsetHeight / 63);
+  };
 
-  const [numberNeededPerPage, setNumberNeededPerPage] = useState(getNumberOfRunsToShowPerPage());
+  const [numberNeededPerPage, setNumberNeededPerPage] = useState(null);
 
-  const appendEmptyPlaceholders = useCallback((runs) => {
+  const appendEmptyPlaceholders = useCallback(runs => {
     var countNeeded = getNumberOfRunsToShowPerPage();
     var extrasNeeded = countNeeded - runs.length;
     for (var i = 0; i < extrasNeeded; i++) {
@@ -31,7 +36,7 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, runLoadingDisabl
     return runs;
   }, []);
 
-  const getRunIndicesByPage = useCallback((page) => {
+  const getRunIndicesByPage = useCallback(page => {
     var countNeeded = getNumberOfRunsToShowPerPage();
     var start = (page - 1) * countNeeded;
     var end = start + countNeeded;
@@ -39,16 +44,15 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, runLoadingDisabl
   }, []);
 
   const goToPage = useCallback(
-    async (page) => {
+    async page => {
       setLoading(true);
       var { start, end } = getRunIndicesByPage(page);
-      runHistoryService.getRunsBetween(start, end).then((res) => {
+      runHistoryService.getRunsBetween(start, end).then(res => {
         setHasGrabbedAllValidPrevRuns(res.endReached);
         setCurrentRunsDisplaying(appendEmptyPlaceholders(res.runs));
         setPageIndex(page);
         setLoading(false);
       });
-
     },
     [getRunIndicesByPage, runHistoryService, appendEmptyPlaceholders]
   );
@@ -57,7 +61,7 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, runLoadingDisabl
     var { start, end } = getRunIndicesByPage(runsListPageIndex);
 
     setLoading(true);
-    runHistoryService.getRunsBetween(start, end).then((res) => {
+    runHistoryService.getRunsBetween(start, end).then(res => {
       if (res.runs.length < 1 && runsListPageIndex > 1) {
         goToPage(runsListPageIndex - 1);
         return;
@@ -67,18 +71,25 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, runLoadingDisabl
       setNumRunsLoaded(res.numLoaded);
       setLoading(false);
     });
-  }, [runHistoryService, challengeId, goToPage, numberNeededPerPage, runsListPageIndex, appendEmptyPlaceholders, getRunIndicesByPage]);
-
+  }, [
+    runHistoryService,
+    challengeId,
+    goToPage,
+    numberNeededPerPage,
+    runsListPageIndex,
+    appendEmptyPlaceholders,
+    getRunIndicesByPage,
+  ]);
 
   useEffect(() => {
     function debounce(fn, ms) {
-      let timer
+      let timer;
       return _ => {
-        clearTimeout(timer)
+        clearTimeout(timer);
         timer = setTimeout(_ => {
-          timer = null
-          fn.apply(this, arguments)
-        }, ms)
+          timer = null;
+          fn.apply(this, arguments);
+        }, ms);
       };
     }
 
@@ -86,11 +97,10 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, runLoadingDisabl
       setNumberNeededPerPage(getNumberOfRunsToShowPerPage());
     }, 1000);
 
-    window.addEventListener('resize', debouncedResize);
+    window.addEventListener("resize", debouncedResize);
     return _ => {
-      window.removeEventListener('resize', debouncedResize)
-
-    }
+      window.removeEventListener("resize", debouncedResize);
+    };
   });
 
   useEffect(() => {
@@ -98,7 +108,7 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, runLoadingDisabl
 
     return _ => {
       runHistoryService.removeRunSubmittedListener();
-    }
+    };
   }, [runHistoryService]);
 
   const refreshRuns = useCallback(() => {
@@ -110,27 +120,39 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, runLoadingDisabl
 
     return _ => {
       EventBus.remove("runHistoryUpdated", runHistoryUpdatedListenerId);
-    }
+    };
   }, [refreshRuns]);
 
   const oppositeGameModeAllowed = () => {
     return !(!ChallengeHandler.config.active && oppositeGameMode === "Challenge");
   };
 
-  const doneLoading = !loading && hasGrabbedAllValidPrevRuns !== null;
-  const morePages =
-    !hasGrabbedAllValidPrevRuns ||
-    runsListPageIndex !== Math.ceil(numRunsLoaded / numberNeededPerPage);
+  const doneLoading = useCallback(
+    () => !loading && hasGrabbedAllValidPrevRuns !== null,
+    [hasGrabbedAllValidPrevRuns, loading]
+  );
+  const morePages = useCallback(() => {
+    var numNeeded = getNumberOfRunsToShowPerPage();
+    return (
+      doneLoading() &&
+      (!hasGrabbedAllValidPrevRuns ||
+        (numNeeded && runsListPageIndex !== Math.ceil(numRunsLoaded / numNeeded)))
+    );
+  }, [doneLoading, hasGrabbedAllValidPrevRuns, numRunsLoaded, runsListPageIndex]);
 
   return (
     <div className={styles.container}>
-      {doneLoading ? (
-        <>
-          <h2 className={styles.title}>Previous Run{numRunsLoaded > 1 && "s"}</h2>
-          {oppositeGameModeAllowed() ? (
-            <a href={`/${oppositeGameMode.toLowerCase()}/${challengeId}`}>{oppositeGameMode}</a>
-          ) : (<span />)}
-          <div className={styles.runsList}>
+      <>
+        <p className={styles.title}>
+          {doneLoading() ? `Previous Run${`${numRunsLoaded > 1}` && "s"}` : ""}
+        </p>
+        {oppositeGameModeAllowed() && doneLoading() ? (
+          <a href={`/${oppositeGameMode.toLowerCase()}/${challengeId}`}>{oppositeGameMode}</a>
+        ) : (
+          <span />
+        )}
+        {doneLoading() ? (
+          <div className={styles.runsList} ref={runsList}>
             {currentRunsDisplaying.map((value, index) => (
               <RunEntry
                 run={value}
@@ -140,33 +162,29 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, runLoadingDisabl
               />
             ))}
           </div>
-          <div className={styles.pagingBar}>
-            {runsListPageIndex !== 1 ? (
-              <span
-                className={styles.link}
-                onClick={() => goToPage(runsListPageIndex - 1)}
-              >
-                &lt;&lt;
-              </span>
-            ) : (
-              <span>&nbsp;&nbsp;</span>
-            )}
-            <span> {runsListPageIndex} </span>
-            {morePages ? (
-              <span
-                className={styles.link}
-                onClick={() => goToPage(runsListPageIndex + 1)}
-              >
-                &gt;&gt;
-              </span>
-            ) : (
-              <span>&nbsp;&nbsp;</span>
-            )}
+        ) : (
+          <div className={styles.loading} ref={runsList}>
+            Loading...
           </div>
-        </>
-      ) : (
-        <div className={styles.loading}>Loading...</div>
-      )}
+        )}
+        <div className={styles.pagingBar}>
+          {runsListPageIndex !== 1 ? (
+            <span className={styles.link} onClick={() => goToPage(runsListPageIndex - 1)}>
+              &lt;&lt;
+            </span>
+          ) : (
+            <span>&nbsp;&nbsp;</span>
+          )}
+          <span> {runsListPageIndex} </span>
+          {morePages() ? (
+            <span className={styles.link} onClick={() => goToPage(runsListPageIndex + 1)}>
+              &gt;&gt;
+            </span>
+          ) : (
+            <span>&nbsp;&nbsp;</span>
+          )}
+        </div>
+      </>
     </div>
   );
 };
@@ -191,7 +209,9 @@ const RunEntry = ({ run, disabled, loadRun }) => {
       <div className={styles.runDetails}>
         <span className={styles.date}>{dateValue.toLocaleDateString()}</span>
         <span className={styles.score}>{run.score}</span>
-        <span className={styles.time}>{dateValue.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+        <span className={styles.time}>
+          {dateValue.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+        </span>
         {(run.pr || run.wr) && (
           <div className={styles.tags}>
             {run.pr && <span className={styles.prText}>PR</span>}
