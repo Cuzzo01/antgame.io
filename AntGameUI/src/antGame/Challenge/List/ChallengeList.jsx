@@ -26,7 +26,13 @@ const ChallengeList = () => {
   const history = useHistory();
 
   useEffect(() => {
-    document.title = "AntGame.io";
+    document.title = "AntGame";
+    document
+      .querySelector('meta[name="description"]')
+      .setAttribute(
+        "content",
+        "A daily puzzle game built around an ant simulator. Help the ants eat the most food to climb the leaderboard!"
+      );
     if (AuthHandler.loggedIn && !AuthHandler.isAnon) {
       getActiveChallenges().then(challengeResponse => setData({ challengeResponse }));
     } else {

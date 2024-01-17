@@ -109,6 +109,12 @@ export default class AntGame extends React.Component {
       });
     } else if (this.gamemode === "sandbox") {
       document.title = "Sandbox Mode - AntGame";
+      document
+        .querySelector('meta[name="description"]')
+        .setAttribute(
+          "content",
+          "Build your own maps and watch the ants navigate them to find the food and bring it back home."
+        );
     }
 
     this.mapHandler.gameMode = this.gamemode;
