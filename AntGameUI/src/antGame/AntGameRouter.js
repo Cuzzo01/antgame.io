@@ -32,7 +32,7 @@ const AntGameRouter = () => {
       var newUrl = window.location.protocol + "//" + newDomain + window.location.pathname + window.location.search;
       window.location.replace(newUrl);
     }
-  });
+  }, []);
 
   return (
     showPage && (
