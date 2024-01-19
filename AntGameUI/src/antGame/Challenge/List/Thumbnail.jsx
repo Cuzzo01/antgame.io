@@ -7,10 +7,7 @@ export const Thumbnail = ({ url, isDaily = false }) => {
 
   return (
     <div className={`${styles.thumbnail} ${isDaily && styles.dailyThumbnail}`}>
-      <div
-        className={styles.thumbnailContainer}
-        style={thumbnailLoading ? { display: "none" } : null}
-      >
+      <div className={styles.thumbnailContainer} style={thumbnailLoading ? { display: "none" } : null}>
         <img
           src={url}
           alt="Map thumbnail"
@@ -20,11 +17,7 @@ export const Thumbnail = ({ url, isDaily = false }) => {
       </div>
       {thumbnailLoading && !isDaily ? (
         <div className={styles.thumbnailLoader}>
-          {!url || thumbnailLoading === "error" ? (
-            <div>No Thumbnail</div>
-          ) : (
-            <img src={loaderGif} alt="Loader" />
-          )}
+          {!url || thumbnailLoading === "error" ? <div>No Thumbnail</div> : <img src={loaderGif} alt="Loader" />}
         </div>
       ) : null}
     </div>

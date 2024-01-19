@@ -14,11 +14,7 @@ const UploadMapButton = props => {
   return (
     <div style={{ display: "inline" }}>
       <input type="file" ref={inputFile} onChange={handleMapLoad} style={{ display: "none" }} />
-      <button
-        className={props.className}
-        disabled={props.playState}
-        onClick={() => inputFile.current.click()}
-      >
+      <button className={props.className} disabled={props.playState} onClick={() => inputFile.current.click()}>
         Load
       </button>
     </div>

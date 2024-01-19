@@ -45,10 +45,7 @@ export class MapGraphics {
   setupMap(canvasWidth, canvasHeight) {
     const drawableWidth = canvasWidth - BorderWeight * 2;
     const drawableHeight = canvasHeight - BorderWeight * 2;
-    this.pixelDensity = [
-      (drawableWidth / MapBounds[0]).toFixed(2),
-      (drawableHeight / MapBounds[1]).toFixed(2),
-    ];
+    this.pixelDensity = [(drawableWidth / MapBounds[0]).toFixed(2), (drawableHeight / MapBounds[1]).toFixed(2)];
     this.cellPixelInfo = [
       this.getPixelSizeInfo(MapBounds[0], drawableWidth),
       this.getPixelSizeInfo(MapBounds[1], drawableHeight),
@@ -60,8 +57,7 @@ export class MapGraphics {
       if (brush.decayable) {
         for (let i = 1; i <= BlockDecaySteps; i++) {
           const index = brush.value + i;
-          const alpha =
-            Math.round((255 - MinDecayableAlpha) * (i / BlockDecaySteps)) + MinDecayableAlpha;
+          const alpha = Math.round((255 - MinDecayableAlpha) * (i / BlockDecaySteps)) + MinDecayableAlpha;
           this.brushColors[index] = this._graphics.color(brush.color);
           this.brushColors[index].setAlpha(alpha);
         }
@@ -204,9 +200,7 @@ export class MapGraphics {
   canvasLocationInsideRange(canvasLocation, drawingInfo) {
     const adjustedLocation = canvasLocation - BorderWeight;
     const startingPixel = drawingInfo.startingPixel;
-    return (
-      startingPixel <= adjustedLocation && adjustedLocation <= startingPixel + drawingInfo.weight
-    );
+    return startingPixel <= adjustedLocation && adjustedLocation <= startingPixel + drawingInfo.weight;
   }
 }
 

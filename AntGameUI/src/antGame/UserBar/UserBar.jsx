@@ -32,11 +32,7 @@ const UserBar = ({ showRecords, showLinkToSandbox, showLinkHome }) => {
           </div>
         ) : (
           <div>
-            <Username
-              id={AuthHandler.decodedToken.id}
-              name={AuthHandler.username}
-              showBorder={false}
-            />
+            <Username id={AuthHandler.decodedToken.id} name={AuthHandler.username} showBorder={false} />
             <Link
               className={styles.loginLink}
               to="/"

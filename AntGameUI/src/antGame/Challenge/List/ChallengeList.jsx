@@ -47,8 +47,7 @@ const ChallengeList = () => {
     else setChampionshipCard();
 
     const yesterdaysDailyData = challengeResponse.yesterdaysDailyData;
-    if (yesterdaysDailyData)
-      setYesterdaysDailyCard(<YesterdaysDailyCard data={yesterdaysDailyData} />);
+    if (yesterdaysDailyData) setYesterdaysDailyCard(<YesterdaysDailyCard data={yesterdaysDailyData} />);
     else setYesterdaysDailyCard();
 
     let list = [];

@@ -27,11 +27,10 @@ const InfoButton = ({ pointMap }) => {
             <div>
               <div className={styles.section}>
                 <h5 className={styles.bold}>How it works</h5>
-                &#8226;&nbsp;Points in the monthly championship are awarded based on each players
-                final leaderboard rank for each daily challenge.
+                &#8226;&nbsp;Points in the monthly championship are awarded based on each players final leaderboard rank
+                for each daily challenge.
                 <br />
-                &#8226;&nbsp;Each championship runs for one month. A new championship begins on the
-                first of each month.
+                &#8226;&nbsp;Each championship runs for one month. A new championship begins on the first of each month.
                 <br />
                 &#8226;&nbsp;Point breakdowns could change month to month.
               </div>
@@ -43,8 +42,7 @@ const InfoButton = ({ pointMap }) => {
                     <table>{pointsTable}</table>
                   </div>
                 )}
-                &#8226;&nbsp;Top XX% points are only awarded to those not already receiving points
-                for their rank.
+                &#8226;&nbsp;Top XX% points are only awarded to those not already receiving points for their rank.
               </div>
             </div>
           }
@@ -70,9 +68,7 @@ const buildPointTable = pointMap => {
   for (let i = 0; i < halfPoint; i++) {
     const pair1Display = getDisplayFromPointObject(pointMap[i]);
     const pair2Display =
-      pointMap[i + halfPoint] !== undefined
-        ? getDisplayFromPointObject(pointMap[i + halfPoint])
-        : false;
+      pointMap[i + halfPoint] !== undefined ? getDisplayFromPointObject(pointMap[i + halfPoint]) : false;
     if (pair2Display !== false) {
       table.push(
         <tr key={i}>

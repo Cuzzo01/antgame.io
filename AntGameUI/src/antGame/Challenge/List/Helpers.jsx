@@ -11,9 +11,7 @@ export const WRDisplay = ({ wr }) => {
     return (
       <span>
         {wr.score}-<Username id={wr.id} name={wr.username} />
-        {totalLength < 15 ? (
-          <span className={`${styles.smallText} ${styles.age}`}>({wr.age} ago)</span>
-        ) : null}
+        {totalLength < 15 ? <span className={`${styles.smallText} ${styles.age}`}>({wr.age} ago)</span> : null}
         {totalLength >= 15 && totalLength < 18 ? (
           <span className={`${styles.smallText} ${styles.age}`}>({wr.age})</span>
         ) : null}

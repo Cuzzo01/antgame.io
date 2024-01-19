@@ -112,19 +112,14 @@ const ConfigDetails = props => {
             />
           </div>
           <div className={styles.recordsSection}>
-            <ExpandList
-              title={"Records"}
-              itemsToList={getRecordsList(details.records)}
-              emptyMessage={"No Records"}
-            />
+            <ExpandList title={"Records"} itemsToList={getRecordsList(details.records)} emptyMessage={"No Records"} />
           </div>
           <div className={adminStyles.divSection}>
             <h5>Championships</h5>
             {details.championshipID ? (
               <div>
                 <h6>
-                  Enrolled in championship (
-                  <Link to={`/admin/championship/${details.championshipID}`}>Link</Link>)
+                  Enrolled in championship (<Link to={`/admin/championship/${details.championshipID}`}>Link</Link>)
                 </h6>
                 {details.pointsAwarded ? (
                   <div>

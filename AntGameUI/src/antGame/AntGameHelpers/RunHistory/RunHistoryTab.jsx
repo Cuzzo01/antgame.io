@@ -48,12 +48,7 @@ const RunHistoryTab = ({ challengeId, loadRunHandler, gameMode, disabled }) => {
           )}
           <div className={styles.runsList}>
             {previousRuns.map((value, index) => (
-              <RunEntry
-                run={value}
-                key={index}
-                disabled={disabled}
-                loadRun={run => loadRunHandler(run)}
-              />
+              <RunEntry run={value} key={index} disabled={disabled} loadRun={run => loadRunHandler(run)} />
             ))}
             {!hasGrabbedAllValidPrevRuns ? (
               <div className={styles.loadMore} onClick={() => setPageIndex(pageIndex + 1)}>

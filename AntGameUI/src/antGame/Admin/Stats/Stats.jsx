@@ -120,8 +120,7 @@ const StatCell = props => {
 
 const getDeltaLabelClassString = delta => {
   let labelClassString = styles.deltaLabel;
-  if (delta !== undefined)
-    labelClassString += " " + (delta > 0 ? adminStyles.green : adminStyles.red);
+  if (delta !== undefined) labelClassString += " " + (delta > 0 ? adminStyles.green : adminStyles.red);
 
   return labelClassString;
 };

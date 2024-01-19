@@ -30,9 +30,7 @@ const generateFlagList = flags => {
 
   for (let i = 0; i < flags.length; i++) {
     const flag = flags[i];
-    flagList.push(
-      <FlagListElement flag={flag} theme={i % 2 === 0 ? adminStyles.even : adminStyles.odd} />
-    );
+    flagList.push(<FlagListElement flag={flag} theme={i % 2 === 0 ? adminStyles.even : adminStyles.odd} />);
   }
   return flagList;
 };

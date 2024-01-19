@@ -2,10 +2,7 @@ import { Config } from "../config";
 import { CompatibilityUtility } from "./CompatibilityUtility";
 
 const TrailMapOverSampleRate = 3;
-const TrailBounds = [
-  Config.MapBounds[0] * TrailMapOverSampleRate,
-  Config.MapBounds[1] * TrailMapOverSampleRate,
-];
+const TrailBounds = [Config.MapBounds[0] * TrailMapOverSampleRate, Config.MapBounds[1] * TrailMapOverSampleRate];
 export class TrailHandler {
   constructor(mapHandler, trailGraphics) {
     this.pointsToUpdate = {};
@@ -51,9 +48,7 @@ export class TrailHandler {
           const adjustedStrength = Math.round(strength * strengthAdjustment);
           const currentValue = this.trailMap[point[0]][point[1]];
           if (currentValue < maxValue) {
-            const newValue = CompatibilityUtility.UseNonUniformTrailStrength(
-              this._compatibilityDate
-            )
+            const newValue = CompatibilityUtility.UseNonUniformTrailStrength(this._compatibilityDate)
               ? currentValue + adjustedStrength
               : currentValue + strength;
 
@@ -114,8 +109,7 @@ export class TrailHandler {
   }
 
   trailXYInBounds(trailXY) {
-    if (trailXY[0] >= 0 && trailXY[1] >= 0)
-      if (trailXY[0] < TrailBounds[0] && trailXY[1] < TrailBounds[1]) return true;
+    if (trailXY[0] >= 0 && trailXY[1] >= 0) if (trailXY[0] < TrailBounds[0] && trailXY[1] < TrailBounds[1]) return true;
     return false;
   }
 }

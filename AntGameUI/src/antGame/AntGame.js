@@ -193,10 +193,8 @@ export default class AntGame extends React.Component {
   readyToUpdateCanvasBounds = () => {
     let biggerThanMarginButSmallerThanHistoryTab = 100;
 
-    const readyToOpen =
-      this.showHistoryTab && this.parentRef.offsetLeft > biggerThanMarginButSmallerThanHistoryTab;
-    const readyToClose =
-      !this.showHistoryTab && this.parentRef.offsetLeft < biggerThanMarginButSmallerThanHistoryTab;
+    const readyToOpen = this.showHistoryTab && this.parentRef.offsetLeft > biggerThanMarginButSmallerThanHistoryTab;
+    const readyToClose = !this.showHistoryTab && this.parentRef.offsetLeft < biggerThanMarginButSmallerThanHistoryTab;
     return readyToOpen || readyToClose;
   };
 
@@ -271,10 +269,8 @@ export default class AntGame extends React.Component {
       this.antHandler.redrawAnts = false;
     }
 
-    if (this.homeTrailHandler.hasPointsToDraw)
-      this.homeTrailDrawer.drawPoints(this.homeTrailHandler);
-    if (this.foodTrailHandler.hasPointsToDraw)
-      this.foodTrailDrawer.drawPoints(this.foodTrailHandler);
+    if (this.homeTrailHandler.hasPointsToDraw) this.homeTrailDrawer.drawPoints(this.homeTrailHandler);
+    if (this.foodTrailHandler.hasPointsToDraw) this.foodTrailDrawer.drawPoints(this.foodTrailHandler);
 
     StaticElements.background(p5);
     p5.image(this.homeTrailGraphic, 0, 0);

@@ -19,9 +19,7 @@ const AntGame = lazy(() => import("./AntGame"));
 const LoginPage = lazy(() => import("./Auth/LoginPage/LoginPage"));
 const RegistrationPage = lazy(() => import("./Auth/RegistrationPage/RegistrationPage"));
 const Leaderboard = lazy(() => import("./Challenge/Leaderboard/Leaderboard"));
-const ChampionshipDetails = lazy(() =>
-  import("./Championship/ChampionshipDetails/ChampionshipDetails")
-);
+const ChampionshipDetails = lazy(() => import("./Championship/ChampionshipDetails/ChampionshipDetails"));
 const Footer = lazy(() => import("./Helpers/Footer"));
 
 const AntGameRouter = () => {
@@ -31,12 +29,7 @@ const AntGameRouter = () => {
     debugger;
     if (window.location.hostname.startsWith("www.")) {
       var newDomain = window.location.hostname.replace(/^www\./, "");
-      var newUrl =
-        window.location.protocol +
-        "//" +
-        newDomain +
-        window.location.pathname +
-        window.location.search;
+      var newUrl = window.location.protocol + "//" + newDomain + window.location.pathname + window.location.search;
       window.location.replace(newUrl);
     }
   });

@@ -7,10 +7,7 @@ export function SetPageCanonical() {
     ? document.querySelector("link[rel='canonical']")
     : document.createElement("link");
   link.setAttribute("rel", "canonical");
-  link.setAttribute(
-    "href",
-    document.location.protocol + "//" + document.location.host + document.location.pathname
-  );
+  link.setAttribute("href", document.location.protocol + "//" + document.location.host + document.location.pathname);
   document.head.appendChild(link);
 }
 

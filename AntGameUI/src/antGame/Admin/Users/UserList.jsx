@@ -50,11 +50,7 @@ const UserList = () => {
     for (let i = 0; i < users.length; i++) {
       const user = users[i];
       list.push(
-        <UsersListElement
-          theme={i % 2 === 0 ? adminStyles.even : adminStyles.odd}
-          user={user}
-          key={user._id}
-        />
+        <UsersListElement theme={i % 2 === 0 ? adminStyles.even : adminStyles.odd} user={user} key={user._id} />
       );
     }
     setUsersToDisplay(list);

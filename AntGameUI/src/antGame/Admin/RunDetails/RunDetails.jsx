@@ -92,10 +92,7 @@ const RunDetails = props => {
           </div>
           <div className={adminStyles.divSection}>
             <h5>Actions</h5>
-            <Button
-              onClick={() => markForVerification(props.id)}
-              disabled={details.toVerify || details.verification}
-            >
+            <Button onClick={() => markForVerification(props.id)} disabled={details.toVerify || details.verification}>
               Verify
             </Button>
           </div>
