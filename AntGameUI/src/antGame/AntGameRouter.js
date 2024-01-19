@@ -26,7 +26,6 @@ const AntGameRouter = () => {
   const [showPage] = useState(AuthHandler._loggedIn || !AuthHandler.isRefreshTokenSet);
 
   useEffect(() => {
-    debugger;
     if (window.location.hostname.startsWith("www.")) {
       var newDomain = window.location.hostname.replace(/^www\./, "");
       var newUrl = window.location.protocol + "//" + newDomain + window.location.pathname + window.location.search;
