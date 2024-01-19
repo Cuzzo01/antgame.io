@@ -81,11 +81,7 @@ export default function MenuBar({
           <div />
         </div>
         <div className={styles.foodTracker}>
-          <FoodTracker
-            active={timerActive}
-            foodReturned={foodReturned}
-            DisplayScore={challengeStyleBar}
-          />
+          <FoodTracker active={timerActive} foodReturned={foodReturned} DisplayScore={challengeStyleBar} />
         </div>
       </div>
       <div className={styles.justifyRight}>

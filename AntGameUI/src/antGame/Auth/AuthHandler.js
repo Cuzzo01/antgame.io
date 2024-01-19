@@ -1,13 +1,7 @@
 import jwt_decode from "jwt-decode";
 import axios from "axios";
 import Cookies from "js-cookie";
-import {
-  getAccessToken,
-  getAnonToken,
-  getRefreshToken,
-  logout,
-  reportSpacesLoadTime,
-} from "./AuthService";
+import { getAccessToken, getAnonToken, getRefreshToken, logout, reportSpacesLoadTime } from "./AuthService";
 import { sendRunArtifact } from "../Challenge/ChallengeService";
 import { getFlag } from "../Helpers/FlagService";
 import { v4 as uuidV4 } from "uuid";

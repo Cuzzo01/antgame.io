@@ -20,7 +20,8 @@ import { MapGraphics } from "./AntGameHelpers/Graphics/MapGraphics";
 import { TrailGraphics } from "./AntGameHelpers/Graphics/TrailGraphics";
 import AuthHandler from "./Auth/AuthHandler";
 import RunHistoryTab from "./AntGameHelpers/RunHistory/RunHistoryTab";
-import { CompatibilityHelper } from "./Helpers/CompatabilityHelper";
+import { CompatibilityHelper } from "./Helpers/CompatibilityHelper";
+import { SetPageDescription, SetPageTitle } from "./Helpers/DocumentHelpers";
 
 let canvasW, canvasH;
 
@@ -108,13 +109,10 @@ export default class AntGame extends React.Component {
         showChallengeModal: false,
       });
     } else if (this.gamemode === "sandbox") {
-      document.title = "Sandbox Mode - AntGame";
-      document
-        .querySelector('meta[name="description"]')
-        .setAttribute(
-          "content",
-          "Build your own maps and watch the ants navigate them to find the food and bring it back home."
-        );
+      SetPageTitle("Sandbox Mode - AntGame");
+      SetPageDescription(
+        "Build your own maps and watch the ants navigate them to find the food and bring it back home."
+      );
     }
 
     this.mapHandler.gameMode = this.gamemode;
@@ -195,10 +193,8 @@ export default class AntGame extends React.Component {
   readyToUpdateCanvasBounds = () => {
     let biggerThanMarginButSmallerThanHistoryTab = 100;
 
-    const readyToOpen =
-      this.showHistoryTab && this.parentRef.offsetLeft > biggerThanMarginButSmallerThanHistoryTab;
-    const readyToClose =
-      !this.showHistoryTab && this.parentRef.offsetLeft < biggerThanMarginButSmallerThanHistoryTab;
+    const readyToOpen = this.showHistoryTab && this.parentRef.offsetLeft > biggerThanMarginButSmallerThanHistoryTab;
+    const readyToClose = !this.showHistoryTab && this.parentRef.offsetLeft < biggerThanMarginButSmallerThanHistoryTab;
     return readyToOpen || readyToClose;
   };
 
@@ -273,10 +269,8 @@ export default class AntGame extends React.Component {
       this.antHandler.redrawAnts = false;
     }
 
-    if (this.homeTrailHandler.hasPointsToDraw)
-      this.homeTrailDrawer.drawPoints(this.homeTrailHandler);
-    if (this.foodTrailHandler.hasPointsToDraw)
-      this.foodTrailDrawer.drawPoints(this.foodTrailHandler);
+    if (this.homeTrailHandler.hasPointsToDraw) this.homeTrailDrawer.drawPoints(this.homeTrailHandler);
+    if (this.foodTrailHandler.hasPointsToDraw) this.foodTrailDrawer.drawPoints(this.foodTrailHandler);
 
     StaticElements.background(p5);
     p5.image(this.homeTrailGraphic, 0, 0);

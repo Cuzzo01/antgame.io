@@ -28,9 +28,7 @@ const PersonalRecord = props => {
                   #{records.rank}
                 </span>
               </Link>
-              {records.playerCount ? (
-                <span className={styles.playerCount}>/{records.playerCount}</span>
-              ) : null}
+              {records.playerCount ? <span className={styles.playerCount}>/{records.playerCount}</span> : null}
             </div>
           );
         }

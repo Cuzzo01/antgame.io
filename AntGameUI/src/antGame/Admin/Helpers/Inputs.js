@@ -7,10 +7,7 @@ export const BoolEdit = props => {
   return (
     <div>
       {flag.value ? (
-        <button
-          className={`${AdminStyles.divButton} ${AdminStyles.redBackground}`}
-          onClick={() => editCallback(false)}
-        >
+        <button className={`${AdminStyles.divButton} ${AdminStyles.redBackground}`} onClick={() => editCallback(false)}>
           Set False
         </button>
       ) : (
@@ -42,12 +39,7 @@ export const IntEdit = ({ value, editCallback }) => {
           e.preventDefault();
         }}
       >
-        <input
-          type="number"
-          step="1"
-          onChange={e => setInputValue(e.target.value)}
-          value={inputValue}
-        />
+        <input type="number" step="1" onChange={e => setInputValue(e.target.value)} value={inputValue} />
       </form>
       <div
         className={`${AdminStyles.divButton} ${AdminStyles.saveButton}`}

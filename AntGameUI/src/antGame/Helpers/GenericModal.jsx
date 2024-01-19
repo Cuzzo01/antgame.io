@@ -6,10 +6,7 @@ const GenericModal = ({ title, onHide, body, closeMessage }) => {
     <Modal show onHide={() => onHide()}>
       <Modal.Header>
         <Modal.Title>{title}</Modal.Title>
-        <div
-          className={`${GenericStyles.divButton} ${GenericStyles.modalClose}`}
-          onClick={() => onHide()}
-        >
+        <div className={`${GenericStyles.divButton} ${GenericStyles.modalClose}`} onClick={() => onHide()}>
           <span>&times;</span>
         </div>
       </Modal.Header>

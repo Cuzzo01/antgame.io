@@ -50,9 +50,7 @@ export default function GameMenu({
           </span>
         );
       } else {
-        buttons.push(
-          <SettingButton key="save" handler={saveMapHandler} disabled={playState} text="Save" />
-        );
+        buttons.push(<SettingButton key="save" handler={saveMapHandler} disabled={playState} text="Save" />);
       }
     }
     setSandBoxButtons(buttons);
@@ -74,31 +72,15 @@ export default function GameMenu({
           }}
         />
       )}
-      {!IsReplay && (
-        <SettingButton key="clear" text="Clear" handler={clearMapHandler} disabled={playState} />
-      )}
+      {!IsReplay && <SettingButton key="clear" text="Clear" handler={clearMapHandler} disabled={playState} />}
       {(ChallengeHandler.records.pr || ChallengeHandler.config.prData) && (
-        <SettingButton
-          key="PR"
-          text="Load PR"
-          handler={() => loadRecordHandler("pr")}
-          disabled={playState}
-        />
+        <SettingButton key="PR" text="Load PR" handler={() => loadRecordHandler("pr")} disabled={playState} />
       )}
       {ChallengeHandler.config.wrData && (
-        <SettingButton
-          key="WR"
-          text="Load WR"
-          handler={() => loadRecordHandler("wr")}
-          disabled={playState}
-        />
+        <SettingButton key="WR" text="Load WR" handler={() => loadRecordHandler("wr")} disabled={playState} />
       )}
       {!isMobile && ChallengeHandler.records.pr && (
-        <SettingButton
-          text={"History"}
-          handler={toggleShowHistory}
-          disabled={playState && IsChallenge}
-        />
+        <SettingButton text={"History"} handler={toggleShowHistory} disabled={playState && IsChallenge} />
       )}
       <SettingButton text={"Reset"} handler={resetHandler} disabled={playState} />
       {(IsReplay || IsChallenge) && (

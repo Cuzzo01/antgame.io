@@ -18,13 +18,7 @@ const RunsList = () => {
     let list = [];
     for (let i = 0; i < runs.length; i++) {
       const run = runs[i];
-      list.push(
-        <RunsListElement
-          theme={i % 2 === 0 ? adminStyles.even : adminStyles.odd}
-          run={run}
-          key={run._id}
-        />
-      );
+      list.push(<RunsListElement theme={i % 2 === 0 ? adminStyles.even : adminStyles.odd} run={run} key={run._id} />);
     }
     setRunsList(list);
     setUpdateTime(new Date());
@@ -37,8 +31,7 @@ const RunsList = () => {
       if (runType === "recent") getRecentRuns(15).then(runs => setRunData(runs));
       else if (runType === "tags-pr") getRunsByTag("pr", 15).then(runs => setRunData(runs));
       else if (runType === "tags-wr") getRunsByTag("wr", 15).then(runs => setRunData(runs));
-      else if (runType === "tags-fail")
-        getRunsByTag("failed verification", 15).then(runs => setRunData(runs));
+      else if (runType === "tags-fail") getRunsByTag("failed verification", 15).then(runs => setRunData(runs));
     },
     [runType, setRunData]
   );
@@ -62,10 +55,7 @@ const RunsList = () => {
         <span>
           <TypeSelect setRunType={type => setRunType(type)} />
           <AutoRefreshButton onRefresh={() => refreshData()} />
-          <span
-            className={`${adminStyles.divButton} ${styles.refreshButton}`}
-            onClick={() => refreshData()}
-          >
+          <span className={`${adminStyles.divButton} ${styles.refreshButton}`} onClick={() => refreshData()}>
             <RefreshIcon />
           </span>
         </span>
@@ -83,15 +73,12 @@ const RunsListElement = ({ run, theme }) => {
 
   useEffect(() => {
     const tags = run.tags;
-    if (tags.find(tag => tag.type === "wr"))
-      setScoreTagStyles(`${adminStyles.purpleText} ${adminStyles.bold}`);
-    else if (tags.find(tag => tag.type === "pr"))
-      setScoreTagStyles(`${adminStyles.greenText} ${adminStyles.bold}`);
+    if (tags.find(tag => tag.type === "wr")) setScoreTagStyles(`${adminStyles.purpleText} ${adminStyles.bold}`);
+    else if (tags.find(tag => tag.type === "pr")) setScoreTagStyles(`${adminStyles.greenText} ${adminStyles.bold}`);
 
     if (tags.find(tag => tag.type === "failed verification" || tag.type === "falsely claimed pb"))
       setBodyTagStyles(adminStyles.redBackground);
-    else if (tags.find(tag => tag.type === "random snapshot save"))
-      setBodyTagStyles(adminStyles.yellowBackground);
+    else if (tags.find(tag => tag.type === "random snapshot save")) setBodyTagStyles(adminStyles.yellowBackground);
     else if (tags.find(tag => tag.type === "run verified")) setBodyTagStyles(adminStyles.verified);
   }, [run.tags]);
 
@@ -101,11 +88,7 @@ const RunsListElement = ({ run, theme }) => {
         {submissionDateTime.toLocaleDateString()} {submissionDateTime.toLocaleTimeString()}
       </span>
       <span className={adminStyles.leftAlign}>
-        {run.userID ? (
-          <Username id={run.userID} name={run.username} adminLink showBorder={false} />
-        ) : (
-          "N/A"
-        )}
+        {run.userID ? <Username id={run.userID} name={run.username} adminLink showBorder={false} /> : "N/A"}
       </span>
       <span>{run.tags ? run.tags.length : 0}</span>
       <span className={adminStyles.rightAlign}>

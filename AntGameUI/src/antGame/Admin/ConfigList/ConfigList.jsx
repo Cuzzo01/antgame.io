@@ -46,11 +46,7 @@ const generateConfigList = configs => {
   for (let i = 0; i < configs.length; i++) {
     const config = configs[i];
     list.push(
-      <ConfigListElement
-        theme={i % 2 === 0 ? adminStyles.even : adminStyles.odd}
-        key={config._id}
-        config={config}
-      />
+      <ConfigListElement theme={i % 2 === 0 ? adminStyles.even : adminStyles.odd} key={config._id} config={config} />
     );
   }
   return list;
@@ -69,12 +65,7 @@ const ConfigListElement = ({ config, theme }) => {
         <div className={adminStyles.rightAlign}>
           ({GetGeneralTimeString(config.record.time)})&nbsp;
           <Link to={`/admin/run/${config.record.runID}`}>{config.record.score}</Link> -&nbsp;
-          <Username
-            id={config.record.userID}
-            name={config.record.username}
-            adminLink
-            showBorder={false}
-          />
+          <Username id={config.record.userID} name={config.record.username} adminLink showBorder={false} />
         </div>
       ) : (
         <div />

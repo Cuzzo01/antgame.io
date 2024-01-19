@@ -20,15 +20,7 @@ const WallValue = Brushes.find(brush => brush.name === "Wall").value;
 const TrailDropRate = Config.TrailDropRate;
 
 export class Ant {
-  constructor(
-    pos,
-    mapHandler,
-    homeTrailHandler,
-    foodTrailHandler,
-    homeBrush,
-    id,
-    compatibilityDate
-  ) {
+  constructor(pos, mapHandler, homeTrailHandler, foodTrailHandler, homeBrush, id, compatibilityDate) {
     this.rng = seedrandom(id);
     this._pos = pos;
     this.mapHandler = mapHandler;
@@ -270,8 +262,7 @@ export class Ant {
   }
 
   stayOnCourse() {
-    if (this.rng.quick() < 0.3)
-      this.angle += toRad((this.rng.quick() * 2 - 1) * StayOnCourseWanderAmount);
+    if (this.rng.quick() < 0.3) this.angle += toRad((this.rng.quick() * 2 - 1) * StayOnCourseWanderAmount);
   }
 
   turnLeft() {
@@ -338,8 +329,7 @@ export class Ant {
     if (pos[0] > 0 && pos[1] > 0) {
       if (pos[0] < MapBounds[0] && pos[1] < MapBounds[1]) {
         let newCell = this.mapHandler.getCell(pos);
-        const wallToDirtOrWall =
-          this.currentCell === WallValue && (newCell === WallValue || newCell === FoodValue);
+        const wallToDirtOrWall = this.currentCell === WallValue && (newCell === WallValue || newCell === FoodValue);
         // Maybe just check this conditionally on sandbox mode??
         const foodToFoodOrDirt = false;
         // this.currentCell === FoodValue &&

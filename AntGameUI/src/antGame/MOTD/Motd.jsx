@@ -27,9 +27,7 @@ const MOTD = () => {
         <GenericModal
           onHide={() => setModalData(false)}
           title={modalData.title}
-          body={
-            <div className={styles.body} dangerouslySetInnerHTML={{ __html: modalData.text }} />
-          }
+          body={<div className={styles.body} dangerouslySetInnerHTML={{ __html: modalData.text }} />}
         />
       ) : null}
     </div>

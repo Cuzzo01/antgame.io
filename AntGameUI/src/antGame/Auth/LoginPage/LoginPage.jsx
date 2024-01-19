@@ -5,6 +5,7 @@ import AuthHandler from "../AuthHandler";
 import { Link, useLocation } from "react-router-dom";
 import { getFlag } from "../../Helpers/FlagService";
 import { useForm } from "react-hook-form";
+import { SetPageCanonical, SetPageDescription, SetPageTitle } from "../../Helpers/DocumentHelpers";
 
 const LoginPage = () => {
   const {
@@ -22,7 +23,10 @@ const LoginPage = () => {
   const location = useLocation();
 
   useEffect(() => {
-    document.title = "Login";
+    SetPageTitle("AntGame Login");
+    SetPageDescription("Login to AntGame");
+    SetPageCanonical();
+
     getFlag("allow-logins").then(async value => {
       if (value !== true && !window.location.href.includes("/admin")) {
         setAllowLogins(false);
@@ -111,9 +115,7 @@ const LoginPage = () => {
               {errors.username?.type === "required" && <ErrorMessage>Required</ErrorMessage>}
               {(errors.username?.type === "minLength" ||
                 errors.username?.type === "maxLength" ||
-                errors.username?.type === "pattern") && (
-                <ErrorMessage>Must enter a valid username</ErrorMessage>
-              )}
+                errors.username?.type === "pattern") && <ErrorMessage>Must enter a valid username</ErrorMessage>}
             </div>
             <div className={styles.inputField}>
               <label htmlFor="password">Password:</label>
@@ -128,12 +130,8 @@ const LoginPage = () => {
                 <ErrorMessage>Must enter a valid password</ErrorMessage>
               )}
             </div>
-            {formState === "error" ? (
-              <div className={styles.error}>Login failed, try again</div>
-            ) : null}
-            {formState === "no user" ? (
-              <div className={styles.error}>No user with that name</div>
-            ) : null}
+            {formState === "error" ? <div className={styles.error}>Login failed, try again</div> : null}
+            {formState === "no user" ? <div className={styles.error}>No user with that name</div> : null}
             {formState === "banned" && (
               <div className={styles.error}>
                 Account banned
@@ -159,10 +157,7 @@ const LoginPage = () => {
             </div>
             <div className={styles.buttonBar}>
               {allowAnon ? (
-                <div
-                  className={`${globalStyles.divButton} ${styles.skipButton}`}
-                  onClick={continueWithoutLogin}
-                >
+                <div className={`${globalStyles.divButton} ${styles.skipButton}`} onClick={continueWithoutLogin}>
                   Skip
                 </div>
               ) : (

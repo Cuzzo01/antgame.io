@@ -74,9 +74,7 @@ const UserDetails = ({ id }) => {
           </div>
           <div className={adminStyles.divSection}>
             <h5>Actions</h5>
-            <Button onClick={() => setBanned(!details.banned)}>
-              {details.banned ? "Unban User" : "Ban User"}
-            </Button>
+            <Button onClick={() => setBanned(!details.banned)}>{details.banned ? "Unban User" : "Ban User"}</Button>
           </div>
           {details.banned && (
             <div className={adminStyles.divSection}>

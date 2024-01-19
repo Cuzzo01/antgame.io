@@ -69,11 +69,7 @@ const OptionsMenu = props => {
           />
           <MenuHeader>Save image of...</MenuHeader>
           {isInIframe ? (
-            <span
-              data-tip=""
-              data-for={"warning"}
-              className={`${styles.baseBadge} ${styles.active}`}
-            >
+            <span data-tip="" data-for={"warning"} className={`${styles.baseBadge} ${styles.active}`}>
               <MenuRow>Disabled</MenuRow>
               <ReactTooltip effect="solid" id={"warning"}>
                 Image saving does not work on outside sites. To save images, visit antgame.io.
@@ -81,31 +77,21 @@ const OptionsMenu = props => {
             </span>
           ) : (
             <span>
-              <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("trail"))}>
-                Trails
-              </MenuRow>
+              <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("trail"))}>Trails</MenuRow>
               <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("map"))}>Map</MenuRow>
-              <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("map&trail"))}>
-                Both
-              </MenuRow>
+              <MenuRow onClick={getMenuCallback(() => props.saveImageHandler("map&trail"))}>Both</MenuRow>
             </span>
           )}
 
           <MenuHeader>Maps</MenuHeader>
-          <MenuRow onClick={getMenuCallback(() => props.loadMapHandler("sample"))}>
-            Load sample
-          </MenuRow>
+          <MenuRow onClick={getMenuCallback(() => props.loadMapHandler("sample"))}>Load sample</MenuRow>
           {AuthHandler.isAdmin ? (
             <div>
-              <MenuRow onClick={getMenuCallback(() => props.loadMapHandler("generated"))}>
-                Generate Map
-              </MenuRow>
+              <MenuRow onClick={getMenuCallback(() => props.loadMapHandler("generated"))}>Generate Map</MenuRow>
             </div>
           ) : null}
           <MenuHeader styles={{ fontSize: "0.8em" }}>Feedback & Map Submissions:</MenuHeader>
-          <MenuRow
-            onClick={getMenuCallback(() => (window.location = "mailto:feedback@antgame.io"))}
-          >
+          <MenuRow onClick={getMenuCallback(() => (window.location = "mailto:feedback@antgame.io"))}>
             feedback@antgame.io
           </MenuRow>
         </div>
@@ -166,12 +152,7 @@ const MenuRow = props => {
 
 const Button = props => {
   return (
-    <button
-      ref={props.reference}
-      disabled={props.disabled}
-      onClick={props.onClick}
-      className={styles.button}
-    >
+    <button ref={props.reference} disabled={props.disabled} onClick={props.onClick} className={styles.button}>
       {props.children}
     </button>
   );

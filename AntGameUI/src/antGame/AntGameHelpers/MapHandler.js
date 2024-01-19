@@ -171,8 +171,7 @@ export class MapHandler {
   }
 
   setTitle(mapName) {
-    if (this._gameMode === "sandbox" && mapName === "AntGame")
-      document.title = "Sandbox Mode - AntGame";
+    if (this._gameMode === "sandbox" && mapName === "AntGame") document.title = "Sandbox Mode - AntGame";
     else if (mapName) document.title = `${mapName} - AntGame`;
   }
 
@@ -207,8 +206,7 @@ export class MapHandler {
   }
 
   mapXYInBounds(mapXY) {
-    if (mapXY[0] >= 0 && mapXY[1] >= 0)
-      if (mapXY[0] < MapBounds[0] && mapXY[1] < MapBounds[1]) return true;
+    if (mapXY[0] >= 0 && mapXY[1] >= 0) if (mapXY[0] < MapBounds[0] && mapXY[1] < MapBounds[1]) return true;
     return false;
   }
 
@@ -346,11 +344,9 @@ export class MapHandler {
     this.foodReturned++;
     this.foodInTransit--;
     const homePositionInt = MapXYToInt(homePosition);
-    if (this.foodReturnedLocations[homePositionInt])
-      this.foodReturnedLocations[homePositionInt] += 1;
+    if (this.foodReturnedLocations[homePositionInt]) this.foodReturnedLocations[homePositionInt] += 1;
     else this.foodReturnedLocations[homePositionInt] = 1;
-    if (this.foodReturned === this.foodToStopTime && this._gameMode === "sandbox")
-      this.toggleTimer(false);
+    if (this.foodReturned === this.foodToStopTime && this._gameMode === "sandbox") this.toggleTimer(false);
   };
 
   decayDirt = mapXY => {

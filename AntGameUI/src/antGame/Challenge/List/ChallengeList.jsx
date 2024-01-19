@@ -8,6 +8,7 @@ import { ChallengeDetails, ChallengeLink, LeaderboardLink, PBDisplay, WRDisplay 
 import { Thumbnail } from "./Thumbnail";
 import { ChampionshipCard } from "./ChampionshipCard";
 import { YesterdaysDailyCard } from "./YesterdaysDailyCard";
+import { SetPageDescription, SetPageTitle } from "../../Helpers/DocumentHelpers";
 
 const ChallengeList = () => {
   const InitialList = [
@@ -26,13 +27,11 @@ const ChallengeList = () => {
   const history = useHistory();
 
   useEffect(() => {
-    document.title = "AntGame";
-    document
-      .querySelector('meta[name="description"]')
-      .setAttribute(
-        "content",
-        "A daily puzzle game built around an ant simulator. Help the ants eat the most food to climb the leaderboard!"
-      );
+    SetPageTitle("AntGame");
+    SetPageDescription(
+      "A daily puzzle game built around an ant simulator. Help the ants eat the most food to climb the leaderboard!"
+    );
+
     if (AuthHandler.loggedIn && !AuthHandler.isAnon) {
       getActiveChallenges().then(challengeResponse => setData({ challengeResponse }));
     } else {
@@ -48,8 +47,7 @@ const ChallengeList = () => {
     else setChampionshipCard();
 
     const yesterdaysDailyData = challengeResponse.yesterdaysDailyData;
-    if (yesterdaysDailyData)
-      setYesterdaysDailyCard(<YesterdaysDailyCard data={yesterdaysDailyData} />);
+    if (yesterdaysDailyData) setYesterdaysDailyCard(<YesterdaysDailyCard data={yesterdaysDailyData} />);
     else setYesterdaysDailyCard();
 
     let list = [];

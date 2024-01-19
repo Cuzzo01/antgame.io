@@ -27,12 +27,9 @@ const HelpButton = props => {
                 <h5 className={styles.bold}>The Essentials</h5>
                 <p>
                   &#8226;&nbsp;
-                  <span className={styles.bold}>
-                    Place home tiles (by clicking on the map) and click play!
-                  </span>
+                  <span className={styles.bold}>Place home tiles (by clicking on the map) and click play!</span>
                   <br />
-                  &#8226;&nbsp;Number of home tiles is limited to the number shown in the menu bar
-                  (top right).
+                  &#8226;&nbsp;Number of home tiles is limited to the number shown in the menu bar (top right).
                   <br />
                   &#8226;&nbsp;Score is based on how much food the ants get home.
                 </p>
@@ -40,19 +37,19 @@ const HelpButton = props => {
               <div>
                 <h6 className={styles.bold}>Extra Details</h6>
                 <p>
-                  &#8226;&nbsp;Home tiles can be removed by right clicking on them or selecting the
-                  eraser brush ('E' in the top right). The 'Clear' button will remove all homes.
+                  &#8226;&nbsp;Home tiles can be removed by right clicking on them or selecting the eraser brush ('E' in
+                  the top right). The 'Clear' button will remove all homes.
                   <br />
-                  &#8226;&nbsp;Click on your leaderboard rank (next to PR in the top left) to see
-                  the challenge leaderboard.
+                  &#8226;&nbsp;Click on your leaderboard rank (next to PR in the top left) to see the challenge
+                  leaderboard.
                   <br />
                   &#8226;&nbsp;Click on the back arrow (left side) to go back to the challenge list.
                   <br />
-                  &#8226;&nbsp;The green number on each group of food is the score earned for eating
-                  that group (all numbers add to 100,000). Not on all maps.
+                  &#8226;&nbsp;The green number on each group of food is the score earned for eating that group (all
+                  numbers add to 100,000). Not on all maps.
                   <br />
-                  &#8226;&nbsp;The red number on a home tile is the score earned by that tile. This
-                  is shown at the end of each run and when a PR is loaded.
+                  &#8226;&nbsp;The red number on a home tile is the score earned by that tile. This is shown at the end
+                  of each run and when a PR is loaded.
                 </p>
               </div>
             </div>

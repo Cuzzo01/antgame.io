@@ -5,6 +5,7 @@ import AuthHandler from "../AuthHandler";
 import { useHistory, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getFlag } from "../../Helpers/FlagService";
+import { SetPageDescription, SetPageTitle } from "../../Helpers/DocumentHelpers";
 
 const RegistrationPage = props => {
   const [loading, setLoading] = useState(false);
@@ -19,6 +20,9 @@ const RegistrationPage = props => {
   const location = useLocation();
 
   useEffect(() => {
+    SetPageTitle("Account Registration - AntGame");
+    SetPageDescription("Register for an AntGame account");
+
     getFlag("allowAccountRegistration")
       .then(value => {
         if (value !== true) history.replace("/");
@@ -39,20 +43,18 @@ const RegistrationPage = props => {
   const onSubmit = data => {
     if (!loading) {
       setLoading(true);
-      registerAccount(data.username, data.password, data.email, AuthHandler.clientID).then(
-        result => {
-          if (result === "usernameTaken")
-            setError("username", {
-              type: "manual",
-              message: "Username taken",
-            });
-          else {
-            AuthHandler.token = result;
-            redirectOut();
-          }
-          setLoading(false);
+      registerAccount(data.username, data.password, data.email, AuthHandler.clientID).then(result => {
+        if (result === "usernameTaken")
+          setError("username", {
+            type: "manual",
+            message: "Username taken",
+          });
+        else {
+          AuthHandler.token = result;
+          redirectOut();
         }
-      );
+        setLoading(false);
+      });
     }
   };
 
@@ -76,16 +78,10 @@ const RegistrationPage = props => {
             })}
             autoComplete="username"
           />
-          {errors.username?.type === "manual" && (
-            <ErrorMessage>{errors.username.message}</ErrorMessage>
-          )}
+          {errors.username?.type === "manual" && <ErrorMessage>{errors.username.message}</ErrorMessage>}
           {errors.username?.type === "required" && <ErrorMessage>Required</ErrorMessage>}
-          {errors.username?.type === "minLength" && (
-            <ErrorMessage>Must be at least 5 characters</ErrorMessage>
-          )}
-          {errors.username?.type === "maxLength" && (
-            <ErrorMessage>Cannot be over 15 characters</ErrorMessage>
-          )}
+          {errors.username?.type === "minLength" && <ErrorMessage>Must be at least 5 characters</ErrorMessage>}
+          {errors.username?.type === "maxLength" && <ErrorMessage>Cannot be over 15 characters</ErrorMessage>}
           {errors.username?.type === "pattern" && (
             <ErrorMessage>Username can contain numbers, letters, and underscores.</ErrorMessage>
           )}
@@ -99,12 +95,8 @@ const RegistrationPage = props => {
             autoComplete="new-password"
           />
           {errors.password?.type === "required" && <ErrorMessage>Required</ErrorMessage>}
-          {errors.password?.type === "minLength" && (
-            <ErrorMessage>Must be at least 8 characters</ErrorMessage>
-          )}
-          {errors.password?.type === "maxLength" && (
-            <ErrorMessage>Cannot be over 100 characters</ErrorMessage>
-          )}
+          {errors.password?.type === "minLength" && <ErrorMessage>Must be at least 8 characters</ErrorMessage>}
+          {errors.password?.type === "maxLength" && <ErrorMessage>Cannot be over 100 characters</ErrorMessage>}
         </div>
         <div className={styles.inputField}>
           <label htmlFor="confirmPassword">Confirm Password</label>
@@ -120,9 +112,7 @@ const RegistrationPage = props => {
             autoComplete="new-password"
           />
           {errors.confirmPassword?.type === "required" && <ErrorMessage>Required</ErrorMessage>}
-          {errors.confirmPassword?.type === "passwordMatch" && (
-            <ErrorMessage>Passwords must match</ErrorMessage>
-          )}
+          {errors.confirmPassword?.type === "passwordMatch" && <ErrorMessage>Passwords must match</ErrorMessage>}
         </div>
         <div className={styles.inputField}>
           <label htmlFor="email">

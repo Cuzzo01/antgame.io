@@ -30,6 +30,5 @@ if (!window.loadAds) {
         ""),
       s.parentNode.insertBefore(d, s);
   };
-  window.loadGameAds = () =>
-    loadAds(window, document, "gameadsbanner", "https://n.gameads.io/getcode", "GameAdsRenew");
+  window.loadGameAds = () => loadAds(window, document, "gameadsbanner", "https://n.gameads.io/getcode", "GameAdsRenew");
 }

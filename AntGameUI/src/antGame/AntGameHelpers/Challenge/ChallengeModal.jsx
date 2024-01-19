@@ -104,9 +104,9 @@ const ChallengeModal = props => {
                   <div>
                     <h3>Run Rejected</h3>
                     <span>
-                      This run was rejected by the anti-cheat system. This can happen if you're
-                      running old code, or are trying to cheat. If you're seeing this often and not
-                      cheating, email us. This page will refresh in 10 seconds.
+                      This run was rejected by the anti-cheat system. This can happen if you're running old code, or are
+                      trying to cheat. If you're seeing this often and not cheating, email us. This page will refresh in
+                      10 seconds.
                     </span>
                   </div>
                 ) : null}

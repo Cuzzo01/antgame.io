@@ -2,10 +2,7 @@ import { Config } from "../../config";
 
 const TrailMapOverSampleRate = 3;
 const BorderWeight = Config.borderWeight;
-const MapBounds = [
-  Config.MapBounds[0] * TrailMapOverSampleRate,
-  Config.MapBounds[1] * TrailMapOverSampleRate,
-];
+const MapBounds = [Config.MapBounds[0] * TrailMapOverSampleRate, Config.MapBounds[1] * TrailMapOverSampleRate];
 
 export class TrailGraphics {
   constructor(color) {

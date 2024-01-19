@@ -8,8 +8,7 @@ class FriendlyClientIdService {
     if (clientId in this.clientIdMapping) {
       return this.clientIdMapping[clientId];
     } else {
-      if (window.location.pathname.includes("admin"))
-        console.log(getLetterFromNumber(this.nextId), clientId);
+      if (window.location.pathname.includes("admin")) console.log(getLetterFromNumber(this.nextId), clientId);
       this.clientIdMapping[clientId] = getLetterFromNumber(this.nextId);
       this.nextId++;
       return this.clientIdMapping[clientId];

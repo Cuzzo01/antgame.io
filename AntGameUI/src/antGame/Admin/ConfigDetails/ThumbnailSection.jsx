@@ -17,11 +17,7 @@ const ThumbnailSection = props => {
         <span>Thumbnail Url:</span>
         {editable ? (
           <form onSubmit={() => saveEdit()}>
-            <input
-              type="text"
-              onChange={e => setURLInputValue(e.target.value)}
-              value={URLInputValue}
-            />
+            <input type="text" onChange={e => setURLInputValue(e.target.value)} value={URLInputValue} />
           </form>
         ) : props.currentURL ? (
           <span>{getDisplayURL(props.currentURL)}</span>
