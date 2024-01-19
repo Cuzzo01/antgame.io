@@ -7,6 +7,7 @@ import DailyChallengePicker from "./DailyChallengePicker";
 import { useCallback } from "react";
 import LeaderboardRow from "../../Helpers/LeaderboardRow";
 import SolutionImage from "./SolutionImage";
+import { SetPageDescription, SetPageTitle } from "../../Helpers/DocumentHelpers";
 
 const Leaderboard = () => {
   const { id, page } = useParams();
@@ -84,10 +85,8 @@ const Leaderboard = () => {
       setMorePages(playerCount > pageLength && lastRank !== playerCount);
       setIsActive(active);
 
-      document.title = `${name} - AntGame Leaderboard${page > 1 ? ` - Page ${page}` : ""}`;
-      document
-        .querySelector('meta[name="description"]')
-        .setAttribute("content", `The leaderboard for ${name} - Page ${page ?? 1}`);
+      SetPageTitle(`${name} - AntGame Leaderboard${page > 1 ? ` - Page ${page}` : ""}`);
+      SetPageDescription(`The leaderboard for ${name} - Page ${page ?? 1}`);
     },
     [goToPage, page]
   );

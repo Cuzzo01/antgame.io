@@ -3,7 +3,7 @@ import { BrowserRouter, Switch, Route, Redirect, useParams } from "react-router-
 import { GameModeContext } from "./GameModeContext";
 import AuthHandler from "./Auth/AuthHandler";
 import styles from "./Helpers/GenericStyles.module.css";
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import ErrorPage from "./ErrorPage/ErrorPage";
 import UserBar from "./UserBar/UserBar";
 import ChallengeList from "./Challenge/List/ChallengeList";
@@ -26,6 +26,20 @@ const Footer = lazy(() => import("./Helpers/Footer"));
 
 const AntGameRouter = () => {
   const [showPage] = useState(AuthHandler._loggedIn || !AuthHandler.isRefreshTokenSet);
+
+  useEffect(() => {
+    debugger;
+    if (window.location.hostname.startsWith("www.")) {
+      var newDomain = window.location.hostname.replace(/^www\./, "");
+      var newUrl =
+        window.location.protocol +
+        "//" +
+        newDomain +
+        window.location.pathname +
+        window.location.search;
+      window.location.replace(newUrl);
+    }
+  });
 
   return (
     showPage && (

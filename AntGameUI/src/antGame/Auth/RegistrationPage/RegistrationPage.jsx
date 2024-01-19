@@ -5,6 +5,7 @@ import AuthHandler from "../AuthHandler";
 import { useHistory, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getFlag } from "../../Helpers/FlagService";
+import { SetPageDescription, SetPageTitle } from "../../Helpers/DocumentHelpers";
 
 const RegistrationPage = props => {
   const [loading, setLoading] = useState(false);
@@ -19,6 +20,9 @@ const RegistrationPage = props => {
   const location = useLocation();
 
   useEffect(() => {
+    SetPageTitle("Account Registration - AntGame");
+    SetPageDescription("Register for an AntGame account");
+
     getFlag("allowAccountRegistration")
       .then(value => {
         if (value !== true) history.replace("/");

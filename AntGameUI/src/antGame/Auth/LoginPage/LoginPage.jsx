@@ -5,6 +5,7 @@ import AuthHandler from "../AuthHandler";
 import { Link, useLocation } from "react-router-dom";
 import { getFlag } from "../../Helpers/FlagService";
 import { useForm } from "react-hook-form";
+import { SetPageCanonical, SetPageDescription, SetPageTitle } from "../../Helpers/DocumentHelpers";
 
 const LoginPage = () => {
   const {
@@ -22,7 +23,10 @@ const LoginPage = () => {
   const location = useLocation();
 
   useEffect(() => {
-    document.title = "Login";
+    SetPageTitle("AntGame Login");
+    SetPageDescription("Login to AntGame");
+    SetPageCanonical();
+
     getFlag("allow-logins").then(async value => {
       if (value !== true && !window.location.href.includes("/admin")) {
         setAllowLogins(false);
