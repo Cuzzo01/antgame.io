@@ -84,9 +84,12 @@ const Leaderboard = () => {
       setMorePages(playerCount > pageLength && lastRank !== playerCount);
       setIsActive(active);
 
-      document.title = `${name} - Leaderboard`;
+      document.title = `${name} - AntGame Leaderboard${page > 1 ? ` - Page ${page}` : ""}`;
+      document
+        .querySelector('meta[name="description"]')
+        .setAttribute("content", `The leaderboard for ${name} - Page ${page ?? 1}`);
     },
-    [goToPage]
+    [goToPage, page]
   );
 
   const fetchLeaderboard = useCallback(
