@@ -10,6 +10,8 @@ const FoodPerCell = Config.FoodPerCell;
 const DirtPerCell = Config.DirtPerCell;
 const FoodPerDecayStep = FoodPerCell / BlockDecaySteps;
 const DirtDecayPerStep = DirtPerCell / BlockDecaySteps;
+const NotFoodPerCell = 100;
+const NotFoodDecayPerStep = NotFoodPerCell / BlockDecaySteps;
 const FoodValue = Brushes.find(brush => brush.name === "Food").value;
 const HomeValue = Brushes.find(brush => brush.name === "Home").value;
 const DirtValue = Brushes.find(brush => brush.name === "Dirt").value;
@@ -351,16 +353,19 @@ export class MapHandler {
 
   decayDirt = mapXY => {
     const intMapXY = MapXYToInt(mapXY);
-    let cellValue = this._map[intMapXY[0]][intMapXY[1]];
-    let cellAmount = parseInt(cellValue.substr(1));
+    let cell = this._map[intMapXY[0]][intMapXY[1]];
+    const cellValue = cell.substr(0, 1);
+    let cellAmount = parseInt(cell.substr(1));
     let newAmount = cellAmount - 1;
     if (newAmount === 0) {
-      this.dirtToRespawn.push(intMapXY);
+      if (cellValue === DirtValue) this.dirtToRespawn.push(intMapXY);
       this.setCellTo(intMapXY, " ");
-    } else if (newAmount % DirtDecayPerStep === 0) {
-      this.setCellTo(intMapXY, DirtValue + newAmount);
+    } else if (cell === DirtValue && newAmount % DirtDecayPerStep === 0) {
+      this.setCellTo(intMapXY, cellValue + newAmount);
+    } else if (cell === "n" && newAmount % NotFoodDecayPerStep === 0) {
+      this.setCellTo(intMapXY, cellValue + newAmount);
     } else {
-      this.setCellToSilent(intMapXY, DirtValue + newAmount);
+      this.setCellToSilent(intMapXY, cellValue + newAmount);
     }
   };
 
@@ -373,7 +378,20 @@ export class MapHandler {
     this.foodOnMap--;
     if (newAmount === 0) {
       this.foodToRespawn.push(intMapXY);
-      this.setCellTo(intMapXY, " ");
+      const surroundingCells = [];
+      const radius = 1;
+      for (let xOffset = -radius; xOffset <= radius; xOffset++) {
+        for (let yOffset = -radius; yOffset <= radius; yOffset++) {
+          const loc = [intMapXY[0] + xOffset, intMapXY[1] + yOffset];
+          if ((xOffset || yOffset) && this.checkInBounds(loc)) surroundingCells.push(this._map[loc[0]][loc[1]]);
+        }
+      }
+      if (!surroundingCells.some(cell => cell.includes("f"))) {
+        console.log("placing not food");
+        this.setCellTo(intMapXY, "n" + NotFoodPerCell);
+      } else {
+        this.setCellTo(intMapXY, " ");
+      }
     } else if (newAmount % FoodPerDecayStep === 0) {
       this.setCellTo(intMapXY, FoodValue + newAmount);
     } else {

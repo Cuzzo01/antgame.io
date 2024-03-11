@@ -39,9 +39,10 @@ export class Ant {
     this.cumulativeAngle = 0;
     this.currentCell = "";
     this.foodChanged = false;
-    this.isLoggyBoi = false;
+    this.isLoggyBoi = Math.random() > 0.999;
     if (this.isLoggyBoi) {
       this.logID = Math.round(Math.random() * 10);
+      console.log(this.logID);
     }
   }
 
@@ -280,8 +281,9 @@ export class Ant {
     }
   }
 
-  abortTrip() {
-    this.dropsToSkip = 10;
+  abortTrip(dropsToSkip = 10) {
+    if (this.isLoggyBoi) console.log("abort");
+    this.dropsToSkip = dropsToSkip;
     this._angle = this.rng.quick() * (Math.PI * 2);
   }
 
@@ -340,7 +342,7 @@ export class Ant {
         }
 
         if (newCell === false || newCell === WallValue) {
-          this.bounceOffWall(5);
+          this.abortTrip(5);
           return false;
         }
 
@@ -357,24 +359,22 @@ export class Ant {
             this.foodChange();
           } else {
             this.distanceTraveled = 0;
-            this.bounceOffWall(0);
+            this.abortTrip(0);
             return false;
           }
         } else if (newCell === DirtValue) {
           this.mapHandler.decayDirt(pos);
-          if (this.rng.quick() < 0.5) this.bounceOffWall(3);
+          if (this.rng.quick() < 0.5) this.abortTrip(3);
           return false;
+        } else if (newCell === "n") {
+          this.abortTrip(20);
+          this.mapHandler.decayDirt(pos);
         }
         return true;
       }
     }
-    this.bounceOffWall(5);
+    this.abortTrip(5);
     return false;
-  }
-
-  bounceOffWall(dropsToSkip) {
-    this.dropsToSkip = dropsToSkip;
-    this.angle = this.rng.quick() * (Math.PI * 2);
   }
 
   foodChange() {
