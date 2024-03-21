@@ -96,12 +96,25 @@ export class MapGraphics {
       }
       if (cell !== this.lastCell) {
         this.lastCell = cell;
-        if (cell[0] === FoodValue || cell[0] === DirtValue) {
+        if (cell[0] === FoodValue || cell[0] === DirtValue || cell[0] === "n") {
           const cellAmount = cell.substr(1);
           let strength;
           if (!cellAmount) strength = BlockDecaySteps;
           else {
-            const maxPerCell = cell[0] === FoodValue ? FoodPerCell : DirtPerCell;
+            let maxPerCell;
+            switch (cell[0]) {
+              case FoodValue:
+                maxPerCell = FoodPerCell;
+                break;
+              case DirtValue:
+                maxPerCell = DirtPerCell;
+                break;
+              case "n":
+                maxPerCell = 100;
+                break;
+              default:
+                throw new Error(`unexpected decayable block '${cell[0]}'`);
+            }
             strength = Math.ceil(BlockDecaySteps * (cellAmount / maxPerCell));
           }
           const index = cell[0] + strength;

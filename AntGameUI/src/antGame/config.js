@@ -59,6 +59,13 @@ export const Config = {
       decayable: true,
     },
     {
+      value: "n",
+      name: "NoFood",
+      shortName: "N",
+      color: "#0000FF",
+      decayable: true,
+    },
+    {
       value: "d",
       name: "Dirt",
       shortName: "D",
