@@ -96,7 +96,9 @@ export class MapGraphics {
       }
       if (cell !== this.lastCell) {
         this.lastCell = cell;
-        if (cell[0] === FoodValue || cell[0] === DirtValue || cell[0] === "n") {
+        // if (cell[0] === FoodValue || cell[0] === DirtValue || cell[0] === "n") {
+        if (cell.length !== 1) {
+          // console.log(cell);
           const cellAmount = cell.substr(1);
           let strength;
           if (!cellAmount) strength = BlockDecaySteps;

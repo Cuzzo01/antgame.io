@@ -363,12 +363,12 @@ export class Ant {
             return false;
           }
         } else if (newCell === DirtValue) {
-          this.mapHandler.decayDirt(pos);
+          this.mapHandler.decayCell(pos);
           if (this.rng.quick() < 0.5) this.abortTrip(3);
           return false;
         } else if (newCell === "n") {
           this.abortTrip(20);
-          this.mapHandler.decayDirt(pos);
+          this.mapHandler.decayCell(pos);
         }
         return true;
       }

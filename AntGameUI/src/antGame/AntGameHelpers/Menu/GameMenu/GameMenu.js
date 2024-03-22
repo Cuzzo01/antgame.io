@@ -107,9 +107,11 @@ export default function GameMenu({
         className={cssStyles.playButton}
         text={playState ? <PauseIcon /> : <PlayIcon />}
         handler={async () => {
+          const start = new Date().getTime();
           setDisablePlay(true);
           await playButtonHandler(!playState);
           setDisablePlay(false);
+          console.log(new Date().getTime() - start);
         }}
       />
     </div>

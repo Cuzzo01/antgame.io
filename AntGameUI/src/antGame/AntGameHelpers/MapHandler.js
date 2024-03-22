@@ -351,18 +351,18 @@ export class MapHandler {
     if (this.foodReturned === this.foodToStopTime && this._gameMode === "sandbox") this.toggleTimer(false);
   };
 
-  decayDirt = mapXY => {
+  decayCell = mapXY => {
     const intMapXY = MapXYToInt(mapXY);
     let cell = this._map[intMapXY[0]][intMapXY[1]];
-    const cellValue = cell.substr(0, 1);
+    const cellValue = cell[0];
     let cellAmount = parseInt(cell.substr(1));
     let newAmount = cellAmount - 1;
     if (newAmount === 0) {
       if (cellValue === DirtValue) this.dirtToRespawn.push(intMapXY);
       this.setCellTo(intMapXY, " ");
-    } else if (cell === DirtValue && newAmount % DirtDecayPerStep === 0) {
+    } else if (cellValue === DirtValue && newAmount % DirtDecayPerStep === 0) {
       this.setCellTo(intMapXY, cellValue + newAmount);
-    } else if (cell === "n" && newAmount % NotFoodDecayPerStep === 0) {
+    } else if (cellValue === "n" && newAmount % NotFoodDecayPerStep === 0) {
       this.setCellTo(intMapXY, cellValue + newAmount);
     } else {
       this.setCellToSilent(intMapXY, cellValue + newAmount);
@@ -378,16 +378,8 @@ export class MapHandler {
     this.foodOnMap--;
     if (newAmount === 0) {
       this.foodToRespawn.push(intMapXY);
-      const surroundingCells = [];
-      const radius = 1;
-      for (let xOffset = -radius; xOffset <= radius; xOffset++) {
-        for (let yOffset = -radius; yOffset <= radius; yOffset++) {
-          const loc = [intMapXY[0] + xOffset, intMapXY[1] + yOffset];
-          if ((xOffset || yOffset) && this.checkInBounds(loc)) surroundingCells.push(this._map[loc[0]][loc[1]]);
-        }
-      }
+      const surroundingCells = this.getSurroundingCells(intMapXY, 2);
       if (!surroundingCells.some(cell => cell.includes("f"))) {
-        console.log("placing not food");
         this.setCellTo(intMapXY, "n" + NotFoodPerCell);
       } else {
         this.setCellTo(intMapXY, " ");
@@ -433,6 +425,17 @@ export class MapHandler {
     if (mapXY[0] < 0 || mapXY[0] >= MapBounds[0]) return false;
     if (mapXY[1] < 0 || mapXY[1] >= MapBounds[1]) return false;
     return true;
+  };
+
+  getSurroundingCells = (intMapXY, radius) => {
+    const surroundingCells = [];
+    for (let xOffset = -radius; xOffset <= radius; xOffset++) {
+      for (let yOffset = -radius; yOffset <= radius; yOffset++) {
+        const loc = [intMapXY[0] + xOffset, intMapXY[1] + yOffset];
+        if ((xOffset || yOffset) && this.checkInBounds(loc)) surroundingCells.push(this._map[loc[0]][loc[1]]);
+      }
+    }
+    return surroundingCells;
   };
 }
 
