@@ -5,9 +5,16 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import AntGameRouter from "./antGame/AntGameRouter";
 import "./index.css";
 
+import { PostHogProvider } from "posthog-js/react";
+
 ReactDOM.render(
   <React.StrictMode>
-    <AntGameRouter />
+    <PostHogProvider
+      apiKey="phc_SFH4QQfmZAgNUNlofR2AYEyMZAWFcwOlyqj9faFpI4L"
+      options={{ api_host: "https://us.posthog.com" }}
+    >
+      <AntGameRouter />
+    </PostHogProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
