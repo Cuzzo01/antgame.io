@@ -5,6 +5,7 @@ import { getAccessToken, getAnonToken, getRefreshToken, logout, reportSpacesLoad
 import { sendRunArtifact } from "../Challenge/ChallengeService";
 import { getFlag } from "../Helpers/FlagService";
 import { v4 as uuidV4 } from "uuid";
+import posthog from "posthog-js";
 
 const TwoHoursInMilliseconds = 1000 * 60 * 60 * 2;
 const HalfHourInSeconds = 60 * 30;
@@ -35,6 +36,7 @@ class AuthHandler {
     this.jwt = newToken;
     this.decodedToken = jwt_decode(this.jwt);
     localStorage.setItem("jwt", this.jwt);
+    posthog.identify(this.decodedToken.id, { username: this.decodedToken.username });
   }
 
   get token() {
@@ -210,6 +212,7 @@ class AuthHandler {
     this._loggedIn = false;
     this.jwt = "";
     localStorage.removeItem("jwt");
+    posthog.reset();
 
     if (this.isRefreshTokenSet) await logout();
   }
