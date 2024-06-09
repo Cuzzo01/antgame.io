@@ -29,8 +29,8 @@ const TrailDecayRate = Config.TrailDecayInterval;
 const Brushes = Config.brushes;
 const BrushSizeDefault = Config.brushSizes[Config.brushSizeDefaultIndex].value;
 const DefaultBrush = Brushes[Config.brushTypeDefaultIndex];
-const FoodValue = Brushes.find(brush => brush.name === "Food").value;
-const HomeValue = Brushes.find(brush => brush.name === "Home").value;
+const FoodValue = Brushes.find(b => b.name === "Food").value;
+const HomeValue = Brushes.find(b => b.name === "Home").value;
 const BorderWeight = Config.borderWeight;
 const FrameRate = Config.FrameRate;
 const PreloadMap = Config.PreloadMap;
@@ -77,11 +77,11 @@ export default class AntGame extends React.Component {
       speed: this.gameSpeed,
     };
 
-    const homeColor = Brushes.find(brush => brush.value === HomeValue).color;
+    const homeColor = Brushes.find(b => b.value === HomeValue).color;
     this.homeTrailDrawer = new TrailGraphics(homeColor);
     this.homeTrailHandler = new TrailHandler(this.mapHandler, this.homeTrailDrawer);
 
-    const foodColor = Brushes.find(brush => brush.value === FoodValue).color;
+    const foodColor = Brushes.find(b => b.value === FoodValue).color;
     this.foodTrailDrawer = new TrailGraphics(foodColor);
     this.foodTrailHandler = new TrailHandler(this.mapHandler, this.foodTrailDrawer);
   }

@@ -1,11 +1,13 @@
 import { Config } from "../../config";
 
 const Brushes = Config.brushes;
-const FoodValue = Brushes.find(brush => brush.name === "Food").value;
-const DirtValue = Brushes.find(brush => brush.name === "Dirt").value;
+const FoodValue = Brushes.find(b => b.name === "Food").value;
+const DirtValue = Brushes.find(b => b.name === "Dirt").value;
+const NoFoodValue = Brushes.find(b => b.name === "NoFood").value;
 const BlockDecaySteps = Config.BlockDecaySteps;
 const FoodPerCell = Config.FoodPerCell;
 const DirtPerCell = Config.DirtPerCell;
+const NoFoodPerCell = Config.NoFoodPerCell;
 const BorderWeight = Config.borderWeight;
 const MapBounds = Config.MapBounds;
 const MinDecayableAlpha = Config.MinDecayableAlpha;
@@ -90,18 +92,31 @@ export class MapGraphics {
   drawMap({ cellsToDraw, map }) {
     cellsToDraw.forEach(cellPos => {
       let cell = map[cellPos[0]][cellPos[1]];
-      if (cell === " ") {
+      if (cell === " " || cell[0] === NoFoodValue) {
         this.eraseCell(cellPos);
         return;
       }
       if (cell !== this.lastCell) {
         this.lastCell = cell;
-        if (cell[0] === FoodValue || cell[0] === DirtValue) {
+        if (cell.length !== 1) {
           const cellAmount = cell.substr(1);
           let strength;
           if (!cellAmount) strength = BlockDecaySteps;
           else {
-            const maxPerCell = cell[0] === FoodValue ? FoodPerCell : DirtPerCell;
+            let maxPerCell;
+            switch (cell[0]) {
+              case FoodValue:
+                maxPerCell = FoodPerCell;
+                break;
+              case DirtValue:
+                maxPerCell = DirtPerCell;
+                break;
+              case NoFoodValue:
+                maxPerCell = NoFoodPerCell;
+                break;
+              default:
+                throw new Error(`unexpected decayable block '${cell[0]}'`);
+            }
             strength = Math.ceil(BlockDecaySteps * (cellAmount / maxPerCell));
           }
           const index = cell[0] + strength;

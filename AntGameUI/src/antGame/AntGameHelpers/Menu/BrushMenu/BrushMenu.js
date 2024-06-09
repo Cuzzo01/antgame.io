@@ -5,8 +5,8 @@ import ReactTooltip from "react-tooltip";
 import styles from "./BrushMenu.module.css";
 
 const BrushSizes = Config.brushSizes;
-const HomeBrush = Config.brushes.find(brush => brush.name === "Home");
-const EraserBrush = Config.brushes.find(brush => brush.name === "Eraser");
+const HomeBrush = Config.brushes.find(b => b.name === "Home");
+const EraserBrush = Config.brushes.find(b => b.name === "Eraser");
 const SmallBrushSize = Config.brushSizes.find(size => size.name === "Small").value;
 
 export default function BrushMenu(props) {
@@ -58,6 +58,7 @@ function OptionPicker(props) {
   const optionList = [];
   for (let i = 0; i < props.options.length; i++) {
     const option = props.options[i];
+    if (option.drawable === false) continue;
     const optionSymbol = option.shortName;
     const optionName = option.name;
     const activeOption = i === currentIndex;

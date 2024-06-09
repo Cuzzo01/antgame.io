@@ -38,6 +38,7 @@ export const Config = {
   MinDecayableAlpha: 50,
   brushTypeDefaultIndex: 1,
   DirtPerCell: 50,
+  NoFoodPerCell: 100,
   brushes: [
     {
       value: "w",
@@ -57,6 +58,14 @@ export const Config = {
       shortName: "F",
       color: "#186A3B",
       decayable: true,
+    },
+    {
+      value: "n",
+      name: "NoFood",
+      shortName: "N",
+      color: "#0000FF",
+      decayable: true,
+      drawable: false,
     },
     {
       value: "d",
