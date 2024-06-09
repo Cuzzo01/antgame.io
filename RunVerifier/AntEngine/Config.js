@@ -20,6 +20,14 @@ const Config = {
       decayable: true,
     },
     {
+      value: "n",
+      name: "NoFood",
+      shortName: "N",
+      color: "#0000FF",
+      decayable: true,
+      drawable: false,
+    },
+    {
       value: "d",
       name: "Dirt",
       shortName: "D",
@@ -37,6 +45,7 @@ const Config = {
   BlockDecaySteps: 10,
   FoodPerCell: 20,
   DirtPerCell: 50,
+  NoFoodPerCell: 100,
   ViewAngle: 45,
   AntStepDistance: 0.3,
   AntWanderChance: 0.2,

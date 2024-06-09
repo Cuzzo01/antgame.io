@@ -40,7 +40,7 @@ export class Ant {
     this.cumulativeAngle = 0;
     this.currentCell = "";
     this.foodChanged = false;
-    this.isLoggyBoi = Math.random() > 0.999;
+    this.isLoggyBoi = false;
     if (this.isLoggyBoi) {
       this.logID = Math.round(Math.random() * 10);
       console.log(this.logID);

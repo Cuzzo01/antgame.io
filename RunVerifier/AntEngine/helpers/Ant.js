@@ -17,6 +17,7 @@ const Brushes = Config.brushes;
 const FoodValue = Brushes.find(brush => brush.name === "Food").value;
 const DirtValue = Brushes.find(brush => brush.name === "Dirt").value;
 const WallValue = Brushes.find(brush => brush.name === "Wall").value;
+const NoFoodValue = Brushes.find(b => b.name === "NoFood").value;
 const TrailDropRate = Config.TrailDropRate;
 
 class Ant {
@@ -285,8 +286,8 @@ class Ant {
     }
   }
 
-  abortTrip() {
-    this.dropsToSkip = 10;
+  abortTrip(dropsToSkip = 10) {
+    this.dropsToSkip = dropsToSkip;
     this._angle = this.rng.quick() * (Math.PI * 2);
   }
 
@@ -346,7 +347,7 @@ class Ant {
         }
 
         if (newCell === false || newCell === WallValue) {
-          this.bounceOffWall(5);
+          this.abortTrip(5);
           return false;
         }
 
@@ -363,24 +364,22 @@ class Ant {
             this.foodChange();
           } else {
             this.distanceTraveled = 0;
-            this.bounceOffWall(0);
+            this.abortTrip(0);
             return false;
           }
         } else if (newCell === DirtValue) {
-          this.mapHandler.decayDirt(pos);
-          if (this.rng.quick() < 0.5) this.bounceOffWall(3);
+          this.mapHandler.decayCell(pos);
+          if (this.rng.quick() < 0.5) this.abortTrip(3);
           return false;
+        } else if (newCell === NoFoodValue) {
+          this.abortTrip(20);
+          this.mapHandler.decayCell(pos);
         }
         return true;
       }
     }
-    this.bounceOffWall(5);
+    this.abortTrip(5);
     return false;
-  }
-
-  bounceOffWall(dropsToSkip) {
-    this.dropsToSkip = dropsToSkip;
-    this.angle = this.rng.quick() * (Math.PI * 2);
   }
 
   foodChange() {
