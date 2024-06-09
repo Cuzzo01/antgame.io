@@ -3,9 +3,11 @@ import { Config } from "../../config";
 const Brushes = Config.brushes;
 const FoodValue = Brushes.find(brush => brush.name === "Food").value;
 const DirtValue = Brushes.find(brush => brush.name === "Dirt").value;
+const NoFoodValue = Brushes.find(b => b.name === "NoFood").value;
 const BlockDecaySteps = Config.BlockDecaySteps;
 const FoodPerCell = Config.FoodPerCell;
 const DirtPerCell = Config.DirtPerCell;
+const NoFoodPerCell = Config.NoFoodPerCell;
 const BorderWeight = Config.borderWeight;
 const MapBounds = Config.MapBounds;
 const MinDecayableAlpha = Config.MinDecayableAlpha;
@@ -96,9 +98,7 @@ export class MapGraphics {
       }
       if (cell !== this.lastCell) {
         this.lastCell = cell;
-        // if (cell[0] === FoodValue || cell[0] === DirtValue || cell[0] === "n") {
         if (cell.length !== 1) {
-          // console.log(cell);
           const cellAmount = cell.substr(1);
           let strength;
           if (!cellAmount) strength = BlockDecaySteps;
@@ -111,8 +111,8 @@ export class MapGraphics {
               case DirtValue:
                 maxPerCell = DirtPerCell;
                 break;
-              case "n":
-                maxPerCell = 100;
+              case NoFoodValue:
+                maxPerCell = NoFoodPerCell;
                 break;
               default:
                 throw new Error(`unexpected decayable block '${cell[0]}'`);

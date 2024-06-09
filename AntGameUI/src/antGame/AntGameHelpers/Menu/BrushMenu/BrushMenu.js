@@ -58,6 +58,7 @@ function OptionPicker(props) {
   const optionList = [];
   for (let i = 0; i < props.options.length; i++) {
     const option = props.options[i];
+    if (option.drawable === false) continue;
     const optionSymbol = option.shortName;
     const optionName = option.name;
     const activeOption = i === currentIndex;

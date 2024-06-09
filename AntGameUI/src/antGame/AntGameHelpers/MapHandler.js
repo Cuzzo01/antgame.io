@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Config } from "../config";
 import { SaveGameHandler } from "./MapHelpers/SaveGameHandler";
+import { CompatibilityUtility } from "./CompatibilityUtility";
 
 const Brushes = Config.brushes;
 const MapBounds = Config.MapBounds;
@@ -10,11 +11,12 @@ const FoodPerCell = Config.FoodPerCell;
 const DirtPerCell = Config.DirtPerCell;
 const FoodPerDecayStep = FoodPerCell / BlockDecaySteps;
 const DirtDecayPerStep = DirtPerCell / BlockDecaySteps;
-const NotFoodPerCell = 100;
+const NotFoodPerCell = Config.NoFoodPerCell;
 const NotFoodDecayPerStep = NotFoodPerCell / BlockDecaySteps;
 const FoodValue = Brushes.find(brush => brush.name === "Food").value;
 const HomeValue = Brushes.find(brush => brush.name === "Home").value;
 const DirtValue = Brushes.find(brush => brush.name === "Dirt").value;
+const NoFoodValue = Brushes.find(b => b.name === "NoFood").value;
 const SampleMaps = Config.SampleMaps;
 
 export class MapHandler {
@@ -353,7 +355,7 @@ export class MapHandler {
 
   decayCell = mapXY => {
     const intMapXY = MapXYToInt(mapXY);
-    let cell = this._map[intMapXY[0]][intMapXY[1]];
+    const cell = this._map[intMapXY[0]][intMapXY[1]];
     const cellValue = cell[0];
     let cellAmount = parseInt(cell.substr(1));
     let newAmount = cellAmount - 1;
@@ -362,7 +364,7 @@ export class MapHandler {
       this.setCellTo(intMapXY, " ");
     } else if (cellValue === DirtValue && newAmount % DirtDecayPerStep === 0) {
       this.setCellTo(intMapXY, cellValue + newAmount);
-    } else if (cellValue === "n" && newAmount % NotFoodDecayPerStep === 0) {
+    } else if (cellValue === NoFoodValue && newAmount % NotFoodDecayPerStep === 0) {
       this.setCellTo(intMapXY, cellValue + newAmount);
     } else {
       this.setCellToSilent(intMapXY, cellValue + newAmount);
@@ -379,8 +381,9 @@ export class MapHandler {
     if (newAmount === 0) {
       this.foodToRespawn.push(intMapXY);
       const surroundingCells = this.getSurroundingCells(intMapXY, 2);
-      if (!surroundingCells.some(cell => cell.includes("f"))) {
-        this.setCellTo(intMapXY, "n" + NotFoodPerCell);
+      const noSurroundingFood = !surroundingCells.some(cell => cell.includes("f"));
+      if (noSurroundingFood && CompatibilityUtility.EnableNoFoodBlocks(this._compatibilityDate)) {
+        this.setCellTo(intMapXY, NoFoodValue + NotFoodPerCell);
       } else {
         this.setCellTo(intMapXY, " ");
       }
