@@ -92,7 +92,7 @@ export class MapGraphics {
   drawMap({ cellsToDraw, map }) {
     cellsToDraw.forEach(cellPos => {
       let cell = map[cellPos[0]][cellPos[1]];
-      if (cell === " ") {
+      if (cell === " " || cell[0] === NoFoodValue) {
         this.eraseCell(cellPos);
         return;
       }
