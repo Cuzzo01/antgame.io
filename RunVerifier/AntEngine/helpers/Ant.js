@@ -14,9 +14,9 @@ const TrailDecayRange = Config.TrailDecayRange;
 const TrailTransparencyFloor = Config.TrailTransparencyFloor;
 const MapBounds = Config.MapBounds;
 const Brushes = Config.brushes;
-const FoodValue = Brushes.find(brush => brush.name === "Food").value;
-const DirtValue = Brushes.find(brush => brush.name === "Dirt").value;
-const WallValue = Brushes.find(brush => brush.name === "Wall").value;
+const FoodValue = Brushes.find(b => b.name === "Food").value;
+const DirtValue = Brushes.find(b => b.name === "Dirt").value;
+const WallValue = Brushes.find(b => b.name === "Wall").value;
 const NoFoodValue = Brushes.find(b => b.name === "NoFood").value;
 const TrailDropRate = Config.TrailDropRate;
 

@@ -4,7 +4,7 @@ module.exports = function (app) {
   app.use(
     "/api",
     createProxyMiddleware({
-      // target: "https://dev.antgame.io/",
+      // target: "https://antgame.io/",
       target: "http://localhost:8080",
       pathRewrite: { "^/api": "" },
       changeOrigin: true,

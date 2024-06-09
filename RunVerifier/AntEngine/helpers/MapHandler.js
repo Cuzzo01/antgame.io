@@ -11,9 +11,9 @@ const NotFoodPerCell = Config.NoFoodPerCell;
 const FoodPerDecayStep = FoodPerCell / BlockDecaySteps;
 const DirtDecayPerStep = DirtPerCell / BlockDecaySteps;
 const NotFoodDecayPerStep = NotFoodPerCell / BlockDecaySteps;
-const FoodValue = Brushes.find(brush => brush.name === "Food").value;
-const HomeValue = Brushes.find(brush => brush.name === "Home").value;
-const DirtValue = Brushes.find(brush => brush.name === "Dirt").value;
+const FoodValue = Brushes.find(b => b.name === "Food").value;
+const HomeValue = Brushes.find(b => b.name === "Home").value;
+const DirtValue = Brushes.find(b => b.name === "Dirt").value;
 const NoFoodValue = Brushes.find(b => b.name === "NoFood").value;
 
 class MapHandler {
