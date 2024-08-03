@@ -7,6 +7,7 @@ export class CompatibilityUtility {
     RevertNonUniformTrailStrength: false,
     StartWithDropsToSkip: false,
     NonLinearTrailDecay: false,
+    EnableNoFoodBlocks: false,
   };
 
   static {
@@ -38,6 +39,10 @@ export class CompatibilityUtility {
   static UseNonUniformTrailStrength(compatibilityDate) {
     if (this.IsFeatureLive(this.GoLiveDates.RevertNonUniformTrailStrength, compatibilityDate)) return false;
     else return this.IsFeatureLive(this.GoLiveDates.NonUniformTrailStrength, compatibilityDate);
+  }
+
+  static EnableNoFoodBlocks(compatibilityDate) {
+    return this.IsFeatureLive(this.GoLiveDates.EnableNoFoodBlocks, compatibilityDate);
   }
 
   static IsFeatureLive(goLiveDate, compatibilityDate) {

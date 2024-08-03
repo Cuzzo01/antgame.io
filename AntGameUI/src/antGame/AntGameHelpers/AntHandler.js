@@ -3,7 +3,7 @@ import { Ant } from "./Ant";
 
 const Brushes = Config.brushes;
 const AntsToSpawn = Config.AntsToSpawn;
-const HomeValue = Brushes.find(brush => brush.name === "Home").value;
+const HomeValue = Brushes.find(b => b.name === "Home").value;
 
 export class AntsHandler {
   constructor() {
@@ -65,7 +65,7 @@ export class AntsHandler {
                 mapHandler,
                 homeTrailHandler,
                 foodTrailHandler,
-                Brushes.find(brush => brush.value === map[x][y]),
+                Brushes.find(b => b.value === map[x][y]),
                 `${seed}-${i}`,
                 this._compatibilityDate
               )
