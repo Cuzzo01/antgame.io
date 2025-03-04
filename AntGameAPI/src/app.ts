@@ -6,6 +6,9 @@ if (!process.env.environment) {
   dotenv.config();
 }
 
+import { LoggerProvider } from "./LoggerTS";
+LoggerProvider.getInstance() // force initialization
+
 import "./tracing";
 
 import express, { Request, Response } from "express";

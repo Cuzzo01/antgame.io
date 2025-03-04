@@ -1,9 +1,9 @@
-import LogzIo, { ILogzioLogger } from "logzio-nodejs";
+import newrelic from "newrelic";
 import TelemAPI from "@opentelemetry/api";
 
 import { ApiErrorLog } from "./models/Logging/ApiErrorLog";
 import { AuthEventLog } from "./models/Logging/AuthEventLog";
-import { BaseLogMessage } from "./models/Logging/BaseLogMessage";
+import { BaseLogMessage, LogLevel } from "./models/Logging/BaseLogMessage";
 import { CacheLog, CacheResultType } from "./models/Logging/CacheLog";
 import { CronLog } from "./models/Logging/CronLog";
 import { InfoLog } from "./models/Logging/InfoLog";
@@ -20,17 +20,10 @@ export class LoggerProvider {
 }
 
 export class LoggerBase {
-  private logger: ILogzioLogger;
   private env: string;
 
   constructor() {
-    this.logger = LogzIo.createLogger({
-      token: process.env.logzio_token,
-      protocol: "https",
-      host: "listener.logz.io",
-      port: "8071",
-      type: "AntGameAPI",
-    });
+    this.init();
   }
 
   init() {
@@ -42,16 +35,22 @@ export class LoggerBase {
 
   log(obj: BaseLogMessage) {
     if (!this.env) this.init();
+    
+    const toLog = { ...obj, env: this.env };
     if (this.env !== "LOCAL") {
-      const toLog = { ...obj, env: this.env };
       const activeSpan = TelemAPI.trace.getSpan(TelemAPI.context.active());
       if (activeSpan) {
         const traceID = activeSpan.spanContext().traceId;
         toLog.traceID = traceID;
       }
-      this.logger.log(toLog);
+
+      newrelic.recordLogEvent(toLog);
+      if (obj.level === LogLevel.Error && obj.message === MessageType.ApiError) {
+        const err = (obj as ApiErrorLog).err;
+        newrelic.noticeError(err);
+      }
     } else {
-      console.log(new Date().toISOString(), JSON.stringify(obj));
+      console.log(new Date().toISOString(), JSON.stringify(toLog));
     }
   }
 
@@ -60,6 +59,7 @@ export class LoggerBase {
     const logObject: ApiErrorLog = {
       message: MessageType.ApiError,
       err: errString,
+      level: LogLevel.Error,
       location,
     };
     this.log(logObject);
@@ -77,6 +77,7 @@ export class LoggerBase {
       resultType: cacheMiss ? CacheResultType.Miss : CacheResultType.Hit,
       key: key,
       time: time,
+      level: LogLevel.Info,
     };
 
     if (value && value.length) toLog.value = value;
@@ -87,6 +88,7 @@ export class LoggerBase {
     const toLog: CronLog = {
       message: MessageType.DailyCron,
       cronMessage: message,
+      level: LogLevel.Info,
     };
     this.log(toLog);
   }
@@ -96,6 +98,7 @@ export class LoggerBase {
       message: MessageType.Info,
       source: source,
       infoText: infoText,
+      level: LogLevel.Info,
     };
     this.log(toLog);
   }

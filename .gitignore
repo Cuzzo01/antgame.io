@@ -32,3 +32,5 @@ yarn-error.log*
 *test.json
 *-wr.png
 sim-*
+
+newrelic_agent.log
